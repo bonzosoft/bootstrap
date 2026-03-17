@@ -2,7 +2,7 @@
 # ==============================================================================
 # KOMODO DEPLOYMENT SCRIPT
 # ==============================================================================
-# This script automates the deployment of Komodo Core and Periphery.
+# This script automates the deployment of Komodo Core, Periphery, and Common Tools.
 # Designed for read-only systems (like TrueNAS SCALE) using a bundled GH CLI.
 #
 # WORKFLOW OPTIONS:
@@ -22,12 +22,15 @@ set -e
 # --- Configuration ---
 ORG_NAME="docker-workflows"
 BRANCH="prod"
+DIR_COMMON="common-tools"
 DIR_CORE="komodo-core"
 DIR_PERIPHERY="komodo-periphery"
 
-# Dynamically find where this script is located to call the bundled 'gh' binary
+# Dynamically find where this script is located
 SCRIPT_DIR="$(cd "$(dirname "${BASH_SOURCE[0]}")" &> /dev/null && pwd)"
-GH="${SCRIPT_DIR}/gh"
+
+# Dynamically find the 'gh' binary inside the gh_..._linux_amd64 folder structure
+GH=$(find "${SCRIPT_DIR}" -type f -path "*/gh_*_linux_amd64*/gh" | head -n 1)
 
 # Temporary directory for session credentials (destroyed after use)
 export GH_CONFIG_DIR="/tmp/komodo-gh-config"
@@ -40,16 +43,26 @@ show_help() {
     echo ""
     echo "Commands:"
     echo "  setup       [Step 1] Login interactively via Device Code"
-    echo "  all         [Step 2] Sync all repos and WIPE credentials"
-    echo "  core        Sync Komodo Core repository"
-    echo "  periphery   Sync Komodo Periphery repository"
+    echo "  all         [Step 2] Sync ALL repos (Common -> Core -> Periphery) and WIPE credentials"
+    echo "  common      Sync Common Tools repository only"
+    echo "  core        Sync Komodo Core repository only"
+    echo "  periphery   Sync Komodo Periphery repository only"
     echo "  status      Check local directory status"
     echo "  clean-auth  Manually remove GH session credentials from /tmp"
 }
 
+check_gh_binary() {
+    if [ -z "${GH}" ] || [ ! -f "${GH}" ]; then 
+        echo "Error: 'gh' binary not found. Make sure the gh_*_linux_amd64 folder is in ${SCRIPT_DIR}."
+        exit 1
+    fi
+    # Ensure the binary is executable
+    chmod +x "${GH}"
+}
+
 setup() {
+    check_gh_binary
     mkdir -p "${GH_CONFIG_DIR}"
-    chmod +x "${GH}" # Ensure the binary is executable
     
     if [ -z "$GH_TOKEN" ]; then
         echo ">>> Starting interactive login (Device Code)..."
@@ -70,11 +83,7 @@ clean_auth() {
 
 sync_repo() {
     local REPO_NAME=$1
-    
-    if [ ! -f "${GH}" ]; then 
-        echo "Error: gh binary not found in ${SCRIPT_DIR}."
-        exit 1
-    fi
+    check_gh_binary
     
     if [ ! -d "${REPO_NAME}/.git" ]; then
         echo "Cloning private repository ${REPO_NAME}..."
@@ -98,6 +107,7 @@ sync_repo() {
 
 status_check() {
     echo "--- Local Status ---"
+    [ -d "${DIR_COMMON}" ] && echo "[OK] Common folder exists" || echo "[..] Common folder missing"
     [ -d "${DIR_CORE}" ] && echo "[OK] Core folder exists" || echo "[..] Core folder missing"
     [ -d "${DIR_PERIPHERY}" ] && echo "[OK] Periphery folder exists" || echo "[..] Periphery folder missing"
 }
@@ -108,9 +118,14 @@ case "$1" in
         setup
         ;;
     all)
+        # Order is important: Common first, then the rest
+        sync_repo "${DIR_COMMON}"
         sync_repo "${DIR_CORE}"
         sync_repo "${DIR_PERIPHERY}"
         clean_auth
+        ;;
+    common)
+        sync_repo "${DIR_COMMON}"
         ;;
     core)
         sync_repo "${DIR_CORE}"

@@ -8,12 +8,12 @@
 # WORKFLOW OPTIONS:
 #
 # 1. INTERACTIVE (No token needed):
-#    $ ./deploy.sh setup    --> Starts Device Code login (browser based).
-#    $ ./deploy.sh all      --> Clones/Updates repos and WIPES credentials.
+#    $ ./deploy.sh setup [mode]    --> Starts Device Code login.
+#    $ ./deploy.sh all [mode]      --> Clones/Updates repos and WIPES credentials.
 #
 # 2. AUTOMATED (Using GH_TOKEN):
 #    $ export GH_TOKEN=ghp_your_secret_token
-#    $ ./deploy.sh all      --> GH CLI will use the token automatically.
+#    $ ./deploy.sh all [mode]      --> GH CLI will use the token automatically.
 # ==============================================================================
 
 # Exit immediately if a command exits with a non-zero status
@@ -21,10 +21,14 @@ set -e
 
 # --- Configuration ---
 ORG_NAME="docker-workflows"
-BRANCH="prod"
 DIR_COMMON="common-tools"
 DIR_CORE="komodo-core"
 DIR_PERIPHERY="komodo-periphery"
+GIT_BRANCH="main" # The actual GitHub branch to clone/sync
+
+# Capture arguments
+COMMAND="$1"
+MODE="${2:-prod}" # Environment mode (prod, dev, etc). Defaults to 'prod'
 
 # Dynamically find where this script is located
 SCRIPT_DIR="$(cd "$(dirname "${BASH_SOURCE[0]}")" &> /dev/null && pwd)"
@@ -39,7 +43,11 @@ export GIT_CONFIG_GLOBAL="${GH_CONFIG_DIR}/gitconfig"
 # --- Functions ---
 
 show_help() {
-    echo "Usage: ./deploy.sh [command]"
+    echo "Usage: ./deploy.sh [command] [mode]"
+    echo ""
+    echo "Arguments:"
+    echo "  [command]   The action to perform (required)."
+    echo "  [mode]      The environment mode for .env files (optional, defaults to 'prod')."
     echo ""
     echo "Commands:"
     echo "  setup       [Step 1] Login interactively via Device Code"
@@ -49,6 +57,11 @@ show_help() {
     echo "  periphery   Sync Komodo Periphery repository only"
     echo "  status      Check local directory status"
     echo "  clean-auth  Manually remove GH session credentials from /tmp"
+    echo ""
+    echo "Examples:"
+    echo "  ./deploy.sh setup dev"
+    echo "  ./deploy.sh all prod"
+    echo "  ./deploy.sh core dev"
 }
 
 check_gh_binary() {
@@ -87,20 +100,23 @@ sync_repo() {
     
     if [ ! -d "${REPO_NAME}/.git" ]; then
         echo "Cloning private repository ${REPO_NAME}..."
-        "${GH}" repo clone "${ORG_NAME}/${REPO_NAME}" "${REPO_NAME}" -- --branch "${BRANCH}"
+        "${GH}" repo clone "${ORG_NAME}/${REPO_NAME}" "${REPO_NAME}"
     else
         echo "Local repository ${REPO_NAME} found. Forcing update..."
         cd "${REPO_NAME}"
-        git fetch origin "${BRANCH}"
-        git reset --hard "origin/${BRANCH}"
+        git fetch origin "${GIT_BRANCH}"
+        git reset --hard "origin/${GIT_BRANCH}"
         cd ..
     fi
 
-    # Environment file setup
-    if [ -f "${REPO_NAME}/.env.${BRANCH}" ]; then
-        echo "Applying configuration: .env.${BRANCH} -> .env"
-        cp "${REPO_NAME}/.env.${BRANCH}" "${REPO_NAME}/.env"
+    # Environment file setup using MODE
+    if [ -f "${REPO_NAME}/.env.${MODE}" ]; then
+        echo "Applying configuration: .env.${MODE} -> .env"
+        cp "${REPO_NAME}/.env.${MODE}" "${REPO_NAME}/.env"
+    else
+        echo "Warning: .env.${MODE} not found in ${REPO_NAME}. Skipping env setup."
     fi
+    
     echo ">>> Finished: ${REPO_NAME}"
     echo ""
 }
@@ -113,24 +129,27 @@ status_check() {
 }
 
 # --- Main Logic Route ---
-case "$1" in
+case "$COMMAND" in
     setup)
         setup
         ;;
     all)
-        # Order is important: Common first, then the rest
+        echo "Deployment Mode: ${MODE^^}" # Prints mode in uppercase (e.g., PROD)
         sync_repo "${DIR_COMMON}"
         sync_repo "${DIR_CORE}"
         sync_repo "${DIR_PERIPHERY}"
         clean_auth
         ;;
     common)
+        echo "Deployment Mode: ${MODE^^}"
         sync_repo "${DIR_COMMON}"
         ;;
     core)
+        echo "Deployment Mode: ${MODE^^}"
         sync_repo "${DIR_CORE}"
         ;;
     periphery)
+        echo "Deployment Mode: ${MODE^^}"
         sync_repo "${DIR_PERIPHERY}"
         ;;
     status)

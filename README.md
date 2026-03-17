@@ -21,7 +21,7 @@ git clone https://github.com/docker-workflows/bootstrap.git .
 
 **3. Despliega los proyectos:**
 ```bash
-./deploy.sh all
+./deploy.sh all prod
 ```
 *Este comando descargará o actualizará los repositorios en el orden estricto de dependencias (`common-tools` -> `core` -> `periphery`) y aplicará los archivos `.env` correspondientes.*
 
@@ -31,8 +31,8 @@ Si necesitas ejecutar este script mediante una tarea Cron o un pipeline, puedes 
 
 ```bash
 export GH_TOKEN=ghp_tu_token_secreto_aqui
-./deploy.sh all
+./deploy.sh all prod
 ```
 
 ### 🔒 Nota sobre Seguridad
-Para garantizar que no queden credenciales huérfanas en el sistema, la configuración de Git y la sesión de `gh` se aíslan en un directorio temporal (`/tmp/komodo-gh-config`). Al terminar la ejecución de `./deploy.sh all`, el script **destruye automáticamente** estas credenciales. Si necesitas limpiar la sesión manualmente, puedes ejecutar `./deploy.sh clean-auth`.
+Para garantizar que no queden credenciales huérfanas en el sistema, la configuración de Git y la sesión de `gh` se aíslan en un directorio temporal (`/tmp/komodo-gh-config`). Al terminar la ejecución de `./deploy.sh all prod`, el script **destruye automáticamente** estas credenciales. Si necesitas limpiar la sesión manualmente, puedes ejecutar `./deploy.sh clean-auth`.

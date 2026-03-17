@@ -8,7 +8,7 @@
 # WORKFLOW OPTIONS:
 #
 # 1. INTERACTIVE (No token needed):
-#    $ ./deploy.sh setup [mode]    --> Starts Device Code login.
+#    $ ./deploy.sh setup           --> Starts Device Code login.
 #    $ ./deploy.sh all [mode]      --> Clones/Updates repos and WIPES credentials.
 #
 # 2. AUTOMATED (Using GH_TOKEN):
@@ -48,6 +48,7 @@ show_help() {
     echo "Arguments:"
     echo "  [command]   The action to perform (required)."
     echo "  [mode]      The environment mode for .env files (optional, defaults to 'prod')."
+    echo "              Note: [mode] is only used for syncing repos (all, common, core, periphery)."
     echo ""
     echo "Commands:"
     echo "  setup       [Step 1] Login interactively via Device Code"
@@ -59,7 +60,7 @@ show_help() {
     echo "  clean-auth  Manually remove GH session credentials from /tmp"
     echo ""
     echo "Examples:"
-    echo "  ./deploy.sh setup dev"
+    echo "  ./deploy.sh setup"
     echo "  ./deploy.sh all prod"
     echo "  ./deploy.sh core dev"
 }

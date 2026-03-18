@@ -101,12 +101,16 @@ sync_repo() {
     
     if [ ! -d "${REPO_NAME}/.git" ]; then
         echo "Cloning private repository ${REPO_NAME}..."
-        "${GH}" repo clone "${ORG_NAME}/${REPO_NAME}" "${REPO_NAME}"
+        "${GH}" repo clone "${ORG_NAME}/${REPO_NAME}" "${REPO_NAME}" # -- --recurse-submodules
+        cd "${REPO_NAME}"
+        git submodule update --init --recursive
+        cd ..
     else
         echo "Local repository ${REPO_NAME} found. Forcing update..."
         cd "${REPO_NAME}"
         git fetch origin "${GIT_BRANCH}"
         git reset --hard "origin/${GIT_BRANCH}"
+        git submodule update --init --recursive
         cd ..
     fi
 

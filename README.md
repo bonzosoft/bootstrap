@@ -10,7 +10,7 @@ Navega mediante SSH al directorio de tu NAS donde quieres alojar los proyectos d
 
 **1. Clona este repositorio base:**
 ```bash
-git clone https://github.com/docker-workflows/bootstrap.git .
+git clone https://github.com/docker-workflows/bootstrap.git ./bootstrap
 ```
 
 **2. Autentícate con GitHub:**

@@ -26,26 +26,26 @@ export GH_TOKEN=ghp_tu_token_secreto_aqui && ./bootstrap/deploy.sh install-all p
 
 **Todos los recursos**
 ````bash
- bash ./bootstrap/deploy.sh install-all prod
+ ./bootstrap/deploy.sh install-all prod
 ````
 **Komodo-Core**
 ````bash
- bash ./bootstrap/deploy.sh install-core prod
+ ./bootstrap/deploy.sh install-core prod
 ````
 **Komodo-Periphery**
 ````bash
- bash ./bootstrap/deploy.sh install-periphery prod
+ ./bootstrap/deploy.sh install-periphery prod
 ````
 
 ### Despliegue
 ````bash
- bash ./bootstrap/deploy.sh run-all prod
+ ./bootstrap/deploy.sh run-all prod
 ````
 **Komodo-Core**
 ````bash
- bash ./bootstrap/deploy.sh run-core prod
+ ./bootstrap/deploy.sh run-core prod
 ````
 **Komodo-Periphery**
 ````bash
- bash ./bootstrap/deploy.sh run-periphery prod
+ ./bootstrap/deploy.sh run-periphery prod
 ````

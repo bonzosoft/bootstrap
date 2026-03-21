@@ -15,11 +15,11 @@ export GH_TOKEN=ghp_tu_token_secreto_aqui && git clone https://github.com/docker
 ````
 Inicio del contenedor Komodo-Core:
 ````bash
-cd ./komodo-core && bash ./predeploy.sh -p prod && docker compose up -d && bash ./postdeploy.sh - prod
+cd ./komodo-core && bash ./predeploy.sh -b prod && docker compose up -d && bash ./postdeploy.sh -b prod
 ````
 Inicio del contenedor Komodo-Periphery:
 ````bash
-cd ./komodo-periphery && bash ./predeploy.sh -p prod && docker compose up -d && bash ./postdeploy.sh - prod
+cd ./komodo-periphery && bash ./predeploy.sh -b prod && docker compose up -d && bash ./postdeploy.sh -b prod
 ````
 
 ### Uso detallado (Modo Interactivo)

@@ -13,6 +13,14 @@ Automático:
 ````bash
 export GH_TOKEN=ghp_tu_token_secreto_aqui && git clone https://github.com/docker-workflows/bootstrap.git ./bootstrap && bash ./bootstrap/deploy.sh all prod
 ````
+Inicio del contenedor Komodo-Core:
+````bash
+cd ./komodo-core && bash ./predeploy.sh -p prod && docker compose up -d && bash ./postdeploy.sh - prod
+````
+Inicio del contenedor Komodo-Periphery:
+````bash
+cd ./komodo-periphery && bash ./predeploy.sh -p prod && docker compose up -d && bash ./postdeploy.sh - prod
+````
 
 ### Uso detallado (Modo Interactivo)
 

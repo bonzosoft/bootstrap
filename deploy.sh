@@ -162,6 +162,9 @@ case "$COMMAND" in
     clean-auth)
         clean_auth
         ;;
+    up)
+        bash ./predeploy.sh -p prod && docker compose up -d && bash ./postdeploy.sh - prod
+        ;;
     *)
         show_help
         ;;

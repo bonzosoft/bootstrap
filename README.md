@@ -41,9 +41,6 @@ bash ./bootstrap/deploy.sh install-periphery prod
 
 ### Despliegue
 
-````bash
-bash ./bootstrap/deploy.sh run-all
-````
 **Komodo-Core**
 ````bash
 bash ./bootstrap/deploy.sh run-core

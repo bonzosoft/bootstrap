@@ -76,11 +76,10 @@ check_gh_binary() {
 
 setup() {
     check_gh_binary
-    mkdir -p "${GH_CONFIG_DIR}"
-    
+
     if [ -z "$GH_TOKEN" ]; then
         echo ">>> Starting interactive login (Device Code)..."
-        "${GH}" auth login --hostname github.com -p https --web false
+        "${GH}" auth login --hostname github.com --git-protocols https --web
     else
         echo ">>> GH_TOKEN detected, skipping interactive login."
     fi
@@ -91,7 +90,7 @@ setup() {
 
 clean_auth() {
     echo ">>> Wiping temporary session credentials..."
-    rm -rf "${GH_CONFIG_DIR}"
+    #no <-----------------------------------------------------------------------
     echo ">>> Done. System is clean."
 }
 

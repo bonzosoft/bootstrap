@@ -20,7 +20,7 @@ bash ./bootstrap/deploy.sh login
 ````
 **Automático:** pendiente de desarrollar
 ````bash
-export GH_TOKEN=ghp_tu_token_secreto_aqui && ./bootstrap/deploy.sh install-all prod
+export GH_TOKEN=ghp_tu_token_secreto_aqui
 ````
 
 

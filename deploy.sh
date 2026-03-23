@@ -176,8 +176,9 @@ case "$COMMAND" in
         popd
         ;;
     stop-periphery)
-        "${DIR_PERIPHERY}"
+        pushd "${DIR_PERIPHERY}"
         docker compose down
+        popd
         ;;
     status)
         status_check

@@ -6,7 +6,9 @@
 # for read-only systems (TrueNAS SCALE) using bundled GH CLI.
 # ==============================================================================
 
+
 set -euo pipefail
+
 
 # Configuration
 ORGNAME="bonzosoft"
@@ -29,7 +31,6 @@ GH=$(find "${SCRIPTDIR}" -type f -path "*/gh_*_linux_amd64*/gh" | head -n 1)
 export GH_CONFIG_DIR="/tmp/komodo-gh-config"
 export GIT_CONFIG_GLOBAL="${GH_CONFIG_DIR}/gitconfig"
 
-#
 export GH_TOKEN=""
 
 # Functions
@@ -57,7 +58,7 @@ show_help() {
 	echo "  ./deploy.sh run-core"
 }
 
-check_gh_binary() {
+check_gh() {
 	if [ -z "${GH}" ] || [ ! -f "${GH}" ]; then 
 		echo "[ERROR] 'gh' binary not found. Make sure the gh_*_linux_amd64 folder is in ${SCRIPTDIR}."
 		exit 1
@@ -66,13 +67,8 @@ check_gh_binary() {
 	chmod +x "${GH}"
 }
 
-clean_auth() {
-	echo "[INFO ] Cleaning GH session credentials..."
-	rm -rf "${GH_CONFIG_DIR}"
-}
-
-login() {
-	check_gh_binary
+github_login() {
+	check_gh
 
 	if [ -z "$GH_TOKEN" ]; then
 		echo "[INFO ] Starting interactive login (Device Code)..."
@@ -85,9 +81,14 @@ login() {
 	"${GH}" auth setup-git
 }
 
+github_logout() {
+	echo "[INFO ] Cleaning GH session credentials..."
+	rm -rf "${GH_CONFIG_DIR}"
+}
+
 sync_repo() {
 	local REPO_NAME=$1
-	check_gh_binary
+	check_gh
 	
 	if [ ! -d "${REPO_NAME}/.git" ]; then
 		echo "[INFO ] Cloning private repository ${REPO_NAME}..."
@@ -118,28 +119,24 @@ sync_repo() {
 
 status_check() {
 	echo "[INFO ] Local Status"
-	[ -d "${COMMONDIR}" ] && echo "[OK] Common folder exists" || echo "[. ] Common folder missing"
-	[ -d "${COREDIR}" ] && echo "[OK] Core folder exists" || echo "[. ] Core folder missing"
+	[ -d "${COMMONDIR}" ]    && echo "[OK] Common folder exists"    || echo "[. ] Common folder missing"
+	[ -d "${COREDIR}" ]      && echo "[OK] Core folder exists"      || echo "[. ] Core folder missing"
 	[ -d "${PERIPHERYDIR}" ] && echo "[OK] Periphery folder exists" || echo "[. ] Periphery folder missing"
 }
 
 # Main Logic Route
 case "$COMMAND" in
 	login)
-		login
+		github_login
 		;;
 	logout)
-		clean_auth
+		github_logout
 		;;
 	install-all)
 		echo "Deployment Mode: ${MODE^^}" # Prints mode in uppercase (e.g., PROD)
 		sync_repo "${COMMONDIR}"
 		sync_repo "${COREDIR}"
 		sync_repo "${PERIPHERYDIR}"
-		;;
-	install-common-tools)
-		echo "Deployment Mode: ${MODE^^}"
-		sync_repo "${COMMONDIR}"
 		;;
 	install-core)
 		echo "Deployment Mode: ${MODE^^}"

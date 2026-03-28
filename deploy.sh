@@ -29,6 +29,9 @@ GH=$(find "${SCRIPTDIR}" -type f -path "*/gh_*_linux_amd64*/gh" | head -n 1)
 export GH_CONFIG_DIR="/tmp/komodo-gh-config"
 export GIT_CONFIG_GLOBAL="${GH_CONFIG_DIR}/gitconfig"
 
+#
+export GH_TOKEN=""
+
 # Functions
 show_help() {
     echo "Usage: ./deploy.sh [command] [mode]"

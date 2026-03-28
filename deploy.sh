@@ -151,16 +151,24 @@ case "$COMMAND" in
 		;;
 	run-core)
 		pushd "${COREDIR}"
-		bash ./predeploy.sh -b "${MODE}"
+		if [[ -f "./predeploy.sh" ]]; then
+			bash ./predeploy.sh -b "${MODE}"
+		fi
 		docker compose up -d
-		bash ./postdeploy.sh -b "${MODE}"
+		if [[ -f "./postdeploy.sh" ]]; then
+			bash ./postdeploy.sh -b "${MODE}"
+		fi
 		popd
 		;;
 	run-periphery)
 		pushd "${PERIPHERYDIR}"
-		bash ./predeploy.sh -b "${MODE}"
+		if [[ -f "./predeploy.sh" ]]; then
+			bash ./predeploy.sh -b "${MODE}"
+		fi
 		docker compose up -d
-		bash ./postdeploy.sh -b "${MODE}"
+		if [[ -f "./postdeploy.sh" ]]; then
+			bash ./postdeploy.sh -b "${MODE}"
+		fi
 		popd
 		;;
 	stop-core)

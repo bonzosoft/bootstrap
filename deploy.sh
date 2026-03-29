@@ -25,7 +25,7 @@ MODE="${2:-prod}" # Environment mode (prod|dev). Defaults to 'prod'
 SCRIPTDIR="$(cd "$(dirname "${BASH_SOURCE[0]}")" &> /dev/null && pwd)"
 
 # Dynamically find the 'gh' binary inside the gh_..._linux_amd64 folder structure
-GH=$(find "${SCRIPTDIR}" -type f -path "*/gh_*_linux_amd64*/gh" | head -n 1)
+GH_BINARY=$(find "${SCRIPTDIR}" -type f -path "*/gh_*_linux_amd64*/gh" | head -n 1)
 
 # Temporary directory for session credentials (destroyed after use)
 export GH_CONFIG_DIR="/tmp/komodo-gh-config"
@@ -58,73 +58,92 @@ show_help() {
 	echo "  ./deploy.sh run-core"
 }
 
-check_gh() {
-	if [ -z "${GH}" ] || [ ! -f "${GH}" ]; then 
-		echo "[ERROR] 'gh' binary not found. Make sure the gh_*_linux_amd64 folder is in ${SCRIPTDIR}."
+check_gh_binary() {
+	if [ -z "${GH_BINARY}" ] || [ ! -f "${GH_BINARY}" ]; then 
+		printf "[ERROR.....] Binary 'gh' not found.\n"
 		exit 1
 	fi
 	# Ensure the binary is executable
-	chmod +x "${GH}"
+	chmod +x "${GH_BINARY}"
 }
 
 github_login() {
-	check_gh
+	check_gh_binary
 
 	if [ -z "$GH_TOKEN" ]; then
-		echo "[INFO ] Starting interactive login (Device Code)..."
-		"${GH}" auth login --hostname github.com --git-protocol https --web
+		printf "[INFO......] Starting interactive login.\n"
+		"${GH_BINARY}" auth login --hostname github.com --git-protocol https --web
 	else
-		echo "[INFO ] GH_TOKEN detected, skipping interactive login."
+		printf "[INFO......] Detected 'GH_TOKEN', skipping interactive login.\n"
 	fi
 	
-	# Setup git credential helper using the isolated configuration
-	"${GH}" auth setup-git
+	"${GH_BINARY}" auth setup-git
+
+	return 0
 }
 
 github_logout() {
-	echo "[INFO ] Cleaning GH session credentials..."
+	printf "[INFO......] Cleaning GH session credentials.\n"
 	rm -rf "${GH_CONFIG_DIR}"
+
+	return 0
 }
 
 sync_repo() {
 	local REPO_NAME=$1
-	check_gh
+
+	check_gh_binary
 	
 	if [ ! -d "${REPO_NAME}/.git" ]; then
-		echo "[INFO ] Cloning private repository ${REPO_NAME}..."
-		"${GH}" repo clone "${ORGNAME}/${REPO_NAME}" "${REPO_NAME}" # -- --recurse-submodules
-		cd "${REPO_NAME}"
+		printf "[INFO......] Cloning private repository '%s'.\n" ${REPO_NAME} 
+		"${GH_BINARY}" repo clone "${ORGNAME}/${REPO_NAME}" "${REPO_NAME}"
+		pushd "${REPO_NAME}" > /dev/null
 		git submodule update --init --recursive
-		cd ..
+		popd > /dev/null
 	else
-		echo "[INFO ] Local repository ${REPO_NAME} found. Forcing update..."
-		cd "${REPO_NAME}"
+		printf "[INFO......] Local repository '%s' found. Forcing update.\n" ${REPO_NAME}
+		pushd "${REPO_NAME}" > /dev/null
 		git fetch origin "${GITBRANCH}"
 		git reset --hard "origin/${GITBRANCH}"
 		git submodule update --init --recursive
-		cd ..
+		popd > /dev/null
 	fi
 
 	# Environment file setup using MODE
 	if [ -f "${REPO_NAME}/.env.${MODE}" ]; then
-		echo "[INFO ] Applying configuration: .env.${MODE} -> .env"
+		printf "[INFO......] Applying configuration: .env.%s -> .env\n" ${MODE}
 		ln -sf "./.env.${MODE}" "${REPO_NAME}/.env"
 	else
-		echo "[WARN ]: .env.${MODE} not found in ${REPO_NAME}. Skipping env setup."
+		printf "[ERROR.....] .env.%s not found in '%s'.\n" ${MODE} ${REPO_NAME}
+
+		return 1
 	fi
-	
-	echo "[INFO ] ${REPO_NAME}"
-	echo ""
+
+	return 0
 }
 
 status_check() {
-	echo "[INFO ] Local Status"
-	[ -d "${COMMONDIR}" ]    && echo "[OK] Common folder exists"    || echo "[. ] Common folder missing"
-	[ -d "${COREDIR}" ]      && echo "[OK] Core folder exists"      || echo "[. ] Core folder missing"
-	[ -d "${PERIPHERYDIR}" ] && echo "[OK] Periphery folder exists" || echo "[. ] Periphery folder missing"
+	printf "[INFO......] Status:\n"
+	if [[ -d "${COMMONDIR}" ]]; then
+		printf "[OK........] Common folder exists.\n"
+	else
+		printf "[ERROR.....] Common folder missing.\n"
+	fi
+	if [[ -d "${COREDIR}" ]]; then
+		printf "[OK........] Komodo Core folder exists.\n"
+	else
+		printf "[ERROR.....] Komodo Core folder missing.\n"
+	fi
+	if [[ -d "${PERIPHERYDIR}" ]]; then
+		printf "[OK........] Komodo Periphery folder exists.\n"
+	else
+		printf "[ERROR.....] Komodo Periphery folder missing.\n"
+	fi
+
+	return 0
 }
 
-# Main Logic Route
+
 case "$COMMAND" in
 	login)
 		github_login
@@ -133,21 +152,21 @@ case "$COMMAND" in
 		github_logout
 		;;
 	install-all)
-		echo "Deployment Mode: ${MODE^^}" # Prints mode in uppercase (e.g., PROD)
+		printf "Deployment Mode: %s.\n" ${MODE^^}
 		sync_repo "${COMMONDIR}"
 		sync_repo "${COREDIR}"
 		sync_repo "${PERIPHERYDIR}"
 		;;
 	install-core)
-		echo "Deployment Mode: ${MODE^^}"
+		printf "Deployment Mode: %s.\n" ${MODE^^}
 		sync_repo "${COREDIR}"
 		;;
 	install-periphery)
-		echo "Deployment Mode: ${MODE^^}"
+		printf "Deployment Mode: %s.\n" ${MODE^^}
 		sync_repo "${PERIPHERYDIR}"
 		;;
 	run-core)
-		pushd "${COREDIR}"
+		pushd "${COREDIR}" > /dev/null
 		if [[ -f "./predeploy.sh" ]]; then
 			bash ./predeploy.sh -b "${MODE}"
 		fi
@@ -155,10 +174,10 @@ case "$COMMAND" in
 		if [[ -f "./postdeploy.sh" ]]; then
 			bash ./postdeploy.sh -b "${MODE}"
 		fi
-		popd
+		popd > /dev/null
 		;;
 	run-periphery)
-		pushd "${PERIPHERYDIR}"
+		pushd "${PERIPHERYDIR}" > /dev/null
 		if [[ -f "./predeploy.sh" ]]; then
 			bash ./predeploy.sh -b "${MODE}"
 		fi
@@ -166,17 +185,17 @@ case "$COMMAND" in
 		if [[ -f "./postdeploy.sh" ]]; then
 			bash ./postdeploy.sh -b "${MODE}"
 		fi
-		popd
+		popd > /dev/null
 		;;
 	stop-core)
-		pushd "${COREDIR}"
+		pushd "${COREDIR}" > /dev/null
 		docker compose down
-		popd
+		popd > /dev/null
 		;;
 	stop-periphery)
-		pushd "${PERIPHERYDIR}"
+		pushd "${PERIPHERYDIR}" > /dev/null
 		docker compose down
-		popd
+		popd > /dev/null
 		;;
 	status)
 		status_check

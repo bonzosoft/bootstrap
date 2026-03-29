@@ -84,7 +84,7 @@ github_login() {
 
 github_logout() {
 	printf "[INFO......] Cleaning GH session credentials.\n"
-	rm -rf "${GH_CONFIG_DIR}"
+	rm -rf "${GH_CONFIG_DIR}" > /dev/null
 
 	return 0
 }
@@ -96,26 +96,25 @@ sync_repo() {
 	
 	if [ ! -d "${REPO_NAME}/.git" ]; then
 		printf "[INFO......] Cloning private repository '%s'.\n" ${REPO_NAME} 
-		"${GH_BINARY}" repo clone "${ORGNAME}/${REPO_NAME}" "${REPO_NAME}"
+		"${GH_BINARY}" repo clone "${ORGNAME}/${REPO_NAME}" "${REPO_NAME}" > /dev/null
 		pushd "${REPO_NAME}" > /dev/null
-		git submodule update --init --recursive
+		git submodule update --init --recursive > /dev/null
 		popd > /dev/null
 	else
 		printf "[INFO......] Local repository '%s' found. Forcing update.\n" ${REPO_NAME}
 		pushd "${REPO_NAME}" > /dev/null
-		git fetch origin "${GITBRANCH}"
-		git reset --hard "origin/${GITBRANCH}"
-		git submodule update --init --recursive
+		git fetch origin "${GITBRANCH}" > /dev/null
+		git reset --hard "origin/${GITBRANCH}" > /dev/null
+		git submodule update --init --recursive > /dev/null
 		popd > /dev/null
 	fi
 
 	# Environment file setup using MODE
 	if [ -f "${REPO_NAME}/.env.${MODE}" ]; then
 		printf "[INFO......] Applying configuration: .env.%s -> .env\n" ${MODE}
-		ln -sf "./.env.${MODE}" "${REPO_NAME}/.env"
+		ln -sf "./.env.${MODE}" "${REPO_NAME}/.env" > /dev/null
 	else
 		printf "[ERROR.....] .env.%s not found in '%s'.\n" ${MODE} ${REPO_NAME}
-
 		return 1
 	fi
 

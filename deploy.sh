@@ -106,13 +106,13 @@ sync_repo() {
 	fi
 
 	# Environment file setup using MODE
-	if [ -f "${REPO_NAME}/.env.${MODE}" ]; then
-		printf "[INFO]\t Applying configuration: .env.%s -> .env\n" ${MODE}
-		ln -sf "./.env.${MODE}" "${REPO_NAME}/.env" > /dev/null
-	else
-		printf "[WARN]\t .env.%s not found in '%s'.\n" ${MODE} ${REPO_NAME}
-		return 0
-	fi
+	#if [ -f "${REPO_NAME}/.env.${MODE}" ]; then
+	#	printf "[INFO]\t Applying configuration: .env.%s -> .env\n" ${MODE}
+	#	ln -sf "./.env.${MODE}" "${REPO_NAME}/.env" > /dev/null
+	#else
+	#	printf "[WARN]\t .env.%s not found in '%s'.\n" ${MODE} ${REPO_NAME}
+	#	return 0
+	#fi
 
 	printf "[INFO]\t Repository '%s' successfully cloned.\n" ${REPO_NAME} 
 	return 0

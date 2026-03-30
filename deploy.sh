@@ -21,10 +21,11 @@ PERIPHERYDIR="komodo-periphery"
 COMMAND="${1:?}"
 MODE="${2:?}"
 
+# Path initialization
 SCRIPTDIR="$(cd "$(dirname "${BASH_SOURCE[0]}")" &> /dev/null && pwd)"
 GH_BINARY=$(find "${SCRIPTDIR}" -type f -path "*/gh_*_linux_amd64*/gh" | head -n 1)
 
-# Temporary directory for session credentials (destroyed after use)
+# Temporary directory for session credentials
 export GH_CONFIG_DIR="/tmp/komodo-gh-config"
 export GIT_CONFIG_GLOBAL="${GH_CONFIG_DIR}/gitconfig"
 

@@ -88,16 +88,16 @@ sync_repo() {
 	
 	if [ ! -d "${REPO_NAME}/.git" ]; then
 		printf "[INFO]\t Cloning private repository '%s'.\n" ${REPO_NAME} 
-		"${GH_BINARY}" repo clone "${ORGNAME}/${REPO_NAME}" "${REPO_NAME}" -- --branch "${GITBRANCH:-main}" > /dev/null
+		"${GH_BINARY}" repo clone "${ORGNAME}/${REPO_NAME}" "${REPO_NAME}" -- --branch "${GITBRANCH:-main}" > /dev/null 2>&1
 		pushd "${REPO_NAME}" > /dev/null
 		git submodule update --init --recursive > /dev/null
 		popd > /dev/null
 	else
 		printf "[INFO]\t Local repository '%s' found. Forcing update.\n" ${REPO_NAME}
 		pushd "${REPO_NAME}" > /dev/null
-		git fetch origin "${GITBRANCH:-main}" > /dev/null
-		git reset --hard "origin/${GITBRANCH:-main}" > /dev/null
-		git submodule update --init --recursive > /dev/null
+		git fetch origin "${GITBRANCH:-main}" > /dev/null 2>&1
+		git reset --hard "origin/${GITBRANCH:-main}" > /dev/null 2>&1
+		git submodule update --init --recursive > /dev/null 2>&1
 		popd > /dev/null
 	fi
 

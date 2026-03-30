@@ -42,8 +42,8 @@ show_help() {
 	echo "  logout                  Remove GH session credentials"
 	echo "  install-core            Install Komodo Core"
 	echo "  install-periphery       Install Komodo Periphery"
-	echo "  run-core                Run Komodo Core via Docker Compose, 'mode' parameter mandatory.""
-	echo "  run-periphery           Run Komodo Periphery via Docker Compose, 'mode' parameter mandatory.""
+	echo "  run-core                Run Komodo Core via Docker Compose, 'mode' parameter mandatory."
+	echo "  run-periphery           Run Komodo Periphery via Docker Compose, 'mode' parameter mandatory."
 	echo "  stop-core               Stop Core containers"
 	echo "  stop-periphery          Stop Periphery containers"
 	echo ""
@@ -106,11 +106,11 @@ sync_repo() {
 	fi
 
 	# Environment file setup using MODE
-	#if [ -f "${REPO_NAME}/.env.${MODE}" ]; then
-	#	printf "[INFO]\t Applying configuration: .env.%s -> .env\n" ${MODE}
-	#	ln -sf "./.env.${MODE}" "${REPO_NAME}/.env" > /dev/null
+	#if [ -f "${REPO_NAME}/.env.${realm}" ]; then
+	#	printf "[INFO]\t Applying configuration: .env.%s -> .env\n" ${realm}
+	#	ln -sf "./.env.${realm}" "${REPO_NAME}/.env" > /dev/null
 	#else
-	#	printf "[WARN]\t .env.%s not found in '%s'.\n" ${MODE} ${REPO_NAME}
+	#	printf "[WARN]\t .env.%s not found in '%s'.\n" ${realm} ${REPO_NAME}
 	#	return 0
 	#fi
 
@@ -137,11 +137,11 @@ case "$COMMAND" in
 		printf "[INFO]\t Deployment Mode: %s.\n" ${MODE^^}
 		pushd "${COREDIR}" > /dev/null
 		if [[ -f "./predeploy.sh" ]]; then
-			bash ./predeploy.sh "${MODE}"
+			bash ./predeploy.sh --realm "${realm}"
 		fi
 		docker compose up -d
 		if [[ -f "./postdeploy.sh" ]]; then
-			bash ./postdeploy.sh "${MODE}"
+			bash ./postdeploy.sh --realm "${realm}"
 		fi
 		popd > /dev/null
 		;;
@@ -149,11 +149,11 @@ case "$COMMAND" in
 		printf "[INFO]\t Deployment Mode: %s.\n" ${MODE^^}
 		pushd "${PERIPHERYDIR}" > /dev/null
 		if [[ -f "./predeploy.sh" ]]; then
-			bash ./predeploy.sh "${MODE}"
+			bash ./predeploy.sh --realm "${realm}"
 		fi
 		docker compose up -d
 		if [[ -f "./postdeploy.sh" ]]; then
-			bash ./postdeploy.sh "${MODE}"
+			bash ./postdeploy.sh --realm "${realm}"
 		fi
 		popd > /dev/null
 		;;

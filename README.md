@@ -1,7 +1,7 @@
 ## Komodo Deployment Bootstrap
 Este repositorio actúa como un lanzador ("bootstrap") para actualizar y desplegar los repositorios privados de Komodo Core y Komodo Periphery.
 
-Está diseñado específicamente para entornos restrictivos o sistemas de archivos de solo lectura como **TrueNAS SCALE**. Al incluir el binario portable de GitHub CLI (`gh`), evita la necesidad de instalar software a nivel de sistema operativo.
+Está diseñado específicamente para entornos restrictivos o sistemas de archivos de solo lectura como **TrueNAS SCALE** ya que al incluir el binario de GitHub CLI (``gh``), evita la necesidad de instalar software a nivel de sistema operativo.
 
 
 ### Preparación

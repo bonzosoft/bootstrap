@@ -15,7 +15,7 @@ ORGNAME="bonzosoft"
 COMMONDIR="common-tools"
 COREDIR="komodo-core"
 PERIPHERYDIR="komodo-periphery"
-GITBRANCH="main"
+#GITBRANCH="main"
 
 # Capture arguments
 COMMAND="$1"
@@ -93,15 +93,15 @@ sync_repo() {
 	
 	if [ ! -d "${REPO_NAME}/.git" ]; then
 		printf "[INFO......] Cloning private repository '%s'.\n" ${REPO_NAME} 
-		"${GH_BINARY}" repo clone "${ORGNAME}/${REPO_NAME}" "${REPO_NAME}" > /dev/null
+		"${GH_BINARY}" repo clone "${ORGNAME}/${REPO_NAME}" "${REPO_NAME}" --branch "${GITBRANCH:-main}" > /dev/null
 		pushd "${REPO_NAME}" > /dev/null
 		git submodule update --init --recursive > /dev/null
 		popd > /dev/null
 	else
 		printf "[INFO......] Local repository '%s' found. Forcing update.\n" ${REPO_NAME}
 		pushd "${REPO_NAME}" > /dev/null
-		git fetch origin "${GITBRANCH}" > /dev/null
-		git reset --hard "origin/${GITBRANCH}" > /dev/null
+		git fetch origin "${GITBRANCH:-main}" > /dev/null
+		git reset --hard "origin/${GITBRANCH:-main}" > /dev/null
 		git submodule update --init --recursive > /dev/null
 		popd > /dev/null
 	fi

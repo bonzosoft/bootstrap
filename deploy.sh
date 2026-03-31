@@ -134,7 +134,7 @@ case "$COMMAND" in
 		sync_repo "${PERIPHERYDIR}"
 		;;
 	run-core)
-		printf "[INFO]\t Deployment Mode: %s.\n" ${realm}
+		printf "[INFO]\t Deployment mode: %s.\n" ${realm}
 		pushd "${COREDIR}" > /dev/null
 		if [[ -f "./predeploy.sh" ]]; then
 			bash ./predeploy.sh --realm "${realm}"
@@ -146,7 +146,7 @@ case "$COMMAND" in
 		popd > /dev/null
 		;;
 	run-periphery)
-		printf "[INFO]\t Deployment Mode: %s.\n" ${realm}
+		printf "[INFO]\t Deployment mode: %s.\n" ${realm}
 		pushd "${PERIPHERYDIR}" > /dev/null
 		if [[ -f "./predeploy.sh" ]]; then
 			bash "./predeploy.sh" --realm "${realm}"

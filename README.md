@@ -47,6 +47,18 @@ export GH_TOKEN=<token>
 bash ./bootstrap/deploy.sh logout
 ````
 
+
+<div style="display: flex; gap: 20px;">
+  <div style="width: 50%;">
+    <h3>Columna izquierda</h3>
+    <p>Contenido aquí</p>
+  </div>
+  <div style="width: 50%;">
+    <h3>Columna derecha</h3>
+    <p>Contenido aquí</p>
+  </div>
+</div>
+
 ---
 
 >

@@ -38,6 +38,7 @@ bash ./bootstrap/deploy.sh run-core prod
 ````
 
 #### 3.3 Configuración del Server
+
 **Login**
 Se debe hacer login en la WebUI de Core y comprobar que la conexión con el Worker se ha realizado correctamente.
 
@@ -63,7 +64,13 @@ bash ./bootstrap/deploy.sh run-periphery prod
 ````
 
 #### 4.3 Configuración del Server
-TBR
+
+**Login**
+Se debe hacer login en la WebUI de Core y configurar un nuevo servidor con el nombre asignado por Periphery.
+
+**Validación**
+Una vez creado, y si todo ha ido correctamente, otra vez muestre el aviso de ``NOT OK``. Esto se debe a que la clave pública de Core no ha podido ser validada por Periphery debido a permisos de archivos.
+Si entramos en la configuración del servidor, podemos aceptar la clave en ``Invalid Pubkey``.
 
 ### 5. Logout
 ````bash

@@ -47,16 +47,20 @@ popd
 #### 3.3 Configuración del Server
 
 **Login**
+
 Se debe hacer login en la WebUI de Core y comprobar que la conexión con el Worker se ha realizado correctamente.
 
 **Validación**
+
 Seguramente muestre el aviso de ``NOT OK``. Esto se debe a que la clave pública de Core no ha podido ser validada por Periphery debido a permisos de archivos.
 Si entramos en la configuración del servidor, podemos aceptar la clave en ``Invalid Pubkey``.
 
 **Obtención de Core Pub Key**
+
 En ``Settings`` podemos obtener la clave pública del servidor.
 Con esta clave la podemos actualizar en el repositorio para que esté disponbiel apra todos los Workers.
 En caso de querer personalizarla, podemos usar ``compose.override.yaml`` en el stack de Periphery.
+
 
 ### 4. Komodo-Periphery
 
@@ -80,9 +84,11 @@ popd
 #### 4.3 Configuración del Server
 
 **Login**
+
 Se debe hacer login en la WebUI de Core y configurar un nuevo servidor con el nombre asignado por Periphery.
 
 **Validación**
+
 Una vez creado, y si todo ha ido correctamente, otra vez muestre el aviso de ``NOT OK``. Esto se debe a que la clave pública de Core no ha podido ser validada por Periphery debido a permisos de archivos.
 Si entramos en la configuración del servidor, podemos aceptar la clave en ``Invalid Pubkey``.
 
@@ -91,7 +97,9 @@ Si entramos en la configuración del servidor, podemos aceptar la clave en ``Inv
 bash ./bootstrap/deploy logout
 ````
 
+
 ### 6. Parada
+
 #### 6.1 Parada de Core
 ````bash
 bash ./bootstrap/deploy stop-core

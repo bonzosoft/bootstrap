@@ -30,9 +30,28 @@ export GH_TOKEN=<token>
 | ``bash ./bootstrap/deploy.sh install-core`` | ``bash ./bootstrap/deploy.sh install-periphery`` |
 
 
+### Despliegue
+| Komodo-Core                                  | Komodo-Periphery                                  |
+|----------------------------------------------|---------------------------------------------------|
+| ``bash ./bootstrap/deploy.sh run-core prod`` | ``bash ./bootstrap/deploy.sh run-periphery prod`` |
+
+
+### Parada
+| Komodo-Core                              | Komodo-Periphery                              |
+|------------------------------------------|-----------------------------------------------|
+| ``bash ./bootstrap/deploy.sh stop-core`` | ``bash ./bootstrap/deploy.sh stop-periphery`` |
+
+### Logout
+
+````bash
+bash ./bootstrap/deploy.sh logout
+````
+
 ---
 
-> deprecated
+>
+> [!WARNING] DEPRECATED FROM HERE
+>
 
 ### Instalación
 **Komodo-Core**
@@ -68,7 +87,7 @@ bash ./bootstrap/deploy.sh stop-periphery
 
 
 ### Logout
-**Interactivo:**
+
 ````bash
 bash ./bootstrap/deploy.sh logout
 ````

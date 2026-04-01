@@ -4,7 +4,8 @@ Este repositorio actúa como un lanzador ("bootstrap") para actualizar y despleg
 Está diseñado específicamente para entornos restrictivos o sistemas de archivos de solo lectura como **TrueNAS SCALE** ya que al incluir el binario de GitHub CLI (``gh``), evita la necesidad de instalar software a nivel de sistema operativo.
 
 
-### Preparación
+
+### Descarga
 ````bash
 git clone https://github.com/bonzosoft/bootstrap.git ./bootstrap
 ````
@@ -15,13 +16,18 @@ git clone https://github.com/bonzosoft/bootstrap.git ./bootstrap
 ````bash
 bash ./bootstrap/deploy.sh login
 ````
-**Automático:** pendiente de desarrollar
+**Automático:**
+Este método está pendiente de desarrollar y no parece necesario hacerlo.
 ````bash
 export GH_TOKEN=<token>
 ````
 
 
 ### Instalación
+
+| Komodo-Core                                 | Komodo-Periphery                                 |
+| ``bash ./bootstrap/deploy.sh install-core`` | ``bash ./bootstrap/deploy.sh install-periphery`` |
+
 **Komodo-Core**
 ````bash
 bash ./bootstrap/deploy.sh install-core
@@ -30,6 +36,7 @@ bash ./bootstrap/deploy.sh install-core
 ````bash
 bash ./bootstrap/deploy.sh install-periphery
 ````
+
 
 ### Despliegue
 **Komodo-Core**
@@ -41,6 +48,7 @@ bash ./bootstrap/deploy.sh run-core prod
 bash ./bootstrap/deploy.sh run-periphery prod
 ````
 
+
 ### Parada
 **Komodo-Core**
 ````bash
@@ -50,6 +58,7 @@ bash ./bootstrap/deploy.sh stop-core
 ````bash
 bash ./bootstrap/deploy.sh stop-periphery
 ````
+
 
 ### Logout
 **Interactivo:**

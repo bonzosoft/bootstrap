@@ -144,6 +144,7 @@ case "$COMMAND" in
 		popd > /dev/null
 		;;
 	install-periphery)
+		echo "${realm}"
 		sync_repo "${COMMONDIR}"
 		sync_repo "${PERIPHERYDIR}"
 		pushd "${PERIPHERYDIR}" > /dev/null

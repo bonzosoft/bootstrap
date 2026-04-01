@@ -48,22 +48,10 @@ bash ./bootstrap/deploy.sh logout
 ````
 
 
-<div style="display: flex; gap: 20px;">
-  <div style="width: 50%;">
-    <h3>Columna izquierda</h3>
-    <p>Contenido aquí</p>
-  </div>
-  <div style="width: 50%;">
-    <h3>Columna derecha</h3>
-    <p>Contenido aquí</p>
-  </div>
-</div>
-
 ---
 
->
-> [!WARNING] DEPRECATED FROM HERE
->
+> [!WARNING] 
+> DEPRECATED FROM HERE
 
 ### Instalación
 **Komodo-Core**

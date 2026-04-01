@@ -37,6 +37,13 @@ bash ./bootstrap/deploy install-core
 bash ./bootstrap/deploy run-core prod
 ````
 
+Como alternativa se puede usar:
+````bash
+pusd "./komodo-periphery"
+bash predeploy --realm prod && docker compose up
+popd
+````
+
 #### 3.3 Configuración del Server
 
 **Login**
@@ -61,6 +68,13 @@ bash ./bootstrap/deploy install-periphery
 #### 4.2 Despliegue de Periphery
 ````bash
 bash ./bootstrap/deploy run-periphery prod
+````
+
+Como alternativa se puede usar:
+````bash
+pusd "./komodo-periphery"
+bash predeploy --realm prod && docker compose up
+popd
 ````
 
 #### 4.3 Configuración del Server

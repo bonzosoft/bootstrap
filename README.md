@@ -15,7 +15,7 @@ git clone https://github.com/bonzosoft/bootstrap.git ./bootstrap
 
 #### 2.1 Interactivo
 ````bash
-bash ./bootstrap/deploy.sh login
+bash ./bootstrap/deploy login
 ````
 
 #### 2.2 Automático
@@ -29,12 +29,12 @@ export GH_TOKEN=<token>
 
 #### 3.1 Instalación de Core
 ````bash
-bash ./bootstrap/deploy.sh install-core
+bash ./bootstrap/deploy install-core
 ````
 
 #### 3.2 Despliegue de Core
 ````bash
-bash ./bootstrap/deploy.sh run-core prod
+bash ./bootstrap/deploy run-core prod
 ````
 
 #### 3.3 Configuración del Server
@@ -55,12 +55,12 @@ En caso de querer personalizarla, podemos usar ``compose.override.yaml`` en el s
 
 #### 4.1 Instalación de Periphery
 ````bash
-bash ./bootstrap/deploy.sh install-periphery
+bash ./bootstrap/deploy install-periphery
 ````
 
 #### 4.2 Despliegue de Periphery
 ````bash
-bash ./bootstrap/deploy.sh run-periphery prod
+bash ./bootstrap/deploy run-periphery prod
 ````
 
 #### 4.3 Configuración del Server
@@ -74,16 +74,16 @@ Si entramos en la configuración del servidor, podemos aceptar la clave en ``Inv
 
 ### 5. Logout
 ````bash
-bash ./bootstrap/deploy.sh logout
+bash ./bootstrap/deploy logout
 ````
 
 ### 6. Parada
 #### 6.1 Parada de Core
 ````bash
-bash ./bootstrap/deploy.sh stop-core
+bash ./bootstrap/deploy stop-core
 ````
 
 #### 6.2 Parada de Periphery
 ````bash
-bash ./bootstrap/deploy.sh stop-periphery
+bash ./bootstrap/deploy stop-periphery
 ````

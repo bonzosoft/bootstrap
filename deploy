@@ -108,9 +108,9 @@ sync_repo() {
 	else
 		printf "[INFO]\t Local repository '%s' found. Forcing update.\n" ${REPO_NAME}
 		pushd "${REPO_NAME}" > /dev/null
-		git fetch origin "${GITBRANCH:-main}" > /dev/null 2>&1
-		git reset --hard "origin/${GITBRANCH:-main}" > /dev/null 2>&1
-		git submodule update --init --recursive > /dev/null 2>&1
+		git fetch origin "${GITBRANCH:-main}" #> /dev/null 2>&1
+		git reset --hard "origin/${GITBRANCH:-main}" #> /dev/null 2>&1
+		git submodule update --init --recursive #> /dev/null 2>&1
 		popd > /dev/null
 	fi
 

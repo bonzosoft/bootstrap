@@ -24,6 +24,7 @@ ORGNAME="bonzosoft"
 COMMONDIR="common-tools"
 COREDIR="komodo-core"
 PERIPHERYDIR="komodo-periphery"
+NPMPLUSDIR="npmplus"
 #GITBRANCH="main"
 
 # Capture arguments
@@ -135,6 +136,7 @@ case "$COMMAND" in
 		github_logout
 		;;
 	install-core)
+		echo "${realm}"
 		sync_repo "${COMMONDIR}"
 		sync_repo "${COREDIR}"
 		pushd "${COREDIR}" > /dev/null
@@ -148,6 +150,16 @@ case "$COMMAND" in
 		sync_repo "${COMMONDIR}"
 		sync_repo "${PERIPHERYDIR}"
 		pushd "${PERIPHERYDIR}" > /dev/null
+		if [[ -f "./predeploy" ]]; then
+			bash "./predeploy" --realm "${realm}"
+		fi
+		popd > /dev/null
+		;;
+	install-npmplus)
+	    echo "${realm}"
+		sync_repo "${COMMONDIR}"
+		sync_repo "${NPMPLUSDIR}"
+		pushd "${NPMPLUSDIR}" > /dev/null
 		if [[ -f "./predeploy" ]]; then
 			bash "./predeploy" --realm "${realm}"
 		fi
@@ -177,6 +189,18 @@ case "$COMMAND" in
 		fi
 		popd > /dev/null
 		;;
+	run-npmplus)
+		printf "[INFO]\t Deployment mode: %s.\n" ${realm}
+		pushd "${NPMPLUS}" > /dev/null
+		if [[ -f "./predeploy" ]]; then
+			bash "./predeploy" --realm "${realm}"
+		fi
+		docker compose -p ix-komodo-periphery up -d # usign ix- prefix for TrueNAS Scale compatibility
+		if [[ -f "./postdeploy" ]]; then
+			bash "./postdeploy" --realm "${realm}"
+		fi
+		popd > /dev/null
+		;;
 	stop-core)
 		pushd "${COREDIR}" > /dev/null
 		docker compose down
@@ -184,6 +208,11 @@ case "$COMMAND" in
 		;;
 	stop-periphery)
 		pushd "${PERIPHERYDIR}" > /dev/null
+		docker compose down
+		popd > /dev/null
+		;;
+	stop-npmplus)
+		pushd "${NPMPLUS}" > /dev/null
 		docker compose down
 		popd > /dev/null
 		;;

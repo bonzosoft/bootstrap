@@ -88,21 +88,12 @@ function gh_check {
 function gh_install {
     printf "[INFO]\t Preparing the environment for 'GH'.\n"
 
-    local binary=${GH_BINARY}
-    local version=${GH_VERSION}
+    local binary=${GH_BINARY:?}
+    local version=${GH_VERSION:?}
+    local common=${COMMON:?}
     local tempfile=$(mktemp)
-    local common=${COMMON}
-
+    
     # validation
-    if [[ -z "${GH_BINARY}" ]]; then
-        printf "[ERRO]\t 'GH' path not defined.\n"
-        return 1
-    fi
-
-    if [[ -z "${version}" ]]; then
-        printf "[ERRO]\t 'GH' version not defined.\n"
-        return 1
-    fi
 
     # logic
     printf "[INFO]\t Downloading 'GH'.\n"
@@ -124,7 +115,7 @@ function gh_install {
 function gh_login {
     printf "[INFO]\t Starting GitHub interactive login.\n"
 
-    local binary=${GH_BINARY}
+    local binary=${GH_BINARY:?}
 
     # validation
     gh_check

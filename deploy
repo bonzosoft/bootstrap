@@ -18,35 +18,41 @@ GH_VERSION="2.88.1"
 GH_CONFIGDIR="/tmp/gh-config"
 ORGANIZATION="bonzosoft"
 COMMON="common-tools"
+STARTSCRIPT="predeploy"
 
 ### FUNCTIONS ##################################################################
 
 function main {    
     command=""
     target=""
-    for param in "${@}"; do
-        case "${param}" in
-            "login")
-                command="gh_login"
-                ;;
-            "logout")
-                command="gh_logout"
-                ;;
-            "pull")
-                command="gh_pull"
-                ;;
-            "start")
-                command="compose_start"
-                ;;
-            "stop")
-                command="compose_stop"
-                ;; 
-            *)
-                printf "[ERRO]\t Unknow parameter '%s'.\n" "${param}"
-                return 1
-                ;;
-        esac
-    done
+
+    case "${1}" in
+        "login")
+            gh_login
+            ;;
+        "logout")
+            gh_logout
+            ;;
+        "install")
+            gh_install
+        *)
+            case "${2}" in
+                "pull")
+                    gh_pull "${1}"
+                    ;;
+                "start")
+                    compose_start "${1}"
+                    ;;
+                "stop")
+                    compose_start "${1}"
+                    ;;
+                *)
+                    printf "[ERRO]\t Unknown parameter combination.\n"
+                    return 1
+                    ;;
+            esac
+    esac
+
 
     if [[ -z ${command} ]]; then
         printf "[ERRO]\ A valid command parameter must be provided.\n"
@@ -99,12 +105,13 @@ function gh_check {
     return 0
 }
 
-function gh_download {
-    printf "[INFO]\t Downloading 'GH'.\n"
+function gh_install {
+    printf "[INFO]\t Preparing the environment for 'GH'.\n"
 
     local binary=${GH_BINARY}
     local version=${GH_VERSION}
     local tempfile=$(mktemp)
+    local common=${COMMON}
 
     # validation
     if [[ -z "${GH_BINARY}" ]]; then
@@ -118,11 +125,16 @@ function gh_download {
     fi
 
     # logic
+    printf "[INFO]\t Downloading 'GH'.\n"
     wget --quiet --output-document="${tempfile}" "https://github.com/cli/cli/releases/download/v${version}/gh_${version}_linux_amd64.tar.gz"
     mkdir -p "$(dirname "${binary}")"
     tar --extract --gzip --strip-components=2 --directory="$(dirname "${binary}")" --file="${tempfile}" "gh_${version}_linux_amd64/bin/gh"
     chmod +x "${binary}"
     rm --force "${tempfile}"
+
+    printf "[INFO]\t Downloading '%s'.\n" "${common}"
+    gh_pull "${common}"
+
 
     printf "[INFO]\t Success.\n"
     return 0
@@ -193,11 +205,37 @@ function gh_pull {
 }
 
 function compose_start {
-    gh_pull
+    name="${:?}"
+    script="${STARTSCRIPT:?}"
+
+    if [[ -d "${name}" ]]; then
+        printf "[INFO]\t Starting '%s'.\n" "${name}"
+    else
+        printf "[ERRO]\t Target '%s' not available.\n" "${name}"
+    fi
+
+    pushd "./${name}" > /dev/null
+    if [[ -f "./${script}" ]]; then
+        bash "./${script}" --realm "prod"
+    fi
+    docker compose up -d
+    #docker compose -p "ix-${name}" up -d
+    popd > /dev/null
 }
 
 function compose_stop {
+    name="${:?}"
+    
+    if [[ -d "${name}" ]]; then
+        printf "[INFO]\t Stopping '%s'.\n" "${name}"
+    else
+        printf "[ERRO]\t Target '%s' not available.\n" "${name}"
+    fi
 
+    pushd "./${name}" > /dev/null
+    docker compose down
+    #docker compose -p "ix-${name}" down
+    popd > /dev/null
 }
 ### END FUNCTIONS ##############################################################
 

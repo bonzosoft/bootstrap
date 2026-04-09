@@ -143,7 +143,7 @@ function gh_logout {
 }
 
 function gh_pull {
-    printf "[INFO] Pulling GitHub repository.\n"
+    printf "[INFO]\t Pulling GitHub repository.\n"
 
     local binary=${GH_BINARY}
     local organization=${ORGANIZATION:?}

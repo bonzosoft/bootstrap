@@ -117,11 +117,12 @@ function gh_install {
     rm --force "${tempfile}"
 
     printf "${CODE_INFO} Downloading '%s'.\n" "${common}"
-    gh_pull "${common}"
+    gh_pull "${common}" > /dev/null
     #git clone "https://github.com/${ORGANIZATION}/${common}.git" "${common}"
 
 
     printf "\r${CODE_SUCC}"
+    printf "texto de prueba\n"
     return 0
 }
 

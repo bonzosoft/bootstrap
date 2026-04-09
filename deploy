@@ -121,7 +121,7 @@ function gh_install {
     #git clone "https://github.com/${ORGANIZATION}/${common}.git" "${common}"
 
 
-    printf "${CODE_SUCC} Success.\n"
+    printf "\r${CODE_SUCC}"
     return 0
 }
 
@@ -137,7 +137,7 @@ function gh_login {
     "${binary}" auth login --hostname github.com --git-protocol https --web
     "${binary}" auth setup-git
 
-    printf "${CODE_SUCC} Success.\n"
+    printf "\r${CODE_SUCC}"
     return 0
 }
 
@@ -151,7 +151,7 @@ function gh_logout {
         rm --recursive --force "${configdir}" > /dev/null
     fi
 
-    printf "${CODE_SUCC} Success.\n"
+    printf "\r${CODE_SUCC}"
     return 0
 }
 
@@ -185,7 +185,7 @@ function gh_pull {
     git submodule update --init --recursive > /dev/null # 2>&1
     popd > /dev/null
 
-    printf "${CODE_SUCC} Success.\n"
+    printf "\r${CODE_SUCC}"
     return 0
 }
 

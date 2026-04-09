@@ -121,7 +121,7 @@ function gh_install {
     #git clone "https://github.com/${ORGANIZATION}/${common}.git" "${common}"
 
 
-    printf "\r${CODE_SUCC}"
+    printf "\r${CODE_SUCC}\n"
     printf "texto de prueba\n"
     return 0
 }

@@ -1,16 +1,16 @@
 #!/bin/bash
 
-### ERROR MANAGEMENT ###########################################################
+### \033[31mERRO\033[0mR MANAGEMENT ###########################################################
 
 set -euo pipefail
 
-function trap_error {
-    printf "[ERRO]\t An unexpected error has ocurred. Exiting...\n"
+function trap_\033[31mERRO\033[0mr {
+    printf "[\033[31mERRO\033[0m]\t An unexpected \033[31mERRO\033[0mr has ocurred. Exiting...\n"
 }
 
-trap trap_error ERR
+trap trap_\033[31mERRO\033[0mr ERR
 
-### END ERROR MANAGEMENT #######################################################
+### END \033[31mERRO\033[0mR MANAGEMENT #######################################################
 
 
 GH_BINARY="./bin/gh"
@@ -52,7 +52,7 @@ function main {
                     compose_stop "${param1}"
                     ;;
                 *)
-                    printf "[ERRO]\t Unknown parameter combination.\n"
+                    printf "[\033[31mERRO\033[0m]\t Unknown parameter combination.\n"
                     return 1
                     ;;
             esac
@@ -68,17 +68,17 @@ function gh_check {
 
     # validation
     if [[ -z "${binary}" ]]; then
-        printf "[ERRO]\t 'GH' path not defined.\n"
+        printf "[\033[31mERRO\033[0m]\t 'GH' path not defined.\n"
         return 1
     fi
 
     if [[ ! -x "${binary}" ]]; then
-        printf "[ERRO]\t 'GH' binary not found.\n"
+        printf "[\033[31mERRO\033[0m]\t 'GH' binary not found.\n"
         return 1
     fi
 
     if [[ -z "${configdir}" ]]; then
-        printf "[ERRO]\t GH config directory not defined.\n"
+        printf "[\033[31mERRO\033[0m]\t GH config directory not defined.\n"
         return 1
     fi
 
@@ -86,7 +86,7 @@ function gh_check {
 }
 
 function gh_install {
-    printf "[INFO]\t Preparing the environment for 'GH'.\n"
+    printf "[\033[33mINFO\033[0m]\t Preparing the environment for 'GH'.\n"
 
     local binary=${GH_BINARY:?}
     local version=${GH_VERSION:?}
@@ -96,24 +96,24 @@ function gh_install {
     # validation
 
     # logic
-    printf "[INFO]\t Downloading 'GH'.\n"
+    printf "[\033[33mINFO\033[0m]\t Downloading 'GH'.\n"
     wget --quiet --output-document="${tempfile}" "https://github.com/cli/cli/releases/download/v${version}/gh_${version}_linux_amd64.tar.gz"
     mkdir -p "$(dirname "${binary}")"
     tar --extract --gzip --strip-components=2 --directory="$(dirname "${binary}")" --file="${tempfile}" "gh_${version}_linux_amd64/bin/gh"
     chmod +x "${binary}"
     rm --force "${tempfile}"
 
-    printf "[INFO]\t Downloading '%s'.\n" "${common}"
+    printf "[\033[33mINFO\033[0m]\t Downloading '%s'.\n" "${common}"
     gh_pull "${common}"
     #git clone "https://github.com/${ORGANIZATION}/${common}.git" "${common}"
 
 
-    printf "[INFO]\t Success.\n"
+    printf "[\033[33mINFO\033[0m]\t Success.\n"
     return 0
 }
 
 function gh_login {
-    printf "[INFO]\t Starting GitHub interactive login.\n"
+    printf "[\033[33mINFO\033[0m]\t Starting GitHub interactive login.\n"
 
     local binary=${GH_BINARY:?}
 
@@ -124,12 +124,12 @@ function gh_login {
     "${binary}" auth login --hostname github.com --git-protocol https --web
     "${binary}" auth setup-git
 
-    printf "[INFO]\t Success.\n"
+    printf "[\033[33mINFO\033[0m]\t Success.\n"
     return 0
 }
 
 function gh_logout {
-    printf "[INFO]\t Closing GitHub session.\n"
+    printf "[\033[33mINFO\033[0m]\t Closing GitHub session.\n"
 
     local configdir=${GH_CONFIGDIR:?}
     
@@ -138,12 +138,12 @@ function gh_logout {
         rm --recursive --force "${configdir}" > /dev/null
     fi
 
-    printf "[INFO]\t Success.\n"
+    printf "[\033[33mINFO\033[0m]\t Success.\n"
     return 0
 }
 
 function gh_pull {
-    printf "[INFO]\t Pulling GitHub repository.\n"
+    printf "[\033[33mINFO\033[0m]\t Pulling GitHub repository.\n"
 
     local binary=${GH_BINARY}
     local organization=${ORGANIZATION:?}
@@ -154,25 +154,25 @@ function gh_pull {
     gh_check
 
     if [[ -z "${name}" ]]; then
-        printf "[ERRO]\t Repository name must be provided.\n"
+        printf "[\033[31mERRO\033[0m]\t Repository name must be provided.\n"
         return 1
     fi
 
     # logic
     if [[ ! -d "${name}" ]]; then
-        printf "[INFO]\t Initializing repository '%s'.\n" "${name}"
+        printf "[\033[33mINFO\033[0m]\t Initializing repository '%s'.\n" "${name}"
 
         "${binary}" repo clone "${organization}/${name}" "./${name}" > /dev/null # 2>&1
     fi
 
-    printf "[INFO]\t Updating repository '%s'.\n" "${name}"
+    printf "[\033[33mINFO\033[0m]\t Updating repository '%s'.\n" "${name}"
 
     pushd "./${name}" > /dev/null
     "../${binary}" repo sync --branch "${branch}" --force > /dev/null # 2>&1
     git submodule update --init --recursive > /dev/null # 2>&1
     popd > /dev/null
 
-    printf "[INFO]\t Success.\n"
+    printf "[\033[33mINFO\033[0m]\t Success.\n"
     return 0
 }
 
@@ -181,9 +181,9 @@ function compose_start {
     local predeploy="${PREDEPLOY:?}"
 
     if [[ -d "${name}" ]]; then
-        printf "[INFO]\t Starting '%s'.\n" "${name}"
+        printf "[\033[33mINFO\033[0m]\t Starting '%s'.\n" "${name}"
     else
-        printf "[ERRO]\t Target '%s' not available.\n" "${name}"
+        printf "[\033[31mERRO\033[0m]\t Target '%s' not available.\n" "${name}"
         return 1
     fi
 
@@ -200,9 +200,9 @@ function compose_stop {
     local name="${1:?}"
     
     if [[ -d "${name}" ]]; then
-        printf "[INFO]\t Stopping '%s'.\n" "${name}"
+        printf "[\033[33mINFO\033[0m]\t Stopping '%s'.\n" "${name}"
     else
-        printf "[ERRO]\t Target '%s' not available.\n" "${name}"
+        printf "[\033[31mERRO\033[0m]\t Target '%s' not available.\n" "${name}"
         return 1
     fi
 

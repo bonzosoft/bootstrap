@@ -120,10 +120,10 @@ function gh_install {
     chmod +x "${binary}"
     rm --force "${tempfile}"
     printf "${CODE_SUCC}"
-
+    
 
     printf "${CODE_INFO} Downloading '%s'.\n" "${common}"
-    gh_pull "${common}"
+    gh_pull "${common}" 
     #git clone "https://github.com/${ORGANIZATION}/${common}.git" "${common}"
     printf "${CODE_SUCC}"
 

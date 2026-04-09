@@ -16,7 +16,7 @@ CODE_WRNG="[${COLOR_YELLOW}WRNG${COLOR_RESET}]\t"
 CODE_INFO="[${COLOR_CYAN}INFO${COLOR_RESET}]\t"
 CODE_SUCC="${MOVE_UP}${MOVE_START}[${COLOR_GREEN} OK ${COLOR_RESET}]${MOVE_DOWN}${MOVE_START}"
 CODE_FAIL="${MOVE_UP}${MOVE_START}[${COLOR_RED}FAIL${COLOR_RESET}]${MOVE_DOWN}${MOVE_START}"
-
+LOG_DATE="$(date '+%Y-%m-%d %H:%M:%S')"
 ### ERROR MANAGEMENT ###########################################################
 
 set -euo pipefail

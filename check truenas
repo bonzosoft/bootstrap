@@ -1,9 +1,0 @@
-if command -v midclt >/dev/null 2>&1; then
-    TYPE="truenas"
-    VERSION=$(cat /etc/version)
-else
-    TYPE="debian"
-    VERSION=$(cat /etc/debian_version)
-fi
-
-echo "$TYPE $VERSION"

@@ -1,3 +1,66 @@
+
+# Bootstrap
+
+El instalador consta de dos partes, un script de preparación de un contenedor Powershell y un script que se corre en el interior de este para configurar el sistema.
+
+Para ejecutar el contenedor hay que ir al directorio correspondiente y ejecutar:
+
+````bash
+docker compose run --rm pwsh
+````
+
+De esta forma se puede entar en el contenedor como una consola de comandos. 
+
+Si lo que se desea es ejecutar un script se puede usar:
+````bash
+docker compose run --rm pwsh "./path/to/scipt.ps1"
+````
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
 ## Komodo Deployment Bootstrap
 Este repositorio actúa como un lanzador ("bootstrap") para actualizar y desplegar los repositorios privados de Komodo Core y Komodo Periphery.
 

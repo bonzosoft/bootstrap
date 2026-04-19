@@ -7,21 +7,16 @@ if (Get-Variable -Name _COMMON_SOURCED -Scope Script -ErrorAction SilentlyContin
     Set-Variable -Name _COMMON_SOURCED -Value $true -Scope Script -Option ReadOnly
 }
 
-# workingdir: Get-Location
-# script que inicia todo: (Get-PSCallStack)[-1].ScriptName
-# script actual: $PSCommandPath
-# ruta del script actual: $PSScriptRoot
-#[Environment]::SetEnvironmentVariable("DB_HOST", "localhost", "Process") # solo sesión
-#[Environment]::SetEnvironmentVariable("DB_HOST", "localhost", "User")    # persistente usuario
 
-
+## CONFIGURATION ###############################################################
 Set-StrictMode -Version Latest
 
 
-## MODULES
+## MODULES #####################################################################
 #Import-Module -Name ./PSModules/pwsh-dotenv
 
-## VARIABLES
+
+## VARIABLES ###################################################################
 [IO.DirectoryInfo]$Script:WORKINGDIR  = $Script:ENTRYSCRIPT.Directory # $(Get-Location).Path
 [IO.DirectoryInfo]$Script:COMMONDIR   = $PSScriptRoot
 [IO.DirectoryInfo]$Script:ConfigDir   = Join-Path -Path $Script:WORKINGDIR -ChildPath "./config"
@@ -32,10 +27,8 @@ Set-StrictMode -Version Latest
 [IO.FileInfo]$Script:CommonDotEnvFile = Join-Path -Path $Script:COMMONDIR -ChildPath "./.env.common"
 [IO.FileInfo]$NEXTSCRIPT              = Join-Path -Path $Script:COMMONDIR -ChildPath "common.$($($Script:ENTRYSCRIPT).Name)"
 
-Write-Host "WorkingDir: $Script:WORKINGDIR"
-Write-Host "CommonDir: $Script:COMMONDIR"
 
-## FUNCTIONS
+## FUNCTIONS ###################################################################
 function Write-Log {
     [CmdletBinding(PositionalBinding=$true)]
     [OutputType([void])]

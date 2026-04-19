@@ -11,11 +11,13 @@ param(
     [ValidateNotNullOrEmpty()]
     [string]$Container
 )
+
+
 function Show-MainMenu {
     Clear-Host
     Write-Host "==========================="
     Write-Host "===      MAIN MENU      ==="
-    Write-Host "===  Version: 00.01.00  ==="
+    Write-Host "===  Version: 00.01.02  ==="
     Write-Host "==========================="
 
     Write-Host ""

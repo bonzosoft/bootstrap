@@ -5,14 +5,27 @@
 Se debe tener creada la carpeta ``/mnt/tank0/apps`` que será la base de la infraestructura.
 
 ## Instalación
+Descarga de los archivos necesarios desde bash:
+````bash
 wget -qO bootstrap https://raw.githubusercontent.com/bonzosoft/bootstrap/pwsh/bootstrap.ps1 && \
-wget -qO compose.yaml https://raw.githubusercontent.com/bonzosoft/bootstrap/pwsh/compose.yaml && \
-docker compose run pwsh pwsh -File ./bootstrap -Action menu
+wget -qO compose.yaml https://raw.githubusercontent.com/bonzosoft/bootstrap/pwsh/compose.yaml
+````
+o desde Powershell:
+````powershell
+docker run -it --rm -v /mnt:/mnt -w $(pwd) ghcr.io/bonzosoft/pwsh:latest pwsh -Command 'Invoke-WebRequest -Uri "https://raw.githubusercontent.com/bonzosoft/bootstrap/pwsh/bootstrap.ps1" -OutFile "bootstrap";
+Invoke-WebRequest -Uri "https://raw.githubusercontent.com/bonzosoft/bootstrap/pwsh/compose.yaml" -OutFile "compose.yaml"'
+````
 
 ## Uso
 
 ### Menu
-docker compose run pwsh pwsh -File ./bootstrap -Action menu
+````bash
+docker compose run --rm pwsh pwsh -File ./bootstrap -Action menu
+````
+o implícitamente:
+````bash
+docker compose run --rm pwsh "& ./bootstrap"
+````
 
 ### 
 

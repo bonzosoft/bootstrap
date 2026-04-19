@@ -271,6 +271,7 @@ function Get-GithubRepo {
     }
 
     Write-Log -Level Info -Message "Updating submodules from repository '${Name}'."
+    gh auth setup-git
     $output = git submodule update --init --recursive *>&1
     if ($LASTEXITCODE) {
         Write-Log -Level ERRO

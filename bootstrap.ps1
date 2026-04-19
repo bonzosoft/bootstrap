@@ -1,10 +1,10 @@
 [CmdletBinding()]
 param(
-    [Parameter(Mandatory, ValueFromPipeline, Position=1)]
+    [Parameter()]
     [ValidateSet("menu", "login", "logout", "setup", "pull", "start", "stop", "help")]
-    [string]$Action,
+    [string]$Action = "menu",
 
-    [Parameter(ValueFromPipeline, Position=2)]
+    [Parameter()]
     [ValidateNotNullOrEmpty()]
     [string]$Container
 )
@@ -172,6 +172,68 @@ function Test-Repository {
     }
 }
 
+function Get-GithubRepo {
+    [CmdletBinding()]
+
+    param(
+        [Parameter(Mandatory)]
+        [ValidateNotNullOrEmpty()]
+        [string]$Name,
+
+        [Parameter()]
+        [string]$Organization = "bonzosoft",
+
+        [Parameter()]
+        [string]$Branch = "main"
+    )
+
+    $output=""
+
+    if (-not (Test-Path -Path "./$Name/.git") ) {
+        if (-not (Test-Path -Path "./$Name")) {
+            New-Item -Path "./$Name" -ItemType Directory | Out-Null
+        }
+        Write-Log -Level Info -Message "Cloning repository '${Name}'."
+        $output = gh repo clone "$Organization/$Name" "./$Name" *>&1
+        if ($LASTEXITCODE) {
+            Write-Log -Level ERRO
+            Write-Log -Level ERRO -Message $output
+            return
+        }
+        else {
+            Write-Log -Level SUCC
+        }
+    }
+    
+    Push-Location "./$Name"
+
+    Write-Log -level Info -Message "Updating repository '${Name}'."
+    $output = gh repo sync --branch $Branch --force *>&1
+    if ($LASTEXITCODE) {
+        Write-Log -Level ERRO
+        Write-Log -Level ERRO -Message $output
+        return
+    }
+    else {
+        Write-Log -Level SUCC
+    }
+
+    Write-Log -Level Info -Message "Updating submodules from repository '${Name}'."
+    $output = git submodule update --init --recursive *>&1
+    if ($LASTEXITCODE) {
+        Write-Log -Level ERRO
+        Write-Log -Level ERRO -Message $output
+        return
+    }
+    else {
+        Write-Log -Level SUCC
+    }
+
+    Pop-Location
+
+    return
+}
+
 function Start-Compose {
     param(
         [Parameter(Mandatory)]
@@ -252,85 +314,7 @@ function Stop-Compose {
     return
 }
 
-function Test-Truenas {
-    [CmdletBinding()]
 
-    param(
-        [Parameter()]
-        [switch]$Version
-    )
-
-    [bool]$IsTruenas = $(Test-Path -Path "/usr/bin/midclt")
-
-    if ($IsTruenas -and $Version.IsPresent()) {
-        return $(midclt call system.version).Split("-")[1]
-    }
-    else {
-        return $IsTruenas
-    }
-}
-
-function Get-GithubRepo {
-    [CmdletBinding()]
-
-    param(
-        [Parameter(Mandatory)]
-        [ValidateNotNullOrEmpty()]
-        [string]$Name,
-
-        [Parameter()]
-        [string]$Organization = "bonzosoft",
-
-        [Parameter()]
-        [string]$Branch = "main"
-    )
-
-    $output=""
-
-    if (-not (Test-Path -Path "./$Name/.git") ) {
-        if (-not (Test-Path -Path "./$Name")) {
-            New-Item -Path "./$Name" -ItemType Directory | Out-Null
-        }
-        Write-Log -Level Info -Message "Cloning repository '${Name}'."
-        $output = gh repo clone "$Organization/$Name" "./$Name" *>&1
-        if ($LASTEXITCODE) {
-            Write-Log -Level ERRO
-            Write-Log -Level ERRO -Message $output
-            return
-        }
-        else {
-            Write-Log -Level SUCC
-        }
-    }
-    
-    Push-Location "./$Name"
-
-    Write-Log -level Info -Message "Updating repository '${Name}'."
-    $output = gh repo sync --branch $Branch --force *>&1
-    if ($LASTEXITCODE) {
-        Write-Log -Level ERRO
-        Write-Log -Level ERRO -Message $output
-        return
-    }
-    else {
-        Write-Log -Level SUCC
-    }
-
-    Write-Log -Level Info -Message "Updating submodules from repository '${Name}'."
-    $output = git submodule update --init --recursive *>&1
-    if ($LASTEXITCODE) {
-        Write-Log -Level ERRO
-        Write-Log -Level ERRO -Message $output
-        return
-    }
-    else {
-        Write-Log -Level SUCC
-    }
-
-    Pop-Location
-
-    return
-}
 
 #Start-Transcript -Path "./transcript.log"
 
@@ -338,10 +322,7 @@ Clear-Host
 Set-StrictMode -Version Latest
 
 [string]$Hostname = "github.com"
-[string]$CommonToolsRepo = "common-tools"
-
-
-Invoke-WebRequest -Uri "https://raw.githubusercontent.com/usuario/repositorio/main/archivo.txt" -OutFile "archivo.txt"
+[string]$CommonToolsRepo = "common"
 
 Switch ($Action) {
     "login" {

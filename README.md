@@ -4,16 +4,52 @@
 ## Prerrequisitos
 Se debe tener creada la carpeta ``/mnt/tank0/apps`` que será la base de la infraestructura.
 
+## Bootstrap
+
+Como comando bash:
+````bash
+wget https://raw.githubusercontent.com/bonzosoft/bootstrap/pwsh/bootstrap.ps1 && docker run -it -v /mnt:/mnt -v /var/run/docker.sock:/var/run/docker.sock -w $(pwd) --rm ghcr.io/bonzosoft/pwsh:7.6.0 pwsh ./bootstrap.ps1 -Action menu
+````
+o como scriptblock de Powershell:
+````powershell
+docker run -v /mnt:/mnt -w $(pwd) --rm ghcr.io/bonzosoft/pwsh:7.6.0 pwsh -Command '& {Invoke-WebRequest -Uri "https://raw.githubusercontent.com/bonzosoft/bootstrap/pwsh/bootstrap.ps1" -OutFile "bootstrap"}'
+````
+o como comando de Powershell:
+````powershell
+docker run -v /mnt:/mnt -w $(pwd) --rm ghcr.io/bonzosoft/pwsh:7.6.0 pwsh -Command Invoke-WebRequest -Uri "https://raw.githubusercontent.com/bonzosoft/bootstrap/pwsh/bootstrap.ps1" -OutFile "bootstrap"
+````
+
+## Uso
+
 ## Descarga
 
 ````bash
-wget https://raw.githubusercontent.com/bonzosoft/bootstrap/pwsh/bootstrap.ps1 && docker run -it -v /mnt:/mnt -v /var/run/docker.sock:/var/run/docker.sock -w $(pwd) ghcr.io/bonzosoft/pwsh:7.6.0 pwsh ./bootstrap.ps1
+
 ````
 
+### Menu Interactivo
 
+````powershell
+pwsh -File ./bootstrap.ps1 -Action menu
+````
 
+### Login Interactivo
 
+````powershell
+pwsh -File ./bootstrap.ps1 -Action login
+````
 
+### Login Interactivo
+
+````powershell
+pwsh -File ./bootstrap.ps1 -Action login
+````
+
+### Logout
+
+````powershell
+pwsh -File ./bootstrap.ps1 -Action logout
+````
 
 
 

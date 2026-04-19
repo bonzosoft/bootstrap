@@ -151,7 +151,7 @@ function Set-DockerVariable {
         $currentComment = ""
         $currentLeftover = ""
 
-        if ($line -match '^\s*#') { # comment line starting with #
+        if ($line -match '^\s*#' -or '^\s*?') { # comment line starting with # or empty
             $outputLines.Add($line)
             continue
         }
@@ -166,8 +166,8 @@ function Set-DockerVariable {
             # (?<leftover>.*)   capturing group 'leftover' of zero or more characters (greedy, captures as many characters as possible)
             # $                 end of line
 
-            $currentName = $matches.name #$matches[1]
-            $currentLeftover = $matches.leftover #$matches[3]
+            $currentName = $matches?.name #$matches[1]
+            $currentLeftover = $matches?.leftover #$matches[3]
 
             switch -Regex ($currentLeftover) {
                 '^[""''](?:<value>[^""'']*)[""''](?:\s+(#)\s*(?<comment>.*))?$' {
@@ -183,8 +183,8 @@ function Set-DockerVariable {
                     # (?<comment>.*)        capturing group of zero or more characters (greedy, captures as many characters as possible)
                     # $                     end of line
 
-                    $currentValue = $matches.value
-                    $currentComment = $matches.comment
+                    $currentValue = $matches?.value
+                    $currentComment = $matches?.comment
                 }
                 '^(?<value>.*?)(?:\s+(#)\s*(?<comment>.*))?$' {
                     ## non-quoted text
@@ -197,8 +197,8 @@ function Set-DockerVariable {
                     # (?<comment>.*)    capturing group 'comment' of zero or more characters (greedy, captures as many characters as possible)
                     # $                 end of line
 
-                    $currentValue = $matches.value
-                    $currentComment = $matches.comment
+                    $currentValue = $matches?.value
+                    $currentComment = $matches?.comment
                 }
                 default {
                     throw "Invalid format: '$line'"

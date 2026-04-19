@@ -30,7 +30,7 @@ Write-Host "Loading common.ps1"
 #Import-Module -Name ./PSModules/pwsh-dotenv
 
 [System.IO.DirectoryInfo]$Script:WORKINGDIR     = $(Get-Location).Path
-[System.IO.DirectoryInfo]$Script:COMMONDIR      = Join-Path -Path $Script:WORKINGDIR -ChildPath "../../repos/common"
+[System.IO.DirectoryInfo]$Script:COMMONDIR      = Join-Path -Path $Script:WORKINGDIR -ChildPath "../common"
 [System.IO.DirectoryInfo]$Script:ConfigDir   = Join-Path -Path $Script:WORKINGDIR -ChildPath "./config"
 [System.IO.DirectoryInfo]$Script:IncludeDir  = Join-Path -Path $Script:WORKINGDIR -ChildPath "./include"
 [System.IO.DirectoryInfo]$Script:SecretsDir  = Join-Path -Path $Script:WORKINGDIR -ChildPath "./.secrets"

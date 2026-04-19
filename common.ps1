@@ -240,7 +240,12 @@ function Set-DockerVariable {
    
     $temporaryFile = New-TemporaryFile
     Set-Content -Path $temporaryFile.FullName -Value $outputLines -Encoding UTF8
-    Move-Item -Path $temporaryFile.FullName -Destination $workingPath.FullName -Force
+    if ($workingPath.Linktarget) {
+        Move-Item -Path $temporaryFile.FullName -Destination $workingPath.LinkTarget -Force
+    }
+    else {
+        Move-Item -Path $temporaryFile.FullName -Destination $workingPath.FullName -Force
+    }
 }
 
 function Set-DockerSecret {
@@ -324,7 +329,12 @@ function Set-DockerSecret {
             chmod 600 $temporaryFile.FullName
         }
         Set-Content -Path $temporaryFile.FullName -Value $currentValue -Encoding UTF8 -NoNewLine
-        Move-Item -Path $temporaryFile.FullName -Destination $secretFile.FullName -Force
+        if ($secretFile.Linktarget) {
+            Move-Item -Path $temporaryFile.FullName -Destination $secretFile.LinkTarget -Force
+        }
+        else {
+            Move-Item -Path $temporaryFile.FullName -Destination $secretFile.FullName -Force
+        }
         if ($IsLinux) {
             chmod 600 $temporaryFile.FullName
         }

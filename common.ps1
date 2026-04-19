@@ -19,10 +19,10 @@ Set-StrictMode -Version Latest
 ## VARIABLES ###################################################################
 [IO.DirectoryInfo]$Script:WORKINGDIR  = $Script:ENTRYSCRIPT.Directory # $(Get-Location).Path
 [IO.DirectoryInfo]$Script:COMMONDIR   = $PSScriptRoot
-[IO.DirectoryInfo]$Script:CONFIGDIR   = Join-Path -Path $Script:WORKINGDIR -ChildPath "./config"
+[IO.DirectoryInfo]$Script:CONFIGDIR   = Resolve-Path -Path $Script:WORKINGDIR -ChildPath "./config"
 [IO.DirectoryInfo]$Script:IncludeDir  = Join-Path -Path $Script:WORKINGDIR -ChildPath "./include"
 [IO.DirectoryInfo]$Script:SecretsDir  = Join-Path -Path $Script:WORKINGDIR -ChildPath "./.secrets"
-[IO.DirectoryInfo]$Script:DataDir     = Join-Path -Path $Script:WORKINGDIR -ChildPath "./state"
+[IO.DirectoryInfo]$Script:DataDir     = Resolve-Path -Path $Script:WORKINGDIR -ChildPath "./state"
 [IO.FileInfo]$workingDotEnvFile = Join-Path -Path $Script:WORKINGDIR -ChildPath "./.env"
 [IO.FileInfo]$commonDotEnvFile  = Join-Path -Path $Script:COMMONDIR -ChildPath "./.env.common"
 [IO.FileInfo]$NextScript        = Join-Path -Path $Script:COMMONDIR -ChildPath "common.$($($Script:ENTRYSCRIPT).Name)"

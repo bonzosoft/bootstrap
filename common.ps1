@@ -135,6 +135,7 @@ function Set-DockerVariable {
     [string]$currentComment = ""
     [string]$currentLeftover = ""
     [bool]$keyFound = $false
+    [string[]]$matches = @()
 
     if (Test-Path -Path $Path) {
         $workingPath = Get-Item -Path $Path -Force
@@ -170,7 +171,7 @@ function Set-DockerVariable {
             $currentLeftover = $matches?.leftover #$matches[3]
             $currentName
             $currentLeftover
-            
+
             switch -Regex ($currentLeftover) {
                 '^[""''](?<value>[^""'']*)[""''](?:\s+(#)\s*(?<comment>.*))?$' {
                     ## quoted text

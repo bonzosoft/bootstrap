@@ -15,8 +15,8 @@ if (Test-Path -Path $realmDotEnvFile) {
 }
 
 ## SET COMMON .env VARIABLES
-Set-DockerVariable -Path $workingDotEnvFile -Name DATADIR    -Value $Script:DataDir    -Force
-Set-DockerVariable -Path $workingDotEnvFile -Name INCLUDEDIR -Value $Script:IncludeDir -Force
-Set-DockerVariable -Path $workingDotEnvFile -Name SECRETSDIR -Value $Script:SecretsDir -Force
+Set-DockerVariable -Path $workingDotEnvFile -Name DATADIR    -Value $Script:DataDir.FullName    -Force
+Set-DockerVariable -Path $workingDotEnvFile -Name INCLUDEDIR -Value $Script:IncludeDir.FullName -Force
+Set-DockerVariable -Path $workingDotEnvFile -Name SECRETSDIR -Value $Script:SecretsDir.FullName -Force
 
 Write-Host "Finishing $PSCommandPath"

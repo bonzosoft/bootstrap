@@ -24,9 +24,10 @@
 #Invoke-WebRequest -Uri "https://raw.githubusercontent.com/usuario/repositorio/main/archivo.txt" -OutFile "archivo.txt"
 
 Set-StrictMode -Version Latest
+Write-Host "Loading common.ps1"
 
 
-Import-Module -Name ./PSModules/pwsh-dotenv
+#Import-Module -Name ./PSModules/pwsh-dotenv
 
 [System.IO.DirectoryInfo]$Env:WORKINGDIR     = $(Get-Location).Path
 [System.IO.DirectoryInfo]$Env:COMMONDIR      = Join-Path -Path $Script:WorkingDir -ChildPath "../common-tools"
@@ -433,7 +434,6 @@ function Grant-DockerPermission {
     }
 }
 
-
 function Test-DockerSubmodule {
     [CmdletBinding()]
     [OutputType([bool])]
@@ -470,18 +470,17 @@ function Test-Truenas {
     }
 }
 
+Write-Host "Finishing common.ps1"
 
-
-Clear-Host
-
-Write-Log -Level WARN -Message "hola mundo."
-Write-Log -Level WARN -Message "hola mundo."
-
-#Set-DockerVariable -Path ./common/.env -Name "var1" -Value "33" #-Force
-Set-DockerSecret -Path C:\temp -Name secreto1 -Value adios
-Set-DockerSecret -Path C:\temp -Name secreto1 -Value hola
-Set-DockerSecret -Path C:\temp -Name secreto2 -Value adios
-Set-DockerSecret -Path C:\temp -Name secreto2 -Value sobrescrito -Force
-Set-DockerSecret -Path C:\temp -Name secreto3 -Password -Force
-
-
+#Clear-Host
+#
+#Write-Log -Level WARN -Message "hola mundo."
+#Write-Log -Level WARN -Message "hola mundo."
+#
+##Set-DockerVariable -Path ./common/.env -Name "var1" -Value "33" #-Force
+#Set-DockerSecret -Path C:\temp -Name secreto1 -Value adios
+#Set-DockerSecret -Path C:\temp -Name secreto1 -Value hola
+#Set-DockerSecret -Path C:\temp -Name secreto2 -Value adios
+#Set-DockerSecret -Path C:\temp -Name secreto2 -Value sobrescrito -Force
+#Set-DockerSecret -Path C:\temp -Name secreto3 -Password -Force
+#

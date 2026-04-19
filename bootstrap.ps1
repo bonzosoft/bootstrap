@@ -20,6 +20,7 @@ function Show-MainMenu {
     Write-Host ""
     Write-Host "11. GitHub Login"
     Write-Host "12. GitHub Logout"
+    Write-Host "13. Update bootstrap"
     Write-Host "20.   Pull Common tools"
     Write-Host "31.   Pull Komodo Core"
     Write-Host "32.     Start Komodo Core"
@@ -39,6 +40,11 @@ function Show-MainMenu {
         }
         "12" {
             return [hashtable]@{"Action" = "logout"; "Target" = ""}
+        }
+        "13" {
+            Invoke-WebRequest -Uri "https://raw.githubusercontent.com/bonzosoft/bootstrap/pwsh/bootstrap.ps1" -OutFile "bootstrap"
+            Invoke-WebRequest -Uri "https://raw.githubusercontent.com/bonzosoft/bootstrap/pwsh/compose.yaml" -OutFile "compose.yaml"
+            return [hashtable]@{"Action" = "menu"; "Target" = ""}
         }
         "20" {
             return [hashtable]@{"Action" = "pull"; "Target" = "$Script:CommonToolsRepo"}
@@ -402,17 +408,22 @@ do {
             else {
                 Connect-Repository -Hostname $Hostname
             }
-            $Parameters["Action"] = "exit"
+            switch ($PSCmdlet.ParameterSetName) {
+                "Menu" {
+                    $Parameters["Action"] = "menu"
+                }
+                default {
+                    $Parameters["Action"] = "exit"
+                }
+            } 
         }
         "logout" {
             if (Test-Repository) {
                 Disconnect-Repository -Hostname $Hostname
             }
-            $Parameters["Action"] = "exit"
         }
         "setup" {
             Get-GithubRepo -Name $CommonToolsRepo
-            $Parameters["Action"] = "exit"
         }
         "pull" {
             if (-not (Test-Repository)) {
@@ -423,7 +434,6 @@ do {
                 return
             }
             Get-GithubRepo -Name $Parameters["Target"]
-            $Parameters["Action"] = "exit"
         }
         "start" {
             if (-not $Parameters["Target"]) {
@@ -431,7 +441,6 @@ do {
                 return
             }
             Start-Compose -Name $Parameters["Target"]
-            $Parameters["Action"] = "exit"
         }
         "stop" {
             if (-not $Parameters["Target"]) {
@@ -439,7 +448,6 @@ do {
                 return
             }
             Stop-Compose -Name $Parameters["Target"]
-            $Parameters["Action"] = "exit"
         }
         "help" {
             Write-Host "bootstrap"
@@ -466,16 +474,24 @@ do {
             Write-Host "  ./bootstrap -Action start -Container komodo-core"
             Write-Host "  ./bootstrap -Action stop -Container komodo-core"
             Write-Host ""
-            $Parameters["Action"] = "exit"
         }
         "exit" {
             return
         }
         default {
             Write-Log -Level ERRO -Message "Unexpected option '$($Parameters["Action"])'."
+            return
         }
     }
-    Start-Sleep -Milliseconds 100
+    switch ($PSCmdlet.ParameterSetName) {
+        "Menu" {
+            Start-Sleep -Milliseconds 100
+            $Parameters["Action"] = "menu"
+        }
+        default {
+            $Parameters["Action"] = "exit"
+        }
+    }
 } while ($true)
 
 #Stop-Transcript

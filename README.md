@@ -20,11 +20,7 @@ Invoke-WebRequest -Uri "https://raw.githubusercontent.com/bonzosoft/bootstrap/pw
 
 ### Menu
 ````bash
-docker compose run --rm pwsh pwsh -File ./bootstrap -Action menu
-````
-o implícitamente:
-````bash
-docker compose run --rm pwsh "& ./bootstrap"
+docker compose run --rm pwsh pwsh -File ./bootstrap
 ````
 
 ### 

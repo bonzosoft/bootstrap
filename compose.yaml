@@ -3,7 +3,6 @@ services:
     image: ghcr.io/bonzosoft/pwsh:7.6.0
     working_dir: ${PWD}
     #entrypoint: ["pwsh"]
-    command: [CMD-SHELL, pwsh -File ./bootstrap -Action menu]
     stdin_open: true
     tty: true
     volumes:

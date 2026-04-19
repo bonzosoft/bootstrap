@@ -30,13 +30,13 @@ Write-Host "Loading common.ps1"
 #Import-Module -Name ./PSModules/pwsh-dotenv
 
 [System.IO.DirectoryInfo]$Env:WORKINGDIR     = $(Get-Location).Path
-[System.IO.DirectoryInfo]$Env:COMMONDIR      = Join-Path -Path $Script:WorkingDir -ChildPath "../common-tools"
-[System.IO.DirectoryInfo]$Script:ConfigDir   = Join-Path -Path $Script:WorkingDir -ChildPath "./config"
-[System.IO.DirectoryInfo]$Script:IncludeDir  = Join-Path -Path $Script:WorkingDir -ChildPath "./include"
-[System.IO.DirectoryInfo]$Script:SecretsDir  = Join-Path -Path $Script:WorkingDir -ChildPath "./.secrets"
-[System.IO.DirectoryInfo]$Script:DataDir     = Join-Path -Path $Script:WorkingDir -ChildPath "./state"
-[System.IO.FileInfo]$Script:DotEnvFile       = Join-Path -Path $Script:WorkingDir -ChildPath "./.env"
-[System.IO.FileInfo]$Script:CommonDotEnvFile = Join-Path -Path $Script:CommonDir -ChildPath "./.env.common"
+[System.IO.DirectoryInfo]$Env:COMMONDIR      = Join-Path -Path $Script:WORKINGDIR -ChildPath "../common-tools"
+[System.IO.DirectoryInfo]$Script:ConfigDir   = Join-Path -Path $Script:WORKINGDIR -ChildPath "./config"
+[System.IO.DirectoryInfo]$Script:IncludeDir  = Join-Path -Path $Script:WORKINGDIR -ChildPath "./include"
+[System.IO.DirectoryInfo]$Script:SecretsDir  = Join-Path -Path $Script:WORKINGDIR -ChildPath "./.secrets"
+[System.IO.DirectoryInfo]$Script:DataDir     = Join-Path -Path $Script:WORKINGDIR -ChildPath "./state"
+[System.IO.FileInfo]$Script:DotEnvFile       = Join-Path -Path $Script:WORKINGDIR -ChildPath "./.env"
+[System.IO.FileInfo]$Script:CommonDotEnvFile = Join-Path -Path $Script:COMMONDIR -ChildPath "./.env.common"
 
 function Write-Log {
     [CmdletBinding(PositionalBinding=$true)]

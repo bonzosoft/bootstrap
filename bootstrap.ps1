@@ -1,13 +1,31 @@
 [CmdletBinding()]
 param(
     [Parameter(Mandatory, ValueFromPipeline, Position=1)]
-    [ValidateSet("login", "logout", "setup", "pull", "start", "stop", "help")]
+    [ValidateSet("menu", "login", "logout", "setup", "pull", "start", "stop", "help")]
     [string]$Action,
 
     [Parameter(ValueFromPipeline, Position=2)]
     [ValidateNotNullOrEmpty()]
     [string]$Container
 )
+
+
+function Show-MainMenu {
+    Clear-Host
+    Write-Host "=============================" -ForegroundColor Cyan
+    Write-Host "        MAIN MENU            " -ForegroundColor Cyan
+    Write-Host "============================="
+
+    Write-Host ""
+    Write-Host "1. GitHub Login"
+    Write-Host "2. GitHub Logout"
+    Write-Host "3. Setup"
+    Write-Host "4. Servicios"
+    Write-Host "0. Exit"
+    Write-Host ""
+
+    return Read-Host "Selecciona una opción"
+}
 
 function Write-Log {
     [CmdletBinding()]

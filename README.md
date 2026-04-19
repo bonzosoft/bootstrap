@@ -1,6 +1,29 @@
 
 # Bootstrap
 
+## Prerrequisitos
+Se debe tener creada la carpeta ``/mnt/tank0/apps`` que será la base de la infraestructura.
+
+## Descarga
+
+````bash
+wget https://raw.githubusercontent.com/bonzosoft/bootstrap/pwsh/bootstrap.ps1 && docker run -it -v /mnt:/mnt -v /var/run/docker.sock:/var/run/docker.sock -w $(pwd) ghcr.io/bonzosoft/pwsh:7.6.0 pwsh ./bootstrap.ps1
+````
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
 El instalador consta de dos partes, un script de preparación de un contenedor Powershell y un script que se corre en el interior de este para configurar el sistema.
 
 Para ejecutar el contenedor hay que ir al directorio correspondiente y ejecutar:
@@ -15,6 +38,8 @@ Si lo que se desea es ejecutar un script se puede usar:
 ````bash
 docker compose run --rm pwsh "./path/to/scipt.ps1"
 ````
+
+wget -qO- 
 
 
 

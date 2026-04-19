@@ -167,8 +167,13 @@ function Set-DockerVariable {
             # (?<leftover>.*)   capturing group 'leftover' of zero or more characters (greedy, captures as many characters as possible)
             # $                 end of line
 
-            $currentName = $matches?.name #$matches[1]
-            $currentLeftover = $matches?.leftover #$matches[3]
+            if ($matches.ContainsKey("name")) {
+                $currentName = $matches.name #$matches[1]
+            }
+            if ($matches.ContainsKey("leftover")) {
+                $currentLeftover = $matches?.leftover #$matches[3]
+            }
+            
             $currentName
             $currentLeftover
 

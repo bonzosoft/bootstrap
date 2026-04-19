@@ -135,7 +135,7 @@ function Set-DockerVariable {
     [string]$currentComment = ""
     [string]$currentLeftover = ""
     [bool]$keyFound = $false
-    [string[]]$matches = @()
+    [hashtable]$matches = @{}
 
     if (Test-Path -Path $Path) {
         $workingPath = Get-Item -Path $Path -Force

@@ -325,6 +325,9 @@ Set-StrictMode -Version Latest
 [string]$CommonToolsRepo = "common"
 
 Switch ($Action) {
+    "menu" {
+        Show-MainMenu
+    }
     "login" {
         if (Test-Repository) {
             Write-Log -Level WARN -Message "Session already started, skipping."

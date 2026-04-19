@@ -8,7 +8,7 @@ Se debe tener creada la carpeta ``/mnt/tank0/apps`` que será la base de la infr
 
 Como comando bash:
 ````bash
-wget https://raw.githubusercontent.com/bonzosoft/bootstrap/pwsh/bootstrap.ps1 && docker run -it -v /mnt:/mnt -v /var/run/docker.sock:/var/run/docker.sock -w $(pwd) --rm ghcr.io/bonzosoft/pwsh:7.6.0 pwsh ./bootstrap.ps1 -Action menu
+wget -qO bootstrap https://raw.githubusercontent.com/bonzosoft/bootstrap/pwsh/bootstrap.ps1 && docker run -it -v /mnt:/mnt -v /var/run/docker.sock:/var/run/docker.sock -w $(pwd) --rm ghcr.io/bonzosoft/pwsh:7.6.0 pwsh ./bootstrap -Action menu
 ````
 o como scriptblock de Powershell:
 ````powershell

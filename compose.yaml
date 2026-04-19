@@ -1,4 +1,0 @@
-services:
-  dummy:
-    image: busybox:1.37.0-uclibc
-    command: "true" # Dummy command with success exit

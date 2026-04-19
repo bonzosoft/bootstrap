@@ -151,7 +151,7 @@ function Set-DockerVariable {
         $currentComment = ""
         $currentLeftover = ""
 
-        if (($line -match '^\s*#') -or ($lline -match '^\s*?')) { # comment line starting with # or empty
+        if (($line -match '^\s*#') -or ($line -match '^\s*?')) { # comment line starting with # or empty
             $outputLines.Add($line)
             continue
         }

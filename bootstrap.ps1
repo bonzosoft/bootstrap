@@ -71,10 +71,10 @@ function Show-MainMenu {
             return [hashtable]@{"Action" = "stop"; "Target" = "npmplus"}
         }
         "q" {
-            return [hahstable]@{"Action" = "exit"; "Target" = ""}
+            return [hashtable]@{"Action" = "exit"; "Target" = ""}
         }
         default {
-            return [hahstable]@{"Action" = "menu"; "Target" = ""}
+            return [hashtable]@{"Action" = "menu"; "Target" = ""}
         }
     }
 }
@@ -197,7 +197,7 @@ function Disconnect-Repository {
     }
     
     Write-Log -Level INFO -Message "Logging out from '$Hostname'."
-    $output = gh auth logout --hostname github.com *>&1
+    $output = gh auth logout --hostname $Hostname *>&1
     if ($LASTEXITCODE) {
         Write-Log -Level ERRO
         Write-Log -Level ERRO -Message $output
@@ -391,10 +391,10 @@ switch ($PSCmdlet.ParameterSetName) {
 
 do {  
     Switch ($Parameters["Action"]) {
-        "Menu" {
+        "menu" {
             $Parameters = Show-MainMenu
         }
-        "Login" {
+        "login" {
             if (Test-Repository) {
                 Write-Log -Level WARN -Message "Session already started, skipping."
             }
@@ -421,23 +421,23 @@ do {
                 Write-Log -Level ERRO -Message "A container must be specified for action '$Parameters["Action"]'."
                 return
             }
-            Get-GithubRepo -Name $Container
+            Get-GithubRepo -Name $Parameters["Target"]
             $Parameters["Action"] = "exit"
         }
         "start" {
-            if (-not $Container) {
+            if (-not $Parameters["Target"]) {
                 Write-Log -Level ERRO -Message "A container must be specified for action '$Parameters["Action"]'."
                 return
             }
-            Start-Compose -Name $Container
+            Start-Compose -Name $Parameters["Target"]
             $Parameters["Action"] = "exit"
         }
         "stop" {
-            if (-not $Container) {
+            if (-not $Parameters["Target"]) {
                 Write-Log -Level ERRO -Message "A container must be specified for action '$Parameters["Action"]'."
                 return
             }
-            Stop-Compose -Name $Container
+            Stop-Compose -Name $Parameters["Target"]
             $Parameters["Action"] = "exit"
         }
         "help" {

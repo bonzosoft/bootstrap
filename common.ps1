@@ -1,10 +1,12 @@
 
 ## SINGLETON ###################################################################
-#if (Get-Variable -Name _COMMON_SOURCED -Scope Script -ErrorAction SilentlyContinue) {
-#    return
-#} else {
-#    Set-Variable -Name _COMMON_SOURCED -Value $true -Scope Script -Option ReadOnly
-#}
+if (Get-Variable -Name _COMMON_SOURCED -Scope Script -ErrorAction SilentlyContinue) {
+    Write-Host "Trying to reload $PSCommandPath. Skipping."
+    return
+} else {
+    Write-Host "Loading $PSCommandPath"
+    Set-Variable -Name _COMMON_SOURCED -Value $true -Scope Script -Option ReadOnly
+}
 
 # workingdir: Get-Location
 # script que inicia todo: (Get-PSCallStack)[-1].ScriptName
@@ -24,7 +26,7 @@
 #Invoke-WebRequest -Uri "https://raw.githubusercontent.com/usuario/repositorio/main/archivo.txt" -OutFile "archivo.txt"
 
 
-Write-Host "Loading $PSCommandPath"
+
 
 Set-StrictMode -Version Latest
 
@@ -33,7 +35,7 @@ Set-StrictMode -Version Latest
 
 #[IO.DirectoryInfo]$Script:WORKINGDIR = $Script:ENTRYSCRIPT.Directory # $PSScriptRoot
 
-
+Write-Host "confirmacion entryscript: $((Get-PSCallStack)[-1].ScriptName)"
 [IO.DirectoryInfo]$Script:WORKINGDIR = $(Get-Location).Path
 [IO.DirectoryInfo]$Script:COMMONDIR  = $PSScriptRoot
 [IO.FileInfo]$NEXTSCRIPT             = Join-Path -Path $Script:COMMONDIR -ChildPath "common.$($($Script:ENTRYSCRIPT).Name)"

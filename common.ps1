@@ -19,15 +19,15 @@ Set-StrictMode -Version Latest
 ## VARIABLES ###################################################################
 [IO.DirectoryInfo]$Script:WORKINGDIR  = $Script:ENTRYSCRIPT.Directory # $(Get-Location).Path
 [IO.DirectoryInfo]$Script:COMMONDIR   = $PSScriptRoot
-[IO.DirectoryInfo]$Script:CONFIGDIR   = (Resolve-Path -Path "./config" -Relative $Script:WORKINGDIR).Path
-[IO.DirectoryInfo]$Script:IncludeDir  = Join-Path -Path $Script:WORKINGDIR -ChildPath "./include"
-[IO.DirectoryInfo]$Script:SecretsDir  = Join-Path -Path $Script:WORKINGDIR -ChildPath "./.secrets"
-[IO.DirectoryInfo]$Script:DataDir     = (Resolve-Path -Path "./state" -Relative $Script:WORKINGDIR).Path
-[IO.FileInfo]$workingDotEnvFile = Join-Path -Path $Script:WORKINGDIR -ChildPath "./.env"
-[IO.FileInfo]$commonDotEnvFile  = Join-Path -Path $Script:COMMONDIR -ChildPath "./.env.common"
-[IO.FileInfo]$NextScript        = Join-Path -Path $Script:COMMONDIR -ChildPath "common.$($($Script:ENTRYSCRIPT).Name)"
+[IO.DirectoryInfo]$Script:CONFIGDIR   = (Resolve-Path (Join-Path -Path $Script:WORKINGDIR -ChildPath "./config") -Force).Path
+[IO.DirectoryInfo]$Script:IncludeDir  = (Resolve-Path (Join-Path -Path $Script:WORKINGDIR -ChildPath "./include") -Force).Path
+[IO.DirectoryInfo]$Script:SecretsDir  = (Resolve-Path (Join-Path -Path $Script:WORKINGDIR -ChildPath "./.secrets") -Force).Path
+[IO.DirectoryInfo]$Script:DataDir     = (Resolve-Path (Join-Path -Path $Script:WORKINGDIR -ChildPath "./state") -Force).Path
+[IO.FileInfo]$workingDotEnvFile = (Resolve-Path (Join-Path -Path $Script:WORKINGDIR -ChildPath "./.env") -Force).Path
+[IO.FileInfo]$commonDotEnvFile  = (Resolve-Path (Join-Path -Path $Script:COMMONDIR -ChildPath "./.env.common") -Force).Path
+[IO.FileInfo]$NextScript        = (Resolve-Path (Join-Path -Path $Script:COMMONDIR -ChildPath "common.$($($Script:ENTRYSCRIPT).Name)") -Force).Path
 
-Resolve-path -
+
 ## FUNCTIONS ###################################################################
 function Write-Log {
     [CmdletBinding(PositionalBinding=$true)]

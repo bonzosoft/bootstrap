@@ -17,7 +17,7 @@ function Show-MainMenu {
     Clear-Host
     Write-Host "==========================="
     Write-Host "===      MAIN MENU      ==="
-    Write-Host "===  Version: 00.01.02  ==="
+    Write-Host "===  Version: 00.01.03  ==="
     Write-Host "==========================="
 
     Write-Host ""
@@ -34,7 +34,7 @@ function Show-MainMenu {
     Write-Host "51.   Pull NPMplus"
     Write-Host "52.     Start NPMplus"
     Write-Host "53.     Stop NPMplus"
-    Write-Host "q. Exit"
+    Write-Host " q. Exit"
     Write-Host ""
 
     switch (Read-Host "Selecciona una opción") {
@@ -476,7 +476,7 @@ do {
     }
     switch ($PSCmdlet.ParameterSetName) {
         "Menu" {
-            Start-Sleep -Milliseconds 100
+            Start-Sleep -Milliseconds 750
             $Parameters["Action"] = "menu"
         }
         default {

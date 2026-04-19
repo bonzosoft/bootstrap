@@ -1,7 +1,7 @@
 services:
   pwsh:
     image: ghcr.io/bonzosoft/pwsh:7.6.0
-    working_dir: .
+    working_dir: ${PWD}
     #entrypoint: ["pwsh"]
     stdin_open: true
     tty: true

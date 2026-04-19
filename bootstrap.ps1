@@ -20,14 +20,14 @@ function Show-MainMenu {
     Write-Host ""
     Write-Host "11. GitHub Login"
     Write-Host "12. GitHub Logout"
-    Write-Host "20.   Setup"
-    Write-Host "31.   Install Komodo Core"
+    Write-Host "20.   Pull Common tools"
+    Write-Host "31.   Pull Komodo Core"
     Write-Host "32.     Start Komodo Core"
     Write-Host "33.     Stop Komodo Core"
-    Write-Host "41.   Install Komodo Periphery"
+    Write-Host "41.   Pull Komodo Periphery"
     Write-Host "42.     Start Komodo Periphery"
     Write-Host "43.     Stop Komodo Periphery"
-    Write-Host "51.   Install NPMplus"
+    Write-Host "51.   Pull NPMplus"
     Write-Host "52.     Start NPMplus"
     Write-Host "53.     Stop NPMplus"
     Write-Host "q. Exit"
@@ -41,10 +41,10 @@ function Show-MainMenu {
             return [hashtable]@{"Action" = "logout"; "Target" = ""}
         }
         "20" {
-            return [hashtable]@{"Action" = "setup"; "Target" = ""}
+            return [hashtable]@{"Action" = "pull"; "Target" = "$Script:CommonToolsRepo"}
         }
         "31" {
-            return [hashtable]@{"Action" = "install"; "Target" = "komodo-core"}
+            return [hashtable]@{"Action" = "pull"; "Target" = "komodo-core"}
         }
         "32" {
             return [hashtable]@{"Action" = "start"; "Target" = "komodo-core"}
@@ -53,7 +53,7 @@ function Show-MainMenu {
             return [hashtable]@{"Action" = "stop"; "Target" = "komodo-core"}
         }
         "41" {
-            return [hashtable]@{"Action" = "install"; "Target" = "komodo-periphery"}
+            return [hashtable]@{"Action" = "pull"; "Target" = "komodo-periphery"}
         }
         "42" {
             return [hashtable]@{"Action" = "start"; "Target" = "komodo-periphery"}
@@ -62,7 +62,7 @@ function Show-MainMenu {
             return [hashtable]@{"Action" = "stop"; "Target" = "komodo-periphery"}
         }
         "51" {
-            return [hashtable]@{"Action" = "install"; "Target" = "npmplus"}
+            return [hashtable]@{"Action" = "pull"; "Target" = "npmplus"}
         }
         "52" {
             return [hashtable]@{"Action" = "start"; "Target" = "npmplus"}
@@ -371,8 +371,8 @@ function Stop-Compose {
 Clear-Host
 Set-StrictMode -Version Latest
 
+[string]$Script:CommonToolsRepo = "common"
 [string]$Hostname = "github.com"
-[string]$CommonToolsRepo = "common"
 
 switch ($PSCmdlet.ParameterSetName) {
     "Menu" {
@@ -469,6 +469,9 @@ do {
         }
         "exit" {
             return
+        }
+        default {
+            Write-Log -Level ERRO -Message "Unexpected option '$($Parameters["Action"])'."
         }
     }
     Start-Sleep -Milliseconds 100

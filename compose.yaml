@@ -1,0 +1,13 @@
+services:
+  pwsh:
+    image: ghcr.io/bonzosoft/pwsh:7.6.0
+    working_dir: .
+    #entrypoint: ["pwsh"]
+    stdin_open: true
+    tty: true
+    volumes:
+      - /var/run/docker.sock:/var/run/docker.sock:ro
+      - /etc/timezone:/etc/timezone:ro
+      - /etc/localtime:/etc/localtime:ro
+      - /mnt:/mnt:rw
+      - ./.config/gh:/root/.config/gh

@@ -7,12 +7,6 @@ if (Get-Variable -Name _COMMON_SOURCED -Scope Script -ErrorAction SilentlyContin
     Set-Variable -Name _COMMON_SOURCED -Value $true -Scope Script -Option ReadOnly
 }
 
-## TRAP (TEMPORARY) ############################################################
-trap {
-    Write-Host "⚠️ Se ha detectado un error: $($_.Exception.Message)"
-    exit 1
-}
-
 
 ## CONFIGURATION ###############################################################
 Set-StrictMode -Version Latest
@@ -25,13 +19,13 @@ Set-StrictMode -Version Latest
 ## VARIABLES ###################################################################
 [IO.DirectoryInfo]$Script:WORKINGDIR  = $Script:ENTRYSCRIPT.Directory # $(Get-Location).Path
 [IO.DirectoryInfo]$Script:COMMONDIR   = $PSScriptRoot
-[IO.DirectoryInfo]$Script:ConfigDir   = Join-Path -Path $Script:WORKINGDIR -ChildPath "./config"
+[IO.DirectoryInfo]$Script:CONFIGDIR   = Join-Path -Path $Script:WORKINGDIR -ChildPath "./config"
 [IO.DirectoryInfo]$Script:IncludeDir  = Join-Path -Path $Script:WORKINGDIR -ChildPath "./include"
 [IO.DirectoryInfo]$Script:SecretsDir  = Join-Path -Path $Script:WORKINGDIR -ChildPath "./.secrets"
 [IO.DirectoryInfo]$Script:DataDir     = Join-Path -Path $Script:WORKINGDIR -ChildPath "./state"
-[IO.FileInfo]$Script:DotEnvFile       = Join-Path -Path $Script:WORKINGDIR -ChildPath "./.env"
-[IO.FileInfo]$Script:CommonDotEnvFile = Join-Path -Path $Script:COMMONDIR -ChildPath "./.env.common"
-[IO.FileInfo]$NEXTSCRIPT              = Join-Path -Path $Script:COMMONDIR -ChildPath "common.$($($Script:ENTRYSCRIPT).Name)"
+[IO.FileInfo]$workingDotEnvFile = Join-Path -Path $Script:WORKINGDIR -ChildPath "./.env"
+[IO.FileInfo]$commonDotEnvFile  = Join-Path -Path $Script:COMMONDIR -ChildPath "./.env.common"
+[IO.FileInfo]$NextScript        = Join-Path -Path $Script:COMMONDIR -ChildPath "common.$($($Script:ENTRYSCRIPT).Name)"
 
 
 ## FUNCTIONS ###################################################################
@@ -482,5 +476,5 @@ function Test-Truenas {
 #
 
 
-. $NEXTSCRIPT
+. $NextScript
 Write-Host "Finishing $PSCommandPath"

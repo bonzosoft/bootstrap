@@ -125,7 +125,7 @@ function Set-DockerVariable {
         [switch]$Overwrite, #sobrescribe el valor si existe
 
         [Parameter()]
-        [switch]$Add #añade el valor si no existe
+        [switch]$Append #añade el valor si no existe
     )
 
     # constants

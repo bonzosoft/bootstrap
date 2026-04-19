@@ -171,7 +171,7 @@ function Set-DockerVariable {
                 $currentName = $matches.name #$matches[1]
             }
             if ($matches.ContainsKey("leftover")) {
-                $currentLeftover = $matches?.leftover #$matches[3]
+                $currentLeftover = $matches.leftover #$matches[3]
             }
             
             $currentName

@@ -13,9 +13,10 @@ param(
 )
 function Show-MainMenu {
     Clear-Host
-    Write-Host "========================="
-    Write-Host "===     MAIN MENU     ==="
-    Write-Host "========================="
+    Write-Host "==========================="
+    Write-Host "===      MAIN MENU      ==="
+    Write-Host "===  Version: 00.01.00  ==="
+    Write-Host "==========================="
 
     Write-Host ""
     Write-Host "11. GitHub Login"

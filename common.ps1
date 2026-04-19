@@ -9,10 +9,8 @@ if (Get-Variable -Name _COMMON_SOURCED -Scope Script -ErrorAction SilentlyContin
 
 ## TRAP (TEMPORARY) ############################################################
 trap {
-    Write-Host "⚠️ Se ha detectado un error: $($_.Exception.Message)" -ForegroundColor Yellow
-    
-    # Decidir qué hacer después:
-    exit 1  # Ignora el error y sigue con la siguiente línea
+    Write-Host "⚠️ Se ha detectado un error: $($_.Exception.Message)"
+    exit 1
 }
 
 

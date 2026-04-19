@@ -1,4 +1,3 @@
-
 ## SINGLETON ###################################################################
 if (Get-Variable -Name _COMMON_SOURCED -Scope Script -ErrorAction SilentlyContinue) {
     Write-Host "Trying to reload $PSCommandPath. Skipping."
@@ -16,41 +15,27 @@ if (Get-Variable -Name _COMMON_SOURCED -Scope Script -ErrorAction SilentlyContin
 #[Environment]::SetEnvironmentVariable("DB_HOST", "localhost", "User")    # persistente usuario
 
 
-## GIT Idempotente sin cambiar de directorio
-#if (Test-Path "repo/.git") {
-#    git -C repo pull
-#} else {
-#    git clone https://github.com/usuario/repo.git repo
-#}
-
-#Invoke-WebRequest -Uri "https://raw.githubusercontent.com/usuario/repositorio/main/archivo.txt" -OutFile "archivo.txt"
-
-
-
-
 Set-StrictMode -Version Latest
 
+
+## MODULES
 #Import-Module -Name ./PSModules/pwsh-dotenv
 
+## VARIABLES
+[IO.DirectoryInfo]$Script:WORKINGDIR  = $Script:ENTRYSCRIPT.Directory # $(Get-Location).Path
+[IO.DirectoryInfo]$Script:COMMONDIR   = $PSScriptRoot
+[IO.DirectoryInfo]$Script:ConfigDir   = Join-Path -Path $Script:WORKINGDIR -ChildPath "./config"
+[IO.DirectoryInfo]$Script:IncludeDir  = Join-Path -Path $Script:WORKINGDIR -ChildPath "./include"
+[IO.DirectoryInfo]$Script:SecretsDir  = Join-Path -Path $Script:WORKINGDIR -ChildPath "./.secrets"
+[IO.DirectoryInfo]$Script:DataDir     = Join-Path -Path $Script:WORKINGDIR -ChildPath "./state"
+[IO.FileInfo]$Script:DotEnvFile       = Join-Path -Path $Script:WORKINGDIR -ChildPath "./.env"
+[IO.FileInfo]$Script:CommonDotEnvFile = Join-Path -Path $Script:COMMONDIR -ChildPath "./.env.common"
+[IO.FileInfo]$NEXTSCRIPT              = Join-Path -Path $Script:COMMONDIR -ChildPath "common.$($($Script:ENTRYSCRIPT).Name)"
 
-#[IO.DirectoryInfo]$Script:WORKINGDIR = $Script:ENTRYSCRIPT.Directory # $PSScriptRoot
-
-Write-Host "confirmacion entryscript: $((Get-PSCallStack)[-1].ScriptName)"
-[IO.DirectoryInfo]$Script:WORKINGDIR = $(Get-Location).Path
-[IO.DirectoryInfo]$Script:COMMONDIR  = $PSScriptRoot
-[IO.FileInfo]$NEXTSCRIPT             = Join-Path -Path $Script:COMMONDIR -ChildPath "common.$($($Script:ENTRYSCRIPT).Name)"
-
-
-#[System.IO.DirectoryInfo]$Script:COMMONDIR      = Join-Path -Path $Script:WORKINGDIR -ChildPath "../common"
-[System.IO.DirectoryInfo]$Script:ConfigDir   = Join-Path -Path $Script:WORKINGDIR -ChildPath "./config"
-[System.IO.DirectoryInfo]$Script:IncludeDir  = Join-Path -Path $Script:WORKINGDIR -ChildPath "./include"
-[System.IO.DirectoryInfo]$Script:SecretsDir  = Join-Path -Path $Script:WORKINGDIR -ChildPath "./.secrets"
-[System.IO.DirectoryInfo]$Script:DataDir     = Join-Path -Path $Script:WORKINGDIR -ChildPath "./state"
-[System.IO.FileInfo]$Script:DotEnvFile       = Join-Path -Path $Script:WORKINGDIR -ChildPath "./.env"
-[System.IO.FileInfo]$Script:CommonDotEnvFile = Join-Path -Path $Script:COMMONDIR -ChildPath "./.env.common"
 Write-Host "WorkingDir: $Script:WORKINGDIR"
 Write-Host "CommonDir: $Script:COMMONDIR"
 
+## FUNCTIONS
 function Write-Log {
     [CmdletBinding(PositionalBinding=$true)]
     [OutputType([void])]

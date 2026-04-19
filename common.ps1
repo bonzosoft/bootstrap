@@ -173,9 +173,6 @@ function Set-DockerVariable {
             if ($matches.ContainsKey("leftover")) {
                 $currentLeftover = $matches.leftover #$matches[3]
             }
-            
-            $currentName
-            $currentLeftover
 
             switch -Regex ($currentLeftover) {
                 '^[""''](?<value>[^""'']*)[""''](?:\s+(#)\s*(?<comment>.*))?$' {
@@ -191,10 +188,13 @@ function Set-DockerVariable {
                     # (?<comment>.*)        capturing group of zero or more characters (greedy, captures as many characters as possible)
                     # $                     end of line
 
-                    $currentValue = $matches?.value
-                    $currentComment = $matches?.comment
-                    $currentValue
-                    $currentComment
+                    if ($matches.ContainsKey("value")) {
+                        $currentValue = $matches.value
+                    }
+                    if ($matches.ContainsKey("comment")) {
+                        $currentComment = $matches.comment
+                    }
+                    
                 }
                 '^(?<value>.*?)(?:\s+(#)\s*(?<comment>.*))?$' {
                     ## non-quoted text
@@ -207,10 +207,12 @@ function Set-DockerVariable {
                     # (?<comment>.*)    capturing group 'comment' of zero or more characters (greedy, captures as many characters as possible)
                     # $                 end of line
 
-                    $currentValue = $matches?.value
-                    $currentComment = $matches?.comment
-                    $currentValue
-                    $currentComment
+                    if ($matches.ContainsKey("value")) {
+                        $currentValue = $matches.value
+                    }
+                    if ($matches.ContainsKey("comment")) {
+                        $currentComment = $matches.comment
+                    }
                 }
                 default {
                     throw "Invalid format: '$line'"

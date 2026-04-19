@@ -170,11 +170,11 @@ function Set-DockerVariable {
             $currentLeftover = $matches?.leftover #$matches[3]
 
             switch -Regex ($currentLeftover) {
-                '^[""''](?:<value>[^""'']*)[""''](?:\s+(#)\s*(?<comment>.*))?$' {
+                '^[""''](?<value>[^""'']*)[""''](?:\s+(#)\s*(?<comment>.*))?$' {
                     ## quoted text
                     # ^                     beginning of line
                     # [""'']                " or '
-                    # (?:<value>[^""'']*)   capturing group 'value' zero or more characters different of " or '
+                    # (?<value>[^""'']*)   capturing group 'value' zero or more characters different of " or '
                     # [""'']                " or '
                     # (?:...)?              non-capturing group, one or zero instances
                     # \s+                   one or more whitespace characters

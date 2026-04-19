@@ -168,7 +168,9 @@ function Set-DockerVariable {
 
             $currentName = $matches?.name #$matches[1]
             $currentLeftover = $matches?.leftover #$matches[3]
-
+            $currentName
+            $currentLeftover
+            
             switch -Regex ($currentLeftover) {
                 '^[""''](?<value>[^""'']*)[""''](?:\s+(#)\s*(?<comment>.*))?$' {
                     ## quoted text
@@ -185,6 +187,8 @@ function Set-DockerVariable {
 
                     $currentValue = $matches?.value
                     $currentComment = $matches?.comment
+                    $currentValue
+                    $currentComment
                 }
                 '^(?<value>.*?)(?:\s+(#)\s*(?<comment>.*))?$' {
                     ## non-quoted text
@@ -199,6 +203,8 @@ function Set-DockerVariable {
 
                     $currentValue = $matches?.value
                     $currentComment = $matches?.comment
+                    $currentValue
+                    $currentComment
                 }
                 default {
                     throw "Invalid format: '$line'"

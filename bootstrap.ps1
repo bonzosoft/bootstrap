@@ -402,6 +402,9 @@ do {
         $Parameters = Show-MainMenu
     }
     Switch ($Parameters["Action"]) {
+        "menu" {
+            # nop
+        }
         "login" {
             Connect-Repository -Hostname $Hostname
         }

@@ -489,14 +489,50 @@ function Get-DockerVolumes {
     return $volumesList
 }
 
+function Test-DockerSubmodule {
+    [CmdletBinding()]
+    [OutputType([bool])]
+
+    param(
+        [Parameter(Mandatory)]
+        [ValidateNotNullOrEmpty()]
+        [IO.FileInfo]$Path
+    )
+
+    if ($Path.DirectoryName -like "$Script:INCLUDEDIR/*") {
+        return $true
+    }
+    else {
+        return $false
+    }
+}
 
 function Set-DockerConfiguration {
+
     [CmdletBinding()]
     [OutputType([void])]
 
     param (
+        [Parameter(Mandatory)]
+        [ValidateNotNullOrWhiteSpace()]
+        [string]$Service,
 
+        [Parameter(Mandatory)]
+        [ValidateNotNullOrWhiteSpace()]
+        [string]$Name
     )
+
+    [IO.FileInfo]$currentPath = $PSScriptRoot
+    [IO.FileInfo]$configFile = $null
+    
+    if (Test-DockerSubmodule -Path $currentPath) {
+        $configFile = Join-Path -Path $Script:INCLUDEDIR -ChildPath $currentPath.Directory.BaseName -AdditionalChildPath $ScriptDir:CONFIGDIR.BaseName
+        $configFile = Join-Path -Path $configFile.FullName -ChildPath $Name
+    }
+    else {
+        $configFile = Join-Path -Path $Script:CONFIGDIR -ChildPath $Name
+    }
+    New-Item -Path (Join-Path -Path $Config:DATADIR -ChildPath $Service -AdditionalChildPath $Name) -ItemType SymbolicLink -Value $configFile
 }
 
 

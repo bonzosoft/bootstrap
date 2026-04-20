@@ -1,6 +1,6 @@
 Write-Host "Loading $PSCommandPath"
 
-Import-Module -Path ./common.psm1
+Import-Module -Name common
 
 ## COMMON SCRIPT ###############################################################
 

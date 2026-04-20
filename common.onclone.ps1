@@ -25,7 +25,7 @@ if (Test-Path -Path $Script:INCLUDEDIR) {
     ## UPDATE SUBMODULES
     if ($IsLinux) {
         Write-Host "Updating submodules."
-        git submodule update --init --recursive --depth 1
+        git submodule update --init --recursive --depth 1 2>$null
     }
 
     ## RUN SUBMODULE SCRIPTS

@@ -478,7 +478,7 @@ function Get-DockerCompose {
     }
 
     try {
-        $content = docker compose config | ConvertFromYaml
+        $content = docker compose config | ConvertFrom-Yaml
     }
     catch {
         throw $PSItem.Exception.Message

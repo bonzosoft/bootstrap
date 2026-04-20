@@ -22,11 +22,7 @@ Import-Module -Name /PSModules/powershell-yaml
 [IO.FileInfo]$Script:ENTRYSCRIPT = $ENTRYSCRIPT
 [IO.DirectoryInfo]$Script:WORKINGDIR  = $Script:ENTRYSCRIPT.Directory
 [IO.DirectoryInfo]$Script:INCLUDEDIR  = Join-Path -Path $Script:WORKINGDIR -ChildPath "include"
-Write-Host "includedir:"
-$Script:INCLUDEDIR
 [IO.DirectoryInfo]$Script:CONFIGDIR   = Join-Path -Path $Script:WORKINGDIR -ChildPath "config"
-Write-Host "configdir:"
-$Script:CONFIGDIR
 [IO.FileInfo]$Script:ENVFILE          = Join-Path -Path $Script:WORKINGDIR -ChildPath ".env"
 [IO.FileInfo]$Script:COMPOSEFILE      = Join-Path -Path $Script:WORKINGDIR -ChildPath "compose.yaml"
 [IO.DirectoryInfo]$Script:COMMONDIR   = $PSScriptRoot
@@ -528,7 +524,7 @@ function Set-DockerConfiguration {
     )
 
     [IO.FileInfo]$configFile = $null
-    Write-Host $Script:INCLUDEDIR
+    
     Write-Host $Path.Directory.BaseName
     Write-Host $ScriptDir:CONFIGDIR.BaseName
     write-host "1"

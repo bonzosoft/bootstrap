@@ -13,7 +13,8 @@ Set-StrictMode -Version Latest
 
 
 ## MODULES #####################################################################
-#Import-Module -Name ./PSModules/pwsh-dotenv
+#Import-Module -Name /PSModules/pwsh-dotenv
+Import-Module -Name /PSModules/powershell-yaml
 
 
 ## VARIABLES ###################################################################
@@ -25,7 +26,7 @@ Set-StrictMode -Version Latest
 [IO.DirectoryInfo]$Script:DataDir    = Join-Path -Path $Script:WORKINGDIR -ChildPath "./state"
 [IO.FileInfo]$workingDotEnvFile = Join-Path -Path $Script:WORKINGDIR -ChildPath "./.env"
 [IO.FileInfo]$commonDotEnvFile  = Join-Path -Path $Script:COMMONDIR -ChildPath "./.env.common"
-[IO.FileInfo]$NextScript        = Join-Path -Path $Script:COMMONDIR -ChildPath "common.$($($Script:ENTRYSCRIPT).Name)"
+[IO.FileInfo]$nextScript        = Join-Path -Path $Script:COMMONDIR -ChildPath "common.$($($Script:ENTRYSCRIPT).Name)"
 
 
 ## FUNCTIONS ###################################################################
@@ -455,6 +456,15 @@ function Grant-DockerPermission {
     }
 }
 
+function Get-DockerVolumesFromCompose {
+    #$var = Get-Content -Raw -Path ./compose.yaml | ConvertFrom-Yaml
+    $var = docker compose config | ConvertFrom-Yaml 
+    $var | Select-Object -Property source
+}
+
+funcition Get-DockerUser {
+    (get-content /host/etc/group | ForEach-Object {if ($PSItem -match "^docker.*$"){$PSItem}}).Count
+}
 function Test-DockerSubmodule {
     [CmdletBinding()]
     [OutputType([bool])]
@@ -474,37 +484,33 @@ function Test-DockerSubmodule {
 }
 
 function Test-Truenas {
-    [CmdletBinding()]
+    [CmdletBinding(DefaultParameterSetName="Exists")]
+    [OuptutType([bool], "Exists")]
+    [OuptutType([version], "Version")]
 
     param(
-        [Parameter()]
+        [Parameter(ParameterSetName="Version")]
         [switch]$Version
     )
-
-    [bool]$IsTruenas = $(Test-Path -Path "/usr/bin/midclt")
-
-    if ($IsTruenas -and $Version.IsPresent()) {
-        return $(midclt call system.version).Split("-")[1]
+    [IO.FileInfo]$versionFile = "/etc/version"
+    if ($versionFile.Exists) {
+        if ($Version.IsPresent) {
+            return [version](Get-Content -Path $versionFile.FullName)
+        }
+        else {
+            return $true
+        }
     }
     else {
-        return $IsTruenas
+        if ($Version.IsPresent) {
+            return [version]$null
+        }
+        else{
+            return $false
+        }
     }
 }
 
-
-#Clear-Host
-#
-#Write-Log -Level WARN -Message "hola mundo."
-#Write-Log -Level WARN -Message "hola mundo."
-#
-##Set-DockerVariable -Path ./common/.env -Name "var1" -Value "33" #-Force
-#Set-DockerSecret -Path C:\temp -Name secreto1 -Value adios
-#Set-DockerSecret -Path C:\temp -Name secreto1 -Value hola
-#Set-DockerSecret -Path C:\temp -Name secreto2 -Value adios
-#Set-DockerSecret -Path C:\temp -Name secreto2 -Value sobrescrito -Force
-#Set-DockerSecret -Path C:\temp -Name secreto3 -Password -Force
-#
-
-
-. $NextScript
+## LOAD NEXT SCRIPT BLOCK ######################################################
+. $nextScript
 Write-Host "Finishing $PSCommandPath"

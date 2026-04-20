@@ -536,7 +536,7 @@ function Set-DockerConfiguration {
         Write-Host "No es submodulo."
         $configFile = Join-Path -Path $Script:CONFIGDIR -ChildPath $Name
     }
-    New-Item -Path (Join-Path -Path $Script:DATADIR -ChildPath $Service -AdditionalChildPath $Name) -ItemType SymbolicLink -Value $configFile | Out-Null
+    New-Item -Path (Join-Path -Path $Script:DATADIR -ChildPath $Service -AdditionalChildPath $Name) -ItemType SymbolicLink -Value $configFile -Force | Out-Null
 }
 
 

@@ -517,19 +517,18 @@ function Set-DockerConfiguration {
     param (
         [Parameter(Mandatory)]
         [ValidateNotNullOrWhiteSpace()]
-        [string]$Service,
+        [IO.FileInfo]$Path,
 
         [Parameter(Mandatory)]
         [ValidateNotNullOrWhiteSpace()]
         [string]$Name
     )
 
-    [IO.FileInfo]$currentPath = $PSScriptRoot
     [IO.FileInfo]$configFile = $null
-    $currentPath
-    if (Test-DockerSubmodule -Path $currentPath) {
+    
+    if (Test-DockerSubmodule -Path $Path.DirectoryName) {
         Write-Host "Es submodulo."
-        $configFile = Join-Path -Path $Script:INCLUDEDIR -ChildPath $currentPath.Directory.BaseName -AdditionalChildPath $ScriptDir:CONFIGDIR.BaseName
+        $configFile = Join-Path -Path $Script:INCLUDEDIR -ChildPath $Path.Directory.BaseName -AdditionalChildPath $ScriptDir:CONFIGDIR.BaseName
         $configFile = Join-Path -Path $configFile.FullName -ChildPath $Name
     }
     else {

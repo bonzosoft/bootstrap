@@ -37,11 +37,8 @@ else {
 }
 
 ## Set file permisisons for volumes
-Write-Host "pasa1"
 [hashtable]$compose = Get-DockerCompose -Path $Script:workingComposeFile
-Write-Host "pasa2"
 [string[]]$volumes = Get-DockerVolumes $compose
-Write-Host "pasa3"
 Write-Host "Volumes:"
 $volumes
 

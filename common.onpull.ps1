@@ -43,7 +43,7 @@ foreach ($volume in $volumes) {
     $volume
     $volume.GetType()
     $volume | Format-List *
-    Grant-DockerPermission -Path $volume.FullName -PUID $Script:PUID -PGID $Script:PGID -Mode 0755 -Recurse -Force
+    Grant-DockerPermission -Path $volume -PUID $Script:PUID -PGID $Script:PGID -Mode 0755 -Recurse -Force
 }
 
 Write-Host "Finishing $PSCommandPath"

@@ -489,7 +489,7 @@ function Get-DockerCompose {
 
 function Get-DockerVolumes {
     [CmdletBinding()]
-    [OutputType[string[]]]
+    [OutputType([string[]])]
 
     param (
         [Parameter(Mandatory)]

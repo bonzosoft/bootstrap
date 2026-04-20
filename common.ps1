@@ -512,14 +512,11 @@ function Get-DockerVolumes {
 
     foreach ($service in $Compose.services) {
         Write-Host "Servicio: $($service.Keys)"
-        if ($service.Values.Keys -contains "volume") {
-            Write-Host "Volumen encontrado"
-            $volumes += $service.Values.volumes.source
-            #foreach ($volume in @($service.Values.volumes)) {
-            #    if ($volume.type -eq "bind") {
-            #        $volumes += $volume.source
-            #    }
-            #}
+        foreach ($serviceName in $service.Keys ) {
+            if ($service.services.$serviceName.Keys -Contains "volumes") {
+                Write-host "Volumen encontrado"
+                #$volumes += $service.Values.volumes.source
+            }
         }
     }
 

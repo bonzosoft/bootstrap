@@ -39,6 +39,7 @@ else {
 ## Set file permisisons for volumes
 [hashtable]$compose = Get-DockerCompose -Path $Script:workingComposeFile
 [string[]]$volumes = Get-DockerVolumes $compose
+Write-Host "Volumes:"
 $volumes
 
 Write-Information "Finishing $PSCommandPath"

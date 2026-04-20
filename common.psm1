@@ -355,7 +355,11 @@ function Grant-DockerPermission {
     param (
         [Parameter(Mandatory)]
         [ValidateNotNullOrEmpty()]
-        [IO.FileSystemInfo]$Path,
+        #[IO.FileSystemInfo]$Path,
+        [ArgumentTransformationScript({
+            if ($_ -is [string]) { Get-Item -LiteralPath $_ } else { $_ }
+        })]
+        [System.IO.FileSystemInfo]$Path,
 
         [Parameter(Mandatory)]
         [ValidateRange(0,65535)]

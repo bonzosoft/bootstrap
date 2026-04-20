@@ -28,7 +28,7 @@ if (Test-Path -Path $Script:IncludeDir) {
     ## RUN INCLUDE SCRIPTS
     [IO.FileSystemInfo]$scripts = Get-Item -Path $Script:IncludeDir -Filter "*/onclone.ps1"
     foreach ($script in $scripts) {
-        Write-Host "Loading submodule script $"
+        Write-Host "Loading submodule script $($script.FullName)"
         . $script.FullName
     }
 }

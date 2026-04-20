@@ -88,6 +88,38 @@ function Show-MainMenu {
     }
 }
 
+function Get-DockerUser {
+    (get-content /host/etc/group | ForEach-Object {if ($PSItem -match "^docker.*$"){$PSItem}}).Count
+}
+
+function Test-Truenas {
+    [CmdletBinding(DefaultParameterSetName="Exists")]
+    [OuptutType([bool], "Exists")]
+    [OuptutType([version], "Version")]
+
+    param(
+        [Parameter(ParameterSetName="Version")]
+        [switch]$Version
+    )
+    [IO.FileInfo]$versionFile = "/etc/version"
+    if ($versionFile.Exists) {
+        if ($Version.IsPresent) {
+            return [version](Get-Content -Path $versionFile.FullName)
+        }
+        else {
+            return $true
+        }
+    }
+    else {
+        if ($Version.IsPresent) {
+            return [version]$null
+        }
+        else{
+            return $false
+        }
+    }
+}
+
 function Write-Log {
     [CmdletBinding()]
 
@@ -382,7 +414,7 @@ Clear-Host
 Set-StrictMode -Version Latest
 
 [string]$Script:CommonToolsRepo = "common"
-[string]$Hostname = "github.com"
+[string]$Script:Hostname = "github.com"
 
 switch ($PSCmdlet.ParameterSetName) {
     "Menu" {
@@ -408,13 +440,21 @@ do {
             # nop
         }
         "login" {
-            Connect-Repository -Hostname $Hostname
+            Connect-Repository -Hostname $Script:Hostname
         }
         "logout" {
-            Disconnect-Repository -Hostname $Hostname
+            Disconnect-Repository -Hostname $Script:Hostname
         }
         "setup" {
-            Get-GithubRepo -Name $CommonToolsRepo
+            Get-GithubRepo -Name $Script:CommonToolsRepo
+
+            [hashtable]$options = @{}
+            . Join-Path -Path $PSScriptRoot -ChildPath $Script:CommonToolsRepo -AdditionalChildPath "common.ps1"
+
+            $options["IsTrueNAS"] = Test-IsTruenas
+            $options["DockerPGID"] = Get-DockerUser
+            $options | ConvertTo-Json | Set-Content -Path Script:ConfigFile -Encoding UTF8
+
         }
         "pull" {
             if (-not (Test-Repository)) {

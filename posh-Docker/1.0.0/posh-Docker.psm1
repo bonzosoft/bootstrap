@@ -528,10 +528,12 @@ function Set-DockerConfiguration {
     [IO.FileInfo]$configFile = $null
     
     if (Test-DockerSubmodule -Path $currentPath) {
+        Write-Host "Es submodulo."
         $configFile = Join-Path -Path $Script:INCLUDEDIR -ChildPath $currentPath.Directory.BaseName -AdditionalChildPath $ScriptDir:CONFIGDIR.BaseName
         $configFile = Join-Path -Path $configFile.FullName -ChildPath $Name
     }
     else {
+        Write-Host "No es submodulo."
         $configFile = Join-Path -Path $Script:CONFIGDIR -ChildPath $Name
     }
     New-Item -Path (Join-Path -Path $Script:DATADIR -ChildPath $Service -AdditionalChildPath $Name) -ItemType SymbolicLink -Value $configFile | Out-Null

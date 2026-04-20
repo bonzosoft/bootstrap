@@ -21,8 +21,6 @@ Import-Module -Name /PSModules/powershell-yaml
 ## VARIABLES ###################################################################
 [IO.FileInfo]$Script:ENTRYSCRIPT = $ENTRYSCRIPT
 [IO.DirectoryInfo]$Script:WORKINGDIR  = $Script:ENTRYSCRIPT.Directory
-Write-Host "workingdir:"
-Write-Host $Script:WORKINGDIR.FullName
 [IO.DirectoryInfo]$Script:INCLUDEDIR  = Join-Path -Path $Script:WORKINGDIR -ChildPath "include"
 Write-Host "includedir:"
 $Script:INCLUDEDIR
@@ -530,19 +528,19 @@ function Set-DockerConfiguration {
     )
 
     [IO.FileInfo]$configFile = $null
-    $Script:INCLUDEDIR
-    $Path.Directory.BaseName
-    $ScriptDir:CONFIGDIR.BaseName
+    Write-Host $Script:INCLUDEDIR
+    Write-Host $Path.Directory.BaseName
+    Write-Host $ScriptDir:CONFIGDIR.BaseName
     write-host "1"
-    $Path
+    Write-Host $Path
     write-host "2"
-    Join-Path -Path $Script:INCLUDEDIR -ChildPath $Path.Directory.BaseName -AdditionalChildPath $ScriptDir:CONFIGDIR.BaseName
+    Write-Host (Join-Path -Path $Script:INCLUDEDIR -ChildPath $Path.Directory.BaseName -AdditionalChildPath $ScriptDir:CONFIGDIR.BaseName)
     write-host "3"
-    Join-Path -Path $configFile.FullName -ChildPath $Name
+    Write-Host  (Join-Path -Path $configFile.FullName -ChildPath $Name)
     write-host "4"
-    Join-Path -Path $Script:CONFIGDIR -ChildPath $Name
+    Write-Host (Join-Path -Path $Script:CONFIGDIR -ChildPath $Name)
     write-host "5"
-    Join-Path -Path $Script:DATADIR -ChildPath $Path.Directory.BaseName -AdditionalChildPath $Name
+    Write-Host (Join-Path -Path $Script:DATADIR -ChildPath $Path.Directory.BaseName -AdditionalChildPath $Name)
     if (Test-DockerSubmodule -Path $Path.DirectoryName) {
         Write-Host "Es submodulo."
         $configFile = Join-Path -Path $Script:INCLUDEDIR -ChildPath $Path.Directory.BaseName -AdditionalChildPath $ScriptDir:CONFIGDIR.BaseName

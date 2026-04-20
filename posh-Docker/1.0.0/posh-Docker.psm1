@@ -489,7 +489,6 @@ function Get-DockerVolumes {
     return $volumesList
 }
 
-
 function Set-DockerConfiguration {
     [CmdletBinding()]
     [OutputType([void])]
@@ -498,7 +497,6 @@ function Set-DockerConfiguration {
 
     )
 }
-
 
 ## EXPORT COMPONENTES ##########################################################
 Export-ModuleMember -Function * -Variable * #-Module *

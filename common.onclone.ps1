@@ -1,6 +1,6 @@
 Write-Host "Loading $PSCommandPath"
 
-Import-Module -Name "$PSScriptRoot/common.psm1" -ArgumentList $ENTRYSCRIPT
+Import-Module -Name "$PSScriptRoot/posh-Docker" -ArgumentList $ENTRYSCRIPT
 
 
 ## COMMON SCRIPT ###############################################################

@@ -332,7 +332,7 @@ function Set-DockerSecret {
         }
         Set-Content -Path $temporaryFile.FullName -Value $currentValue -Encoding UTF8 -NoNewLine
 
-        New-Item -Path $secretFile.Directory -ItemType Directory -Force
+        New-Item -Path $secretFile.Directory -ItemType Directory -Force | Out-Null
         if ($secretFile.Linktarget) {
             Move-Item -Path $temporaryFile.FullName -Destination $secretFile.LinkTarget -Force
         }
@@ -534,7 +534,7 @@ function Set-DockerConfiguration {
     else {
         $configFile = Join-Path -Path $Script:CONFIGDIR -ChildPath $Name
     }
-    New-Item -Path (Join-Path -Path $Script:DATADIR -ChildPath $Service -AdditionalChildPath $Name) -ItemType SymbolicLink -Value $configFile
+    New-Item -Path (Join-Path -Path $Script:DATADIR -ChildPath $Service -AdditionalChildPath $Name) -ItemType SymbolicLink -Value $configFile | Out-Null
 }
 
 

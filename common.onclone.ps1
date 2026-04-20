@@ -37,6 +37,9 @@ else {
 ## Set file permisisons for volumes
 [hashtable]$compose = Get-DockerCompose -Path $Script:workingComposeFile
 [string[]]$volumes = Get-DockerVolumes $compose
-Grant-DockerPermission -Path $volumes -PUID $Script:PUID -PGID $Script:PGID -Mode 0755 -Recurse -Force
+foreach ($volume in $volumes) {
+    Grant-DockerPermission -Path $volume -PUID $Script:PUID -PGID $Script:PGID -Mode 0755 -Recurse -Force
+}
+
 
 Write-Host "Finishing $PSCommandPath"

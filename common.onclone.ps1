@@ -41,6 +41,7 @@ else {
 foreach ($volume in $volumes) {
     Grant-DockerPermission -Path $volume -PUID $Script:PUID -PGID $Script:PGID -Mode 0755 -Recurse -Force
 }
+$volumes
 
 
 Write-Host "Finishing $PSCommandPath"

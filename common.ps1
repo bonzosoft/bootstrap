@@ -462,7 +462,7 @@ function Get-DockerVolumesFromCompose {
     $var | Select-Object -Property source
 }
 
-funcition Get-DockerUser {
+function Get-DockerUser {
     (get-content /host/etc/group | ForEach-Object {if ($PSItem -match "^docker.*$"){$PSItem}}).Count
 }
 function Test-DockerSubmodule {

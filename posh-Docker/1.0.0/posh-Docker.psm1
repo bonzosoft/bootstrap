@@ -354,8 +354,8 @@ function Grant-DockerPermission {
 
     param (
         [Parameter(Mandatory)]
-        [ValidateNotNullOrEmpty()]
-        [string[]]$Path,
+        [ValidateNotNullOrWhiteSpace()]
+        [string]$Path,
 
         [Parameter(Mandatory)]
         [ValidateRange(0,65535)]
@@ -398,7 +398,7 @@ function Grant-DockerPermission {
 
     process {
         if (Test-Path -Path $Path) {
-            if ((Get-Item $Path).IsPSContainer) {
+            if ((Get-Item $Path).PSIsContainer) {
                 [IO.DirectoryInfo]$Path = Get-Item -Path $Path
             }
             else {

@@ -397,6 +397,7 @@ function Grant-DockerPermission {
     }
 
     process {
+        $Path
         if (Test-Path -Path $Path) {
             if ((Get-Item $Path).IsPSContainer) {
                 [IO.DirectoryInfo]$Path = Get-Item -Path $Path

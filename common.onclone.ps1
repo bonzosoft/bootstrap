@@ -1,23 +1,27 @@
 Write-Host "Loading $PSCommandPath"
 
-Import-Module -Name "$PSScriptRoot/common.psm1"
+Import-Module -Name "$PSScriptRoot/common.psm1" -ArgumentList $ENTRYSCRIPT
+
 
 ## COMMON SCRIPT ###############################################################
 
+
 ## SET .env FILE ACCORDING TO REALM
-[IO.FileInfo]$realmDotEnvFile = Join-Path -Path $Script:WORKINGDIR -ChildPath "./.env.$Realm"
+[IO.FileInfo]$realmDotEnvFile = Join-Path -Path $Script:WORKINGDIR -ChildPath ".env.$Realm"
 if (Test-Path -Path $realmDotEnvFile) {
-    New-Item -Path $Script:workingDotEnvFile -ItemType SymbolicLink -Value $realmDotEnvFile -Force | Out-Null
+    New-Item -Path $Script:ENVFILE -ItemType SymbolicLink -Value $realmDotEnvFile -Force | Out-Null
 }
 
+
 ## SET COMMON .env VARIABLES
-Set-DockerVariable -Path $workingDotEnvFile -Name DATADIR    -Value $Script:DataDir.FullName    -Overwrite -Force
-#Set-DockerVariable -Path $workingDotEnvFile -Name CONFIGDIR  -Value $Script:ConfigDir.FullName  -Overwrite -Force
-Set-DockerVariable -Path $workingDotEnvFile -Name INCLUDEDIR -Value $Script:IncludeDir.FullName -Overwrite -Force
-Set-DockerVariable -Path $workingDotEnvFile -Name SECRETSDIR -Value $Script:SecretsDir.FullName -Overwrite -Force
+Set-DockerVariable -Path $ENVFILE -Name DATADIR    -Value $Script:DATADIR.FullName    -Overwrite -Force
+#Set-DockerVariable -Path $ENVFILE -Name CONFIGDIR  -Value $Script:CONFIGDIR.FullName  -Overwrite -Force
+Set-DockerVariable -Path $ENVFILE -Name INCLUDEDIR -Value $Script:INCLUDEDIR.FullName -Overwrite -Force
+Set-DockerVariable -Path $ENVFILE -Name SECRETSDIR -Value $Script:SECRETSDIR.FullName -Overwrite -Force
+
 
 ## SUBMODULES MANIPULATION
-if (Test-Path -Path $Script:IncludeDir) {
+if (Test-Path -Path $Script:INCLUDEDIR) {
     ## UPDATE SUBMODULES
     if ($IsLinux) {
         Write-Host "Updating submodules."
@@ -25,23 +29,18 @@ if (Test-Path -Path $Script:IncludeDir) {
     }
 
     ## RUN SUBMODULE SCRIPTS
-    [IO.FileSystemInfo]$scripts = Get-Item -Path (Join-Path -Path $Script:IncludeDir -ChildPath "*/onclone.ps1")
+    [IO.FileInfo]$scripts = Get-Item -Path (Join-Path -Path $Script:INCLUDEDIR -ChildPath "*/$($ENTRYSCRIPT.Name)")
     foreach ($script in $scripts) {
         Write-Host "Loading submodule script '$($script.FullName)'."
         . $script.FullName
     }
 }
-else {
-    Write-host "No submodule find."
-}
+
 
 ## Set file permisisons for volumes
-[hashtable]$compose = Get-DockerCompose -Path $Script:workingComposeFile
-[string[]]$volumes = Get-DockerVolumes $compose
+[Collections.Generic.List[string]]$volumes = Get-DockerVolumes (Get-DockerCompose -Path $Script:COMPOSEFILE)
 foreach ($volume in $volumes) {
     Grant-DockerPermission -Path $volume -PUID $Script:PUID -PGID $Script:PGID -Mode 0755 -Recurse -Force
 }
-$volumes
-
 
 Write-Host "Finishing $PSCommandPath"

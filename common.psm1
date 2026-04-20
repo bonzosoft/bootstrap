@@ -1,36 +1,36 @@
-## SINGLETON ###################################################################
-if (Get-Variable -Name _COMMON_SOURCED -Scope Script -ErrorAction SilentlyContinue) {
-    Write-Host "Trying to reload $PSCommandPath. Skipping."
-    return
-} else {
-    Write-Host "Loading $PSCommandPath"
-    Set-Variable -Name _COMMON_SOURCED -Value $true -Scope Script -Option ReadOnly
-}
+[CmdletBinding()]
+[OutputType([void])]
 
+param(
+    [Parameter(Mandatory)]
+    [ValidateNotNullOrEmpty()]
+    [IO.FileInfo]$ENTRYSCRIPT 
+)
 
 ## CONFIGURATION ###############################################################
 Set-StrictMode -Version Latest
 
 
 ## MODULES #####################################################################
-#Import-Module -Name /PSModules/pwsh-dotenv
 Import-Module -Name /PSModules/powershell-yaml
+#Import-Module -Name /PSModules/pwsh-dotenv
 
 
 ## VARIABLES ###################################################################
-[IO.DirectoryInfo]$Script:WORKINGDIR = $Global:ENTRYSCRIPT.Directory # $(Get-Location).Path
-[IO.DirectoryInfo]$Script:COMMONDIR  = $PSScriptRoot
-[IO.DirectoryInfo]$Script:CONFIGDIR  = Join-Path -Path $Script:WORKINGDIR -ChildPath "./config"
-[IO.DirectoryInfo]$Script:IncludeDir = Join-Path -Path $Script:WORKINGDIR -ChildPath "./include"
-[IO.DirectoryInfo]$Script:SecretsDir = Join-Path -Path $Script:WORKINGDIR -ChildPath "./.secrets"
-[IO.DirectoryInfo]$Script:DataDir    = Join-Path -Path $Script:WORKINGDIR -ChildPath "./state"
-[IO.FileInfo]$Script:workingDotEnvFile  = Join-Path -Path $Script:WORKINGDIR -ChildPath "./.env"
-[IO.FileInfo]$Script:workingComposeFile = Join-Path -Path $Script:WORKINGDIR -ChildPath "./compose.yaml"
-[IO.FileInfo]$Script:commonDotEnvFile   = Join-Path -Path $Script:COMMONDIR -ChildPath "./.env.common"
-#[IO.FileInfo]$nextScript                = Join-Path -Path $Script:COMMONDIR -ChildPath "common.$(($Global:ENTRYSCRIPT).Name)"
+[IO.DirectoryInfo]$Script:ENTRYSCRIPT = $ENTRYSCRIPT
+[IO.DirectoryInfo]$Script:WORKINGDIR  = $Script:ENTRYSCRIPT.Directory
+[IO.DirectoryInfo]$Script:SECRETSDIR  = Join-Path -Path $Script:WORKINGDIR -ChildPath ".secrets"
+[IO.DirectoryInfo]$Script:INCLUDEDIR  = Join-Path -Path $Script:WORKINGDIR -ChildPath "include"
+[IO.DirectoryInfo]$Script:CONFIGDIR   = Join-Path -Path $Script:WORKINGDIR -ChildPath "config"
+[IO.DirectoryInfo]$Script:DATADIR     = Join-Path -Path $Script:WORKINGDIR -ChildPath "state"
+[IO.FileInfo]$Script:ENVFILE          = Join-Path -Path $Script:WORKINGDIR -ChildPath ".env"
+[IO.FileInfo]$Script:COMPOSEFILE      = Join-Path -Path $Script:WORKINGDIR -ChildPath "compose.yaml"
+[IO.DirectoryInfo]$Script:COMMONDIR   = $PSScriptRoot
+[IO.FileInfo]$Script:COMMONENVFILE    = Join-Path -Path $Script:COMMONDIR -ChildPath ".env.common"
+[IO.FileInfo]$Script:COMMONCONFIGFILE = Join-Path -Path $Script:COMMONDIR -ChildPath "../config.json"
 [int]$Script:PUID = 568
 [int]$Script:PGID = 568
-[IO.FileInfo]$Script:ConfigFile = Join-Path -Path $PSScriptRoot -ChildPath ".config.json"
+
 
 
 ## FUNCTIONS ###################################################################
@@ -112,8 +112,8 @@ function Set-DockerVariable {
 
     param (
         [Parameter(Mandatory)]
-        [ValidateNotNullOrWhiteSpace()]
-        [string]$Path,
+        [ValidateNotNullOrEmpty()]
+        [IO.FileInfo]$Path,
 
         [Parameter(Mandatory)]
         [ValidateNotNullOrWhiteSpace()]
@@ -133,14 +133,10 @@ function Set-DockerVariable {
         [switch]$Append #añade el valor si no existe
     )
 
-    # constants
     [string]$delimiter = " = "
-
-    # variables
-    [System.IO.FileInfo]$workingPath = $null
-    [System.IO.FileInfo]$temporaryFile = $null
-    [System.Collections.Generic.List[string]]$inputLines = @()
-    [System.Collections.Generic.List[string]]$outputLines = @()
+    [IO.FileInfo]$temporaryFile = $null
+    [Collections.Generic.List[string]]$inputLines = @()
+    [Collections.Generic.List[string]]$outputLines = @()
     [string]$currentName = ""
     [string]$currentValue = ""
     [string]$currentComment = ""
@@ -148,14 +144,7 @@ function Set-DockerVariable {
     [bool]$keyFound = $false
     [hashtable]$matches = @{}
 
-    if (Test-Path -Path $Path) {
-        $workingPath = Get-Item -Path $Path -Force
-    }
-    else {
-        $workingPath = New-Item -Path $Path -ItemType File
-    }
-
-    $inputLines = Get-Content $workingPath.FullName -Encoding UTF8
+    $inputLines = Get-Content -Path $Path -Encoding UTF8
 
     foreach ($line in $inputLines) {
         $currentName = ""
@@ -163,7 +152,8 @@ function Set-DockerVariable {
         $currentComment = ""
         $currentLeftover = ""
 
-        if (($line -match '^\s*#') -or ($line -match '^\s*$')) { # comment line starting with # or empty
+        if (($line -match '^\s*#') -or ($line -match '^\s*$')) { 
+            # comment line starting with # or empty line
             $outputLines.Add($line)
             continue
         }
@@ -179,10 +169,10 @@ function Set-DockerVariable {
             # $                 end of line
 
             if ($matches.ContainsKey("name")) {
-                $currentName = $matches.name #$matches[1]
+                $currentName = $matches.name
             }
             if ($matches.ContainsKey("leftover")) {
-                $currentLeftover = $matches.leftover #$matches[3]
+                $currentLeftover = $matches.leftover
             }
 
             switch -Regex ($currentLeftover) {
@@ -238,17 +228,14 @@ function Set-DockerVariable {
             $keyFound = $true
 
             if ($Overwrite.IsPresent) {
-                # update new value
                 $newLine = $currentName + $delimiter + $Value
             }
             else {
-                # keep current value
                 $newLine = $currentName + $delimiter + $currentValue
             }
         }
         else {
-            # keep not-matching value
-            $newLine = $currentName + $delimiter + $currentValue
+            $newLine = $currentName + $delimiter + $currentValue 
         }
 
         if (-not [string]::IsNullOrWhiteSpace($currentComment)) {
@@ -264,12 +251,12 @@ function Set-DockerVariable {
     }
    
     $temporaryFile = New-TemporaryFile
-    Set-Content -Path $temporaryFile.FullName -Value $outputLines -Encoding UTF8
-    if ($workingPath.Linktarget) {
-        Move-Item -Path $temporaryFile.FullName -Destination $workingPath.LinkTarget -Force:$Force
+    Set-Content -Path $temporaryFile -Value $outputLines -Encoding UTF8
+    if ($Path.Linktarget) {
+        Move-Item -Path $temporaryFile -Destination $Path.LinkTarget -Force:$Force
     }
     else {
-        Move-Item -Path $temporaryFile.FullName -Destination $workingPath.FullName -Force:$Force
+        Move-Item -Path $temporaryFile -Destination $Path -Force:$Force
     }
 }
 
@@ -279,8 +266,8 @@ function Set-DockerSecret {
 
     param(
         [Parameter(Mandatory)]
-        [ValidateNotNullOrWhiteSpace()]
-        [string]$Path,
+        [ValidateNotNullOrEmpty()]
+        [IO.DirectoryInfo]$Path,
 
         [Parameter(Mandatory)]
         [ValidateNotNullOrWhiteSpace()]
@@ -301,44 +288,33 @@ function Set-DockerSecret {
         [Parameter(ParameterSetName="Password")]
         [Parameter(ParameterSetName="JwtSecret")]
         [Parameter(ParameterSetName="Base64")]
-        [ValidateRange(1,1024)]
+        [ValidateRange(1,128)]
         [int]$Length = 32,
 
         [Parameter()]
-        [switch]$Force
+        [switch]$Overwrite
     )
 
-    # constants
-
-    # variables
     [byte[]]$bytes = @()
-    [System.IO.DirectoryInfo]$workingPath = $null
-    [System.IO.FileInfo]$secretFile = $null
-    [System.IO.FileInfo]$temporaryFile = $null
+    [IO.FileInfo]$secretFile = Join-Path -Path $Path.FullName -ChildPath $Name
+    [IO.FileInfo]$temporaryFile = $null
     [string]$currentValue = ""
-
-    if (Test-Path -Path $Path) {
-        $workingPath = Get-Item -Path $Path -Force
-    }
-    else {
-        $workingPath = New-Item -Path $Path -ItemType Directory
-    }
     
     switch ($PSCmdlet.ParameterSetName) {
         "Value" {
             $currentValue = $Value
         }
         "Password" {
-            $bytes = [System.Security.Cryptography.RandomNumberGenerator]::GetBytes($Length)
+            $bytes = [Security.Cryptography.RandomNumberGenerator]::GetBytes($Length)
             $currentValue = [Convert]::ToBase64String($bytes)
             $currentValue = $currentValue.TrimEnd('=').Replace('+','-').Replace('/','_')
         }
         "JwtSecret" {
-            $bytes = [System.Security.Cryptography.RandomNumberGenerator]::GetBytes($Length)
+            $bytes = [Security.Cryptography.RandomNumberGenerator]::GetBytes($Length)
             $currentValue = [System.Buffers.Text.Base64Url]::EncodeToString($bytes)
         }
         "Base64" {
-            $bytes = [System.Security.Cryptography.RandomNumberGenerator]::GetBytes($Length)
+            $bytes = [Security.Cryptography.RandomNumberGenerator]::GetBytes($Length)
             $currentValue = [Convert]::ToBase64String($bytes)
             $currentValue = "base64:" + $currentValue
         }
@@ -347,13 +323,14 @@ function Set-DockerSecret {
         }
     }
     
-    $secretFile = Join-Path -Path $Path.FullName -ChildPath $Name
-    if (-not (Test-Path -Path $secretFile.FullName) -or $Force.IsPresent) {
+    if (-not (Test-Path -Path $secretFile.FullName) -or $Overwrite.IsPresent) {
         $temporaryFile = New-TemporaryFile
         if ($IsLinux) {
             chmod 600 $temporaryFile.FullName
         }
         Set-Content -Path $temporaryFile.FullName -Value $currentValue -Encoding UTF8 -NoNewLine
+
+        New-Item -Path $secretFile.Directory -ItemType Directory -Force
         if ($secretFile.Linktarget) {
             Move-Item -Path $temporaryFile.FullName -Destination $secretFile.LinkTarget -Force
         }
@@ -377,8 +354,8 @@ function Grant-DockerPermission {
 
     param (
         [Parameter(Mandatory)]
-        [ValidateNotNullOrWhiteSpace()]
-        [string]$Path,
+        [ValidateNotNullOrEmpty()]
+        [IO.FileSystemInfo]$Path,
 
         [Parameter(Mandatory)]
         [ValidateRange(0,65535)]
@@ -402,24 +379,23 @@ function Grant-DockerPermission {
     # constants
 
     # variables
-    [System.IO.FileSystemInfo]$workingPath = $null
-    [System.IO.FileSystemInfo[]]$items = @()
-    [System.Collections.Generic.List[System.IO.DirectoryInfo]]$directories = @()
-    [System.Collections.Generic.List[System.IO.FileInfo]]$files = @()
+    [IO.FileSystemInfo[]]$items = @()
+    [Collections.Generic.List[IO.DirectoryInfo]]$directories = @()
+    [Collections.Generic.List[IO.FileInfo]]$files = @()
     [string]$directoryMode = ""
     [string]$fileMode = ""
     [int]$digit = 0
 
-    if (Test-Path -Path $Path) {
+    if (Test-Path -Path $Path.FullName) {
         if ((Get-Item $Path).IsPSContainer) {
-            [System.IO.DirectoryInfo]$workingPath = Get-Item -Path $Path
+            [IO.DirectoryInfo]$Path = Get-Item -Path $Path
         }
         else {
-            [System.IO.FileInfo]$workingPath = Get-Item -Path $Path
+            [IO.FileInfo]$Path = Get-Item -Path $Path
         }
     }
     else {
-        [System.IO.DirectoryInfo]$workingPath = New-Item -Path $Path -ItemType Directory
+        [IO.DirectoryInfo]$Path = New-Item -Path $Path -ItemType Directory -Force
     }
 
     $directoryMode = $Mode
@@ -433,9 +409,9 @@ function Grant-DockerPermission {
         }
     })
 
-    $items = Get-Item -Path $workingPath.FullName -Force:$Force
-    if (($workingPath.PSIsContainer) -and $Recurse.IsPresent) {
-        $items += Get-ChildItem -Path $workingPath.FullName -Force:$Force -Recurse
+    $items = @($Path)
+    if (($Path.PSIsContainer) -and $Recurse.IsPresent) {
+        $items += Get-ChildItem -Path $Path -Force:$Force -Recurse
     }
 
     foreach ($item in $items) {
@@ -450,11 +426,9 @@ function Grant-DockerPermission {
     if ($IsLinux) {
         chown "${PUID}:${PGID}" $items.FullName
         if ($directories) {
-            #chmod $directoryMode $directories.FullName
             $directories.FullName | xargs -r chmod $directoryMode
         }
         if ($files) {
-            #chmod $fileMode $Files.FullName
             $files.FullName | xargs -r chmod $fileMode
         }
     }
@@ -466,51 +440,38 @@ function Get-DockerCompose {
 
     param (
         [Parameter(Mandatory)]
-        [ValidateNotNullOrWhiteSpace()]
-        [string]$Path
+        [ValidateNotNullOrEmpty()]
+        [IO.FileInfo]$Path
     )
 
-    [IO.FileInfo]$workingPath = $null
     [string[]]$content = @()
-    [hashtable]$compose = @{}
 
-    if (Test-Path -Path $Path) {
-        $workingPath = Get-Item -Path $Path -Force
-    }
-    else {
-        throw "File not found."
+    if (-not (Test-Path -Path $Path.FullName)) {
+        throw "File $($Path.FullName) not found."
     }
 
-    try {
-        $content = docker compose -f $workingPath.FullName config
+    $content = docker compose -f $workingFile.FullName config
         #--no-consistency		Don't check model consistency - warning: may produce invalid Compose output
         #--no-env-resolution	Don't resolve service env files
         #--no-interpolate		Don't interpolate environment variables
         #--no-normalize		    Don't normalize compose model (convierte formatos cortos a largos)
         #--no-path-resolution	Don't resolve file paths
-
-        if ($LASTEXITCODE) {
-            throw "Unable to generate compose file: $($Error[0])"
-        }
-        $compose = $content | ConvertFrom-Yaml
-    }
-    catch {
-        throw $PSItem.Exception.Message
-    }
-    
-    return $compose
+    if ($LASTEXITCODE) {
+        throw "Unable to generate compose file: $($Error[0])"
+    }   
+    return [hashtable]($content | ConvertFrom-Yaml)
 }
 
 function Get-DockerVolumes {
     [CmdletBinding()]
-    [OutputType([string[]])]
+    [OutputType([Collections.Generic.List[string]])]
 
     param (
         [Parameter(Mandatory)]
         [ValidateNotNullOrEmpty()]
         [hashtable]$Compose
     )
-    [string[]]$volumes = @()
+    [Collections.Generic.List[string]]$volumesList = @()
 
 
     foreach ($service in $Compose.services) {
@@ -519,13 +480,12 @@ function Get-DockerVolumes {
             if ($service.$serviceName.Keys -Contains "volumes") {
                 #Write-host "Volumen encontrado"
                 #$service.$serviceName.volumes.source
-                $volumes += $service.$serviceName.volumes.source
+                $volumesList.Add($service.$serviceName.volumes.source)
             }
         }
     }
     return $volumes
 }
-
 
 
 function Set-DockerConfiguration {
@@ -537,28 +497,8 @@ function Set-DockerConfiguration {
     )
 }
 
-<#
-function Test-DockerSubmodule {
-    [CmdletBinding()]
-    [OutputType([bool])]
 
-    param (
+## EXPORT COMPONENTES ##########################################################
+Export-ModuleMember -Function * -Variable * #-Module *
 
-    )
-
-    [string]$matchString = $Script:IncludeDir.Basename
-    
-    if ($PSCommandPath -like "*$matchString*" ) {
-        return $true
-    }
-    else {
-        return $false
-    }
-}
-#>
-
-
-## LOAD NEXT SCRIPT BLOCK ######################################################
-#. $nextScript
-Export-ModuleMember -Function * -Variable *
 Write-Host "Finishing $PSCommandPath"

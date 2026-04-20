@@ -39,6 +39,10 @@ else {
 ## Set file permisisons for volumes
 [hashtable]$compose = Get-DockerCompose -Path $Script:workingComposeFile
 $compose
+$compose.services
+$compose.services.app 
+$compose.services.app.volumes
+$compose.services.app.volumes.source
 [string[]]$volumes = Get-DockerVolumes $compose
 $volumes
 

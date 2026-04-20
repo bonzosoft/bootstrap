@@ -469,6 +469,7 @@ function Get-DockerCompose {
 
     [IO.FileInfo]$workingPath = $null
     [string[]]$content = @()
+    [hashtable]$compose = @{}
 
     if (Test-Path -Path $Path) {
         $workingPath = Get-Item -Path $Path -Force
@@ -478,17 +479,23 @@ function Get-DockerCompose {
     }
 
     try {
-        $content = docker compose config 
+        $content = docker compose config -f $workingPath.FullName --no-env-resolution --no-interpolate
+        #--no-consistency		Don't check model consistency - warning: may produce invalid Compose output
+        #--no-env-resolution	Don't resolve service env files
+        #--no-interpolate		Don't interpolate environment variables
+        #--no-normalize		    Don't normalize compose model
+        #--no-path-resolution	Don't resolve file paths
+
         if ($LASTEXITCODE) {
             throw "Unable to generate compose file: $($Error[0])"
         }
-        $content = $content | ConvertFrom-Yaml
+        $compose = $content | ConvertFrom-Yaml
     }
     catch {
         throw $PSItem.Exception.Message
     }
     
-    return $content
+    return $compose
 }
 
 function Get-DockerVolumes {

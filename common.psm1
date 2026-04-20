@@ -355,7 +355,7 @@ function Grant-DockerPermission {
     param (
         [Parameter(Mandatory)]
         [ValidateNotNullOrEmpty()]
-        [IO.FileSystemInfo]$Path,
+        [string[]]$Path,
 
         [Parameter(Mandatory)]
         [ValidateRange(0,65535)]
@@ -376,60 +376,61 @@ function Grant-DockerPermission {
         [switch]$Force
     )
 
-    # constants
+    begin {
+        [IO.FileSystemInfo[]]$items = @()
+        [Collections.Generic.List[IO.DirectoryInfo]]$directories = @()
+        [Collections.Generic.List[IO.FileInfo]]$files = @()
+        [string]$directoryMode = ""
+        [string]$fileMode = ""
+        [int]$digit = 0
 
-    # variables
-    [IO.FileSystemInfo[]]$items = @()
-    [Collections.Generic.List[IO.DirectoryInfo]]$directories = @()
-    [Collections.Generic.List[IO.FileInfo]]$files = @()
-    [string]$directoryMode = ""
-    [string]$fileMode = ""
-    [int]$digit = 0
+        $directoryMode = $Mode
+        $fileMode = -join ($Mode.ToCharArray() | ForEach-Object {
+            $digit = [int]$PSItem
+            if ($digit % 2) {
+                $digit-1
+            }
+            else {
+                $digit
+            }
+        })
+    }
 
-    if (Test-Path -Path $Path.FullName) {
-        if ((Get-Item $Path).IsPSContainer) {
-            [IO.DirectoryInfo]$Path = Get-Item -Path $Path
+    process {
+        if (Test-Path -Path $Path.FullName) {
+            if ((Get-Item $Path).IsPSContainer) {
+                [IO.DirectoryInfo]$Path = Get-Item -Path $Path
+            }
+            else {
+                [IO.FileInfo]$Path = Get-Item -Path $Path
+            }
         }
         else {
-            [IO.FileInfo]$Path = Get-Item -Path $Path
+            [IO.DirectoryInfo]$Path = New-Item -Path $Path -ItemType Directory -Force
         }
-    }
-    else {
-        [IO.DirectoryInfo]$Path = New-Item -Path $Path -ItemType Directory -Force
-    }
-
-    $directoryMode = $Mode
-    $fileMode = -join ($Mode.ToCharArray() | ForEach-Object {
-        $digit = [int]$PSItem
-        if ($digit % 2) {
-            $digit-1
+    
+        $items = @($Path)
+        if (($Path.PSIsContainer) -and $Recurse.IsPresent) {
+            $items += Get-ChildItem -Path $Path -Force:$Force -Recurse
         }
-        else {
-            $digit
+    
+        foreach ($item in $items) {
+            if ($item.PSIsContainer) {
+                $directories.Add($item)
+            }
+            else {
+                $files.Add($item)
+            }
         }
-    })
-
-    $items = @($Path)
-    if (($Path.PSIsContainer) -and $Recurse.IsPresent) {
-        $items += Get-ChildItem -Path $Path -Force:$Force -Recurse
-    }
-
-    foreach ($item in $items) {
-        if ($item.PSIsContainer) {
-            $directories.Add($item)
-        }
-        else {
-            $files.Add($item)
-        }
-    }
-
-    if ($IsLinux) {
-        chown "${PUID}:${PGID}" $items.FullName
-        if ($directories) {
-            $directories.FullName | xargs -r chmod $directoryMode
-        }
-        if ($files) {
-            $files.FullName | xargs -r chmod $fileMode
+    
+        if ($IsLinux) {
+            chown "${PUID}:${PGID}" $items.FullName
+            if ($directories) {
+                $directories.FullName | xargs -r chmod $directoryMode
+            }
+            if ($files) {
+                $files.FullName | xargs -r chmod $fileMode
+            }
         }
     }
 }

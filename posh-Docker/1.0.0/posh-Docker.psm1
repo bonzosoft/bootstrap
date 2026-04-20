@@ -29,8 +29,8 @@ Import-Module -Name /PSModules/powershell-yaml
 [IO.FileInfo]$Script:COMMONCONFIGFILE = Join-Path -Path $Script:COMMONDIR -ChildPath "../config.json"
 [int]$Script:PUID = 568
 [int]$Script:PGID = 568
-[IO.DirectoryInfo]$Script:DATADIR     = Join-Path -Path "/mnt/tank0/data" -ChildPath $ENTRYSCRIPT.BaseName -AditionalChildPath "state"
-[IO.DirectoryInfo]$Script:SECRETSDIR  = Join-Path -Path "/mnt/tank0/data" -ChildPath $ENTRYSCRIPT.BaseName -AditionalChildPath ".secrets"
+[IO.DirectoryInfo]$Script:DATADIR     = Join-Path -Path "/mnt/tank0/data" -ChildPath $ENTRYSCRIPT.Directory.BaseName -AdditionalChildPath "state"
+[IO.DirectoryInfo]$Script:SECRETSDIR  = Join-Path -Path "/mnt/tank0/data" -ChildPath $ENTRYSCRIPT.Directory.BaseName -AdditionalChildPath ".secrets"
 
 
 ## FUNCTIONS ###################################################################

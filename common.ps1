@@ -28,6 +28,8 @@ Import-Module -Name /PSModules/powershell-yaml
 [IO.FileInfo]$Script:workingComposeFile = Join-Path -Path $Script:WORKINGDIR -ChildPath "./compose.yaml"
 [IO.FileInfo]$Script:commonDotEnvFile   = Join-Path -Path $Script:COMMONDIR -ChildPath "./.env.common"
 [IO.FileInfo]$nextScript                = Join-Path -Path $Script:COMMONDIR -ChildPath "common.$($($Script:ENTRYSCRIPT).Name)"
+[int]$Script:PUID = 568
+[int]$Script:PGID = 568
 
 
 ## FUNCTIONS ###################################################################

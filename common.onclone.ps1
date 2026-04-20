@@ -21,19 +21,19 @@ Set-DockerVariable -Path $workingDotEnvFile -Name SECRETSDIR -Value $Script:Secr
 if (Test-Path -Path $Script:IncludeDir) {
     ## UPDATE SUBMODULES
     if ($IsLinux) {
-        Write-Host "Updating submodules."
+        Write-Information "Updating submodules."
         git submodule update --init --recursive --depth 1
     }
 
     ## RUN INCLUDE SCRIPTS
     [IO.FileSystemInfo]$scripts = Get-Item -Path (Join-Path -Path $Script:IncludeDir -ChildPath "*/onclone.ps1")
     foreach ($script in $scripts) {
-        Write-Host "Loading submodule script '$($script.FullName)'."
+        Write-Information "Loading submodule script '$($script.FullName)'."
         . $script.FullName
     }
 }
 else {
-    Write-Host "No submodule find."
+    Write-Information "No submodule find."
 }
 
-Write-Host "Finishing $PSCommandPath"
+Write-Information "Finishing $PSCommandPath"

@@ -469,12 +469,12 @@ function Get-DockerVolumes {
     param (
         [Parameter(Mandatory)]
         [ValidateNotNullOrEmpty()]
-        [hashtable]$Compose
+        [hashtable]$Data
     )
     [Collections.Generic.List[string]]$volumesList = @()
 
 
-    foreach ($service in $Compose.services) {
+    foreach ($service in $Data.services) {
         #Write-Host "Servicio: $($service.Keys)"
         foreach ($serviceName in $service.Keys ) {
             if ($service.$serviceName.Keys -Contains "volumes") {

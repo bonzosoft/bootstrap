@@ -515,7 +515,7 @@ function Get-DockerVolumes {
         foreach ($serviceName in $service.Keys ) {
             if ($service.$serviceName.Keys -Contains "volumes") {
                 Write-host "Volumen encontrado"
-                #$volumes += $service.Values.volumes.source
+                $volumes += $service.$serviceName.volumes.source
             }
         }
     }

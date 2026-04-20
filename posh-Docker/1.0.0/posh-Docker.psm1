@@ -526,7 +526,7 @@ function Set-DockerConfiguration {
 
     [IO.FileInfo]$currentPath = $PSScriptRoot
     [IO.FileInfo]$configFile = $null
-    
+    $currentPath
     if (Test-DockerSubmodule -Path $currentPath) {
         Write-Host "Es submodulo."
         $configFile = Join-Path -Path $Script:INCLUDEDIR -ChildPath $currentPath.Directory.BaseName -AdditionalChildPath $ScriptDir:CONFIGDIR.BaseName

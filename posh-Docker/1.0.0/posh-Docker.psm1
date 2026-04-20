@@ -27,7 +27,8 @@ $Script:WORKINGDIR
 Write-Host "includedir:"
 $Script:INCLUDEDIR
 [IO.DirectoryInfo]$Script:CONFIGDIR   = Join-Path -Path $Script:WORKINGDIR -ChildPath "config"
-
+Write-Host "configdir:"
+$Script:CONFIGDIR
 [IO.FileInfo]$Script:ENVFILE          = Join-Path -Path $Script:WORKINGDIR -ChildPath ".env"
 [IO.FileInfo]$Script:COMPOSEFILE      = Join-Path -Path $Script:WORKINGDIR -ChildPath "compose.yaml"
 [IO.DirectoryInfo]$Script:COMMONDIR   = $PSScriptRoot

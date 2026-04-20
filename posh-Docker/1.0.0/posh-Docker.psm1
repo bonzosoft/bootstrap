@@ -7,6 +7,8 @@ param(
     [IO.FileInfo]$ENTRYSCRIPT 
 )
 
+Write-Host "Loading $PSCommandPath"
+
 ## CONFIGURATION ###############################################################
 Set-StrictMode -Version Latest
 

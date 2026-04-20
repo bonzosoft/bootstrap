@@ -24,9 +24,10 @@ Import-Module -Name /PSModules/powershell-yaml
 [IO.DirectoryInfo]$Script:IncludeDir = Join-Path -Path $Script:WORKINGDIR -ChildPath "./include"
 [IO.DirectoryInfo]$Script:SecretsDir = Join-Path -Path $Script:WORKINGDIR -ChildPath "./.secrets"
 [IO.DirectoryInfo]$Script:DataDir    = Join-Path -Path $Script:WORKINGDIR -ChildPath "./state"
-[IO.FileInfo]$workingDotEnvFile = Join-Path -Path $Script:WORKINGDIR -ChildPath "./.env"
-[IO.FileInfo]$commonDotEnvFile  = Join-Path -Path $Script:COMMONDIR -ChildPath "./.env.common"
-[IO.FileInfo]$nextScript        = Join-Path -Path $Script:COMMONDIR -ChildPath "common.$($($Script:ENTRYSCRIPT).Name)"
+[IO.FileInfo]$Script:workingDotEnvFile  = Join-Path -Path $Script:WORKINGDIR -ChildPath "./.env"
+[IO.FileInfo]$Script:workingComposeFile = Join-Path -Path $Script:WORKINGDIR -ChildPath "./compose.yaml"
+[IO.FileInfo]$Script:commonDotEnvFile   = Join-Path -Path $Script:COMMONDIR -ChildPath "./.env.common"
+[IO.FileInfo]$nextScript                = Join-Path -Path $Script:COMMONDIR -ChildPath "common.$($($Script:ENTRYSCRIPT).Name)"
 
 
 ## FUNCTIONS ###################################################################
@@ -456,15 +457,58 @@ function Grant-DockerPermission {
     }
 }
 
-function Get-DockerVolumesFromCompose {
-    #$var = Get-Content -Raw -Path ./compose.yaml | ConvertFrom-Yaml
-    $var = docker compose config | ConvertFrom-Yaml 
-    $var | Select-Object -Property source
+function Get-DockerCompose {
+    [CmdletBinding()]
+    [OutputType([hashtable])]
+
+    param (
+        [Parameter(Mandatory)]
+        [ValidateNotNullOrWhiteSpace()]
+        [string]$Path
+    )
+
+    [IO.FileInfo]$workingPath = $null
+    [string[]]$content = @()
+
+    if (Test-Path -Path $Path) {
+        $workingPath = Get-Item -Path $Path -Force
+    }
+    else {
+        throw "File not found."
+    }
+
+    try {
+        $content = docker compose config | ConvertFromYaml
+    }
+    catch {
+        throw $PSItem.Exception.Message
+    }
+    
+    return $content
+}
+
+function Get-DockerVolumes {
+    [CmdletBinding()]
+    [OutputType[string[]]]
+
+    param (
+        [Parameter(Mandatory)]
+        [ValidateNotNullOrEmpty()]
+        [hashtable]$Compose
+    )
+    [string[]]$volumes = @()
+
+    foreach ($service in $Compose.Services) {
+        $volumes += $Compose.$service.source
+    }
+
+    return $volumes
 }
 
 function Get-DockerUser {
     (get-content /host/etc/group | ForEach-Object {if ($PSItem -match "^docker.*$"){$PSItem}}).Count
 }
+
 function Test-DockerSubmodule {
     [CmdletBinding()]
     [OutputType([bool])]

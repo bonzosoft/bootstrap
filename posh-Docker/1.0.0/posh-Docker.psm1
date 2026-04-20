@@ -22,7 +22,7 @@ Import-Module -Name /PSModules/powershell-yaml
 [IO.FileInfo]$Script:ENTRYSCRIPT = $ENTRYSCRIPT
 [IO.DirectoryInfo]$Script:WORKINGDIR  = $Script:ENTRYSCRIPT.Directory
 Write-Host "workingdir:"
-$Script:WORKINGDIR.FullName
+Write-Host $Script:WORKINGDIR.FullName
 [IO.DirectoryInfo]$Script:INCLUDEDIR  = Join-Path -Path $Script:WORKINGDIR -ChildPath "include"
 Write-Host "includedir:"
 $Script:INCLUDEDIR

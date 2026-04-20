@@ -509,8 +509,8 @@ function Get-DockerVolumes {
     )
     [string[]]$volumes = @()
 
-    foreach ($service in $Compose.Services) {
-        $volumes += $Compose.$service.source
+    foreach ($service in $Compose.services) {
+        $volumes += $Compose.services.$service.volumes.source
     }
 
     return $volumes

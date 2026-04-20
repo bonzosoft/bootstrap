@@ -479,7 +479,7 @@ function Get-DockerCompose {
     }
 
     try {
-        $content = docker compose -f $workingPath.FullName config --no-interpolate
+        $content = docker compose -f $workingPath.FullName config
         #--no-consistency		Don't check model consistency - warning: may produce invalid Compose output
         #--no-env-resolution	Don't resolve service env files
         #--no-interpolate		Don't interpolate environment variables

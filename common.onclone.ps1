@@ -3,8 +3,6 @@ Write-Host "Loading $PSCommandPath"
 
 ## COMMON SCRIPT ###############################################################
 
-
-
 ## SET .env FILE ACCORDING TO REALM
 [IO.FileInfo]$realmDotEnvFile = Join-Path -Path $Script:WORKINGDIR -ChildPath "./.env.$Realm"
 if (Test-Path -Path $realmDotEnvFile) {
@@ -21,19 +19,19 @@ Set-DockerVariable -Path $workingDotEnvFile -Name SECRETSDIR -Value $Script:Secr
 if (Test-Path -Path $Script:IncludeDir) {
     ## UPDATE SUBMODULES
     if ($IsLinux) {
-        Write-Information "Updating submodules."
+        Write-Host "Updating submodules."
         git submodule update --init --recursive --depth 1
     }
 
     ## RUN SUBMODULE SCRIPTS
     [IO.FileSystemInfo]$scripts = Get-Item -Path (Join-Path -Path $Script:IncludeDir -ChildPath "*/onclone.ps1")
     foreach ($script in $scripts) {
-        Write-Information "Loading submodule script '$($script.FullName)'."
+        Write-Host "Loading submodule script '$($script.FullName)'."
         . $script.FullName
     }
 }
 else {
-    Write-Information "No submodule find."
+    Write-host "No submodule find."
 }
 
 ## Set file permisisons for volumes
@@ -42,4 +40,4 @@ else {
 Write-Host "Volumes:"
 $volumes
 
-Write-Information "Finishing $PSCommandPath"
+Write-Host "Finishing $PSCommandPath"

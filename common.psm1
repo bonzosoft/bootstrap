@@ -27,7 +27,7 @@ Import-Module -Name /PSModules/powershell-yaml
 [IO.FileInfo]$Script:workingDotEnvFile  = Join-Path -Path $Script:WORKINGDIR -ChildPath "./.env"
 [IO.FileInfo]$Script:workingComposeFile = Join-Path -Path $Script:WORKINGDIR -ChildPath "./compose.yaml"
 [IO.FileInfo]$Script:commonDotEnvFile   = Join-Path -Path $Script:COMMONDIR -ChildPath "./.env.common"
-[IO.FileInfo]$nextScript                = Join-Path -Path $Script:COMMONDIR -ChildPath "common.$($($Script:ENTRYSCRIPT).Name)"
+#[IO.FileInfo]$nextScript                = Join-Path -Path $Script:COMMONDIR -ChildPath "common.$(($Global:ENTRYSCRIPT).Name)"
 [int]$Script:PUID = 568
 [int]$Script:PGID = 568
 [IO.FileInfo]$Script:ConfigFile = Join-Path -Path $PSScriptRoot -ChildPath ".config.json"

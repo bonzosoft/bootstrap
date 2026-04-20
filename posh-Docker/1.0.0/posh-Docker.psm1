@@ -21,7 +21,9 @@ Import-Module -Name /PSModules/powershell-yaml
 ## VARIABLES ###################################################################
 [IO.FileInfo]$Script:ENTRYSCRIPT = $ENTRYSCRIPT
 [IO.DirectoryInfo]$Script:WORKINGDIR  = $Script:ENTRYSCRIPT.Directory
+$Script:WORKINGDIR
 [IO.DirectoryInfo]$Script:INCLUDEDIR  = Join-Path -Path $Script:WORKINGDIR -ChildPath "include"
+$Script:INCLUDEDIR
 [IO.DirectoryInfo]$Script:CONFIGDIR   = Join-Path -Path $Script:WORKINGDIR -ChildPath "config"
 
 [IO.FileInfo]$Script:ENVFILE          = Join-Path -Path $Script:WORKINGDIR -ChildPath ".env"

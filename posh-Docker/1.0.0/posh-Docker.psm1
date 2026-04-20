@@ -397,7 +397,6 @@ function Grant-DockerPermission {
     }
 
     process {
-        $Path
         if (Test-Path -Path $Path) {
             if ((Get-Item $Path).IsPSContainer) {
                 [IO.DirectoryInfo]$Path = Get-Item -Path $Path
@@ -490,6 +489,7 @@ function Get-DockerVolumes {
     return $volumesList
 }
 
+
 function Set-DockerConfiguration {
     [CmdletBinding()]
     [OutputType([void])]
@@ -498,6 +498,7 @@ function Set-DockerConfiguration {
 
     )
 }
+
 
 ## EXPORT COMPONENTES ##########################################################
 Export-ModuleMember -Function * -Variable * #-Module *

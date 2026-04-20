@@ -19,10 +19,9 @@ Import-Module -Name /PSModules/powershell-yaml
 ## VARIABLES ###################################################################
 [IO.FileInfo]$Script:ENTRYSCRIPT = $ENTRYSCRIPT
 [IO.DirectoryInfo]$Script:WORKINGDIR  = $Script:ENTRYSCRIPT.Directory
-[IO.DirectoryInfo]$Script:SECRETSDIR  = Join-Path -Path $Script:WORKINGDIR -ChildPath ".secrets"
 [IO.DirectoryInfo]$Script:INCLUDEDIR  = Join-Path -Path $Script:WORKINGDIR -ChildPath "include"
 [IO.DirectoryInfo]$Script:CONFIGDIR   = Join-Path -Path $Script:WORKINGDIR -ChildPath "config"
-[IO.DirectoryInfo]$Script:DATADIR     = Join-Path -Path $Script:WORKINGDIR -ChildPath "state"
+
 [IO.FileInfo]$Script:ENVFILE          = Join-Path -Path $Script:WORKINGDIR -ChildPath ".env"
 [IO.FileInfo]$Script:COMPOSEFILE      = Join-Path -Path $Script:WORKINGDIR -ChildPath "compose.yaml"
 [IO.DirectoryInfo]$Script:COMMONDIR   = $PSScriptRoot
@@ -30,7 +29,8 @@ Import-Module -Name /PSModules/powershell-yaml
 [IO.FileInfo]$Script:COMMONCONFIGFILE = Join-Path -Path $Script:COMMONDIR -ChildPath "../config.json"
 [int]$Script:PUID = 568
 [int]$Script:PGID = 568
-
+[IO.DirectoryInfo]$Script:DATADIR     = Join-Path -Path "/mnt/tank0/data" -ChildPath $ENTRYSCRIPT.BaseName -AditionalChildPath "state"
+[IO.DirectoryInfo]$Script:SECRETSDIR  = Join-Path -Path "/mnt/tank0/data" -ChildPath $ENTRYSCRIPT.BaseName -AditionalChildPath ".secrets"
 
 
 ## FUNCTIONS ###################################################################

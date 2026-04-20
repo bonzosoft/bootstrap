@@ -511,6 +511,9 @@ function Get-DockerVolumes {
 
 
     foreach ($service in $Compose.services.Values) {
+        "Volumes $($service.Key)"
+        $service.volumes
+
         foreach ($volume in @($service.volumes)) {
             if ($volume.type -eq "bind") {
                 $volumes += $volume.source

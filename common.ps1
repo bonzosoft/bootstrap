@@ -478,7 +478,11 @@ function Get-DockerCompose {
     }
 
     try {
-        $content = docker compose config | ConvertFrom-Yaml
+        $content = docker compose config 
+        if ($LASTEXITCODE) {
+            throw "Unable to generate compose file: $($Error[0])"
+        }
+        $content = $content | ConvertFrom-Yaml
     }
     catch {
         throw $PSItem.Exception.Message

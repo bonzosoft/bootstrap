@@ -30,6 +30,7 @@ Import-Module -Name /PSModules/powershell-yaml
 [IO.FileInfo]$nextScript                = Join-Path -Path $Script:COMMONDIR -ChildPath "common.$($($Script:ENTRYSCRIPT).Name)"
 [int]$Script:PUID = 568
 [int]$Script:PGID = 568
+[IO.FileInfo]$Script:ConfigFile = Join-Path -Path $PSScriptRoot -ChildPath ".config.json"
 
 
 ## FUNCTIONS ###################################################################
@@ -525,10 +526,18 @@ function Get-DockerVolumes {
     return $volumes
 }
 
-function Get-DockerUser {
-    (get-content /host/etc/group | ForEach-Object {if ($PSItem -match "^docker.*$"){$PSItem}}).Count
+
+
+function Set-DockerConfiguration {
+    [CmdletBinding()]
+    [OutputType([void])]
+
+    param (
+
+    )
 }
 
+<#
 function Test-DockerSubmodule {
     [CmdletBinding()]
     [OutputType([bool])]
@@ -546,35 +555,10 @@ function Test-DockerSubmodule {
         return $false
     }
 }
+#>
 
-function Test-Truenas {
-    [CmdletBinding(DefaultParameterSetName="Exists")]
-    [OuptutType([bool], "Exists")]
-    [OuptutType([version], "Version")]
-
-    param(
-        [Parameter(ParameterSetName="Version")]
-        [switch]$Version
-    )
-    [IO.FileInfo]$versionFile = "/etc/version"
-    if ($versionFile.Exists) {
-        if ($Version.IsPresent) {
-            return [version](Get-Content -Path $versionFile.FullName)
-        }
-        else {
-            return $true
-        }
-    }
-    else {
-        if ($Version.IsPresent) {
-            return [version]$null
-        }
-        else{
-            return $false
-        }
-    }
-}
 
 ## LOAD NEXT SCRIPT BLOCK ######################################################
-. $nextScript
+#. $nextScript
+Export-ModuleMember -Function * -Variable *
 Write-Host "Finishing $PSCommandPath"

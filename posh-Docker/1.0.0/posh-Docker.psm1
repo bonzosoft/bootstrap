@@ -356,7 +356,7 @@ function Grant-DockerPermission {
     param (
         [Parameter(Mandatory)]
         [ValidateNotNullOrWhiteSpace()]
-        [string]$Path,
+        [IO.FileInfo]$Path,
 
         [Parameter(Mandatory)]
         [ValidateRange(0,65535)]
@@ -379,7 +379,7 @@ function Grant-DockerPermission {
 
     begin {
         [IO.FileSystemInfo[]]$items = @()
-        [Collections.Generic.List[IO.DirectoryInfo]]$directories = @()
+        [Collections.Generic.List[IO.FileInfo]]$directories = @()
         [Collections.Generic.List[IO.FileInfo]]$files = @()
         [string]$directoryMode = ""
         [string]$fileMode = ""
@@ -398,25 +398,17 @@ function Grant-DockerPermission {
     }
 
     process {
-        if (Test-Path -Path $Path) {
-            if ((Get-Item $Path).PSIsContainer) {
-                [IO.DirectoryInfo]$Path = Get-Item -Path $Path
-            }
-            else {
-                [IO.FileInfo]$Path = Get-Item -Path $Path
-            }
-        }
-        else {
-            [IO.DirectoryInfo]$Path = New-Item -Path $Path -ItemType Directory -Force
+        if (-not (Test-Path -Path $Path)) {
+            [IO.FileInfo]$Path = New-Item -Path $Path -ItemType Directory -Force
         }
     
         $items = @($Path)
-        if (($Path.PSIsContainer) -and $Recurse.IsPresent) {
+        if ($Path.Aatributes -match "Directory") {
             $items += Get-ChildItem -Path $Path -Force:$Force -Recurse
         }
     
         foreach ($item in $items) {
-            if ($item.PSIsContainer) {
+            if ($item.Attributes -match "Directory") {
                 $directories.Add($item)
             }
             else {
@@ -528,15 +520,11 @@ function Set-DockerConfiguration {
     Write-Host $Path.Parent.BaseName
     Write-Host $ScriptDir:CONFIGDIR.BaseName
     write-host "1"
-    Write-Host $Path
     write-host "2"
     Write-Host (Join-Path -Path $Script:INCLUDEDIR -ChildPath $Path.Directory.BaseName -AdditionalChildPath $ScriptDir:CONFIGDIR.BaseName)
     write-host "3"
     Write-Host  (Join-Path -Path $configFile.FullName -ChildPath $Name)
-    write-host "4"
-    Write-Host (Join-Path -Path $Script:CONFIGDIR -ChildPath $Name)
-    write-host "5"
-    Write-Host (Join-Path -Path $Script:DATADIR -ChildPath $Path.Directory.BaseName -AdditionalChildPath $Name)
+
     if (Test-DockerSubmodule -Path $Path.DirectoryName) {
         Write-Host "Es submodulo."
         $configFile = Join-Path -Path $Script:INCLUDEDIR -ChildPath $Path.Directory.BaseName -AdditionalChildPath $ScriptDir:CONFIGDIR.BaseName

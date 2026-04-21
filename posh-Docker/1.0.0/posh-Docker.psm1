@@ -474,7 +474,7 @@ function Get-DockerVolumes {
             }
         }
     }
-    $volumesList
+    Write-Host $volumesList
     Write-Host "Pasa"
     for ($i = 0; $i -lt $volumesList.Count; $i++) {
         Write-Host "pasa $i"

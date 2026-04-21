@@ -14,10 +14,10 @@ if (Test-Path -Path $realmDotEnvFile) {
 
 
 ## SET COMMON .env VARIABLES
-Set-DockerVariable -Path $ENVFILE -Name DATADIR    -Value $Script:DATADIR.FullName    -Overwrite -Add -Force
-#Set-DockerVariable -Path $ENVFILE -Name CONFIGDIR  -Value $Script:CONFIGDIR.FullName  -Overwrite -Add -Force
-Set-DockerVariable -Path $ENVFILE -Name INCLUDEDIR -Value $Script:INCLUDEDIR.FullName -Overwrite -Add -Force
-Set-DockerVariable -Path $ENVFILE -Name SECRETSDIR -Value $Script:SECRETSDIR.FullName -Overwrite -Add -Force
+Set-DockerVariable -Path $ENVFILE -Name DATADIR    -Value $Script:DATADIR.FullName    -Overwrite -Append -Force
+#Set-DockerVariable -Path $ENVFILE -Name CONFIGDIR  -Value $Script:CONFIGDIR.FullName  -Overwrite -Append -Force
+Set-DockerVariable -Path $ENVFILE -Name INCLUDEDIR -Value $Script:INCLUDEDIR.FullName -Overwrite -Append -Force
+Set-DockerVariable -Path $ENVFILE -Name SECRETSDIR -Value $Script:SECRETSDIR.FullName -Overwrite -Append -Force
 
 
 ## SUBMODULES MANIPULATION

@@ -2,7 +2,7 @@ Write-Host "Loading $PSCommandPath"
 
 
 ### Configuration ##############################################################
-$ErrorActionPreference = 'Stop'
+#$ErrorActionPreference = 'Stop'
 Set-StrictMode -Version Latest
 
 

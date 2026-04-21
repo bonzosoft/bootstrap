@@ -378,7 +378,7 @@ function Grant-DockerPermission {
     )
 
     begin {
-        [Collections.Generic.List[IO.FileInfo]]$directories = @()
+        [Collections.Generic.List[IO.DirectoryInfo]]$directories = @()
         [Collections.Generic.List[IO.FileInfo]]$files = @()
         [string]$directoryMode = ""
         [string]$fileMode = ""
@@ -397,6 +397,7 @@ function Grant-DockerPermission {
     }
 
     process {
+        return
         if (-not (Test-Path -Path $Path)) {
             $directories += New-Item -Path $Path -ItemType Directory -Force
         }

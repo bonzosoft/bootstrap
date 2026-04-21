@@ -25,7 +25,7 @@ function Set-DockerVariable {
         [switch]$Append #añade el valor si no existe
     )
 
-    [string]$delimiter = " = "
+    [string]$delimiter = "="
     [IO.FileInfo]$temporaryFile = $null
     [Collections.Generic.List[string]]$inputLines = @()
     [Collections.Generic.List[string]]$outputLines = @()

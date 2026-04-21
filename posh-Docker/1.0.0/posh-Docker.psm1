@@ -512,13 +512,9 @@ function Set-DockerConfiguration {
 
     [IO.FileInfo]$configFile = $null
     
-    Write-Host $ScriptDir:CONFIGDIR
-    Write-Host $ScriptDir:INCLUDEDIR
-    Write-Host $ScriptDir:DATADIR
-
     if (Test-DockerSubmodule -Path $Path.DirectoryName) {
         Write-Host "Es submodulo."
-        $configFile = Join-Path -Path $Script:INCLUDEDIR -ChildPath $Path.Directory.BaseName -AdditionalChildPath $ScriptDir:CONFIGDIR.BaseName
+        $configFile = Join-Path -Path $Script:INCLUDEDIR -ChildPath $Path.Directory.BaseName -AdditionalChildPath $Script:CONFIGDIR.BaseName
         $configFile = Join-Path -Path $configFile.FullName -ChildPath $Name
     }
     else {

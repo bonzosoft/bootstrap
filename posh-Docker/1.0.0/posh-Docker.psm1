@@ -468,11 +468,10 @@ function Get-DockerVolumes {
     foreach ($service in $Data.services) {
         #Write-Host "Servicio: $($service.Keys)"
         foreach ($serviceName in $service.Keys ) {
-            if ($service.$serviceName.Keys -Contains "volumes") {
-                #Write-host "Volumen encontrado"
+            if ($service.$serviceName.Keys -contains "volumes") {
                 #$service.$serviceName.volumes.source
-                #$volumesList.AddRange([string[]]$service.$serviceName.volumes.source)
-                $volumesList.AddRange(($service.$serviceName.volumes.source) -split " ")
+                $temporaryList.AddRange([string[]]$service.$serviceName.volumes.source)
+                #$volumesList.AddRange(($service.$serviceName.volumes.source) -split " ")
             }
         }
     }

@@ -486,7 +486,7 @@ function Test-DockerSubmodule {
         [ValidateNotNullOrEmpty()]
         [IO.FileInfo]$Path
     )
-
+    Write-Host $Script:INCLUDEDIR
     if ($Path.DirectoryName -like "$Script:INCLUDEDIR/*") {
         return $true
     }

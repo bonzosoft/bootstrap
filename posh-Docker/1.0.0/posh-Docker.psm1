@@ -532,7 +532,6 @@ function Set-DockerConfiguration {
         $configFile = Join-Path -Path $Script:CONFIGDIR -ChildPath $Name
     }
     
-    Write-Host 4 $(Join-Path -Path $Script:DATADIR -ChildPath $service  -AdditionalChildPath $Name)
     New-Item -Path (Join-Path -Path $Script:DATADIR -ChildPath $service -AdditionalChildPath $Name) -ItemType SymbolicLink -Value $configFile -Force | Out-Null
 }
 

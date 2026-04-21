@@ -24,7 +24,9 @@ Write-Host "Loading module '$PSCommandPath'."
 [string]$Script:PROJECTNAME          = $Script:WORKINGDIR.BaseName
 [int]$Script:PUID                    = 568
 [int]$Script:PGID                    = 568
-[int]$Script:DOCKER_GID              = (Get-Content ./mnt/tank0/apps/config.json | ConvertFrom-Json).DOCKER_GID
+#$var = @{"DOCKER_GID" = 999;"ISTRUENAS" = $true}
+#$var | ConvertTo-Json | Set-Content config.json
+[int]$Script:DOCKER_GID              = (Get-Content /mnt/tank0/apps/config.json | ConvertFrom-Json).DOCKER_GID
 # project directory structure
 [IO.DirectoryInfo]$Script:CONFIGDIR   = Join-Path -Path $Script:WORKINGDIR -ChildPath "config"
 [IO.DirectoryInfo]$Script:INCLUDEDIR  = Join-Path -Path $Script:WORKINGDIR -ChildPath "include"

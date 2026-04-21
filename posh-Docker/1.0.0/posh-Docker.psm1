@@ -475,7 +475,9 @@ function Get-DockerVolumes {
             }
         }
     }
-
+    Write-Host $temporaryList
+    Write-Host $temporaryList.GetType()
+    Write-Host $temporaryList[0].GetType()
     foreach ($item in $temporaryList) {
         if (Test-Path -Path $item) {
             $volumesList.Add((Get-Item -Path $item))

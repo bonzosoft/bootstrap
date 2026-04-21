@@ -532,7 +532,7 @@ function Set-DockerConfiguration {
     else {
         $configFile = Join-Path -Path $Script:CONFIGDIR -ChildPath $Name
     }
-    #New-Item -Path (Join-Path -Path $Script:DATADIR -ChildPath "$($Path.Directory.BaseName.BaseName)/$service" -AdditionalChildPath $Name) -ItemType SymbolicLink -Value $configFile -Force | Out-Null
+    New-Item -Path (Join-Path -Path $Script:DATADIR -ChildPath "$($Path.Directory.BaseName.BaseName)/$service" -AdditionalChildPath $Name) -ItemType SymbolicLink -Value $configFile -Force | Out-Null
 }
 
 

@@ -402,7 +402,7 @@ function Grant-DockerPermission {
             [IO.FileInfo]$Path = New-Item -Path $Path -ItemType Directory -Force
         }
     
-        if ($Path.Attributes -match "Directory") {
+        if ($Path.Attributes -band [System.IO.FileAttributes]::Directory) {
             $directories = @($Path; Get-ChildItem -Path $Path -Directory -Force:$Force -Recurse)
             $files = @(Get-ChildItem -Path $Path -File -Force:$Force -Recurse)
         }
@@ -513,7 +513,7 @@ function Set-DockerConfiguration {
     [IO.FileInfo]$configFile = $null
     
     Write-Host $Path.FullName
-    Write-Host $($ScriptDir:CONFIGDIR).FullName
+    Write-Host $($ScriptDir:CONFIGDIR).GetType()
     write-host "1"
     write-host "2"
     Write-Host (Join-Path -Path $Script:INCLUDEDIR -ChildPath $Path.Directory.BaseName -AdditionalChildPath $ScriptDir:CONFIGDIR.BaseName)

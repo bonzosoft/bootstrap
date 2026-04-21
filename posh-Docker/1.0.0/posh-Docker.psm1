@@ -486,6 +486,9 @@ function Get-DockerVolumes {
             $volumesList.Add([IO.DirectoryInfo]$item)
         }
     }
+    Write-Host $volumesList
+    Write-Host $volumesList.GetType()
+    Write-Host $volumesList[0].GetType()
     return $volumesList
 }
 

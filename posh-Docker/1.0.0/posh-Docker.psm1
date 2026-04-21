@@ -411,7 +411,7 @@ function Grant-DockerPermission {
                 $files = @($Path)
             }
         }
-        return
+
         if ($IsLinux) {
             if ($directories) {
                 chown "${PUID}:${PGID}" $directories.FullName

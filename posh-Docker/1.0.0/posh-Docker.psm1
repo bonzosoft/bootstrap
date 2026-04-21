@@ -471,21 +471,19 @@ function Get-DockerVolumes {
             if ($service.$serviceName.Keys -Contains "volumes") {
                 #Write-host "Volumen encontrado"
                 #$service.$serviceName.volumes.source
-                #$volumesList.AddRange([string[]]$service.$serviceName.volumes.source)
-                $temporaryList += [string[]]$service.$serviceName.volumes.source
+                $volumesList.AddRange([string[]]$service.$serviceName.volumes.source)
             }
         }
     }
 
     foreach ($item in $temporaryList) {
         if (Test-Path -Path $item) {
-            $volumesList += Get-Item -Path $item
+            $volumesList.Add((Get-Item -Path $item))
         }
         else {
-            $volumesList += [IO.DirectoryInfo]$item
+            $volumesList.Add([IO.DirectoryInfo]$item)
         }
     }
-    Write-Host $volumesList
     return $volumesList
 }
 

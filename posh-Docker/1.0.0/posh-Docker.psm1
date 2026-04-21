@@ -412,11 +412,12 @@ function Grant-DockerPermission {
         }
         
         if ($IsLinux) {
-            chown "${PUID}:${PGID}" $items.FullName
             if ($directories) {
+                chown "${PUID}:${PGID}" $directories.FullName
                 $directories.FullName | xargs -r chmod $directoryMode
             }
             if ($files) {
+                chown "${PUID}:${PGID}" $files.FullName
                 $files.FullName | xargs -r chmod $fileMode
             }
         }

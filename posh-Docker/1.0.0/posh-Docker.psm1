@@ -402,20 +402,15 @@ function Grant-DockerPermission {
             [IO.FileInfo]$Path = New-Item -Path $Path -ItemType Directory -Force
         }
     
-        $items = @($Path)
-        if ($Path.Aatributes -match "Directory") {
-            $items += Get-ChildItem -Path $Path -Force:$Force -Recurse
+        if ($Path.Attributes -match "Directory") {
+            $directories = @($Path; Get-ChildItem -Path $Path -Directory -Force:$Force -Recurse)
+            $files = @(Get-ChildItem -Path $Path -File -Force:$Force -Recurse)
         }
-    
-        foreach ($item in $items) {
-            if ($item.Attributes -match "Directory") {
-                $directories.Add($item)
-            }
-            else {
-                $files.Add($item)
-            }
+        else {
+            $directories = @()
+            $files = @(Path)
         }
-    
+        
         if ($IsLinux) {
             chown "${PUID}:${PGID}" $items.FullName
             if ($directories) {

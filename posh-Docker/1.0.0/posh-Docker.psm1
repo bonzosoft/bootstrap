@@ -511,7 +511,7 @@ function Set-DockerConfiguration {
     )
 
     [IO.FileInfo]$configFile = $null
-    $var = Get-DockerCompose -Path (Join-Path -Path Path.Directory -ChildPath "compose.yaml")
+    $var = Get-DockerCompose -Path (Join-Path -Path $Path.Directory -ChildPath "compose.yaml")
     $service = $var.services
     
     if (Test-DockerSubmodule -Path $Path.DirectoryName) {

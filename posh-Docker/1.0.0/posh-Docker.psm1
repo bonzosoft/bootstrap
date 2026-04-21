@@ -356,7 +356,7 @@ function Grant-DockerPermission {
     param (
         [Parameter(Mandatory)]
         [ValidateNotNullOrWhiteSpace()]
-        [IO.FileInfo]$Path,
+        [IO.FileSystemInfo]$Path,
 
         [Parameter(Mandatory)]
         [ValidateRange(0,65535)]
@@ -378,7 +378,6 @@ function Grant-DockerPermission {
     )
 
     begin {
-        [IO.FileSystemInfo[]]$items = @()
         [Collections.Generic.List[IO.FileInfo]]$directories = @()
         [Collections.Generic.List[IO.FileInfo]]$files = @()
         [string]$directoryMode = ""
@@ -399,16 +398,17 @@ function Grant-DockerPermission {
 
     process {
         if (-not (Test-Path -Path $Path)) {
-            [IO.FileInfo]$Path = New-Item -Path $Path -ItemType Directory -Force
-        }
-    
-        if ($Path.Attributes -band [System.IO.FileAttributes]::Directory) {
-            $directories = @($Path; Get-ChildItem -Path $Path -Directory -Force:$Force -Recurse)
-            $files = @(Get-ChildItem -Path $Path -File -Force:$Force -Recurse)
+            $directories += New-Item -Path $Path -ItemType Directory -Force
         }
         else {
-            $directories = @()
-            $files = @(Path)
+            if ($Path.Attributes -band [System.IO.FileAttributes]::Directory) {
+                $directories = @($Path; Get-ChildItem -Path $Path -Directory -Force:$Force -Recurse)
+                $files = @(Get-ChildItem -Path $Path -File -Force:$Force -Recurse)
+            }
+            else {
+                $directories = @()
+                $files = @($Path)
+            }
         }
         
         if ($IsLinux) {

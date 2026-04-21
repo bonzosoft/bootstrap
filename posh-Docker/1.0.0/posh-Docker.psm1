@@ -476,7 +476,7 @@ function Get-DockerVolumes {
     }
 
     for ($i = 0; $i -lt $volumesList.Count; $i++) {
-        if (Test-Path -Path $item) {
+        if (Test-Path -Path $volumesList[$i]) {
             $volumesList[$i] = Get-Item -Path $volumesList[$i]
         }
         else {

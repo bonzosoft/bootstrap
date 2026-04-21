@@ -512,7 +512,7 @@ function Set-DockerConfiguration {
 
     [IO.FileInfo]$configFile = $null
     
-    Write-Host $Path.GetType()
+    Write-Host $Path.FullName
     Write-Host $ScriptDir:CONFIGDIR.BaseName
     write-host "1"
     write-host "2"

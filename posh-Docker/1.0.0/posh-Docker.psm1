@@ -474,14 +474,14 @@ function Get-DockerVolumes {
             }
         }
     }
-    #foreach ($item in $volumesList) {
-    #    if (Test-Path -Path $item) {
-    #        $item = Get-Item -Path $item
-    #    }
-    #    else {
-    #        $item = [IO.DirectoryInfo]$item
-    #    }
-    #}
+    foreach ($item in $volumesList) {
+        if (Test-Path -Path $item) {
+            $item = Get-Item -Path $item
+        }
+        else {
+            $item = [IO.DirectoryInfo]$item
+        }
+    }
     return $volumesList
 }
 

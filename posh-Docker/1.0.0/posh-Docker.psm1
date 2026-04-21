@@ -1,10 +1,10 @@
-[CmdletBinding()]
-
-param(
-    [Parameter()]
-    [ValidateNotNullOrEmpty()]
-    [IO.DirectoryInfo]$Storage = "/mnt"
-)
+#[CmdletBinding()]
+#
+#param(
+#    [Parameter()]
+#    [ValidateNotNullOrEmpty()]
+#    [IO.DirectoryInfo]$Storage = "/mnt"
+#)
 
 
 Write-Host "Loading $PSCommandPath"

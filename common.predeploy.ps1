@@ -1,4 +1,4 @@
-Write-Host "Loading $PSCommandPath"
+Write-Host "Loading '$PSCommandPath.'"
 
 
 ### Configuration ##############################################################
@@ -13,4 +13,4 @@ Import-Module -Name (Join-Path -Path $PSScriptRoot -ChildPath "pwsh-Docker") -Ar
 # nop
 
 
-Write-Host "Finishing $PSCommandPath"
+Write-Host "Finishing '$PSCommandPath'."

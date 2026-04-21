@@ -1,4 +1,4 @@
-Write-Host "Loading $PSCommandPath"
+Write-Host "Loading '$PSCommandPath'."
 
 
 ### Configuration ##############################################################
@@ -49,4 +49,4 @@ foreach ($volume in $volumes) {
     Grant-DockerPermission -Path $volume -PUID $Script:PUID -PGID $Script:PGID -Mode 0755 -Recurse -Force
 }
 
-Write-Host "Finishing $PSCommandPath"
+Write-Host "Finishing '$PSCommandPath'."

@@ -7,7 +7,7 @@
 #)
 
 
-Write-Host "Loading $PSCommandPath"
+Write-Host "Loading module '$PSCommandPath'."
 
 
 ### List of required modules ###################################################
@@ -98,4 +98,4 @@ foreach ($class in $PublicClasses) {
 }
 
 
-Write-Host "Finishing $PSCommandPath"
+Write-Host "Finishing module '$PSCommandPath'."

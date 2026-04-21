@@ -49,4 +49,9 @@ foreach ($volume in $volumes) {
     Grant-DockerPermission -Path $volume -PUID $Script:PUID -PGID $Script:PGID -Mode 0755 -Recurse -Force
 }
 
+## Get Docker PGID
+if (Test-Path -Path $Script:CONFIGJSON) {
+    $configData = Get-Content -Path $Script:CONFIGJSON -Raw | ConvertFrom-Json
+    
+}
 Write-Host "Finishing '$PSCommandPath'."

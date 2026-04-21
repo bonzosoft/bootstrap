@@ -397,7 +397,7 @@ function Grant-DockerPermission {
     }
 
     process {
-        return
+        
         if (-not (Test-Path -Path $Path)) {
             $directories += New-Item -Path $Path -ItemType Directory -Force
         }
@@ -411,7 +411,7 @@ function Grant-DockerPermission {
                 $files = @($Path)
             }
         }
-        
+        return
         if ($IsLinux) {
             if ($directories) {
                 chown "${PUID}:${PGID}" $directories.FullName

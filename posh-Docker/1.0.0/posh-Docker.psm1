@@ -435,6 +435,7 @@ function Get-DockerCompose {
 
     [string[]]$content = @()
 
+    Write-Host "fullName $($Path.FullName)"
     if (-not (Test-Path -Path $Path.FullName)) {
         throw "File $($Path.FullName) not found."
     }

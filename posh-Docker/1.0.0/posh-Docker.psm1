@@ -514,7 +514,9 @@ function Set-DockerConfiguration {
     
     if (Test-DockerSubmodule -Path $Path.DirectoryName) {
         $configFile = Join-Path -Path $Script:INCLUDEDIR -ChildPath $Path.Directory.BaseName -AdditionalChildPath $Script:CONFIGDIR.BaseName
+        Write-host Pasa
         $configFile = Join-Path -Path $configFile.FullName -ChildPath $Name
+        Write-Host No pasa
     }
     else {
         $configFile = Join-Path -Path $Script:CONFIGDIR -ChildPath $Name

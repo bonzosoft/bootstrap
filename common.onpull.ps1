@@ -6,7 +6,7 @@ Set-StrictMode -Version Latest
 
 
 ### Load module ################################################################
-Import-Module -Name "/PSModules/posh-Docker" #-ArgumentList $ENTRYSCRIPT
+Import-Module -Name (Path-Join -Path $PSScriptRoot -ChildPath "posh-Docker") #-ArgumentList $ENTRYSCRIPT
 
 
 ### Script #####################################################################

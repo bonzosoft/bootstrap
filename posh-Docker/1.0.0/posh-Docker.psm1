@@ -511,6 +511,8 @@ function Set-DockerConfiguration {
     )
 
     [IO.FileInfo]$configFile = $null
+    $var = Get-DockerCompose -Path (Join-Path -Path Path.Directory -ChildPath "compose.yaml")
+    $service = $var.services
     
     if (Test-DockerSubmodule -Path $Path.DirectoryName) {
         $configFile = Join-Path -Path $Script:INCLUDEDIR -ChildPath $Path.Directory.BaseName -AdditionalChildPath $Script:CONFIGDIR.BaseName
@@ -521,7 +523,7 @@ function Set-DockerConfiguration {
     else {
         $configFile = Join-Path -Path $Script:CONFIGDIR -ChildPath $Name
     }
-    New-Item -Path (Join-Path -Path $Script:DATADIR -ChildPath $Path.Directory.BaseName -AdditionalChildPath $Name) -ItemType SymbolicLink -Value $configFile -Force | Out-Null
+    New-Item -Path (Join-Path -Path $Script:DATADIR -ChildPath "$($Path.Directory.Directory.BaseName)/$service" -AdditionalChildPath $) -ItemType SymbolicLink -Value $configFile -Force | Out-Null
 }
 
 

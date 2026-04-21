@@ -63,9 +63,9 @@ foreach ($function in @($publicFunctions + $privateFunctions)) {
 }
 
 ## Dot source classes definition files
-#foreach ($class in @($publicClasses + $privateClasses)) {
-#    . $class.FullName
-#}
+foreach ($class in @($publicClasses + $privateClasses)) {
+    . $class.FullName
+}
 
 
 ### Export public module assets ################################################

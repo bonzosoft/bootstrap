@@ -471,7 +471,7 @@ function Get-DockerVolumes {
                 #Write-host "Volumen encontrado"
                 #$service.$serviceName.volumes.source
                 #$volumesList.AddRange([string[]]$service.$serviceName.volumes.source)
-                $temporary += [string[]]$service.$serviceName.volumes.source
+                $temporaryList += [string[]]$service.$serviceName.volumes.source
             }
         }
     }

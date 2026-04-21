@@ -474,19 +474,13 @@ function Get-DockerVolumes {
             }
         }
     }
-    Write-Host $volumesList
-    Write-Host $volumesList.Count
+
     for ($i = 0; $i -lt $volumesList.Count; $i++) {
-        Write-Host "pasa $i"
         if (Test-Path -Path $item) {
             $volumesList[$i] = Get-Item -Path $volumesList[$i]
-            Write-Host $volumesList[$i]
-            Write-Host $volumesList[$i].GetType()
         }
         else {
             $volumesList[$i] = [IO.DirectoryInfo]$volumesList[$i]
-            Write-Host $volumesList[$i]
-            Write-Host $volumesList[$i].GetType()
         }
     }
     return $volumesList

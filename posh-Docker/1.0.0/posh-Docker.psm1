@@ -475,9 +475,6 @@ function Get-DockerVolumes {
             }
         }
     }
-    Write-Host $temporaryList
-    Write-Host $temporaryList.GetType()
-    Write-Host $temporaryList[0].GetType()
     foreach ($item in $temporaryList) {
         if (Test-Path -Path $item) {
             $volumesList.Add((Get-Item -Path $item))
@@ -486,9 +483,6 @@ function Get-DockerVolumes {
             $volumesList.Add([IO.DirectoryInfo]$item)
         }
     }
-    Write-Host $volumesList
-    Write-Host $volumesList.GetType()
-    Write-Host $volumesList[0].GetType()
     return $volumesList
 }
 

@@ -460,7 +460,8 @@ function Get-DockerVolumes {
         [ValidateNotNullOrEmpty()]
         [hashtable]$Data
     )
-    [Collections.Generic.List[string]]$volumesList = @()
+    [Collections.Generic.List[string]]$temporaryList = @()
+    [Collections.Generic.List[IO.FileSystemInfo]]$volumesList = @()
 
 
     foreach ($service in $Data.services) {
@@ -470,19 +471,19 @@ function Get-DockerVolumes {
                 #Write-host "Volumen encontrado"
                 #$service.$serviceName.volumes.source
                 #$volumesList.AddRange([string[]]$service.$serviceName.volumes.source)
-                $volumesList += [string[]]$service.$serviceName.volumes.source
+                $temporary += [string[]]$service.$serviceName.volumes.source
             }
         }
     }
 
-    #for ($i = 0; $i -lt $volumesList.Count; $i++) {
-    #    if (Test-Path -Path $volumesList[$i]) {
-    #        $volumesList[$i] = Get-Item -Path $volumesList[$i]
-    #    }
-    #    else {
-    #        $volumesList[$i] = [IO.DirectoryInfo]$volumesList[$i]
-    #    }
-    #}
+    foreach ($item in $temporaryList) {
+        if (Test-Path -Path $item) {
+            $volumesList += Get-Item -Path $item
+        }
+        else {
+            $volumesList += [IO.DirectoryInfo]$item
+        }
+    }
     return $volumesList
 }
 

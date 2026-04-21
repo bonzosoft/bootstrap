@@ -67,7 +67,7 @@ Import-Module -Name $requiredModules -Force
 # Dot source function definition files
 foreach ($function in @($publicFunctions + $privateFunctions)) {    
     if ($null -ne $function) {
-        Write-Host "Sourcing function '$function'."
+        Write-Host "Sourcing function '$($function.BaseName)'."
         . $function.FullName
     }
 }
@@ -75,7 +75,7 @@ foreach ($function in @($publicFunctions + $privateFunctions)) {
 ## Dot source classes definition files
 foreach ($class in @($publicClasses + $privateClasses)) {
     if ($null -ne $class) {
-        Write-Host "Sourcing function '$class'."
+        Write-Host "Sourcing function '$($class.BaseName)'."
         . $class.FullName
     }
 }

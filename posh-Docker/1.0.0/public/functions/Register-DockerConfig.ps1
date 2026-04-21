@@ -27,5 +27,6 @@ function Register-DockerConfig {
     
     foreach ($file in $configFiles) {
         New-Item -Path (Join-Path -Path $Script:DATADIR -ChildPath $service -AdditionalChildPath $file.Name) -ItemType SymbolicLink -Value $file.FullName -Force | Out-Null
+        Grant-DockerPermission -Path $file.FullName -PUID $Script:PUID -PGID $Script:PGID -Mode "0755"
     }
 }

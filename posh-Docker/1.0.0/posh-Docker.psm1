@@ -475,7 +475,7 @@ function Get-DockerVolumes {
         }
     }
     Write-Host $volumesList
-    Write-Host "Pasa"
+    Write-Host $volumesList.Count
     for ($i = 0; $i -lt $volumesList.Count; $i++) {
         Write-Host "pasa $i"
         if (Test-Path -Path $item) {

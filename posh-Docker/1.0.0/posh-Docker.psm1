@@ -513,18 +513,20 @@ function Set-DockerConfiguration {
     [IO.FileInfo]$configFile = $null
     #$var = Get-DockerCompose -Path (Join-Path -Path $Path.Directory -ChildPath "compose.yaml")
     $var = Get-Content -Path (Join-Path -Path $Path.Directory -ChildPath "compose.yaml") -Raw -Encoding UTF8 | ConvertFrom-Yaml
-    $service = $var.services
+    $service = $var.services.Keys[0]
     
     if (Test-DockerSubmodule -Path $Path.DirectoryName) {
         $configFile = Join-Path -Path $Script:INCLUDEDIR -ChildPath $Path.Directory.BaseName -AdditionalChildPath $Script:CONFIGDIR.BaseName
-        Write-host Pasa
         $configFile = Join-Path -Path $configFile.FullName -ChildPath $Name
-        Write-Host No pasa
     }
     else {
         $configFile = Join-Path -Path $Script:CONFIGDIR -ChildPath $Name
     }
-    New-Item -Path (Join-Path -Path $Script:DATADIR -ChildPath "$($Path.Directory.Directory.BaseName)/$service" -AdditionalChildPath $) -ItemType SymbolicLink -Value $configFile -Force | Out-Null
+    $Path.Directory
+    $Path.Directory.BaseName
+    $Path.Directory.BaseName.BaseName
+    Write-Host (Join-Path -Path $Script:DATADIR -ChildPath "$($Path.Directory.BaseName.BaseName)/$service" -AdditionalChildPath $Name)
+    New-Item -Path (Join-Path -Path $Script:DATADIR -ChildPath "$($Path.Directory.BaseName.BaseName)/$service" -AdditionalChildPath $Name) -ItemType SymbolicLink -Value $configFile -Force | Out-Null
 }
 
 

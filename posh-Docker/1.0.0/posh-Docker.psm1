@@ -453,7 +453,7 @@ function Get-DockerCompose {
 
 function Get-DockerVolumes {
     [CmdletBinding()]
-    [OutputType([Collections.Generic.List[string]])]
+    [OutputType([Collections.Generic.List[IO.FileSystemInfo]])]
 
     param (
         [Parameter(Mandatory)]
@@ -472,6 +472,14 @@ function Get-DockerVolumes {
                 #$volumesList.AddRange([string[]]$service.$serviceName.volumes.source)
                 $volumesList += $service.$serviceName.volumes.source
             }
+        }
+    }
+    foreach ($item in $volumesList) {
+        if (Test-Path -Path $item) {
+            $item = Get-Item -Path $item
+        }
+        else {
+            $item = [IO.DirectoryInfo]$item
         }
     }
     return $volumesList

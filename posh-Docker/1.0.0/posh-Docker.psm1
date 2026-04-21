@@ -66,11 +66,13 @@ Import-Module -Name $requiredModules -Force
 
 # Dot source function definition files
 foreach ($function in @($publicFunctions + $privateFunctions)) {
+    Write-Host "Sourcing function '$function'."
     . $function.FullName
 }
 
 ## Dot source classes definition files
 foreach ($class in @($publicClasses + $privateClasses)) {
+    Write-Host "Sourcing function '$class'."
     . $class.FullName
 }
 

@@ -4,9 +4,9 @@ function Grant-DockerPermission {
     [OutputType([void])]
 
     param (
-        [Parameter(Mandatory)]
+        [Parameter(Mandatory, ParameterSetName="File")]
         [ValidateNotNullOrWhiteSpace()]
-        [IO.FileSystemInfo]$Path,
+        $Path,
 
         [Parameter(Mandatory)]
         [ValidateRange(0,65535)]

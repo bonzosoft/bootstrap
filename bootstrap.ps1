@@ -32,8 +32,8 @@ function Get-DockerPGID {
         else {
             Write-Error -Message "Unexpected number of 'docker' groups found."
         }
+        return $null
     }
-    return $null
 }
 
 

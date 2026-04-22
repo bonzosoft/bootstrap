@@ -462,6 +462,7 @@ if ($Command -eq "menu") {
                 continue
             }
         }
+        Write-Host "$([char]8730) Correcto."
         Start-Sleep -Milliseconds 1000
     }
     while ($true)

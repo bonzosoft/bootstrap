@@ -15,7 +15,7 @@ Set-StrictMode -Version Latest
 
 [string]$Script:COMMON = "common"
 [string]$Script:HOSTNAME = "github.com"
-[IO.FileInfo]$Script:CONFIGFILE = Join-Path -Path $PSScriptRoot -ChildPath ".appsconfig.json"
+[IO.FileInfo]$Script:CONFIGFILE = Join-Path -Path (Get-Location) -ChildPath ".env.json"
 
 
 function Get-DockerPGID {

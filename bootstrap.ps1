@@ -45,6 +45,7 @@ function Test-IsTruenas {
         [switch]$Version
     )
     [IO.FileInfo]$versionFile = "/etc/version"
+    $versionFile
     if ($versionFile.Exists) {
         if ($Version.IsPresent) {
             return [version](Get-Content -Path $versionFile.FullName)

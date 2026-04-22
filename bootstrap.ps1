@@ -21,14 +21,9 @@ $ErrorActionPreference = "Stop"
 
 function Get-DockerPGID {
     #(get-content /host/etc/group | ForEach-Object {if ($PSItem -match "^docker.*$"){$PSItem}}).Count
-    [string[]]$group= @(Get-Content -Path "/host/etc/group" | ForEach-Object { if ($PSItem -like "docker:*") {$PSItem}})
+    [string[]]$group= @(Get-Content -Path "/host/etc/group" | ForEach-Object { if ($PSItem -match "^docker:.*$") {$PSItem}})
     if ( $group.Count -eq 1) {
-        Write-Host $group
-        Write-Host $group[0]
-        Write-Host $group[0].Split(":")
-        Write-Host $group[0].Split(":")[3]
-        Write-Host ($group[0].Split(":"))[3]
-        return $group[0].Split(":")[3]
+        return $group[0].Split(":")[2]
     }
     else {
         if ($group.Count -eq 0) {
@@ -372,7 +367,7 @@ if ($Command -eq "menu") {
         Clear-Host
         Write-Host "==========================="
         Write-Host "===      MAIN MENU      ==="
-        Write-Host "===  Version: 00.02.07  ==="
+        Write-Host "===  Version: 00.02.08  ==="
         Write-Host "==========================="
         Write-Host ""
         Write-Host "GitHub"

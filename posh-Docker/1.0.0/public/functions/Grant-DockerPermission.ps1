@@ -37,7 +37,7 @@ function Grant-DockerPermission {
         $directoryMode = $Mode
         $fileMode = -join ($Mode.ToCharArray() | ForEach-Object {
             $digit = [int]$PSItem
-            if ($digit % 2) {
+            if ($digit -bor 2) {
                 $digit-1
             }
             else {

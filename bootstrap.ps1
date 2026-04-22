@@ -362,8 +362,8 @@ function Stop-Compose {
 
 
 if ($Command -eq "menu") {
-    Write-Host "Pulsa una tecla para iniciar..."
-    Read-Host
+    #Write-Host "Pulsa una tecla para iniciar..."
+    #Read-Host
     Clear-Host
     do {
         Clear-Host

@@ -22,7 +22,7 @@ $ErrorActionPreference = "Stop"
 function Get-DockerPGID {
     #(get-content /host/etc/group | ForEach-Object {if ($PSItem -match "^docker.*$"){$PSItem}}).Count
     $group= Get-Content -Path "/host/etc/group" | ForEach-Object { if ($PSItem -like "docker:*") {$PSItem}}
-    if ($group.Count -eq 1) {
+    if (-not $group.IsArra()) {
         return $group.Split(":")[3]
     }
     else {

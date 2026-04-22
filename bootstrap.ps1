@@ -418,6 +418,8 @@ if ($Command -eq "menu") {
                 $CONFIGJSON["IsTrueNAS"] = Test-IsTruenas
                 $CONFIGJSON["DockerPGID"] = Get-DockerPGID
                 $CONFIGJSON
+                Write-Host $CONFIGJSON["IsTrueNAS"]
+                Write-Host $CONFIGJSON["DockerPGID"]
                 $CONFIGJSON | ConvertTo-Json -Depth 9 | Set-Content -Path $Script:CONFIGFILE -Encoding UTF8
             }
             "5" {

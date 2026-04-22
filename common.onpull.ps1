@@ -20,10 +20,10 @@ if (Test-Path -Path $currentEnvFile) {
 
 
 ## SET ENV FILE VARIABLES
-Set-DockerVariable -Path $ENVFILE -Name DATADIR    -Value $Script:DATADIR.FullName    -Overwrite -Append -Force
-#Set-DockerVariable -Path $ENVFILE -Name CONFIGDIR  -Value $Script:CONFIGDIR.FullName  -Overwrite -Append -Force
-Set-DockerVariable -Path $ENVFILE -Name INCLUDEDIR -Value $Script:INCLUDEDIR.FullName -Overwrite -Append -Force
-Set-DockerVariable -Path $ENVFILE -Name SECRETSDIR -Value $Script:SECRETSDIR.FullName -Overwrite -Append -Force
+Set-DockerVariable -Path $ENVFILE -Name DATADIR    -Value $Script:DATADIR.FullName    -Force
+#Set-DockerVariable -Path $ENVFILE -Name CONFIGDIR  -Value $Script:CONFIGDIR.FullName -Force
+Set-DockerVariable -Path $ENVFILE -Name INCLUDEDIR -Value $Script:INCLUDEDIR.FullName -Force
+Set-DockerVariable -Path $ENVFILE -Name SECRETSDIR -Value $Script:SECRETSDIR.FullName -Force
 
 
 ## SUBMODULES MANAGEMENT
@@ -50,8 +50,7 @@ foreach ($volume in $volumes) {
 }
 
 ## Get Docker PGID
-if (Test-Path -Path $Script:CONFIGJSON) {
-    $configData = Get-Content -Path $Script:CONFIGJSON -Raw | ConvertFrom-Json
-    
-}
+#if (Test-Path -Path $Script:CONFIGJSON) {
+#    $configData = Get-Content -Path $Script:CONFIGJSON -Raw | ConvertFrom-Json
+#}
 Write-Host "Finishing '$PSCommandPath'."

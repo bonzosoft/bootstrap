@@ -44,6 +44,8 @@ function Grant-DockerPermission {
                 $digit
             }
         })
+        Write-Host "File mode: $fileMode"
+        Write-Host "Directory mode: $directoryMode"
     }
 
     process {

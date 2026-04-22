@@ -372,7 +372,7 @@ if ($Command -eq "menu") {
         Clear-Host
         Write-Host "==========================="
         Write-Host "===      MAIN MENU      ==="
-        Write-Host "===  Version: 00.02.05  ==="
+        Write-Host "===  Version: 00.02.06  ==="
         Write-Host "==========================="
         Write-Host ""
         Write-Host "GitHub"

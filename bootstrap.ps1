@@ -23,7 +23,9 @@ function Get-DockerPGID {
     #(get-content /host/etc/group | ForEach-Object {if ($PSItem -match "^docker.*$"){$PSItem}}).Count
     [string[]]$group= @(Get-Content -Path "/host/etc/group" | ForEach-Object { if ($PSItem -like "docker:*") {$PSItem}})
     if ( $group.Count -eq 1) {
-        $group[0]
+        Write-Host $group
+        Write-Host $group[0]
+        Write-Host $group[0].Split(":")
         return $group[0].Split(":")[3]
     }
     else {
@@ -368,7 +370,7 @@ if ($Command -eq "menu") {
         Clear-Host
         Write-Host "==========================="
         Write-Host "===      MAIN MENU      ==="
-        Write-Host "===  Version: 00.02.04  ==="
+        Write-Host "===  Version: 00.02.05  ==="
         Write-Host "==========================="
         Write-Host ""
         Write-Host "GitHub"

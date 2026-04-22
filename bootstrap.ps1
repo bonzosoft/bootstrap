@@ -44,7 +44,7 @@ function Test-IsTruenas {
         [Parameter(ParameterSetName="Version")]
         [switch]$Version
     )
-    [IO.FileInfo]$versionFile = "/etc/version"
+    [IO.FileInfo]$versionFile = "/host/etc/version"
     $versionFile
     $versionFile.Exists
     if ($versionFile.Exists) {

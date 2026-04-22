@@ -19,10 +19,10 @@ function Set-DockerVariable {
         [switch]$Force, #encuentra archivos que normalmente no (ocultos)
 
         [Parameter()]
-        [switch]$Overwrite, #sobrescribe el valor si existe
+        [switch]$NoOverwrite, #sobrescribe el valor si existe
 
         [Parameter()]
-        [switch]$Append #añade el valor si no existe
+        [switch]$NoAppend #añade el valor si no existe
     )
 
     [string]$delimiter = "="
@@ -119,12 +119,12 @@ function Set-DockerVariable {
         if ($currentName -eq $Name) {
             $keyFound = $true
 
-            if ($Overwrite.IsPresent) {
+            if (-not $NoOverwrite.IsPresent) {
                 $newLine = $currentName + $delimiter + $Value
             }
             else {
                 $newLine = $currentName + $delimiter + $currentValue
-            }
+            } 
         }
         else {
             $newLine = $currentName + $delimiter + $currentValue 
@@ -137,7 +137,7 @@ function Set-DockerVariable {
         $outputLines.Add($newLine)
     }
 
-    if (-not $keyFound -and $Add.IsPresent) {
+    if (-not $keyFound -and -not($NoAdd.IsPresent)) {
         $newLine = $Name + $delimiter + $Value 
         $outputLines.Add($newLine)
     }

@@ -24,21 +24,24 @@ Write-Host "Loading module '$PSCommandPath'."
 [string]$Script:PROJECTNAME          = $Script:WORKINGDIR.BaseName
 [int]$Script:PUID                    = 568
 [int]$Script:PGID                    = 568
-#$var = @{"DOCKER_GID" = 999;"ISTRUENAS" = $true}
-#$var | ConvertTo-Json | Set-Content config.json
-[int]$Script:DOCKER_GID              = (Get-Content /mnt/tank0/apps/config.json | ConvertFrom-Json).DOCKER_GID
+
 # project directory structure
-[IO.DirectoryInfo]$Script:CONFIGDIR   = Join-Path -Path $Script:WORKINGDIR -ChildPath "config"
-[IO.DirectoryInfo]$Script:INCLUDEDIR  = Join-Path -Path $Script:WORKINGDIR -ChildPath "include"
-[IO.FileInfo]$Script:COMPOSEFILE      = Join-Path -Path $Script:WORKINGDIR -ChildPath "compose.yaml"
-[IO.FileInfo]$Script:ENVFILE          = Join-Path -Path $Script:WORKINGDIR -ChildPath ".env"
+[IO.DirectoryInfo]$Script:CONFIGDIR  = Join-Path -Path $Script:WORKINGDIR -ChildPath "config"
+[IO.DirectoryInfo]$Script:INCLUDEDIR = Join-Path -Path $Script:WORKINGDIR -ChildPath "include"
+[IO.FileInfo]$Script:COMPOSEFILE     = Join-Path -Path $Script:WORKINGDIR -ChildPath "compose.yaml"
+[IO.FileInfo]$Script:ENVFILE         = Join-Path -Path $Script:WORKINGDIR -ChildPath ".env"
 
 # data directory structure
-[IO.DirectoryInfo]$Script:DATADIR     = Join-Path -Path $Script:WORKINGDIR.Parent.Parent -ChildPath "state" -AdditionalChildPath $Script:PROJECTNAME
-[IO.DirectoryInfo]$Script:SECRETSDIR  = Join-Path -Path $Script:DATADIR -ChildPath ".secrets"
+[IO.DirectoryInfo]$Script:DATADIR    = Join-Path -Path $Script:WORKINGDIR.Parent.Parent -ChildPath "state" -AdditionalChildPath $Script:PROJECTNAME
+[IO.DirectoryInfo]$Script:SECRETSDIR = Join-Path -Path $Script:DATADIR -ChildPath ".secrets"
 
 # infra directory structure
-[IO.FileInfo]$Script:CONFIGJSON       = Join-Path -Path $Script:WORKINGDIR.Parent -ChildPath "config.json"
+[IO.FileInfo]$Script:CONFIGJSON      = Join-Path -Path $Script:WORKINGDIR.Parent -ChildPath "config.json"
+#$var = @{"DOCKER_GID" = 999;"ISTRUENAS" = $true}
+#$var | ConvertTo-Json | Set-Content config.json
+[int]$Script:DOCKER_GID              = (Get-Content -Path $Script:CONFIGJSON | ConvertFrom-Json).DOCKER_GID
+
+# export public variables
 Export-ModuleMember -Variable *
 
 

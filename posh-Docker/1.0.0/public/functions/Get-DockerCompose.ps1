@@ -8,24 +8,24 @@ function Get-DockerCompose {
         [IO.FileInfo]$Path
     )
 
-    [string[]]$fileContent = @()
-    [hashtable]$dockerCompose = @{}
+    [string[]]$composeLines = @()
+    [hashtable]$composeData = @{}
 
     if (-not (Test-Path -Path $Path.FullName)) {
         throw "File $($Path.FullName) not found."
     }
 
-    $fileContent = docker compose -f $Path.FullName config 2>&1
+    $composeLines = docker compose -f $Path.FullName config 2>&1
         #--no-consistency		Don't check model consistency - warning: may produce invalid Compose output
         #--no-env-resolution	Don't resolve service env files
         #--no-interpolate		Don't interpolate environment variables
         #--no-normalize		    Don't normalize compose model (convierte formatos cortos a largos)
         #--no-path-resolution	Don't resolve file paths
     if ($LASTEXITCODE) {
-        throw "Unable to generate compose file: $fileContent"
+        throw "Unable to parse '$Path':`n$composeLines"
     }
 
-    $dockerCompose = $fileContent | ConvertFrom-Yaml
+    $composeData = $composeLines | ConvertFrom-Yaml
 
-    return $dockerCompose
+    return $composeData
 }

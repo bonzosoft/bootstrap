@@ -1,12 +1,12 @@
 
 function Grant-DockerPermission {
-    [CmdletBinding(PositionalBinding=$false)]
+    [CmdletBinding()]
     [OutputType([void])]
 
     param (
-        [Parameter(Mandatory, ParameterSetName="File")]
+        [Parameter(Mandatory, ValueFromPipeline)]
         [ValidateNotNullOrWhiteSpace()]
-        $Path,
+        [IO.FileSystemInfo[]]$Path,
 
         [Parameter(Mandatory)]
         [ValidateRange(0,65535)]
@@ -18,7 +18,7 @@ function Grant-DockerPermission {
 
         [Parameter(Mandatory)]
         [ValidatePattern('^[0-7]{3,4}$')] # Ensures valid octal format (e.g., '755' or '0644')
-        [string]$Mode,
+        [string]$Permission,
 
         [Parameter()]
         [switch]$Recurse,
@@ -30,12 +30,12 @@ function Grant-DockerPermission {
     begin {
         [Collections.Generic.List[IO.DirectoryInfo]]$directories = @()
         [Collections.Generic.List[IO.FileInfo]]$files = @()
-        [string]$directoryMode = ""
-        [string]$fileMode = ""
+        [string]$directoryPermission = ""
+        [string]$filePermission = ""
         [int]$digit = 0
 
-        $directoryMode = $Mode
-        $fileMode = -join ($Mode.ToCharArray() | ForEach-Object {
+        $directoryPermission = $Permission
+        $filePermission = -join ($Permission.ToCharArray() | ForEach-Object {
             $digit = [int]::Parse($PSItem)
             if ($digit % 2) {
                 $digit-1
@@ -44,34 +44,40 @@ function Grant-DockerPermission {
                 $digit
             }
         })
-        Write-Host "File mode: $fileMode"
-        Write-Host "Directory mode: $directoryMode"
+        Write-Host "File mode: $filePermission"
+        Write-Host "Directory mode: $directoryPermission"
     }
 
     process {
-        
-        if (-not (Test-Path -Path $Path)) {
-            $directories += New-Item -Path $Path -ItemType Directory -Force
-        }
-        else {
-            if ($Path.Attributes -band [System.IO.FileAttributes]::Directory) {
-                $directories = @($Path; Get-ChildItem -Path $Path -Directory -Force:$Force -Recurse)
-                $files = @(Get-ChildItem -Path $Path -File -Force:$Force -Recurse)
+        foreach ($item in $Path) {
+            if (-not (Test-Path -Path $item)) {
+                $directories += New-Item -Path $Path -ItemType Directory -Force:$Force
             }
             else {
-                $directories = @()
-                $files = @($Path)
+                $temporaryItem = Get-Item -Path $item -Force:$Force
+                if ($temporaryItem -is [IO.FileInfo]) {
+                    $files.Add($temporaryItem)                   
+                }
+                if ($temporaryItem -is [IO.DirectoryInfo]) {
+                    $directories.Add($temporaryItem)
+                    if ($Recurse.IsPresent) {
+                        $files.AddRange((Get-ChildItem -Path $item -File -Force:$Force -Recurse))
+                        $directories.AddRange((Get-ChildItem -Path $item -Directory -Force:$Force -Recurse))
+                    }
+                }
             }
         }
+    }
 
+    end {
         if ($IsLinux) {
             if ($directories) {
-                $directories.FullName | xargs -r chown "${PUID}:${PGID}" 
-                $directories.FullName | xargs -r chmod $directoryMode
+                $directories.FullName | xargs -r chown ${PUID}:${PGID}
+                $directories.FullName | xargs -r chmod $directoryPermission
             }
             if ($files) {
-                $files.FullName | xargs -r chown "${PUID}:${PGID}" 
-                $files.FullName | xargs -r chmod $fileMode
+                $files.FullName | xargs -r chown ${PUID}:${PGID}
+                $files.FullName | xargs -r chmod $filePermission
             }
         }
     }

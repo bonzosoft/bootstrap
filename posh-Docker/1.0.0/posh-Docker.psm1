@@ -26,8 +26,8 @@ Write-Host "Loading module '$PSCommandPath'."
 [int]$Script:PGID                    = 568
 
 # project directory structure
-[IO.DirectoryInfo]$Script:CONFIGDIR  = Join-Path -Path $Script:WORKINGDIR -ChildPath "config"
-[IO.DirectoryInfo]$Script:INCLUDEDIR = Join-Path -Path $Script:WORKINGDIR -ChildPath "include"
+[string]$Script:CONFIGDIRNAME        = "config"
+[IO.DirectoryInfo]$Script:INCLUDEDIR = Join-Path -Path $Script:WORKINGDIR -ChildPath $IncludeDirName
 [IO.FileInfo]$Script:COMPOSEFILE     = Join-Path -Path $Script:WORKINGDIR -ChildPath "compose.yaml"
 [IO.FileInfo]$Script:ENVFILE         = Join-Path -Path $Script:WORKINGDIR -ChildPath ".env"
 
@@ -37,9 +37,12 @@ Write-Host "Loading module '$PSCommandPath'."
 
 # infra directory structure
 [IO.FileInfo]$Script:CONFIGJSON      = Join-Path -Path $Script:WORKINGDIR.Parent -ChildPath "config.json"
-#$var = @{"DOCKER_GID" = 999;"ISTRUENAS" = $true}
-#$var | ConvertTo-Json | Set-Content config.json
-[int]$Script:DOCKER_GID              = (Get-Content -Path $Script:CONFIGJSON | ConvertFrom-Json).DOCKER_GID
+if (Test-Path -Path $Script:CONFIGJSON) {
+    [hashtable]$Script:DOCKERCONFIG  = Get-Content -Path $Script:CONFIGJSON | ConvertFrom-Json
+}
+else {
+    [hashtable]$Script:DOCKERCONFIG  = @{}
+}
 
 # export public variables
 Export-ModuleMember -Variable *

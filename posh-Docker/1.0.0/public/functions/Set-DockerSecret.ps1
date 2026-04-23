@@ -33,10 +33,12 @@ function Set-DockerSecret {
         [switch]$Overwrite
     )
 
+
     [byte[]]$bytes = @()
     [IO.FileInfo]$secretFile = Join-Path -Path $Path.FullName -ChildPath $Name
     [IO.FileInfo]$temporaryFile = $null
     [string]$currentValue = ""
+
     
     switch ($PSCmdlet.ParameterSetName) {
         "Value" {

@@ -12,8 +12,8 @@ function Get-DockerVolumes {
 
     foreach ($service in $Data.services.Keys) {
         #Write-Host "Servicio: $($service.Keys)"
-        if ($service.Keys -contains "volumes") {
-            foreach ($volume in $service.volumes.source) {
+        if ($Data.services.$service -contains "volumes") {
+            foreach ($volume in $Data.services.$service.volumes.source) {
                 if (Test-Path -Path $volume) {
                     $volumesList += Get-Item -Path $volume
                 }

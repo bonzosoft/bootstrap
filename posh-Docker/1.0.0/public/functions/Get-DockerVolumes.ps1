@@ -11,9 +11,10 @@ function Get-DockerVolumes {
     [IO.FileSystemInfo[]]$volumesList = @()
 
     foreach ($service in $Data.services.Keys) {
-        #Write-Host "Servicio: $($service.Keys)"
-        if ($Data.services.$service -contains "volumes") {
+        $Data.services.$service
+        if ($Data.services.$service.Keys -like "volumes") {
             foreach ($volume in $Data.services.$service.volumes.source) {
+                Write-host "Volumen: $volume"
                 if (Test-Path -Path $volume) {
                     $volumesList += Get-Item -Path $volume
                 }

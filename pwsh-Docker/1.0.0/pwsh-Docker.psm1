@@ -7,7 +7,7 @@ Write-Host "Loading module '$PSCommandPath'."
     "pwsh-dotenv"
 )
 
-
+write-host "entryscript: $Script:ENTRYSCRIPT"
 ### Public variables ###########################################################
 [IO.DirectoryInfo]$Script:WORKINGDIR = (Get-Location).Path
 

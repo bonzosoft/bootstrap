@@ -2,7 +2,7 @@
 
 
 Write-Host "Loading '$PSCommandPath'."
-
+write-host "entryscript: $Script:ENTRYSCRIPT"
 
 ### Configuration ##############################################################
 $ErrorActionPreference = 'Stop'

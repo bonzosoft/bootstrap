@@ -24,10 +24,7 @@ Write-Host "Loading module '$PSCommandPath'."
 [int]$Script:PUID                    = 568
 [int]$Script:PGID                    = 568
 
-# environment infromation
-[hashtable]$config = Get-Content -Path $Script:CONFIGJSON -Raw | ConvertFrom-Json
-[int]$Script:SOCKET_PGID             = $config.SOCKET_PGID
-[string]$Scritp:REALM                = $config.REALM
+
 
 # project directory structure
 [string]$Script:CONFIGDIRNAME        = "config"

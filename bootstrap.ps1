@@ -390,7 +390,7 @@ if ($Command -eq "menu") {
         Clear-Host
         Write-Host "==========================="
         Write-Host "===      MAIN MENU      ==="
-        Write-Host "===  Version: 00.02.16  ==="
+        Write-Host "===  Version: 00.02.17  ==="
         Write-Host "==========================="
         Write-Host ""
         Write-Host "GitHub"
@@ -429,9 +429,9 @@ if ($Command -eq "menu") {
             "3" {
                 Invoke-WebRequest -Uri "https://raw.githubusercontent.com/bonzosoft/bootstrap/pwsh/bootstrap.ps1" -OutFile "bootstrap"
                 Invoke-WebRequest -Uri "https://raw.githubusercontent.com/bonzosoft/bootstrap/pwsh/compose.yaml" -OutFile "compose.yaml"
-                Start-Process -FilePath $PSCommandPath
                 Write-Host "1. $PSCommandPath"
                 Write-Host "2. $($MyInvocation.MyCommand.Path)"
+                Start-Process -FilePath $PSCommandPath
                 exit 0
             }
             "4" {

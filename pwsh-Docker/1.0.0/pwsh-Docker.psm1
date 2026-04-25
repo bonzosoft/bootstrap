@@ -12,10 +12,9 @@ Write-Host "Loading module '$PSCommandPath'."
 
 ### List of required modules ###################################################
 [string[]] $requiredModules = @(
-    "/PSModules/powershell-yaml"
-    #"/PSModules/pwsh-dotenv"
+    "powershell-yaml"
+    "pwsh-dotenv"
 )
-
 
 ### Public variables ###########################################################
 [IO.DirectoryInfo]$Script:WORKINGDIR = (Get-Location).Path
@@ -70,7 +69,9 @@ Export-ModuleMember -Variable *
 ### Load of module assets ######################################################
 
 # Import required modules
-Import-Module -Name $requiredModules -Force
+foreach ($module in $requiredModules) {
+    Import-Module -Name (Join-Path -Path $PSScriptRoot -ChildPath "modules" -AdditionalChildPath $module) -Force
+}
 
 # Dot source function definition files
 foreach ($function in @($publicFunctions + $privateFunctions)) {    

@@ -1,6 +1,5 @@
 #!/usr/bin/env pwsh
 
-[CmdletBinding()]
 param(
     [Parameter()]
     [ValidateSet("login", "logout", "setup", "pull", "start", "stop", "help")]
@@ -10,7 +9,6 @@ param(
     [ValidateNotNullOrEmpty()]
     [string]$Target
 )
-
 
 Set-StrictMode -Version Latest
 $ErrorActionPreference = "Stop"
@@ -390,7 +388,7 @@ if ($Command -eq "menu") {
         Clear-Host
         Write-Host "==========================="
         Write-Host "===      MAIN MENU      ==="
-        Write-Host "===  Version: 00.02.20  ==="
+        Write-Host "===  Version: 00.02.21  ==="
         Write-Host "==========================="
         Write-Host ""
         Write-Host "GitHub"

@@ -7,7 +7,7 @@ Se debe tener creada la carpeta ``/mnt`` que será la base de la infraestructura
 ## Instalación
 Descarga de los archivos necesarios desde bash:
 ````bash
-wget -qO "bootstrap" https://raw.githubusercontent.com/bonzosoft/bootstrap/pwsh/bootstrap.ps1 && wget -qO "compose.yaml" https://raw.githubusercontent.com/bonzosoft/bootstrap/pwsh/compose.yaml
+wget -qO "bootstrap.ps1" https://raw.githubusercontent.com/bonzosoft/bootstrap/pwsh/bootstrap.ps1 && wget -qO "compose.yaml" https://raw.githubusercontent.com/bonzosoft/bootstrap/pwsh/compose.yaml
 ````
 o desde Powershell:
 ````pwsh
@@ -20,12 +20,12 @@ docker run -it --rm -w "$(pwd)" -v "/mnt:/mnt" ghcr.io/bonzosoft/pwsh:latest pws
 
 #### Docker Compose
 ````bash
-docker compose run --rm worker pwsh ./bootstrap
+docker compose run --rm worker pwsh ./bootstrap.ps1
 ````
 
 #### Docker CLI
 ````bash
-docker run -it --rm -w "$(pwd)" -v "/mnt:/mnt" -v "$(pwd)/.config/gh:/root/.config/gh" -v "/var/run/docker.sock:/var/run/docker.sock" ghcr.io/bonzosoft/pwsh:7.6.0 pwsh ./bootstrap -Menu
+docker run -it --rm -w "$(pwd)" -v "/mnt:/mnt" -v "$(pwd)/.config/gh:/root/.config/gh" -v "/var/run/docker.sock:/var/run/docker.sock" ghcr.io/bonzosoft/pwsh:7.6.0 pwsh ./bootstrap.ps1 -Menu
 ````
 
 ### OnPull

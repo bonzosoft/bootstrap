@@ -1,5 +1,6 @@
 #!/usr/bin/env pwsh
 
+[CmdletBinding()]
 param(
     [Parameter()]
     [ValidateSet("login", "logout", "setup", "pull", "start", "stop", "help")]

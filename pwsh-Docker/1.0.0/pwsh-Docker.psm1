@@ -70,6 +70,7 @@ Export-ModuleMember -Variable *
 
 # Import required modules
 foreach ($module in $requiredModules) {
+    Write-Host "Importing module $module."
     Import-Module -Name (Join-Path -Path $PSScriptRoot -ChildPath "modules" -AdditionalChildPath $module) -Force
 }
 

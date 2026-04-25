@@ -10,7 +10,7 @@ Set-StrictMode -Version Latest
 
 
 ### Load module ################################################################
-Import-Module -Name (Join-Path -Path $PSScriptRoot -ChildPath "posh-Docker") #-ArgumentList $ENTRYSCRIPT
+Import-Module -Name (Join-Path -Path $PSScriptRoot -ChildPath "pwsh-Docker") #-ArgumentList $ENTRYSCRIPT
 
 
 ### Script #####################################################################

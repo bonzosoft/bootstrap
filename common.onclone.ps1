@@ -1,3 +1,6 @@
+#!/usr/bin/env pwsh
+
+
 Write-Host "Loading '$PSCommandPath'."
 
 
@@ -6,7 +9,7 @@ Set-StrictMode -Version Latest
 
 
 ### Load module ################################################################
-Import-Module -Name (Join-Path -Path $PSScriptRoot -ChildPath "posh-Docker") -ArgumentList - $ENTRYSCRIPT
+Import-Module -Name (Join-Path -Path $PSScriptRoot -ChildPath "posh-Docker") -ArgumentList $ENTRYSCRIPT
 
 
 ### Script #####################################################################

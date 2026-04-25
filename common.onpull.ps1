@@ -1,3 +1,6 @@
+#!/usr/bin/env pwsh
+
+
 Write-Host "Loading '$PSCommandPath'."
 
 

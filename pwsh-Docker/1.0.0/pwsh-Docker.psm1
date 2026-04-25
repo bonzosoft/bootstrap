@@ -30,7 +30,7 @@ Write-Host "Loading module '$PSCommandPath'."
 # infra directory structure
 [IO.FileInfo]$Script:CONFIGJSON      = Join-Path -Path $Script:WORKINGDIR.Parent -ChildPath ".docker.config.json"
 if (Test-Path -Path $Script:CONFIGJSON) {
-    [hashtable]$Script:DOCKERCONFIG  = Get-Content -Path $Script:CONFIGJSON | ConvertFrom-Json
+    $Script:DOCKERCONFIG  = Get-Content -Path $Script:CONFIGJSON | ConvertFrom-Json
 }
 else {
     throw "File '$($Script:CONFIGJSON)' not found."

@@ -54,6 +54,6 @@ if (Test-Path -Path $Script:INCLUDEDIR) {
 
 ## Get Docker PGID
 if (Test-Path -Path $Script:CONFIGJSON) {
-    $configData = Get-Content -Path $Script:CONFIGJSON -Raw | ConvertFrom-Json
+    $configData = Get-Content -Path $Script:CONFIGJSON -Encoding utf8 | ConvertFrom-Json
 }
 Write-Host "Finishing '$PSCommandPath'."

@@ -16,7 +16,7 @@ Import-Module -Name (Join-Path -Path $PSScriptRoot -ChildPath "pwsh-Docker") #-A
 ### Script #####################################################################
 
 ## SELECT ENV FILE BASED ON REALM
-[IO.FileInfo]$currentEnvFile = Join-Path -Path $Script:WORKINGDIR -ChildPath ".env.$Realm"
+[IO.FileInfo]$currentEnvFile = Join-Path -Path $Script:WORKINGDIR -ChildPath ".env.$($Scritp:REALM)"
 if (Test-Path -Path $currentEnvFile) {
     New-Item -Path $Script:ENVFILE -ItemType SymbolicLink -Value $currentEnvFile -Force | Out-Null
 }

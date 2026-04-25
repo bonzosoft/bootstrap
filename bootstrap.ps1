@@ -16,9 +16,12 @@ Set-StrictMode -Version Latest
 $ErrorActionPreference = "Stop"
 
 
-[string]$Script:COMMON = "common"
-[string]$Script:HOSTNAME = "github.com"
-[IO.FileInfo]$Script:CONFIGFILE = Join-Path -Path (Get-Location) -ChildPath ".env.json"
+# Constants
+[string]$Script:GITHOSTNAME = "github.com"
+[int]$PUID = 568
+[int]$PGID = 568
+[IO.DirectoryInfo]$Script:COMMONDIR = Join-Path -Path (Get-Location) -ChildPath "common"
+[IO.FileInfo]$Script:CONFIGFILE = Join-Path -Path (Get-Location) -ChildPath ".docker.config.json"
 
 
 function Get-DockerPGID {
@@ -373,16 +376,21 @@ function Stop-Compose {
     return
 }
 
+[hashtable]$CONFIGJSON = @{}
+$CONFIGJSON["PUID"]=$PUID
+$CONFIGJSON["PGID"]=$PGID
+$CONFIGJSON["DOCKER_PGID"] = Get-DockerPGID
+$CONFIGJSON["TRUENAS"] = Test-IsTruenas
+$CONFIGJSON | ConvertTo-Json | Set-Content -Path $Script:CONFIGFILE -Encoding UTF8
 
 if ($Command -eq "menu") {
-    #Write-Host "Pulsa una tecla para iniciar..."
-    #Read-Host
     Clear-Host
+
     do {
         Clear-Host
         Write-Host "==========================="
         Write-Host "===      MAIN MENU      ==="
-        Write-Host "===  Version: 00.02.13  ==="
+        Write-Host "===  Version: 00.02.15  ==="
         Write-Host "==========================="
         Write-Host ""
         Write-Host "GitHub"
@@ -395,42 +403,41 @@ if ($Command -eq "menu") {
         Write-Host ""
         Write-Host "Komodo Core"
         Write-Host "  5.  Pull"
-        Write-Host "  6.  Start" -ForegroundColor Gray
-        Write-Host "  7.  Stop" -ForegroundColor Gray
-        Write-Host ""
+        Write-Host "  6.  Start" -ForegroundColor DarkGray
+        Write-Host "  7.  Stop" -ForegroundColor DarkGray
+        Write-Host "" 
         Write-Host "Komodo Periphery"
         Write-Host "  8.  Pull"
-        Write-Host "  9.  Start" -ForegroundColor Gray
-        Write-Host "  10. Stop" -ForegroundColor Gray
+        Write-Host "  9.  Start" -ForegroundColor DarkGray
+        Write-Host "  10. Stop" -ForegroundColor DarkGray
         Write-Host ""
         Write-Host "NPMplus"
         Write-Host "  11. Pull"
-        Write-Host "  12. Start" -ForegroundColor Gray
-        Write-Host "  10. Stop" -ForegroundColor Gray
+        Write-Host "  12. Start" -ForegroundColor DarkGray
+        Write-Host "  10. Stop" -ForegroundColor DarkGray
         Write-Host ""       
         Write-Host "  q.  Exit"
         Write-Host ""
     
         switch (Read-Host "Selecciona una opción") {
             "1" {
-                Connect-Repository -Hostname $Script:HOSTNAME
+                Connect-Repository -Hostname $Script:GITHOSTNAME
             }
             "2" {
-                Disconnect-Repository -Hostname $Script:HOSTNAME
+                Disconnect-Repository -Hostname $Script:GITHOSTNAME
             }
             "3" {
                 Invoke-WebRequest -Uri "https://raw.githubusercontent.com/bonzosoft/bootstrap/pwsh/bootstrap.ps1" -OutFile "bootstrap"
                 Invoke-WebRequest -Uri "https://raw.githubusercontent.com/bonzosoft/bootstrap/pwsh/compose.yaml" -OutFile "compose.yaml"
+                Start-Process -FilePath $PSCommandPath
+                exit 0
             }
             "4" {
                 Get-GithubRepo -Name $Script:COMMON
 
                 #. Join-Path -Path $PSScriptRoot -ChildPath $Script:COMMON -AdditionalChildPath "common.ps1"
     
-                [hashtable]$CONFIGJSON = @{}
-                $CONFIGJSON["IsTrueNAS"] = Test-IsTruenas
-                $CONFIGJSON["DockerPGID"] = Get-DockerPGID
-                $CONFIGJSON | ConvertTo-Json -Depth 9 | Set-Content -Path $Script:CONFIGFILE -Encoding UTF8
+
             }
             "5" {
                 if (-not (Test-Repository)) {
@@ -487,10 +494,10 @@ else {
     <#
     switch ($Command) {
         "login" {
-            Connect-Repository -Hostname $Script:HOSTNAME
+            Connect-Repository -Hostname $Script:GITHOSTNAME
         }
         "logout" {
-            Disconnect-Repository -Hostname $Script:HOSTNAME
+            Disconnect-Repository -Hostname $Script:GITHOSTNAME
         }
         "setup" {
 

@@ -394,7 +394,7 @@ if ($Command -eq "menu") {
         Clear-Host
         Write-Host "==========================="
         Write-Host "===      MAIN MENU      ==="
-        Write-Host "===  Version: 00.02.24  ==="
+        Write-Host "===  Version: 00.02.25  ==="
         Write-Host "==========================="
         Write-Host ""
         Write-Host "GitHub"
@@ -434,7 +434,7 @@ if ($Command -eq "menu") {
                 Invoke-WebRequest -Uri "https://raw.githubusercontent.com/bonzosoft/bootstrap/pwsh/bootstrap.ps1" -OutFile "bootstrap.ps1"
                 Invoke-WebRequest -Uri "https://raw.githubusercontent.com/bonzosoft/bootstrap/pwsh/compose.yaml" -OutFile "compose.yaml"
                 Start-Process -FilePath pwsh -ArgumentList @("-File $PSCommandPath")
-                exit 0
+                return
             }
             "4" {
                 Get-GithubRepo -Name $Script:COMMON

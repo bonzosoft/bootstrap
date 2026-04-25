@@ -1,12 +1,3 @@
-#[CmdletBinding()]
-#
-#param(
-#    [Parameter()]
-#    [ValidateNotNullOrEmpty()]
-#    [IO.DirectoryInfo]$Storage = "/mnt"
-#)
-
-
 Write-Host "Loading module '$PSCommandPath'."
 
 
@@ -16,6 +7,7 @@ Write-Host "Loading module '$PSCommandPath'."
     "pwsh-dotenv"
 )
 
+
 ### Public variables ###########################################################
 [IO.DirectoryInfo]$Script:WORKINGDIR = (Get-Location).Path
 
@@ -24,11 +16,9 @@ Write-Host "Loading module '$PSCommandPath'."
 [int]$Script:PUID                    = 568
 [int]$Script:PGID                    = 568
 
-
-
 # project directory structure
 [string]$Script:CONFIGDIRNAME        = "config"
-
+[IO.DirectoryInfo]$Script:CONFIGDIR  = Join-Path -Path $Script:WORKINGDIR -ChildPath $Script:CONFIGDIRNAME
 [IO.DirectoryInfo]$Script:INCLUDEDIR = Join-Path -Path $Script:WORKINGDIR -ChildPath $IncludeDirName
 [IO.FileInfo]$Script:COMPOSEFILE     = Join-Path -Path $Script:WORKINGDIR -ChildPath "compose.yaml"
 [IO.FileInfo]$Script:ENVFILE         = Join-Path -Path $Script:WORKINGDIR -ChildPath ".env"
@@ -38,12 +28,12 @@ Write-Host "Loading module '$PSCommandPath'."
 [IO.DirectoryInfo]$Script:SECRETSDIR = Join-Path -Path $Script:DATADIR -ChildPath ".secrets"
 
 # infra directory structure
-[IO.FileInfo]$Script:CONFIGJSON      = Join-Path -Path $Script:WORKINGDIR.Parent -ChildPath "config.json"
+[IO.FileInfo]$Script:CONFIGJSON      = Join-Path -Path $Script:WORKINGDIR.Parent -ChildPath ".docker.config.json"
 if (Test-Path -Path $Script:CONFIGJSON) {
     [hashtable]$Script:DOCKERCONFIG  = Get-Content -Path $Script:CONFIGJSON | ConvertFrom-Json
 }
 else {
-    [hashtable]$Script:DOCKERCONFIG  = @{}
+    throw "File '$($Script:CONFIGJSON)' not found."
 }
 
 # export public variables

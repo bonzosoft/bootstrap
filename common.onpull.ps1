@@ -38,8 +38,7 @@ if (Test-Path -Path $Script:INCLUDEDIR) {
     }
 
     ## LOAD SUBMODULE SCRIPTS
-    [Collections.Generic.List[IO.FileInfo]]$submodulesScriptsList = @()
-    $submodulesScriptsList.AddRange((Get-Item -Path (Join-Path -Path $Script:INCLUDEDIR -ChildPath "*/$($ENTRYSCRIPT.Name)")))
+    [IO.FileInfo[]]$submodulesScriptsList = @(Get-Item -Path (Join-Path -Path $Script:INCLUDEDIR -ChildPath "*/$($ENTRYSCRIPT.Name)"))
     foreach ($script in $submodulesScriptsList) {
         Write-Host "Running submodule script '$($script.FullName)'."
         . $script.FullName

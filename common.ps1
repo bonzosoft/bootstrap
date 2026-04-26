@@ -10,11 +10,6 @@ Set-StrictMode -Version Latest
 
 ### VARIABLES ##################################################################
 [IO.DirectoryInfo]$Script:WorkingDir = (Get-Location).Path
-write-host "WorkingDir: $Script:WorkingDir"
-
-# project information
-
-
 
 # project directory structure
 [IO.DirectoryInfo]$Script:ConfigDir  = Join-Path -Path $Script:WorkingDir -ChildPath "config" #$ConfigDirName = Split-Path -Path $Script:ConfigDir -Leaf
@@ -39,6 +34,10 @@ else {
 [int]$Script:PUID                    = 568
 [int]$Script:PGID                    = 568
 [int]$Script:DOCKER_PGID = 
+
+
+Write-Host "WorkingDir: $Script:WorkingDir"
+Write-Host "DataDir: $Script:DataDir"
 
 
 ### Load module ################################################################

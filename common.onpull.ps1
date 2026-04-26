@@ -14,17 +14,17 @@ Write-Host "Loading '$PSCommandPath'."
 
 
 ## SELECT ENV FILE BASED ON REALM
-[IO.FileInfo]$currentEnvFile = Join-Path -Path $Script:WORKINGDIR -ChildPath ".env.$($Script:Config.REALM)"
-if (Test-Path -Path $currentEnvFile) {
-    New-Item -Path $Script:ENVFILE -ItemType SymbolicLink -Value $currentEnvFile -Force | Out-Null
+[IO.FileInfo]$sourceEnvFile = Join-Path -Path $Script:WorkingDir -ChildPath ".env.$($Script:Config.REALM)"
+if (Test-Path -Path $sourceEnvFile) {
+    New-Item -Path $Script:EnvFile -ItemType SymbolicLink -Value $sourceEnvFile -Force | Out-Null
 }
 
 
 ## SET ENV FILE VARIABLES
-Set-DockerVariable -Path $ENVFILE -Name DATADIR    -Value $Script:DATADIR.FullName    -Force
-#Set-DockerVariable -Path $ENVFILE -Name CONFIGDIR  -Value $Script:CONFIGDIR.FullName -Force
-Set-DockerVariable -Path $ENVFILE -Name INCLUDEDIR -Value $Script:INCLUDEDIR.FullName -Force
-Set-DockerVariable -Path $ENVFILE -Name SECRETSDIR -Value $Script:SECRETSDIR.FullName -Force
+Set-DockerVariable -Path $ENVFILE -Name DATADIR    -Value $Script:DataDir.FullName    -Force
+#Set-DockerVariable -Path $ENVFILE -Name CONFIGDIR  -Value $Script:ConfigDir.FullName -Force
+Set-DockerVariable -Path $ENVFILE -Name INCLUDEDIR -Value $Script:IncludeDir.FullName -Force
+Set-DockerVariable -Path $ENVFILE -Name SECRETSDIR -Value $Script:SecretsDir.FullName -Force
 
 
 ## SUBMODULES MANAGEMENT

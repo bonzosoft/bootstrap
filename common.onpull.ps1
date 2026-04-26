@@ -3,7 +3,7 @@
 
 Write-Host "Loading '$PSCommandPath'."
 
-$MyInvocation
+
 ### LOAD COMMON ASSETS #########################################################
 . (Get-Item -Path (Join-Path -Path $PSScriptRoot -ChildPath "common.ps1"))
 

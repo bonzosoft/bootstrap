@@ -10,6 +10,7 @@ Write-Host "Loading module '$PSCommandPath'."
 write-host "entryscript: $($Script:ENTRYSCRIPT)"
 ### Public variables ###########################################################
 [IO.DirectoryInfo]$Script:WORKINGDIR = (Get-Location).Path
+write-host $Script:WORKINGDIR
 
 # project information
 [string]$Script:PROJECTNAME          = $Script:WORKINGDIR.BaseName

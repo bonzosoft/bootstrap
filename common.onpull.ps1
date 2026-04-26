@@ -4,9 +4,8 @@
 Write-Host "Loading '$PSCommandPath'."
 
 
-### Configuration ##############################################################
-$ErrorActionPreference = 'Stop'
-Set-StrictMode -Version Latest
+### LOAD COMMON ASSETS #########################################################
+. (Get-Item -Path (Join-Path -Path $PSScriptRoot -ChildPath "common.ps1")
 
 
 ### Load module ################################################################

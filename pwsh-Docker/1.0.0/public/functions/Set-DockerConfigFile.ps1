@@ -20,11 +20,14 @@ function Set-DockerConfigFile {
 
     begin {
         [string]$target = ""
+        Write-Host "Pasa"
     }
     
     process {
+        Write-Host "Pasa"
         foreach ($item in $Path) {
-            $target = Join-Path -Path $Script:DATADIR -ChildPath $Service -AdditionalChildPath $item.Name
+            Write-Host "Pasa"
+            $target = Join-Path -Path $Script:DataDir -ChildPath $Service -AdditionalChildPath $item.Name
             if ($Link.IsPresent) {
                 New-Item -Path $item.FullName -ItemType SymbolicLink -Value $target -Force:$Force | Out-Null
             }

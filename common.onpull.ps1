@@ -14,7 +14,7 @@ Write-Host "Loading '$PSCommandPath'."
 
 
 ## SELECT ENV FILE BASED ON REALM
-[IO.FileInfo]$currentEnvFile = Join-Path -Path $Script:WORKINGDIR -ChildPath ".env.$($Script:REALM)"
+[IO.FileInfo]$currentEnvFile = Join-Path -Path $Script:WORKINGDIR -ChildPath ".env.$($Script:Config.REALM)"
 if (Test-Path -Path $currentEnvFile) {
     New-Item -Path $Script:ENVFILE -ItemType SymbolicLink -Value $currentEnvFile -Force | Out-Null
 }

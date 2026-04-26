@@ -30,10 +30,10 @@ write-host "WorkingDir: $Script:WorkingDir"
 # infra directory structure
 [IO.FileInfo]$jsonFile      = Join-Path -Path $Script:WorkingDir.Parent -ChildPath ".config" -AdditionalChildPath "docker.config.json"
 if (Test-Path -Path $Script:jsonFile) {
-    $Script:DOCKERCONFIG  = Get-Content -Path $Script:jsonFile | ConvertFrom-Json
+    $Script:Config = Get-Content -Path $jsonFile | ConvertFrom-Json
 }
 else {
-    throw "File '$($Script:jsonFile)' not found."
+    throw "File '$($jsonFile)' not found."
 }
 
 [int]$Script:PUID                    = 568

@@ -36,8 +36,8 @@ else {
 [int]$Script:DOCKER_PGID = 
 
 
-Write-Host "WorkingDir: $Script:WorkingDir"
-Write-Host "DataDir: $Script:DataDir"
+Write-Host "WorkingDir:`t$Script:WorkingDir"
+Write-Host "DataDir:`t$Script:DataDir"
 
 
 ### Load module ################################################################

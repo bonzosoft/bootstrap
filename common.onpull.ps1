@@ -3,7 +3,7 @@
 
 Write-Host "Loading '$PSCommandPath'."
 
-
+$MyInvocation
 ### LOAD COMMON ASSETS #########################################################
 . (Get-Item -Path (Join-Path -Path $PSScriptRoot -ChildPath "common.ps1"))
 
@@ -28,16 +28,16 @@ Set-DockerVariable -Path $ENVFILE -Name SECRETSDIR -Value $Script:SecretsDir.Ful
 
 
 ## SUBMODULES MANAGEMENT
-if (Test-Path -Path $Script:INCLUDEDIR) {
+if (Test-Path -Path $Script:IncludeDir) {
     ## UPDATE SUBMODULE
-    Write-Host "Updating submodules."
+    Write-Host "Pulling submodules."
     if ($IsLinux) {
         git submodule update --init --recursive --depth 1 2>$null
     }
 
     ## LOAD SUBMODULE SCRIPTS
     Write-Host "Loading submodule scripts."
-    [IO.FileInfo[]]$submodulesScriptsList = @(Get-Item -Path (Join-Path -Path $Script:INCLUDEDIR -ChildPath "*/$($Script:ENTRYSCRIPT.Name)"))
+    [IO.FileInfo[]]$submoduleScripts = @(Get-Item -Path (Join-Path -Path $Script:IncludeDir -ChildPath "*" -AdditionalChildPath /$($Script:ENTRYSCRIPT.Name)"))
     foreach ($script in $submodulesScriptsList) {
         Write-Host "Running submodule script '$($script.FullName)'."
         . $script.FullName

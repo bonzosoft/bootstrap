@@ -5,7 +5,7 @@ Write-Host "Loading '$PSCommandPath'."
 
 
 ### LOAD COMMON ASSETS #########################################################
-. (Get-Item -Path (Join-Path -Path $PSScriptRoot -ChildPath "common.ps1")
+. (Get-Item -Path (Join-Path -Path $PSScriptRoot -ChildPath "common.ps1"))
 
 
 ### Load module ################################################################

@@ -15,7 +15,7 @@ function Set-DockerConfigFile {
         [switch]$Link,
 
         [Parameter()]
-        [swithc]$Force
+        [switch]$Force
     )
 
     begin {

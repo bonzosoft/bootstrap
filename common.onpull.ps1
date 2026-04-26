@@ -37,13 +37,13 @@ if (Test-Path -Path $Script:IncludeDir) {
 
     ## LOAD SUBMODULE SCRIPTS
     Write-Host "Loading submodule scripts."
-    #[IO.FileInfo[]]$submoduleScripts = @(Get-Item -Path (Join-Path -Path $Script:IncludeDir -ChildPath "*" -AdditionalChildPath /$($Script:ENTRYSCRIPT.Name)"))
-    foreach ($script in $submodulesScriptsList) {
+    [IO.FileInfo[]]$submoduleScripts = @(Get-Item -Path (Join-Path -Path $Script:IncludeDir -ChildPath "*" -AdditionalChildPath (Split-Path -Path $PSCommandPath -Leaf)))
+    foreach ($script in $submoduleScripts) {
         Write-Host "Running submodule script '$($script.FullName)'."
         . $script.FullName
     }
 }
-
+exit 0
 
 ## Set file permisisons for volumes
 #[Collections.Generic.List[IO.FileSystemInfo]]$volumes= Get-DockerVolumes -Data (Get-DockerCompose -Path $Script:COMPOSEFILE)

@@ -37,7 +37,7 @@ if (Test-Path -Path $Script:IncludeDir) {
 
     ## LOAD SUBMODULE SCRIPTS
     Write-Host "Loading submodule scripts."
-    [IO.FileInfo[]]$submoduleScripts = @(Get-Item -Path (Join-Path -Path $Script:IncludeDir -ChildPath "*" -AdditionalChildPath /$($Script:ENTRYSCRIPT.Name)"))
+    #[IO.FileInfo[]]$submoduleScripts = @(Get-Item -Path (Join-Path -Path $Script:IncludeDir -ChildPath "*" -AdditionalChildPath /$($Script:ENTRYSCRIPT.Name)"))
     foreach ($script in $submodulesScriptsList) {
         Write-Host "Running submodule script '$($script.FullName)'."
         . $script.FullName

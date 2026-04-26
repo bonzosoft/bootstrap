@@ -1,4 +1,4 @@
-Write-Host "Loading module '$PSCommandPath'."
+Write-Host "Importing module '$PSCommandPath'."
 
 
 ### List of required modules ###################################################
@@ -41,7 +41,7 @@ Export-ModuleMember -Variable *
 
 # Import required modules
 foreach ($module in $requiredModules) {
-    Write-Host "Importing module $module."
+    Write-Host "Importing submodule $module."
     Import-Module -Name (Join-Path -Path $PSScriptRoot -ChildPath "modules" -AdditionalChildPath $module) -Force
 }
 
@@ -79,4 +79,4 @@ foreach ($class in $PublicClasses) {
 }
 
 
-Write-Host "Finishing module '$PSCommandPath'."
+Write-Host "Imported module '$PSCommandPath'."

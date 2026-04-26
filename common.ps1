@@ -4,35 +4,42 @@
 Write-Host "Loading '$PSCommandPath'."
 
 
+### CONFIGURATION ##############################################################
 $ErrorActionPreference = 'Stop'
 Set-StrictMode -Version Latest
 
-
-
-[IO.DirectoryInfo]$Script:WORKINGDIR = (Get-Location).Path
-write-host $Script:WORKINGDIR
+### VARIABLES ##################################################################
+[IO.DirectoryInfo]$Script:WorkingDir = (Get-Location).Path
+write-host "WorkingDir: $Script:WorkingDir"
 
 # project information
-[string]$Script:PROJECTNAME          = $Script:WORKINGDIR.BaseName
-[int]$Script:PUID                    = 568
-[int]$Script:PGID                    = 568
+
+
 
 # project directory structure
-[string]$Script:CONFIGDIRNAME        = "config"
-[IO.DirectoryInfo]$Script:CONFIGDIR  = Join-Path -Path $Script:WORKINGDIR -ChildPath $Script:CONFIGDIRNAME
-[IO.DirectoryInfo]$Script:INCLUDEDIR = Join-Path -Path $Script:WORKINGDIR -ChildPath $IncludeDirName
-[IO.FileInfo]$Script:COMPOSEFILE     = Join-Path -Path $Script:WORKINGDIR -ChildPath "compose.yaml"
-[IO.FileInfo]$Script:ENVFILE         = Join-Path -Path $Script:WORKINGDIR -ChildPath ".env"
+[IO.DirectoryInfo]$Script:ConfigDir  = Join-Path -Path $Script:WorkingDir -ChildPath "config" #$ConfigDirName = Split-Path -Path $Script:ConfigDir -Leaf
+[IO.DirectoryInfo]$Script:IncludeDir = Join-Path -Path $Script:WorkingDir -ChildPath "include"
+[IO.FileInfo]$Script:ComposeFile     = Join-Path -Path $Script:WorkingDir -ChildPath "compose.yaml"
+[IO.FileInfo]$Script:EnvFile         = Join-Path -Path $Script:WorkingDir -ChildPath ".env"
 
 # data directory structure
-[IO.DirectoryInfo]$Script:DATADIR    = Join-Path -Path $Script:WORKINGDIR.Parent.Parent -ChildPath "state" -AdditionalChildPath $Script:PROJECTNAME
-[IO.DirectoryInfo]$Script:SECRETSDIR = Join-Path -Path $Script:DATADIR -ChildPath ".secrets"
+[string]$Script:ProjectName          = $Script:WorkingDir.BaseName
+[IO.DirectoryInfo]$Script:DataDir    = Join-Path -Path $Script:WorkingDir.Parent.Parent -ChildPath "state" -AdditionalChildPath $Script:ProjectName
+[IO.DirectoryInfo]$Script:SecretsDir = Join-Path -Path $Script:DataDir -ChildPath ".secrets"
 
 # infra directory structure
-[IO.FileInfo]$Script:CONFIGJSON      = Join-Path -Path $Script:WORKINGDIR.Parent -ChildPath ".docker.config.json"
-if (Test-Path -Path $Script:CONFIGJSON) {
-    $Script:DOCKERCONFIG  = Get-Content -Path $Script:CONFIGJSON | ConvertFrom-Json
+[IO.FileInfo]$jsonFile      = Join-Path -Path $Script:WorkingDir.Parent -ChildPath ".config" -AdditionalChildPath "docker.config.json"
+if (Test-Path -Path $Script:jsonFile) {
+    $Script:DOCKERCONFIG  = Get-Content -Path $Script:jsonFile | ConvertFrom-Json
 }
 else {
-    throw "File '$($Script:CONFIGJSON)' not found."
+    throw "File '$($Script:jsonFile)' not found."
 }
+
+[int]$Script:PUID                    = 568
+[int]$Script:PGID                    = 568
+[int]$Script:DOCKER_PGID = 
+
+
+### Load module ################################################################
+Import-Module -Name (Join-Path -Path $PSScriptRoot -ChildPath "pwsh-Docker")

@@ -8,11 +8,10 @@ Write-Host "Loading '$PSCommandPath'."
 . (Get-Item -Path (Join-Path -Path $PSScriptRoot -ChildPath "common.ps1"))
 
 
-### Load module ################################################################
-Import-Module -Name (Join-Path -Path $PSScriptRoot -ChildPath "pwsh-Docker") #-ArgumentList $ENTRYSCRIPT
+################################################################################
+### BELOW HERE TO BE RUN AFTER COMMON ASSETS ###################################
+################################################################################
 
-
-### Script #####################################################################
 
 ## SELECT ENV FILE BASED ON REALM
 [IO.FileInfo]$currentEnvFile = Join-Path -Path $Script:WORKINGDIR -ChildPath ".env.$($Script:REALM)"

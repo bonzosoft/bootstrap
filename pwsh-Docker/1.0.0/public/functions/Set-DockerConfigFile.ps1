@@ -9,7 +9,7 @@ function Set-DockerConfigFile {
 
         [Parameter(Mandatory)]
         [ValidateNotNullOrWhiteSpace()]
-        [string]$Service,
+        [string]$Target,
 
         [Parameter()]
         [switch]$Link,
@@ -17,21 +17,12 @@ function Set-DockerConfigFile {
         [Parameter()]
         [switch]$Force
     )
-
-    begin {
-        [string]$target = ""
-        Write-Host "Pasa"
-    }
-    
+   
     process {
-        Write-Host "Pasa"
         foreach ($item in $Path) {
-            Write-Host "Pasa"
-            Write-Host $Script:DataDir
-            Write-Host $item.FullName
-            $target = Join-Path -Path $Script:DataDir -ChildPath $Service -AdditionalChildPath $item.Name
+            $target = 
             if ($Link.IsPresent) {
-                New-Item -Path $item.FullName -ItemType SymbolicLink -Value $target -Force:$Force | Out-Null
+                New-Item -Path $item.FullName -ItemType SymbolicLink -Value $Target -Force:$Force | Out-Null
             }
             else {
                 Copy-Item -Path $item.FullName -Destination $target -Force:$Force | Out-Null

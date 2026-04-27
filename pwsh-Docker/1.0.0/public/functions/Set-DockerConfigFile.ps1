@@ -21,10 +21,10 @@ function Set-DockerConfigFile {
     process {
         foreach ($item in $Path) {
             if ($Link.IsPresent) {
-                New-Item -Path $item.FullName -ItemType SymbolicLink -Value $Target -Force:$Force | Out-Null
+                New-Item -Path $Target -ItemType SymbolicLink -Value $item.FullName -Force:$Force | Out-Null
             }
             else {
-                Copy-Item -Path $item.FullName -Destination $target -Force:$Force | Out-Null
+                Copy-Item -Path $item.FullName -Destination $Target -Force:$Force | Out-Null
             }           
         }
     }

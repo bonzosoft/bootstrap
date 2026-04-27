@@ -20,7 +20,6 @@ function Set-DockerConfigFile {
    
     process {
         foreach ($item in $Path) {
-            $target = 
             if ($Link.IsPresent) {
                 New-Item -Path $item.FullName -ItemType SymbolicLink -Value $Target -Force:$Force | Out-Null
             }

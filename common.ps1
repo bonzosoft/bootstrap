@@ -58,6 +58,7 @@ $Script:Env = Get-DockerContext
 Write-Host $Env.WorkingDir
 Write-Host $Env.DotEnvFile
 Write-Host $Env.GlobalConfig.DOCKER_PGID
+Write-Host $Env.GlobalConfig.IS_TRUENAS
 Write-Host Funciono?
 #[IO.DirectoryInfo]$Script:WorkingDir = (Get-Location).Path
 

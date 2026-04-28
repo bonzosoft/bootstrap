@@ -48,6 +48,7 @@ if (Test-Path -Path $Script:IncludeDir) {
 $dockerCompose = Get-DockerCompose -Path $Script:COMPOSEFILE
 Write-Host $dockerCompose.GetType()
 #[IO.FileSystemInfo[]]
+[IO.FileSystemInfo[]]$volumes = @()
 $volumes= Get-DockerVolumes -Data $dockerCompose
 Write-Host $volumes.GetType()
 #foreach ($volume in $volumes) {

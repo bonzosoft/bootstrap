@@ -3,9 +3,9 @@ function Set-DockerSecret {
     [OutputType([void])]
 
     param(
-        [Parameter(Mandatory)]
+        [Parameter()]
         [ValidateNotNullOrEmpty()]
-        [IO.DirectoryInfo]$Path,
+        [IO.DirectoryInfo]$Path = $Script:Context.SecretsDir,
 
         [Parameter(Mandatory)]
         [ValidateNotNullOrWhiteSpace()]

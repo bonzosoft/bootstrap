@@ -24,14 +24,14 @@ if (Test-Path -Path $sourceEnvFile) {
 
 
 ## SET ENV FILE VARIABLES
-Set-DockerVariable -Path $ENVFILE -Name DATADIR    -Value $Script:DataDir.FullName    -Force
-#Set-DockerVariable -Path $ENVFILE -Name CONFIGDIR  -Value $Script:ConfigDir.FullName -Force
-Set-DockerVariable -Path $ENVFILE -Name INCLUDEDIR -Value $Script:IncludeDir.FullName -Force
-Set-DockerVariable -Path $ENVFILE -Name SECRETSDIR -Value $Script:SecretsDir.FullName -Force
+Set-DockerVariable -Name DATADIR    -Value $Script:Context.DataDir.FullName    -Force
+#Set-DockerVariable -Name CONFIGDIR  -Value $Script:Context.ConfigDir.FullName -Force
+Set-DockerVariable -Name INCLUDEDIR -Value $Script:Context.IncludeDir.FullName -Force
+Set-DockerVariable -Name SECRETSDIR -Value $Script:Context.SecretsDir.FullName -Force
 
 
 ## SUBMODULES MANAGEMENT
-if (Test-Path -Path $Script:IncludeDir) {
+if (Test-Path -Path $Script:Context.IncludeDir) {
     ## UPDATE SUBMODULE
     Write-Host "Pulling submodules."
     if ($IsLinux) {
@@ -40,7 +40,7 @@ if (Test-Path -Path $Script:IncludeDir) {
 
     ## LOAD SUBMODULE SCRIPTS
     Write-Host "Loading submodule scripts."
-    [IO.FileInfo[]]$submoduleScripts = @(Get-Item -Path (Join-Path -Path $Script:IncludeDir -ChildPath "*" -AdditionalChildPath (Split-Path -Path $MyInvocation.PSCommandPath -Leaf)))
+    [IO.FileInfo[]]$submoduleScripts = @(Get-Item -Path (Join-Path -Path $Script:Context.IncludeDir -ChildPath "*" -AdditionalChildPath (Split-Path -Path $MyInvocation.PSCommandPath -Leaf)))
     foreach ($script in $submoduleScripts) {
         Write-Host "Running submodule script '$($script.FullName)'."
         . $script.FullName
@@ -48,8 +48,8 @@ if (Test-Path -Path $Script:IncludeDir) {
 }
 
 ## Set file permisisons for volumes
-[IO.FileSystemInfo[]]$volumes = Get-DockerVolumes -Data (Get-DockerCompose -Path $Script:COMPOSEFILE)
-Grant-DockerPermission -Path $volumes -PUID $Script:PUID -PGID $Script:PGID -Permission "0755" -Recurse -Force
+[IO.FileSystemInfo[]]$volumes = Get-DockerVolumes -Data (Get-DockerCompose -Path $Script:Context.ComposeFile)
+Grant-DockerPermission -Path $volumes -PUID $Script:Context.PUID -PGID $Script:Context.PGID -Permission "0755" -Recurse -Force
 
 
 

@@ -5,7 +5,7 @@ function Get-DockerVolumes {
     param (
         [Parameter(Mandatory)]
         [ValidateNotNullOrEmpty()]
-        [hashtable]$Data
+        [PSCustomObject]$Data
     )
 
     [IO.FileSystemInfo[]]$volumesList = @()

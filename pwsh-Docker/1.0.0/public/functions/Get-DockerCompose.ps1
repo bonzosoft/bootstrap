@@ -3,9 +3,9 @@ function Get-DockerCompose {
     [OutputType([hashtable])]
 
     param (
-        [Parameter(Mandatory)]
+        [Parameter()]
         [ValidateNotNullOrEmpty()]
-        [IO.FileInfo]$Path
+        [IO.FileInfo]$Path = $Script:Context.ComposeFile
     )
 
     [string[]]$composeLines = @()

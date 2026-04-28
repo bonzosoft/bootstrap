@@ -4,7 +4,7 @@
 Write-Host "Loading '$PSCommandPath'."
 
 
-### LOAD COMMON ASSETS #########################################################
+### SINGLETON ##################################################################
 if (Get-Variable -Name "__INCLUDED_COMMON_ONPULL" -Scope Global -ErrorAction SilentlyContinue) {
     return
 }
@@ -12,14 +12,13 @@ else {
     New-Variable -Name "__INCLUDED_COMMON_ONPULL" -Scope Global -Value $true
 }
 
-# contenido del script
+
+### LOAD COMMON ASSETS #########################################################
 . (Get-Item -Path (Join-Path -Path $PSScriptRoot -ChildPath "common.ps1"))
 
 
 ################################################################################
-### BELOW HERE TO BE RUN AFTER COMMON ASSETS ###################################
-################################################################################
-
+### Script #####################################################################
 
 ## SELECT ENV FILE BASED ON REALM
 [IO.FileInfo]$sourceEnvFile = Join-Path -Path $Script:WorkingDir -ChildPath ".env.$($Script:Config.REALM)"

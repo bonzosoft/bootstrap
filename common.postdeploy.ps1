@@ -4,16 +4,22 @@
 Write-Host "Loading '$PSCommandPath'."
 
 
-### Configuration ##############################################################
-$ErrorActionPreference = 'Stop'
-Set-StrictMode -Version Latest
+### SINGLETON ##################################################################
+if (Get-Variable -Name "__INCLUDED_COMMON_POSTDEPLOY" -Scope Global -ErrorAction SilentlyContinue) {
+    return
+}
+else {
+    New-Variable -Name "__INCLUDED_COMMON_POSTDEPLOY" -Scope Global -Value $true
+}
 
 
-### Load module ################################################################
-Import-Module -Name (Join-Path -Path $PSScriptRoot -ChildPath "pwsh-Docker") -ArgumentList $ENTRYSCRIPT
+### LOAD COMMON ASSETS #########################################################
+. (Get-Item -Path (Join-Path -Path $PSScriptRoot -ChildPath "common.ps1"))
 
 
+################################################################################
 ### Script #####################################################################
+
 # nop
 
 

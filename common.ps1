@@ -1,7 +1,16 @@
 #!/usr/bin/env pwsh
 
 
-Write-Verbose "Loading '$PSCommandPath'."
+Write-Host "Loading '$PSCommandPath'."
+
+
+### SINGLETON ##################################################################
+if (Get-Variable -Name "__INCLUDED_COMMON" -Scope Global -ErrorAction SilentlyContinue) {
+    return
+}
+else {
+    New-Variable -Name "__INCLUDED_COMMON" -Scope Global -Value $true
+}
 
 
 ### CONFIGURATION ##############################################################

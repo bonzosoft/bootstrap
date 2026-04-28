@@ -19,7 +19,7 @@ $ErrorActionPreference = 'Stop'
 
 
 ### VARIABLES ##################################################################
-
+<#
 [hashtable]$Script:Env = @{}
 $Script:Env["WorkingDir"]   = [IO.DirectoryInfo](Get-Location).Path
 $Script:Env["ConfigDir"]    = [IO.DirectoryInfo](Join-Path -Path $Script:Env.WorkingDir -ChildPath "config")
@@ -41,6 +41,10 @@ else {
 $Script:Env["PUID"]         = [int]568
 $Script:Env["PGID"]         = [int]568
 $Script:Env["DOCKER_PGID"]  = [int]$config.DOCKER_PGID
+
+Write-Host "WorkingDir:`t$($Script:Env.WorkingDir)"
+Write-Host "DataDir:`t$($Script:Env.DataDir)"
+#>
 
 
 [IO.DirectoryInfo]$Script:WorkingDir = (Get-Location).Path
@@ -70,11 +74,9 @@ else {
 [int]$Script:DOCKER_PGID             = $Script:Config.DOCKER_PGID
 
 
-Write-Host "WorkingDir:`t$Script:WorkingDir"
-Write-Host "DataDir:`t$Script:DataDir"
-Write-Host "WorkingDir:`t$($Script:Env.WorkingDir)"
-Write-Host "DataDir:`t$($Script:Env.DataDir)"
+
 
 
 ### Load module ################################################################
-Import-Module -Name (Join-Path -Path $PSScriptRoot -ChildPath "pwsh-Docker") -ArgumentList $Script:Env
+#Import-Module -Name (Join-Path -Path $PSScriptRoot -ChildPath "pwsh-Docker") -ArgumentList $Script:Env
+Import-Module -Name (Join-Path -Path $PSScriptRoot -ChildPath "pwsh-Docker") -ArgumentList @("-WorkingDir $((Get-Location).Path)")

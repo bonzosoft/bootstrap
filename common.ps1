@@ -22,7 +22,7 @@ $Script:Env["ProjectName"]  = [string]$Script:Env.WorkingDir.BaseName
 $Script:Env["DataDir"]      = [IO.DirectoryInfo](Join-Path -Path $Script:Env.WorkingDir.Parent.Parent -ChildPath "state" -AdditionalChildPath $Script:Env.ProjectName)
 $Script:Env["SecretsDir"]   = [IO.DirectoryInfo](Join-Path -Path $Script:Env.DataDir -ChildPath ".secrets")
 
-$Script:Env["EnvFile"]      = [IO.FileInfo](Join-Path -Path $Script:WorkingDir.Parent -ChildPath ".config" -AdditionalChildPath "docker.config.json")
+$Script:Env["EnvFile"]      = [IO.FileInfo](Join-Path -Path $Script:Env.WorkingDir.Parent -ChildPath ".config" -AdditionalChildPath "docker.config.json")
 if (Test-Path -Path $Script:Env.EnvFile) {
     $config = Get-Content -Path $Script:Env.EnvFile | ConvertFrom-Json
     $Script:Env["PUID"]         = [int]568

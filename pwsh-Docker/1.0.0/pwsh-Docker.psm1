@@ -10,7 +10,7 @@ param (
 
 
 Write-Host "Importing module '$PSCommandPath'."
-
+Write-Host $WorkingDir
 
 ### List of required modules ###################################################
 [string[]] $requiredModules = @(

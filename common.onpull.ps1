@@ -1,9 +1,5 @@
 #!/usr/bin/env pwsh
 
-
-Write-Host "Loading '$PSCommandPath'."
-
-
 ### SINGLETON ##################################################################
 if (Get-Variable -Name "__INCLUDED_COMMON_ONPULL" -Scope Global -ErrorAction SilentlyContinue) {
     return
@@ -13,14 +9,14 @@ else {
 }
 
 
+Write-Host "Loading '$PSCommandPath'."
+
+
 ### LOAD COMMON ASSETS #########################################################
 . (Get-Item -Path (Join-Path -Path $PSScriptRoot -ChildPath "common.ps1"))
 
 
-################################################################################
-### Script #####################################################################
-
-## SELECT ENV FILE BASED ON REALM
+## SET ENV FILE
 [IO.FileInfo]$sourceEnvFile = Join-Path -Path $Script:WorkingDir -ChildPath ".env.$($Script:Config.REALM)"
 if (Test-Path -Path $sourceEnvFile) {
     New-Item -Path $Script:EnvFile -ItemType SymbolicLink -Value $sourceEnvFile -Force | Out-Null

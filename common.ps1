@@ -34,15 +34,13 @@ $Script:Env["SecretsDir"]   = [IO.DirectoryInfo](Join-Path -Path $Script:Env.Dat
 $Script:Env["EnvFile"]      = [IO.FileInfo](Join-Path -Path $Script:Env.WorkingDir.Parent -ChildPath ".config" -AdditionalChildPath "docker.config.json")
 if (Test-Path -Path $Script:Env.EnvFile) {
     $config = Get-Content -Path $Script:Env.EnvFile | ConvertFrom-Json
-    $Script:Env["PUID"]         = [int]568
-    $Script:Env["PGID"]         = [int]568
-    $Script:Env["DOCKER_PGID"]  = [int]$config.DOCKER_PGID   
 }
 else {
     throw "File '$($Script:Env.EnvFile)' not found."
 }
-
-
+$Script:Env["PUID"]         = [int]568
+$Script:Env["PGID"]         = [int]568
+$Script:Env["DOCKER_PGID"]  = [int]$config.DOCKER_PGID
 
 
 [IO.DirectoryInfo]$Script:WorkingDir = (Get-Location).Path

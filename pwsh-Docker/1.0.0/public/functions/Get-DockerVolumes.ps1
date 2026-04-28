@@ -8,16 +8,16 @@ function Get-DockerVolumes {
         [hashtable]$Data
     )
 
-    write-host "pasa"
+    write-host "pasa1"
     [IO.FileSystemInfo[]]$volumesList = @()
 
     foreach ($service in $Data.services.Keys) {
-        write-host "pasa"
+        write-host "pasa2"
 
         $Data.services.$service
         if ($Data.services.$service.Keys -like "volumes") {
             foreach ($volume in $Data.services.$service.volumes.source) {
-                write-host "pasa"
+                write-host "pasa3"
 
                 if (Test-Path -Path $volume) {
                     $volumesList += Get-Item -Path $volume
@@ -28,6 +28,7 @@ function Get-DockerVolumes {
             }
         }
     }
+    write-host "pasa4"
     
     return $volumesList
 }

@@ -33,7 +33,7 @@ else {
 
 [int]$Script:PUID                    = 568
 [int]$Script:PGID                    = 568
-[int]$Script:DOCKER_PGID = 
+[int]$Script:DOCKER_PGID             = $Script:Config.DOCKER_PGID
 
 
 Write-Host "WorkingDir:`t$Script:WorkingDir"

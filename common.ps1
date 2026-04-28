@@ -54,11 +54,11 @@ Write-Host "DataDir:`t$($Script:Env.DataDir)"
 ### Load module ################################################################
 #Import-Module -Name (Join-Path -Path $PSScriptRoot -ChildPath "pwsh-Docker") -ArgumentList $Script:Env
 Import-Module -Name (Join-Path -Path $PSScriptRoot -ChildPath "pwsh-Docker")
-$Script:Env = Get-DockerContext
-Write-Host $Env.WorkingDir
-Write-Host $Env.DotEnvFile
-Write-Host $Env.DOCKER_PGID
-Write-Host $Env.IS_TRUENAS
+$Script:Environment = Get-DockerContext
+Write-Host $Environment.WorkingDir
+Write-Host $Environment.DotEnvFile
+Write-Host $Environment.DOCKER_PGID
+Write-Host $Environment.IS_TRUENAS
 Write-Host Funciono?
 #[IO.DirectoryInfo]$Script:WorkingDir = (Get-Location).Path
 

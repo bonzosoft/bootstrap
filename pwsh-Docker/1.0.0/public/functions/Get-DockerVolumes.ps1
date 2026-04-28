@@ -29,6 +29,6 @@ function Get-DockerVolumes {
         }
     }
     write-host "pasa4"
-    
+    $volumesList.GetTYpe()
     return $volumesList
 }

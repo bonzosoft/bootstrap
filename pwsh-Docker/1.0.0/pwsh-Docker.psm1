@@ -29,8 +29,8 @@ $Script:Env | Add-Member -MemberType NoteProperty -Name SecretsDir       -Value 
 $Script:Env | Add-Member -MemberType NoteProperty -Name HostInfo         -Value (Get-Content -Path (Join-Path -Path $Script:Env.WorkingDir.Parent -ChildPath ".config" -AdditionalChildPath "docker.config.json") | ConvertFrom-Json)
 $Script:Env | Add-Member -MemberType NoteProperty -Name PUID             -Value [int]568
 $Script:Env | Add-Member -MemberType NoteProperty -Name PGID             -Value [int]568
-$Script:Env | Add-Member -MemberType NoteProperty -Name DOCKER_PGID      -Value [int]$Env.HostInfo.DOCKER_PGID
-$Script:Env | Add-Member -MemberType NoteProperty -Name IS_TRUENAS       -Value [bool]$Env.HostInfo.IS_TRUENAS
+$Script:Env | Add-Member -MemberType NoteProperty -Name DOCKER_PGID      -Value [int]$Script:Env.HostInfo.DOCKER_PGID
+$Script:Env | Add-Member -MemberType NoteProperty -Name IS_TRUENAS       -Value [bool]$Script:Env.HostInfo.IS_TRUENAS
 
 
 ### Look for module assets #####################################################

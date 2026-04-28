@@ -77,4 +77,4 @@ Write-Host "DataDir:`t$($Script:Env.DataDir)"
 
 
 ### Load module ################################################################
-Import-Module -Name (Join-Path -Path $PSScriptRoot -ChildPath "pwsh-Docker") #-ArgumentList
+Import-Module -Name (Join-Path -Path $PSScriptRoot -ChildPath "pwsh-Docker") -ArgumentList $Script:Env

@@ -27,7 +27,7 @@ $Script:Env | Add-Member -MemberType NoteProperty -Name ProjectName      -Value 
 $Script:Env | Add-Member -MemberType NoteProperty -Name DataDir          -Value ([IO.DirectoryInfo](Join-Path -Path $Script:Env.WorkingDir.Parent.Parent -ChildPath "state" -AdditionalChildPath $Script:Env.ProjectName))
 $Script:Env | Add-Member -MemberType NoteProperty -Name SecretsDir       -Value ([IO.DirectoryInfo](Join-Path -Path $Script:Env.DataDir -ChildPath ".secrets"))
 $Script:Env | Add-Member -MemberType NoteProperty -Name GlobalConfigFile -Value ([IO.FileInfo](Join-Path -Path $Script:Env.WorkingDir.Parent -ChildPath ".config" -AdditionalChildPath "docker.config.json"))
-$Script:Env | Add-Member -MemberType NoteProperty -Name GlobalConfig     -Value ([hashtable](Get-Content -Path $Script:Env.GlobalConfigFile) | ConvertFrom-Json)
+$Script:Env | Add-Member -MemberType NoteProperty -Name GlobalConfig     -Value ((Get-Content -Path $Script:Env.GlobalConfigFile) | ConvertFrom-Json)
 $Script:Env | Add-Member -MemberType NoteProperty -Name PUID             -Value [int]568
 $Script:Env | Add-Member -MemberType NoteProperty -Name PGID             -Value [int]568
 $Script:Env | Add-Member -MemberType NoteProperty -Name DOCKER_PGID      -Value [int]$config.DOCKER_PGID

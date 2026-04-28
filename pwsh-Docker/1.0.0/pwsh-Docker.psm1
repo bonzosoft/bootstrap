@@ -31,7 +31,7 @@ $Script:Context | Add-Member -MemberType NoteProperty -Name PUID        -Value (
 $Script:Context | Add-Member -MemberType NoteProperty -Name PGID        -Value ([int]($Script:Context.HostInfo).PGID)
 $Script:Context | Add-Member -MemberType NoteProperty -Name DOCKER_PGID -Value ([int]($Script:Context.HostInfo).DOCKER_PGID)
 $Script:Context | Add-Member -MemberType NoteProperty -Name TRUENAS     -Value ([bool]($Script:Context.HostInfo).TRUENAS)
-$Script:Context | Add-Member -MemberType NoteProperty -Name REALM       -Value ([bool]($Script:Context.HostInfo).REALM)
+$Script:Context | Add-Member -MemberType NoteProperty -Name REALM       -Value ([string]($Script:Context.HostInfo).REALM)
 
 
 ### Look for module assets #####################################################

@@ -4,5 +4,7 @@ function Get-DockerContext {
 
     param()
 
-    return $Script:Env
+    end {
+        return [PSCustomObject]$Script:Context
+    }
 }

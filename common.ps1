@@ -47,7 +47,7 @@ Write-Host "DataDir:`t$($Script:Env.DataDir)"
 #>
 
 
-
+$Script:Env = Get-DockerContext
 
 
 

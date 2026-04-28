@@ -47,7 +47,15 @@ Write-Host "DataDir:`t$($Script:Env.DataDir)"
 #>
 
 
-[IO.DirectoryInfo]$Script:WorkingDir = (Get-Location).Path
+
+
+
+
+### Load module ################################################################
+#Import-Module -Name (Join-Path -Path $PSScriptRoot -ChildPath "pwsh-Docker") -ArgumentList $Script:Env
+Import-Module -Name (Join-Path -Path $PSScriptRoot -ChildPath "pwsh-Docker") -ArgumentList @((Get-Location).Path)
+
+#[IO.DirectoryInfo]$Script:WorkingDir = (Get-Location).Path
 
 # project directory structure
 [IO.DirectoryInfo]$Script:ConfigDir  = Join-Path -Path $Script:WorkingDir -ChildPath "config" #$ConfigDirName = Split-Path -Path $Script:ConfigDir -Leaf
@@ -73,10 +81,3 @@ else {
 [int]$Script:PGID                    = 568
 [int]$Script:DOCKER_PGID             = $Script:Config.DOCKER_PGID
 
-
-
-
-
-### Load module ################################################################
-#Import-Module -Name (Join-Path -Path $PSScriptRoot -ChildPath "pwsh-Docker") -ArgumentList $Script:Env
-Import-Module -Name (Join-Path -Path $PSScriptRoot -ChildPath "pwsh-Docker") -ArgumentList @((Get-Location).Path)

@@ -1,7 +1,7 @@
 #!/usr/bin/env pwsh
 
 
-Write-Host "Loading '$PSCommandPath'."
+Write-Verbose "Loading '$PSCommandPath'."
 
 
 ### CONFIGURATION ##############################################################
@@ -10,6 +10,31 @@ $ErrorActionPreference = 'Stop'
 
 
 ### VARIABLES ##################################################################
+
+[hashtable]$Script:Env = @{}
+$Script:Env["WorkingDir"]   = [IO.DirectoryInfo](Get-Location).Path
+$Script:Env["ConfigDir"]    = [IO.DirectoryInfo](Join-Path -Path $Script:Env.WorkingDir -ChildPath "config")
+$Script:Env["IncludeDir"]   = [IO.DirectoryInfo](Join-Path -Path $Script:Env.WorkingDir -ChildPath "include")
+$Script:Env["ComposeFile"]  = [IO.FileInfo](Join-Path -Path $Script:Env.WorkingDir -ChildPath "compose.yaml")
+$Script:Env["EnvFile"]      = [IO.FileInfo](Join-Path -Path $Script:Env.WorkingDir -ChildPath "config")
+
+$Script:Env["ProjectName"]  = [string]$Script:Env.WorkingDir.BaseName
+$Script:Env["DataDir"]      = [IO.DirectoryInfo](Join-Path -Path $Script:Env.WorkingDir.Parent.Parent -ChildPath "state" -AdditionalChildPath $Script:Env.ProjectName)
+$Script:Env["SecretsDir"]   = [IO.DirectoryInfo](Join-Path -Path $Script:Env.DataDir -ChildPath ".secrets")
+
+$Script:Env["EnvFile"]      = [IO.FileInfo](Join-Path -Path $Script:WorkingDir.Parent -ChildPath ".config" -AdditionalChildPath "docker.config.json")
+if (Test-Path -Path $Script:Env.EnvFile) {
+    $config = Get-Content -Path $Script:Env.EnvFile | ConvertFrom-Json
+    $Script:Env["PUID"]         = [int]568
+    $Script:Env["PGID"]         = [int]568
+    $Script:Env["DOCKER_PGID"]  = [int]$config.DOCKER_PGID   
+}
+else {
+    throw "File '$($Script:Env.EnvFile)' not found."
+}
+
+
+
 
 [IO.DirectoryInfo]$Script:WorkingDir = (Get-Location).Path
 
@@ -40,7 +65,8 @@ else {
 
 Write-Host "WorkingDir:`t$Script:WorkingDir"
 Write-Host "DataDir:`t$Script:DataDir"
-
+Write-Host "WorkingDir:`t$($Script:Env.WorkingDir)"
+Write-Host "DataDir:`t$($Script:Env.DataDir)"
 
 ### Load module ################################################################
-Import-Module -Name (Join-Path -Path $PSScriptRoot -ChildPath "pwsh-Docker")
+Import-Module -Name (Join-Path -Path $PSScriptRoot -ChildPath "pwsh-Docker") #-ArgumentList

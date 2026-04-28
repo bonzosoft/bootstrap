@@ -21,6 +21,7 @@ Write-Host $WorkingDir
 
 ### Public variables ###########################################################
 # nop
+$WorkDir = $WorkingDir
 
 # export public variables
 Export-ModuleMember -Variable *

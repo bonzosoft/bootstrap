@@ -81,3 +81,5 @@ else {
 [int]$Script:PGID                    = 568
 [int]$Script:DOCKER_PGID             = $Script:Config.DOCKER_PGID
 
+Write-Host "WorkingDir:`t$WorkingDir"
+Write-Host "WorkingDir:`t$WorkDir"

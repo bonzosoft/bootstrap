@@ -83,3 +83,5 @@ else {
 
 Write-Host "WorkingDir:`t$WorkingDir"
 Write-Host "WorkingDir:`t$WorkDir"
+Write-Host "WorkingDir:`t$Script:WorkingDir"
+Write-Host "WorkingDir:`t$Script:WorkDir"

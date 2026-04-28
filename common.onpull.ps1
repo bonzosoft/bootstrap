@@ -5,6 +5,14 @@ Write-Host "Loading '$PSCommandPath'."
 
 
 ### LOAD COMMON ASSETS #########################################################
+if (Get-Variable -Name "__INCLUDED_COMMON_ONPULL" -Scope Global -ErrorAction SilentlyContinue) {
+    return
+}
+else {
+    New-Variable -Name "__INCLUDED_COMMON_ONPULL" -Scope Global -Value $true
+}
+
+# contenido del script
 . (Get-Item -Path (Join-Path -Path $PSScriptRoot -ChildPath "common.ps1"))
 
 

@@ -79,4 +79,4 @@ else {
 
 ### Load module ################################################################
 #Import-Module -Name (Join-Path -Path $PSScriptRoot -ChildPath "pwsh-Docker") -ArgumentList $Script:Env
-Import-Module -Name (Join-Path -Path $PSScriptRoot -ChildPath "pwsh-Docker") -ArgumentList @("-WorkingDir $((Get-Location).Path)")
+Import-Module -Name (Join-Path -Path $PSScriptRoot -ChildPath "pwsh-Docker") -ArgumentList @((Get-Location).Path)

@@ -17,7 +17,7 @@ Write-Host "Loading '$PSCommandPath'."
 
 
 ## SET ENV FILE
-[IO.FileInfo]$sourceEnvFile = Join-Path -Path $Script:WorkingDir -ChildPath ".env.$($Script:Config.REALM)"
+[IO.FileInfo]$sourceEnvFile = Join-Path -Path $Script:Context.WorkingDir -ChildPath ".env.$($Script:Context.HostInfo.REALM)"
 if (Test-Path -Path $sourceEnvFile) {
     New-Item -Path $Script:EnvFile -ItemType SymbolicLink -Value $sourceEnvFile -Force | Out-Null
 }

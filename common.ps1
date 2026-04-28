@@ -55,6 +55,8 @@ Write-Host "DataDir:`t$($Script:Env.DataDir)"
 #Import-Module -Name (Join-Path -Path $PSScriptRoot -ChildPath "pwsh-Docker") -ArgumentList $Script:Env
 Import-Module -Name (Join-Path -Path $PSScriptRoot -ChildPath "pwsh-Docker")
 $Script:Env = Get-DockerContext
+Write-Host $Env.WorkingDir
+Write-Host $Env.DotEnvFile
 #[IO.DirectoryInfo]$Script:WorkingDir = (Get-Location).Path
 
 # project directory structure

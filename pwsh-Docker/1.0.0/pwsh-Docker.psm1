@@ -1,8 +1,14 @@
-Write-Host "Importing module '$PSCommandPath'."
+param (
+    [Parameter(Mandatory)]
+    [ValidateNotNullOrEmpty()]
+    [hashtable]$Env
+)
 
+
+Write-Host "Importing module '$PSCommandPath'."
+Write-Host "Hashtable: $($Env.WorkingDir)"
 
 ### List of required modules ###################################################
-
 [string[]] $requiredModules = @(
     "powershell-yaml"
     "pwsh-dotenv"
@@ -10,7 +16,6 @@ Write-Host "Importing module '$PSCommandPath'."
 
 
 ### Public variables ###########################################################
-
 # nop
 
 # export public variables
@@ -18,12 +23,10 @@ Export-ModuleMember -Variable *
 
 
 ### Private variables ##########################################################
-
 # nop
 
 
 ### Look for module assets #####################################################
-
 # Get public function definition files
 [Collections.Generic.List[IO.FileInfo]]$publicFunctions = Get-ChildItem -Path (Join-Path -Path $PSScriptRoot -ChildPath "public/functions/*.ps1") -ErrorAction SilentlyContinue
 
@@ -38,7 +41,6 @@ Export-ModuleMember -Variable *
 
 
 ### Load of module assets ######################################################
-
 # Import required modules
 foreach ($module in $requiredModules) {
     Write-Host "Importing submodule $module."
@@ -63,7 +65,6 @@ foreach ($class in @($publicClasses + $privateClasses)) {
 
 
 ### Export public module assets ################################################
-
 # Export public function definition files
 foreach ($function in $publicFunctions) {
     Export-ModuleMember -Function $function.BaseName

@@ -45,7 +45,7 @@ if (Test-Path -Path $Script:IncludeDir) {
 }
 
 ## Set file permisisons for volumes
-[Collections.Generic.List[IO.FileSystemInfo]]$volumes= Get-DockerVolumes -Data (Get-DockerCompose -Path $Script:COMPOSEFILE)
+[IO.FileSystemInfo[]]$volumes= Get-DockerVolumes -Data (Get-DockerCompose -Path $Script:COMPOSEFILE)
 #foreach ($volume in $volumes) {
     Grant-DockerPermission -Path $volumes -PUID $Script:PUID -PGID $Script:PGID -Mode "0755" -Recurse -Force
 #}

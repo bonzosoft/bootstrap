@@ -25,5 +25,5 @@ function Get-DockerVolumes {
     }
     write-host "pasa"
     Write-HOst $volumesList.GetTYpe()
-    return $volumesList
+    return [IO.FileSystemInfo[]]$volumesList
 }

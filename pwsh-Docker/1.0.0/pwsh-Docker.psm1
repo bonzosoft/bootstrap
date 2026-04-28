@@ -1,16 +1,5 @@
-param (
-    #[Parameter(Mandatory)]
-    #[ValidateNotNullOrEmpty()]
-    #[hashtable]$Env
-
-    [Parameter(Mandatory)]
-    [ValidateNotNullOrEmpty()]
-    [IO.DirectoryInfo]$WorkingDir
-)
-
-
 Write-Host "Importing module '$PSCommandPath'."
-Write-Host $WorkingDir
+
 
 ### List of required modules ###################################################
 [string[]] $requiredModules = @(

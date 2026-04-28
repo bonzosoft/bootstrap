@@ -5,10 +5,12 @@ Write-Host "Loading '$PSCommandPath'."
 
 
 ### CONFIGURATION ##############################################################
-$ErrorActionPreference = 'Stop'
 Set-StrictMode -Version Latest
+$ErrorActionPreference = 'Stop'
+
 
 ### VARIABLES ##################################################################
+
 [IO.DirectoryInfo]$Script:WorkingDir = (Get-Location).Path
 
 # project directory structure

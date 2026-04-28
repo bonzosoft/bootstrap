@@ -57,8 +57,8 @@ Import-Module -Name (Join-Path -Path $PSScriptRoot -ChildPath "pwsh-Docker")
 $Script:Env = Get-DockerContext
 Write-Host $Env.WorkingDir
 Write-Host $Env.DotEnvFile
-Write-Host $Env.GlobalConfig.DOCKER_PGID
-Write-Host $Env.GlobalConfig.IS_TRUENAS
+Write-Host $Env.DOCKER_PGID
+Write-Host $Env.IS_TRUENAS
 Write-Host Funciono?
 #[IO.DirectoryInfo]$Script:WorkingDir = (Get-Location).Path
 

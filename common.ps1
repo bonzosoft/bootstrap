@@ -21,14 +21,8 @@ $ErrorActionPreference = 'Stop'
 Import-Module -Name (Join-Path -Path $PSScriptRoot -ChildPath "pwsh-Docker")
 
 
-$Script:Environment = Get-DockerContext
-Write-Host $Environment.WorkingDir
-Write-Host $Environment.DotEnvFile
-Write-Host $Environment.DOCKER_PGID
-Write-Host $Environment.TRUENAS
-Write-Host $Environment.REALM
-Write-Host $Environment.PUID
-Write-Host Funciono?
+### LOAD CONTEXT ###############################################################
+$Script:Context = Get-DockerContext
 
 
 Write-Host "Finishing '$PSCommandPath'."

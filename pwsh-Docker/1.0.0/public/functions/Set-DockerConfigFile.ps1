@@ -19,7 +19,7 @@ function Set-DockerConfigFile {
     )
    
     process {
-        Write-Host $MyInvocation | Format-List *
+        Write-Host ($MyInvocation | Format-List *)
         foreach ($item in $Path) {
             if ($Link.IsPresent) {
                 New-Item -Path $Target -ItemType SymbolicLink -Value $item.FullName -Force:$Force | Out-Null

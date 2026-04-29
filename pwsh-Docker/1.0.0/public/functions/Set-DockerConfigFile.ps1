@@ -4,12 +4,12 @@ function Set-DockerConfigFile {
 
     param (
         [Parameter(Mandatory, ValueFromPipeline)]
-        [ValidateNotNullOrWhiteSpace()]
-        [IO.FileInfo[]]$Path,
+        [ValidateNotNullOrEmpty()]
+        [IO.FileInfo]$Path,
 
         [Parameter(Mandatory)]
-        [ValidateNotNullOrWhiteSpace()]
-        [string]$Target,
+        [ValidateNotNullOrEmpty()]
+        [IO.DirectoryInfo]$Destination,
 
         [Parameter()]
         [switch]$Link,
@@ -18,14 +18,22 @@ function Set-DockerConfigFile {
         [switch]$Force
     )
    
+    begin {
+        [IO.FileInfo]$target = ""
+    }
     process {
-        Write-Host "Calling path: $($MyInvocation.PSScriptRoot)"
         foreach ($item in $Path) {
+            if (-not (Test-Path -Path $item.FullName)) {
+                Write-Error -Message "File '$($item.FullName)' not found."
+            }
+            
+            $target = Join-Path -Path $Destination -ChildPath $item.Name
+
             if ($Link.IsPresent) {
-                New-Item -Path $Target -ItemType SymbolicLink -Value $item.FullName -Force:$Force | Out-Null
+                New-Item -Path $target.FullName -ItemType SymbolicLink -Value $item.FullName -Force:$Force | Out-Null
             }
             else {
-                Copy-Item -Path $item.FullName -Destination $Target -Force:$Force | Out-Null
+                Copy-Item -Path $item.FullName -Destination $target.FullName -Force:$Force | Out-Null
             }           
         }
     }

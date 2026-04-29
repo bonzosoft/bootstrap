@@ -5,7 +5,7 @@ function Grant-DockerPermission {
 
     param (
         [Parameter(Mandatory, ValueFromPipeline)]
-        [ValidateNotNullOrWhiteSpace()]
+        [ValidateNotNullOrEmpty()]
         [IO.FileSystemInfo[]]$Path,
 
         [Parameter(Mandatory)]
@@ -44,8 +44,6 @@ function Grant-DockerPermission {
                 $digit
             }
         })
-        #Write-Host "File mode: $filePermission"
-        #Write-Host "Directory mode: $directoryPermission"
     }
 
     process {
@@ -56,14 +54,11 @@ function Grant-DockerPermission {
             else {
                 $temporaryItem = Get-Item -Path $item -Force:$Force
                 if ($temporaryItem -is [IO.FileInfo]) {
-                    #$files.Add($temporaryItem)
                     $files += $temporaryItem               
                 }
                 if ($temporaryItem -is [IO.DirectoryInfo]) {
                     $directories.Add($temporaryItem)
                     if ($Recurse.IsPresent) {
-                        #$files.AddRange((Get-ChildItem -Path $item -File -Force:$Force -Recurse))
-                        #$directories.AddRange((Get-ChildItem -Path $item -Directory -Force:$Force -Recurse))
                         $files += Get-ChildItem -Path $item -File -Force:$Force -Recurse
                         $directories += Get-ChildItem -Path $item -Directory -Force:$Force -Recurse
                     }

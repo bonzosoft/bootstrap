@@ -19,7 +19,7 @@ function Set-DockerConfigFile {
     )
    
     process {
-        Write-Host "Calling path: $($MyInvocation.PSCommandPath)"
+        Write-Host "Calling path: $($MyInvocation.PSScriptRoot)"
         foreach ($item in $Path) {
             if ($Link.IsPresent) {
                 New-Item -Path $Target -ItemType SymbolicLink -Value $item.FullName -Force:$Force | Out-Null

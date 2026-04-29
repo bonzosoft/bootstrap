@@ -28,6 +28,8 @@ function Set-DockerConfigFile {
             }
             
             $target = Join-Path -Path $Destination -ChildPath $item.Name
+            Write-Host "item: $item"
+            Write-host "target2: $target"
 
             if ($Link.IsPresent) {
                 New-Item -Path $target.FullName -ItemType SymbolicLink -Value $item.FullName -Force:$Force | Out-Null

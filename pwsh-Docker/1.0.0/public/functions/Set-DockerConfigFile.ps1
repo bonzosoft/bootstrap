@@ -19,6 +19,7 @@ function Set-DockerConfigFile {
     )
    
     begin {
+        Write-Host "Pasa"
         [IO.FileInfo]$target = ""
         Write-Host $Path
     }

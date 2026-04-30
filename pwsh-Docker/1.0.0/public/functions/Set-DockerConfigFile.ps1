@@ -19,12 +19,9 @@ function Set-DockerConfigFile {
     )
    
     begin {
-        Write-Host "Pasa"
-        [IO.FileInfo]$target = ""
-        Write-Host $Path
+        [IO.FileInfo]$target = $null
     }
     process {
-        Write-Host "pasa"
         foreach ($item in $Path) {
             Write-Host $item
             if (-not (Test-Path -Path $item.FullName)) {

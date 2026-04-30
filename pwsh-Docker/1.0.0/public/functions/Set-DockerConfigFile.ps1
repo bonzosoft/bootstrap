@@ -4,7 +4,7 @@ function Set-DockerConfigFile {
 
     param (
         [Parameter(Mandatory, ValueFromPipeline)]
-        #[ValidateNotNullOrEmpty()]
+        [ValidateNotNullOrEmpty()]
         [IO.FileInfo[]]$Path,
 
         [Parameter(Mandatory)]
@@ -20,9 +20,12 @@ function Set-DockerConfigFile {
    
     begin {
         [IO.FileInfo]$target = ""
+        Write-Host $Path
     }
     process {
+        Write-Host "pasa"
         foreach ($item in $Path) {
+            Write-Host $item
             if (-not (Test-Path -Path $item.FullName)) {
                 Write-Error -Message "File '$($item.FullName)' not found."
             }

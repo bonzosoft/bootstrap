@@ -19,10 +19,12 @@ function Set-DockerConfigFile {
     )
    
     begin {
+        write-host "pasa"
         [IO.FileInfo]$target = ""
     }
     process {
         foreach ($item in $Path) {
+            Write-Host $item
             if (-not (Test-Path -Path $item.FullName)) {
                 Write-Error -Message "File '$($item.FullName)' not found."
             }

@@ -4,7 +4,7 @@ function Set-DockerConfigFile {
 
     param (
         [Parameter(Mandatory, ValueFromPipeline)]
-        [ValidateNotNullOrEmpty()]
+        #[ValidateNotNullOrEmpty()]
         [IO.FileInfo[]]$Path,
 
         [Parameter(Mandatory)]

@@ -57,7 +57,7 @@ function Write-Log {
 function Get-DockerPGID {
     [string[]]$group = Get-Content "/host/etc/group" | Where-Object { $_ -match "^docker:" }
     Write-Host "pasa por aqui"
-    Write-Host $group
+    Write-Host "group: $group"
     if ($group.Count -eq 1) {
         return [int]($group.Split(":")[2])
     }

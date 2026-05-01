@@ -136,13 +136,17 @@ function Test-Repository {
 }
 
 function Connect-Repository {
-    Write-Log INFO "Logging into GitHub..."
-    gh auth login --hostname $Script:GITHOSTNAME --git-protocol https --web
-    if ($LASTEXITCODE) {
-        Write-Log ERRO "Login failed"
-        return
+    
+    Write-Log INFO "Checking GitHub authentication..."
+    if (-not (Test-Repository)) {
+        Write-Log INFO "Logging into GitHub..."
+        gh auth login --hostname $Script:GITHOSTNAME --git-protocol https --web
+        if ($LASTEXITCODE) {
+            Write-Log ERRO "Login failed"
+            return
+        }
     }
-
+    
     gh auth setup-git
     Write-Log SUCC "Login OK"
 }
@@ -163,6 +167,7 @@ function Get-GithubRepo {
         $Branch="main",
         $Org="bonzosoft"
     )
+    gh auth setup-git
 
     if (-not (Test-Path "./$Name/.git")) {
         Write-Log INFO "Cloning $Name"

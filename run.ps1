@@ -274,7 +274,8 @@ switch ($Command) {
 
 
 
-return 
+return
+
 <#
 [CmdletBinding()]
 param(

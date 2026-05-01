@@ -5,11 +5,11 @@ function Set-DockerConfigFile {
     param (
         [Parameter(Mandatory, ValueFromPipeline)]
         #[ValidateNotNullOrEmpty()]
-        [IO.FileInfo[]]$Path,
+        [string[]]$Name,
 
         [Parameter(Mandatory)]
         [ValidateNotNullOrEmpty()]
-        [IO.DirectoryInfo]$Destination,
+        [string]$Service,
 
         [Parameter()]
         [switch]$Link,
@@ -19,24 +19,26 @@ function Set-DockerConfigFile {
     )
    
     begin {
+        [IO.FileInfo]$source = 
         [IO.FileInfo]$target = $null
     }
     process {
-        foreach ($item in $Path) {
+        foreach ($item in $Name) {
             Write-Host $item
-            if (-not (Test-Path -Path $item.FullName)) {
-                Write-Error -Message "File '$($item.FullName)' not found."
+            $source = Join-Path -Path $MyInvocation.PSCommandPath -ChildPath (Split-Path -Path $Script:Context.ConfigDir -Leaf) -AdditionalChildPath $item
+            $target = Join-Path -Path $Script:Context.DataDir -ChildPath $Service
+            if (-not (Test-Path -Path $source.FullName)) {
+                Write-Error -Message "File '$($source.FullName)' not found."
             }
             
-            $target = Join-Path -Path $Destination -ChildPath $item.Name
-            #Write-Host "item: $item"
-            #Write-host "target2: $target"
+            Write-Host "source: $source"
+            Write-host "target: $target"
 
             if ($Link.IsPresent) {
-                New-Item -Path $target.FullName -ItemType SymbolicLink -Value $item.FullName -Force:$Force | Out-Null
+                New-Item -Path $target.FullName -ItemType SymbolicLink -Value $source.FullName -Force:$Force | Out-Null
             }
             else {
-                Copy-Item -Path $item.FullName -Destination $target.FullName -Force:$Force | Out-Null
+                Copy-Item -Path $source.FullName -Destination $target.FullName -Force:$Force | Out-Null
             }           
         }
     }

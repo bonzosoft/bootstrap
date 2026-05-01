@@ -52,6 +52,7 @@ function Grant-DockerPermission {
 
     process {
         foreach ($item in $Path) {
+            Write-Host $item
             if (-not (Test-Path -Path $item)) {
                 $directories += @(New-Item -Path $Path -ItemType Directory -Force:$Force)
             }

@@ -15,6 +15,10 @@ docker compose -f ./bootstrap/compose.yaml run --rm worker pwsh ./bootstrap/run.
 
 ## Uso
 
+````bash
+./run
+````
+
 ### Menu
 
 #### Docker Compose

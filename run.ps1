@@ -283,6 +283,7 @@ switch ($PSCmdlet.ParameterSetName) {
                     }
                     Get-GithubRepo "common"
                     Get-GithubRepo "komodo-core"
+                    Read-Host
                 }
                 "4" {
                     if (-not (Test-Repository)) {
@@ -291,6 +292,7 @@ switch ($PSCmdlet.ParameterSetName) {
                     }
                     Get-GithubRepo "common"
                     Get-GithubRepo "komodo-periphery"
+                    Read-Host
                 }
                 "5" {
                     if (-not (Test-Repository)) {
@@ -298,7 +300,8 @@ switch ($PSCmdlet.ParameterSetName) {
                         break
                     }
                     Get-GithubRepo "common"
-                    Get-GithubRepo "npmplu"
+                    Get-GithubRepo "npmplus"
+                    Read-Host
                 }
                 "6" {
                     Disconnect-Repository
@@ -309,7 +312,7 @@ switch ($PSCmdlet.ParameterSetName) {
                 }
             }
     
-            Start-Sleep -MilliSeconds 500
+            Start-Sleep -MilliSeconds 250
         } while ($true)
     }
     "Realm" {

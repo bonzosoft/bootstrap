@@ -21,7 +21,10 @@ function Import-DockerVariables {
             Write-host "Set-Variable -Name $key"
             #Set-Variable -Name $key.Trim() -Value $value.Trim('"') -Scope Script
             #$Env:$key = $value.Trim('"')
-            $Script:Context | Add-Member -MemberType NoteProperty -Name $key.Trim() -Value $value.Trim('"') -Force
+            $object | Add-Member -MemberType NoteProperty -Name $key.Trim() -Value $value.Trim('"') -Force
         }
+
+        $Context | Add-Member -MemberType NoteProperty -Name "Environment" -Value $object -Force
+        return $Context
     }
 }

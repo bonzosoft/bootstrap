@@ -244,9 +244,11 @@ switch ($PSCmdlet.ParameterSetName) {
                 "2" {
                     Write-Host ""
                     Write-Host "Select realm:"
+                    Write-Host ""
                     Write-Host "  1. Production"
                     Write-Host "  2. Development"
                     Write-Host "  q. Return"
+                    Write-Host ""
                     
     
                     :whileloop do {

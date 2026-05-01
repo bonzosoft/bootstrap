@@ -29,13 +29,13 @@ $Script:Context | Add-Member -MemberType NoteProperty -Name DataDir     -Value (
 $Script:Context | Add-Member -MemberType NoteProperty -Name SecretsDir  -Value ([IO.DirectoryInfo](Join-Path -Path $Script:Context.DataDir -ChildPath ".secrets"))
 
 $Script:Context | Add-Member -MemberType NoteProperty -Name HostInfo    -Value (Get-Content -Path (Join-Path -Path $Script:Context.WorkingDir.Parent -ChildPath ".config" -AdditionalChildPath "docker.config.json") | ConvertFrom-Json)
-$Script:Context | Add-Member -MemberType NoteProperty -Name PUID        -Value ([int]($Script:Context.HostInfo).PUID)
-$Script:Context | Add-Member -MemberType NoteProperty -Name PGID        -Value ([int]($Script:Context.HostInfo).PGID)
-$Script:Context | Add-Member -MemberType NoteProperty -Name DOCKER_PGID -Value ([int]($Script:Context.HostInfo).DOCKER_PGID)
-$Script:Context | Add-Member -MemberType NoteProperty -Name TRUENAS     -Value ([bool]($Script:Context.HostInfo).TRUENAS)
-$Script:Context | Add-Member -MemberType NoteProperty -Name REALM       -Value ([string]($Script:Context.HostInfo).REALM)
+#$Script:Context | Add-Member -MemberType NoteProperty -Name PUID        -Value ([int]($Script:Context.HostInfo).PUID)
+#$Script:Context | Add-Member -MemberType NoteProperty -Name PGID        -Value ([int]($Script:Context.HostInfo).PGID)
+#$Script:Context | Add-Member -MemberType NoteProperty -Name DOCKER_PGID -Value ([int]($Script:Context.HostInfo).DOCKER_PGID)
+#$Script:Context | Add-Member -MemberType NoteProperty -Name TRUENAS     -Value ([bool]($Script:Context.HostInfo).TRUENAS)
+#$Script:Context | Add-Member -MemberType NoteProperty -Name REALM       -Value ([string]($Script:Context.HostInfo).REALM)
 
-Write-Host $Script:Context.HostInfo.REALM
+Write-Host "hostinfo: $($Script:Context.HostInfo.REALM)"
 ### Look for module assets #####################################################
 # Get public function definition files
 [Collections.Generic.List[IO.FileInfo]]$publicFunctions = Get-ChildItem -Path (Join-Path -Path $PSScriptRoot -ChildPath "public/functions/*.ps1") -ErrorAction SilentlyContinue

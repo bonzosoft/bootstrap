@@ -212,7 +212,7 @@ function Stop-Compose($Name) {
 # =========================
 # INIT
 # =========================
-Push-Location -Path (Join-Path -Path $PSScriptRoot -ChildPath "bootstrap")
+Push-Location -Path $PSScriptRoot
 git pull
 Pop-Location
 

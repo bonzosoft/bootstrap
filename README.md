@@ -8,7 +8,7 @@ Se debe tener creada la carpeta ``/mnt`` que será la base de la infraestructura
 Descarga de los archivos necesarios:
 ````bash
 rm -rf * \
- && git clone --branch pwsh https://github.com/bonzosoft/bootstrap.git \
+ && git clone --branch --single-branch pwsh https://github.com/bonzosoft/bootstrap.git \
  && echo '#!/usr/bin/env bash
 docker compose -f ./bootstrap/compose.yaml run --rm worker pwsh ./bootstrap/run.ps1' > run && chmod +x run
 ````

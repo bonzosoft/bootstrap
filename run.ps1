@@ -26,7 +26,7 @@ $ErrorActionPreference = "Stop"
 [int]$PUID = 568
 [int]$PGID = 568
 [IO.DirectoryInfo]$Script:COMMONDIR = Join-Path -Path (Get-Location) -ChildPath "common"
-[IO.FileInfo]$Script:CONFIGFILE = Join-Path -Path (Get-Location) -ChildPath ".docker.config.json"
+[IO.FileInfo]$Script:CONFIGFILE = Join-Path -Path (Get-Location) -ChildPath ".config" -AdditionalChildPath ".docker.config.json"
 
 # =========================
 # Helpers

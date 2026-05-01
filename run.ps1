@@ -229,13 +229,31 @@ if (-not $Command -or $Command -eq "menu") {
                 Connect-Repository
             }
             "2" {
-                $response = Read-Host "Select realm: [prod|dev]"
-                if ($response -in @("prod","dev")) {
-                    Set-Realm $r $CONFIG
-                    $CONFIG = Get-Config
-                } else {
-                    Write-Log ERRO "Invalid realm"
-                }
+                Write-Host "Select realm: [prod|dev]"
+                Write-Host "  1. Production"
+                Write-Host "  2. Development"
+                Write-Host "  q. Return"
+
+                do {
+                    $response = Read-Host
+
+                    switch ($response) {
+                        "1" {
+                            Set-Realm "prod" $CONFIG
+                            $CONFIG = Get-Config
+                            break
+                        }
+                        "2" {
+                            Set-Realm "dev" $CONFIG
+                            $CONFIG = Get-Config
+                            break
+                        }
+                        "q" {
+                            break
+                        }
+                    }
+                } while ($true)
+            }
             "3" {
                 if (-not (Test-Repository)) {
                     Write-Log ERRO "Login first"
@@ -252,9 +270,6 @@ if (-not $Command -or $Command -eq "menu") {
                 }
                 Get-GithubRepo "common"
                 Get-GithubRepo "komodo-periphery"
-            }
-
-
             }
             "5" {
                 Disconnect-Repository

@@ -229,7 +229,8 @@ if (-not $Command -or $Command -eq "menu") {
                 Connect-Repository
             }
             "2" {
-                Write-Host "Select realm: [prod|dev]"
+                Write-Host ""
+                Write-Host "Select realm:"
                 Write-Host "  1. Production"
                 Write-Host "  2. Development"
                 Write-Host "  q. Return"

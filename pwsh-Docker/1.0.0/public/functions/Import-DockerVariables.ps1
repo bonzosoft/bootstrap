@@ -5,7 +5,11 @@ function Import-DockerVariables {
     param(
         [Parameter()]
         [ValidateNotNullOrEmpty()]
-        [IO.FileInfo]$Path = $Script:Context.DotEnvFile
+        [IO.FileInfo]$Path = $Script:Context.DotEnvFile,
+
+        [Parameter()]
+        [ValidateNotNullOrEmpty()]
+        [PSCustomObject[]]$Context = $Script:Context
     )
 
     end {
@@ -15,8 +19,9 @@ function Import-DockerVariables {
             }
             $key, $value = $PSItem -split '=', 2
             Write-host "Set-Variable -Name $key"
-            Set-Variable -Name $key.Trim() -Value $value.Trim('"') -Scope Script
+            #Set-Variable -Name $key.Trim() -Value $value.Trim('"') -Scope Script
             #$Env:$key = $value.Trim('"')
+            $Script:Context | Add-Member -MemberType NoteProperty -Name $key.Trim() -Value $value.Trim('"')
         }
     }
 }

@@ -21,8 +21,9 @@ Set-DockerRealm
 Set-DockerVariable -Name DATADIR    -Value $Script:Context.DataDir.FullName
 Set-DockerVariable -Name INCLUDEDIR -Value $Script:Context.IncludeDir.FullName
 Set-DockerVariable -Name SECRETSDIR -Value $Script:Context.SecretsDir.FullName
+$Script:Context
 Import-DockerVariables
-
+$Script:Context
 
 ## SUBMODULES MANAGEMENT
 if (Test-Path -Path $Script:Context.IncludeDir) {
@@ -42,8 +43,6 @@ if (Test-Path -Path $Script:Context.IncludeDir) {
 }
 
 ## Set file permisisons for volumes
-#[IO.FileSystemInfo[]]$volumes = Get-DockerVolumes -Data (Get-DockerCompose -Path $Script:Context.ComposeFile)
-#Grant-DockerPermission -Path $volumes -PUID $Script:Context.PUID -PGID $Script:Context.PGID -Permission "0755" -Recurse -Force
 Get-DockerVolumes -Data (Get-DockerCompose -Path $Script:Context.ComposeFile) |
 Grant-DockerPermission -PUID $Script:Context.PUID -PGID $Script:Context.PGID -Permission "0755" -Recurse -Force
 

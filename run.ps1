@@ -4,7 +4,7 @@
 [OutputType([void])]
 
 param(
-    [Parameter(Mandatory, ParameterSetName = "TUI")]
+    [Parameter(ParameterSetName = "TUI")]
     [switch]$Menu,
 
     [Parameter(Mandatory, ParameterSetName = "Login")]
@@ -235,6 +235,7 @@ switch ($PSCmdlet.ParameterSetName) {
             Write-Host "  5. Pull NPMplus"
             Write-Host "  6. Logout"
             Write-Host "  q. Exit"
+            Write-Host ""
     
             switch (Read-Host "Option") {
                 "1" { 
@@ -246,11 +247,10 @@ switch ($PSCmdlet.ParameterSetName) {
                     Write-Host "  1. Production"
                     Write-Host "  2. Development"
                     Write-Host "  q. Return"
+                    
     
                     :whileloop do {
-                        $response = Read-Host
-    
-                        :switchloop switch ($response) {
+                        :switchloop switch (Read-Host "Option") {
                             "1" {
                                 Set-Realm "prod" $Script:Config
                                 $Script:Config = Get-Config

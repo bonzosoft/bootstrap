@@ -3,9 +3,9 @@ function Test-DockerSubmodule {
     [OutputType([bool])]
 
     param(
-        [Parameter(Mandatory)]
+        [Parameter()]
         [ValidateNotNullOrEmpty()]
-        [IO.FileInfo]$Path
+        [IO.FileInfo]$Path = $MyInvocation.PSScriptRoot
     )
 
     if ($Path.DirectoryName -contains $Script:INCLUDEDIR) {

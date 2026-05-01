@@ -8,24 +8,28 @@ function Get-DockerCompose {
         [IO.FileInfo]$Path = $Script:Context.ComposeFile
     )
 
-    [string[]]$composeLines = @()
-    [hashtable]$composeData = @{}
-
-    if (-not (Test-Path -Path $Path.FullName)) {
-        throw "File $($Path.FullName) not found."
+    begin {
+        [string[]]$composeLines = @()
+        [hashtable]$composeData = @{}
     }
 
-    $composeLines = docker compose -f $Path.FullName config 2>&1
-        #--no-consistency		Don't check model consistency - warning: may produce invalid Compose output
-        #--no-env-resolution	Don't resolve service env files
-        #--no-interpolate		Don't interpolate environment variables
-        #--no-normalize		    Don't normalize compose model (convierte formatos cortos a largos)
-        #--no-path-resolution	Don't resolve file paths
-    if ($LASTEXITCODE) {
-        throw "Unable to parse '$Path':`n$composeLines"
+    end {
+        if (-not (Test-Path -Path $Path.FullName)) {
+            throw "File $($Path.FullName) not found."
+        }
+    
+        $composeLines = docker compose -f $Path.FullName config 2>&1
+            #--no-consistency		Don't check model consistency - warning: may produce invalid Compose output
+            #--no-env-resolution	Don't resolve service env files
+            #--no-interpolate		Don't interpolate environment variables
+            #--no-normalize		    Don't normalize compose model (convierte formatos cortos a largos)
+            #--no-path-resolution	Don't resolve file paths
+        if ($LASTEXITCODE) {
+            throw "Unable to parse '$Path':`n$composeLines"
+        }
+    
+        $composeData = $composeLines | ConvertFrom-Yaml
+    
+        return $composeData
     }
-
-    $composeData = $composeLines | ConvertFrom-Yaml
-
-    return $composeData
 }

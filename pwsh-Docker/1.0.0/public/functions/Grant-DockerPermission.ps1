@@ -24,7 +24,10 @@ function Grant-DockerPermission {
         [switch]$Recurse,
 
         [Parameter()]
-        [switch]$Force
+        [switch]$Force,
+
+        [Parameter()]
+        [switch]$PassThru
     )
 
     begin {
@@ -77,6 +80,10 @@ function Grant-DockerPermission {
                 $files.FullName | xargs -r chown ${PUID}:${PGID}
                 $files.FullName | xargs -r chmod $filePermission
             }
+        }
+
+        if ($PassThru.IsPresent) {
+            return $Path
         }
     }
 }

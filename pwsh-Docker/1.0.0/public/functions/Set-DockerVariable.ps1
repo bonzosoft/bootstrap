@@ -22,132 +22,143 @@ function Set-DockerVariable {
         [switch]$NoOverwrite, #sobrescribe el valor si existe
 
         [Parameter()]
-        [switch]$NoAppend #añade el valor si no existe
+        [switch]$NoAppend, #añade el valor si no existe
+
+        [Parameter()]
+        [switch]$PassThru
     )
 
-    [string]$delimiter = "="
-    [IO.FileInfo]$temporaryFile = $null
-    [Collections.Generic.List[string]]$inputLines = @()
-    [Collections.Generic.List[string]]$outputLines = @()
-    [string]$currentName = ""
-    [string]$currentValue = ""
-    [string]$currentComment = ""
-    [string]$currentLeftover = ""
-    [bool]$keyFound = $false
-    [hashtable]$matches = @{}
+    begin {
+        [string]$delimiter = "="
+        [IO.FileInfo]$temporaryFile = $null
+        [Collections.Generic.List[string]]$inputLines = @()
+        [Collections.Generic.List[string]]$outputLines = @()
+        [string]$currentName = ""
+        [string]$currentValue = ""
+        [string]$currentComment = ""
+        [string]$currentLeftover = ""
+        [bool]$keyFound = $false
+        [hashtable]$matches = @{}
+    }
 
-    $inputLines = Get-Content -Path $Path -Encoding UTF8
+    end {
+        $inputLines = Get-Content -Path $Path -Encoding UTF8
 
-    foreach ($line in $inputLines) {
-        $currentName = ""
-        $currentValue = ""
-        $currentComment = ""
-        $currentLeftover = ""
-
-        if (($line -match '^\s*#') -or ($line -match '^\s*$')) { 
-            # comment line starting with # or empty line
-            $outputLines.Add($line)
-            continue
-        }
-
-        if ($line -match '^\s*(?<name>.*?)\s*(?<delimiter>[=:])\s*(?<leftover>.*)$') {
-            # ^                 beginning of line
-            # \s*               zero or more whitespace characters
-            # (?<name>.*?)      capturing group 'name' of zero or more characters (lazy match, captures as few characters as possible)
-            # \s*               zero or more whitespace characters
-            # ([=:])            capturing group of = or :
-            # \s*               zero or more whitespace characters
-            # (?<leftover>.*)   capturing group 'leftover' of zero or more characters (greedy, captures as many characters as possible)
-            # $                 end of line
-
-            if ($matches.ContainsKey("name")) {
-                $currentName = $matches.name
+        foreach ($line in $inputLines) {
+            $currentName = ""
+            $currentValue = ""
+            $currentComment = ""
+            $currentLeftover = ""
+    
+            if (($line -match '^\s*#') -or ($line -match '^\s*$')) { 
+                # comment line starting with # or empty line
+                $outputLines.Add($line)
+                continue
             }
-            if ($matches.ContainsKey("leftover")) {
-                $currentLeftover = $matches.leftover
-            }
-
-            switch -Regex ($currentLeftover) {
-                '^[""''](?<value>[^""'']*)[""''](?:\s+(#)\s*(?<comment>.*))?$' {
-                    ## quoted text
-                    # ^                     beginning of line
-                    # [""'']                " or '
-                    # (?<value>[^""'']*)   capturing group 'value' zero or more characters different of " or '
-                    # [""'']                " or '
-                    # (?:...)?              non-capturing group, one or zero instances
-                    # \s+                   one or more whitespace characters
-                    # (#)                   capturing group of character #
-                    # \s*                   zero or more whitespace characters
-                    # (?<comment>.*)        capturing group of zero or more characters (greedy, captures as many characters as possible)
-                    # $                     end of line
-
-                    if ($matches.ContainsKey("value")) {
-                        $currentValue = $matches.value
-                    }
-                    if ($matches.ContainsKey("comment")) {
-                        $currentComment = $matches.comment
-                    }
-                    
+    
+            if ($line -match '^\s*(?<name>.*?)\s*(?<delimiter>[=:])\s*(?<leftover>.*)$') {
+                # ^                 beginning of line
+                # \s*               zero or more whitespace characters
+                # (?<name>.*?)      capturing group 'name' of zero or more characters (lazy match, captures as few characters as possible)
+                # \s*               zero or more whitespace characters
+                # ([=:])            capturing group of = or :
+                # \s*               zero or more whitespace characters
+                # (?<leftover>.*)   capturing group 'leftover' of zero or more characters (greedy, captures as many characters as possible)
+                # $                 end of line
+    
+                if ($matches.ContainsKey("name")) {
+                    $currentName = $matches.name
                 }
-                '^(?<value>.*?)(?:\s+(#)\s*(?<comment>.*))?$' {
-                    ## non-quoted text
-                    # ^                 beginning of line
-                    # (?<value>.*?)     capturing group 'value' of zero or more characters (lazy match, captures as few characters as possible)
-                    # (?:...)?          non-capturing group, one or zero instances
-                    # \s+               one or more whitespace characters
-                    # (#)               capturing groupo of character #
-                    # \s*               zero or more whitespace characters
-                    # (?<comment>.*)    capturing group 'comment' of zero or more characters (greedy, captures as many characters as possible)
-                    # $                 end of line
-
-                    if ($matches.ContainsKey("value")) {
-                        $currentValue = $matches.value
+                if ($matches.ContainsKey("leftover")) {
+                    $currentLeftover = $matches.leftover
+                }
+    
+                switch -Regex ($currentLeftover) {
+                    '^[""''](?<value>[^""'']*)[""''](?:\s+(#)\s*(?<comment>.*))?$' {
+                        ## quoted text
+                        # ^                     beginning of line
+                        # [""'']                " or '
+                        # (?<value>[^""'']*)   capturing group 'value' zero or more characters different of " or '
+                        # [""'']                " or '
+                        # (?:...)?              non-capturing group, one or zero instances
+                        # \s+                   one or more whitespace characters
+                        # (#)                   capturing group of character #
+                        # \s*                   zero or more whitespace characters
+                        # (?<comment>.*)        capturing group of zero or more characters (greedy, captures as many characters as possible)
+                        # $                     end of line
+    
+                        if ($matches.ContainsKey("value")) {
+                            $currentValue = $matches.value
+                        }
+                        if ($matches.ContainsKey("comment")) {
+                            $currentComment = $matches.comment
+                        }
+                        
                     }
-                    if ($matches.ContainsKey("comment")) {
-                        $currentComment = $matches.comment
+                    '^(?<value>.*?)(?:\s+(#)\s*(?<comment>.*))?$' {
+                        ## non-quoted text
+                        # ^                 beginning of line
+                        # (?<value>.*?)     capturing group 'value' of zero or more characters (lazy match, captures as few characters as possible)
+                        # (?:...)?          non-capturing group, one or zero instances
+                        # \s+               one or more whitespace characters
+                        # (#)               capturing groupo of character #
+                        # \s*               zero or more whitespace characters
+                        # (?<comment>.*)    capturing group 'comment' of zero or more characters (greedy, captures as many characters as possible)
+                        # $                 end of line
+    
+                        if ($matches.ContainsKey("value")) {
+                            $currentValue = $matches.value
+                        }
+                        if ($matches.ContainsKey("comment")) {
+                            $currentComment = $matches.comment
+                        }
+                    }
+                    default {
+                        throw "Invalid format: '$line'"
                     }
                 }
-                default {
-                    throw "Invalid format: '$line'"
-                }
-            }
-        }
-        else {
-            throw "Invalid format: '$line'."
-        }
-
-        if ($currentName -eq $Name) {
-            $keyFound = $true
-
-            if (-not $NoOverwrite.IsPresent) {
-                $newLine = $currentName + $delimiter + $Value
             }
             else {
-                $newLine = $currentName + $delimiter + $currentValue
-            } 
+                throw "Invalid format: '$line'."
+            }
+    
+            if ($currentName -eq $Name) {
+                $keyFound = $true
+    
+                if (-not $NoOverwrite.IsPresent) {
+                    $newLine = $currentName + $delimiter + $Value
+                }
+                else {
+                    $newLine = $currentName + $delimiter + $currentValue
+                } 
+            }
+            else {
+                $newLine = $currentName + $delimiter + $currentValue 
+            }
+    
+            if (-not [string]::IsNullOrWhiteSpace($currentComment)) {
+                $newLine += " #" + $currentComment
+            }
+    
+            $outputLines.Add($newLine)
+        }
+    
+        if (-not $keyFound -and -not($NoAdd.IsPresent)) {
+            $newLine = $Name + $delimiter + $Value 
+            $outputLines.Add($newLine)
+        }
+       
+        $temporaryFile = New-TemporaryFile
+        Set-Content -Path $temporaryFile -Value $outputLines -Encoding UTF8
+        if ($Path.Linktarget) {
+            Move-Item -Path $temporaryFile -Destination $Path.LinkTarget -Force:$Force
         }
         else {
-            $newLine = $currentName + $delimiter + $currentValue 
+            Move-Item -Path $temporaryFile -Destination $Path -Force:$Force
         }
 
-        if (-not [string]::IsNullOrWhiteSpace($currentComment)) {
-            $newLine += " #" + $currentComment
+        if ($PassThru.IsPresent) {
+            return $Path
         }
-
-        $outputLines.Add($newLine)
-    }
-
-    if (-not $keyFound -and -not($NoAdd.IsPresent)) {
-        $newLine = $Name + $delimiter + $Value 
-        $outputLines.Add($newLine)
-    }
-   
-    $temporaryFile = New-TemporaryFile
-    Set-Content -Path $temporaryFile -Value $outputLines -Encoding UTF8
-    if ($Path.Linktarget) {
-        Move-Item -Path $temporaryFile -Destination $Path.LinkTarget -Force:$Force
-    }
-    else {
-        Move-Item -Path $temporaryFile -Destination $Path -Force:$Force
     }
 }

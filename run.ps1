@@ -1,19 +1,38 @@
 #!/usr/bin/env pwsh
 
-[CmdletBinding()]
+[CmdletBinding(DefaultParameterSetName = "TUI")]
 [OutputType([void])]
 
 param(
-    [Parameter()]
-    [ValidateSet("login", "logout", "setup", "pull", "start", "stop", "menu", "help")]
-    [string]$Command = "menu",
+    [Parameter(Mandatory, ParameterSetName = "TUI")]
+    [switch]$Menu,
 
-    [Parameter()]
-    [string]$Target,
+    [Parameter(Mandatory, ParameterSetName = "Login")]
+    [ValidateNotNullOrWhiteSpace()]
+    [string]$Login,
 
-    [Parameter()]
+    [Parameter(Mandatory, ParameterSetName = "Logout")]
+    [ValidateNotNullOrWhiteSpace()]
+    [string]$Logout,
+
+    [Parameter(Mandatory, ParameterSetName = "Pull")]
+    [ValidateNotNullOrWhiteSpace()]
+    [string]$Pull,
+
+    [Parameter(Mandatory, ParameterSetName = "Start")]
+    [ValidateNotNullOrWhiteSpace()]
+    [string]$Start,
+
+    [Parameter(Mandatory, ParameterSetName = "Stop")]
+    [ValidateNotNullOrWhiteSpace()]
+    [string]$Stop,
+
+    [Parameter(Mandatory, ParameterSetName = "Realm")]
     [ValidateSet("prod", "dev")]
-    [string]$Realm
+    [string]$Realm,
+
+    [Parameter(Mandatory, ParameterSetName = "Help")]
+    [switch]$Help
 )
 
 Set-StrictMode -Version Latest
@@ -193,154 +212,121 @@ function Stop-Compose($Name) {
 # =========================
 # INIT
 # =========================
-Push-Location ./bootstrap
+Push-Location -Path (Join-Path -Path $PSScriptRoot -ChildPath "bootstrap")
 git pull
 Pop-Location
 
-$CONFIG = Get-Config
+$Script:Config = Get-Config
 
-if ($Realm) {
-    Set-Realm -Realm $Realm -Config $CONFIG
-    $CONFIG = Get-Config
-}
-
-# =========================
-# MENU
-# =========================
-if (-not $Command -or $Command -eq "menu") {
-
-    do {
-        Clear-Host
-
-        Write-Host "==========================================="
-        Write-Host "===              MAIN MENU              ==="
-        Write-Host "==========================================="
-        Write-Host "Realm: $($CONFIG.REALM)"
-        Write-Host ""
-        Write-Host "  1. Login"
-        Write-Host "  2. Set Realm"
-        Write-Host "  3. Pull Core"
-        Write-Host "  4. Pull Periphery"
-        Write-Host "  5. Pull NPMplus"
-        Write-Host "  6. Logout"
-        Write-Host "  q. Exit"
-
-        switch (Read-Host "Option") {
-            "1" { 
-                Connect-Repository
-            }
-            "2" {
-                Write-Host ""
-                Write-Host "Select realm:"
-                Write-Host "  1. Production"
-                Write-Host "  2. Development"
-                Write-Host "  q. Return"
-
-                :whileloop do {
-                    $response = Read-Host
-
-                    :switchloop switch ($response) {
-                        "1" {
-                            Set-Realm "prod" $CONFIG
-                            $CONFIG = Get-Config
-                            break whileloop
+switch ($PSCmdlet.ParameterSetName) {
+    "Menu" {
+        do {
+            Clear-Host
+    
+            Write-Host "==========================================="
+            Write-Host "===              MAIN MENU              ==="
+            Write-Host "==========================================="
+            Write-Host "Realm: $($Script:Config.REALM)"
+            Write-Host ""
+            Write-Host "  1. Login"
+            Write-Host "  2. Set Realm"
+            Write-Host "  3. Pull Core"
+            Write-Host "  4. Pull Periphery"
+            Write-Host "  5. Pull NPMplus"
+            Write-Host "  6. Logout"
+            Write-Host "  q. Exit"
+    
+            switch (Read-Host "Option") {
+                "1" { 
+                    Connect-Repository
+                }
+                "2" {
+                    Write-Host ""
+                    Write-Host "Select realm:"
+                    Write-Host "  1. Production"
+                    Write-Host "  2. Development"
+                    Write-Host "  q. Return"
+    
+                    :whileloop do {
+                        $response = Read-Host
+    
+                        :switchloop switch ($response) {
+                            "1" {
+                                Set-Realm "prod" $Script:Config
+                                $Script:Config = Get-Config
+                                break whileloop
+                            }
+                            "2" {
+                                Set-Realm "dev" $Script:Config
+                                $Script:Config = Get-Config
+                                break whileloop
+                            }
+                            "q" {
+                                break whileloop
+                            }
+                            default {
+                                break switchloop
+                            }
                         }
-                        "2" {
-                            Set-Realm "dev" $CONFIG
-                            $CONFIG = Get-Config
-                            break whileloop
-                        }
-                        "q" {
-                            break whileloop
-                        }
-                        default {
-                            break switchloop
-                        }
+                    } while ($true)
+                }
+                "3" {
+                    if (-not (Test-Repository)) {
+                        Write-Log ERRO "Login first"
+                        break
                     }
-                } while ($true)
-            }
-            "3" {
-                if (-not (Test-Repository)) {
-                    Write-Log ERRO "Login first"
-                    break
+                    Get-GithubRepo "common"
+                    Get-GithubRepo "komodo-core"
                 }
-                Get-GithubRepo "common"
-                Get-GithubRepo "komodo-core"
-            }
-            "4" {
-                if (-not (Test-Repository)) {
-                    Write-Log ERRO "Login first"
-                    break
+                "4" {
+                    if (-not (Test-Repository)) {
+                        Write-Log ERRO "Login first"
+                        break
+                    }
+                    Get-GithubRepo "common"
+                    Get-GithubRepo "komodo-periphery"
                 }
-                Get-GithubRepo "common"
-                Get-GithubRepo "komodo-periphery"
-            }
-            "5" {
-                if (-not (Test-Repository)) {
-                    Write-Log ERRO "Login first"
-                    break
+                "5" {
+                    if (-not (Test-Repository)) {
+                        Write-Log ERRO "Login first"
+                        break
+                    }
+                    Get-GithubRepo "common"
+                    Get-GithubRepo "npmplu"
                 }
-                Get-GithubRepo "common"
-                Get-GithubRepo "npmplu"
+                "6" {
+                    Disconnect-Repository
+                }
+                "q" {
+                    Clear-Host
+                    exit
+                }
             }
-            "6" {
-                Disconnect-Repository
-            }
-            "q" {
-                Clear-Host
-                exit
-            }
-        }
-
-        Start-Sleep -MilliSeconds 500
-    } while ($true)
-}
-
-# =========================
-# CLI MODE
-# =========================
-switch ($Command) {
-    "login"  { 
-        Connect-Repository
+    
+            Start-Sleep -MilliSeconds 500
+        } while ($true)
     }
-    "logout" {
+    "Realm" {
+        Set-Realm -Realm $Realm -Config $Script:Config
+        $Script:Config = Get-Config
+    }
+    "Login" {
+        Connect-Repository  
+    }
+    "Logout" {
         Disconnect-Repository
     }
-    "pull" {
-        if (-not $Target) { 
-            Write-Log ERRO "Missing target"
-            break
-        }
+    "Pull" {
         Get-GithubRepo "common"
-        Get-GithubRepo $Target
+        Get-GithubRepo $Pull
     }
-    "start" {
-        if (-not $Target) {
-            Write-Log ERRO "Missing target"
-            break
-        }
-        Start-Compose $Target $CONFIG
+    "Start" {
+        Start-Compose $Start $Script:Config
     }
-    "stop" {
-        if (-not $Target) {
-            Write-Log ERRO "Missing target"
-            break 
-        }
-        Stop-Compose $Target
+    "Stop" {
+        Stop-Compose $Stop
     }
 }
-
-
-
-
-
-
-
-
-
-
-
-
 
 return
 
@@ -724,13 +710,13 @@ function Stop-Compose {
     return
 }
 
-[hashtable]$CONFIGJSON = @{}
-$CONFIGJSON["PUID"]=$PUID
-$CONFIGJSON["PGID"]=$PGID
-$CONFIGJSON["DOCKER_PGID"] = Get-DockerPGID
-$CONFIGJSON["TRUENAS"] = Test-IsTruenas
-$CONFIGJSON["REALM"] = $Realm
-$CONFIGJSON | ConvertTo-Json | Set-Content -Path $Script:CONFIGFILE -Encoding utf8
+[hashtable]$Script:ConfigJSON = @{}
+$Script:ConfigJSON["PUID"]=$PUID
+$Script:ConfigJSON["PGID"]=$PGID
+$Script:ConfigJSON["DOCKER_PGID"] = Get-DockerPGID
+$Script:ConfigJSON["TRUENAS"] = Test-IsTruenas
+$Script:ConfigJSON["REALM"] = $Realm
+$Script:ConfigJSON | ConvertTo-Json | Set-Content -Path $Script:CONFIGFILE -Encoding utf8
 
 if ($Command -eq "menu") {
     Clear-Host

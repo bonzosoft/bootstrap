@@ -22,19 +22,17 @@ function Set-DockerConfigFile {
     )
    
     begin {
-        [IO.FileInfo]$source = 
+        [IO.FileInfo]$source = $null
         [IO.FileInfo]$target = $null
     }
     process {
         foreach ($item in $Name) {
             $source = Join-Path -Path $MyInvocation.PSScriptRoot -ChildPath (Split-Path -Path $Script:Context.ConfigDir -Leaf) -AdditionalChildPath $item
             $target = Join-Path -Path $Script:Context.DataDir -ChildPath $Service -AdditionalChildPath $item
+            
             if (-not (Test-Path -Path $source.FullName)) {
                 Write-Error -Message "File '$($source.FullName)' not found."
             }
-            
-            Write-Host "source: $source"
-            Write-host "target: $target"
 
             if ($Link.IsPresent) {
                 New-Item -Path $target.FullName -ItemType SymbolicLink -Value $source.FullName -Force:$Force | Out-Null

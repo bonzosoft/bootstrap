@@ -23,10 +23,18 @@ La estructura de directorios recomendada es:
 Descarga de los archivos necesarios:
 ````bash
 rm -rf * \
- && git clone --branch --single-branch pwsh https://github.com/bonzosoft/bootstrap.git \
- && echo \
-'#!/usr/bin/env bash
-docker compose -f ./bootstrap/compose.yaml run --rm worker pwsh ./bootstrap/run.ps1' > run \
+ && git clone https://github.com/bonzosoft/bootstrap.git \
+ && echo '#!/usr/bin/env bash' > run \
+ && echo 'docker compose -f ./bootstrap/compose.yaml run --rm worker pwsh ./bootstrap/run.ps1' >> run \
+ && chmod +x run
+````
+
+Si estamos en pruebas, podemos indicar el branch:
+````bash
+rm -rf * \
+ && git clone --branch --single-branch "pwsh" https://github.com/bonzosoft/bootstrap.git \
+ && echo '#!/usr/bin/env bash' > run \
+ && echo 'docker compose -f ./bootstrap/compose.yaml run --rm worker pwsh ./bootstrap/run.ps1' >> run \
  && chmod +x run
 ````
 

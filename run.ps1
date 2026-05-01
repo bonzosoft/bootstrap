@@ -221,7 +221,8 @@ if (-not $Command -or $Command -eq "menu") {
         Write-Host "  2. Set Realm"
         Write-Host "  3. Pull Core"
         Write-Host "  4. Pull Periphery"
-        Write-Host "  5. Logout"
+        Write-Host "  5. Pull NPMplus"
+        Write-Host "  6. Logout"
         Write-Host "  q. Exit"
 
         switch (Read-Host "Option") {
@@ -266,7 +267,6 @@ if (-not $Command -or $Command -eq "menu") {
                 Get-GithubRepo "common"
                 Get-GithubRepo "komodo-core"
             }
-
             "4" {
                 if (-not (Test-Repository)) {
                     Write-Log ERRO "Login first"
@@ -276,6 +276,14 @@ if (-not $Command -or $Command -eq "menu") {
                 Get-GithubRepo "komodo-periphery"
             }
             "5" {
+                if (-not (Test-Repository)) {
+                    Write-Log ERRO "Login first"
+                    break
+                }
+                Get-GithubRepo "common"
+                Get-GithubRepo "npmplu"
+            }
+            "6" {
                 Disconnect-Repository
             }
             "q" {

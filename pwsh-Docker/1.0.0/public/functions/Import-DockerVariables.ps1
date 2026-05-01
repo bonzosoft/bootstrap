@@ -13,7 +13,7 @@ function Import-DockerVariables {
     )
 
     begin {
-        [PSCustomObject]$object = $null
+        [PSCustomObject]$object = [PSCustomObject]@{}
     }
     end {
         Get-Content $Path | ForEach-Object {

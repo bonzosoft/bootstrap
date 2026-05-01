@@ -4,11 +4,11 @@ function Set-DockerConfigFile {
 
     param (
         [Parameter(Mandatory, ValueFromPipeline)]
-        #[ValidateNotNullOrEmpty()]
+        [ValidateNotNullOrWhiteSpace()]
         [string[]]$Name,
 
         [Parameter(Mandatory)]
-        [ValidateNotNullOrEmpty()]
+        [ValidateNotNullOrWhiteSpace()]
         [string]$Service,
 
         [Parameter()]

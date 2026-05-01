@@ -217,7 +217,7 @@ git pull
 Pop-Location
 
 $Script:Config = Get-Config
-
+write-host $PSCmdlet.ParameterSetName
 switch ($PSCmdlet.ParameterSetName) {
     "Menu" {
         do {

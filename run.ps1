@@ -213,7 +213,7 @@ if (-not $Command -or $Command -eq "menu") {
         Clear-Host
 
         Write-Host "==========================="
-        Write-Host "===      MAIN MENU      ==="
+        Write-Host "===      MAIN MENU   0.3   ==="
         Write-Host "==========================="
         Write-Host "Realm: $($CONFIG.REALM)"
         Write-Host ""

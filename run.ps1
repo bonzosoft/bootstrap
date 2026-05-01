@@ -241,15 +241,15 @@ if (-not $Command -or $Command -eq "menu") {
                         "1" {
                             Set-Realm "prod" $CONFIG
                             $CONFIG = Get-Config
-                            break
+                            break 2
                         }
                         "2" {
                             Set-Realm "dev" $CONFIG
                             $CONFIG = Get-Config
-                            break
+                            break 2 
                         }
                         "q" {
-                            break
+                            break 2
                         }
                     }
                 } while ($true)

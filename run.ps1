@@ -177,7 +177,7 @@ function Stop-Compose($Name) {
 # INIT
 # =========================
 Push-Location ./bootstrap
-git pull boot
+git pull
 Pop-Location
 
 $CONFIG = Get-Config

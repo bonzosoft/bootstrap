@@ -17,10 +17,11 @@ Write-Host "Loading '$PSCommandPath'."
 
 
 ## SET ENV FILE
-[IO.FileInfo]$sourceEnvFile = Join-Path -Path $Script:Context.WorkingDir -ChildPath ".env.$($Script:Context.HostInfo.REALM)"
-if (Test-Path -Path $sourceEnvFile) {
-    New-Item -Path $Script:Context.DotEnvFile -ItemType SymbolicLink -Value $sourceEnvFile -Force | Out-Null
-}
+#[IO.FileInfo]$sourceEnvFile = Join-Path -Path $Script:Context.WorkingDir -ChildPath ".env.$($Script:Context.HostInfo.REALM)"
+#if (Test-Path -Path $sourceEnvFile) {
+#    New-Item -Path $Script:Context.DotEnvFile -ItemType SymbolicLink -Value $sourceEnvFile -Force | Out-Null
+#}
+Set-DockerRealm
 
 
 ## SET ENV FILE VARIABLES
@@ -47,9 +48,10 @@ if (Test-Path -Path $Script:Context.IncludeDir) {
 }
 
 ## Set file permisisons for volumes
-[IO.FileSystemInfo[]]$volumes = Get-DockerVolumes -Data (Get-DockerCompose -Path $Script:Context.ComposeFile)
-Grant-DockerPermission -Path $volumes -PUID $Script:Context.PUID -PGID $Script:Context.PGID -Permission "0755" -Recurse -Force
-
+#[IO.FileSystemInfo[]]$volumes = Get-DockerVolumes -Data (Get-DockerCompose -Path $Script:Context.ComposeFile)
+#Grant-DockerPermission -Path $volumes -PUID $Script:Context.PUID -PGID $Script:Context.PGID -Permission "0755" -Recurse -Force
+Get-DockerVolumes -Data (Get-DockerCompose -Path $Script:Context.ComposeFile) |
+Grant-DockerPermission -PUID $Script:Context.PUID -PGID $Script:Context.PGID -Permission "0755" -Recurse -Force
 
 
 Write-Host "Finishing '$PSCommandPath'."

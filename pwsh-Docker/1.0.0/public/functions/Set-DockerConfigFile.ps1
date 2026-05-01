@@ -15,7 +15,10 @@ function Set-DockerConfigFile {
         [switch]$Link,
 
         [Parameter()]
-        [switch]$Force
+        [switch]$Force,
+
+        [Parameter()]
+        [switch]$PassThru
     )
    
     begin {
@@ -24,7 +27,6 @@ function Set-DockerConfigFile {
     }
     process {
         foreach ($item in $Name) {
-            Write-Host $item
             $source = Join-Path -Path $MyInvocation.PSScriptRoot -ChildPath (Split-Path -Path $Script:Context.ConfigDir -Leaf) -AdditionalChildPath $item
             $target = Join-Path -Path $Script:Context.DataDir -ChildPath $Service -AdditionalChildPath $item
             if (-not (Test-Path -Path $source.FullName)) {
@@ -39,7 +41,11 @@ function Set-DockerConfigFile {
             }
             else {
                 Copy-Item -Path $source.FullName -Destination $target.FullName -Force:$Force | Out-Null
-            }           
+            }
+            
+            if ($PassThru.IsPresent) {
+                return $source
+            }
         }
     }
 }

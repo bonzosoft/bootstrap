@@ -75,12 +75,12 @@ function Grant-DockerPermission {
     end {
         if ($IsLinux) {
             if ($directories) {
-                $directories.FullName | xargs -r chown ${PUID}:${PGID}
-                $directories.FullName | xargs -r chmod $directoryPermission
+                #$directories.FullName | xargs -r chown ${PUID}:${PGID}
+                #$directories.FullName | xargs -r chmod $directoryPermission
             }
             if ($files) {
-                $files.FullName | xargs -r chown ${PUID}:${PGID}
-                $files.FullName | xargs -r chmod $filePermission
+                #$files.FullName | xargs -r chown ${PUID}:${PGID}
+                #$files.FullName | xargs -r chmod $filePermission
             }
         }
 

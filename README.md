@@ -7,7 +7,7 @@ Se debe tener creada la carpeta ``/mnt`` que será la base de la infraestructura
 ## Instalación
 Descarga de los archivos necesarios:
 ````bash
-git clone https://github.com/bonzosoft/bootstrap.git
+git clone --branch pwsh https://github.com/bonzosoft/bootstrap.git
 ````
 
 ## Uso

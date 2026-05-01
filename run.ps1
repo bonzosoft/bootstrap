@@ -219,7 +219,7 @@ Pop-Location
 $Script:Config = Get-Config
 write-host $PSCmdlet.ParameterSetName
 switch ($PSCmdlet.ParameterSetName) {
-    "Menu" {
+    "TUI" {
         do {
             Clear-Host
     
@@ -325,6 +325,9 @@ switch ($PSCmdlet.ParameterSetName) {
     }
     "Stop" {
         Stop-Compose $Stop
+    }
+    default {
+        throw "Unknown parameter set name: $(PSCmdlet.ParameterSetName)"
     }
 }
 

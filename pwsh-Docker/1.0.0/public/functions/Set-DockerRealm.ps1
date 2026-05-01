@@ -4,7 +4,7 @@ function Set-DockerRealm {
 
     param()
     
-    [IO.FileInfo]$source = Join-Path -Path $Script:Context.DotEnvFile.Directory -ChildPath "$($Script:Context.DotEnvFile.Name)$($Script:Context.HostInfo.REALM)"
+    [IO.FileInfo]$source = Join-Path -Path $Script:Context.DotEnvFile.Directory -ChildPath "$($Script:Context.DotEnvFile.Name).$($Script:Context.HostInfo.REALM)"
     [IO.FileInfo]$target = $Context.DotEnvFile
 
     Write-Host "source: $source"

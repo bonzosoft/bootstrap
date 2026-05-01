@@ -176,6 +176,10 @@ function Stop-Compose($Name) {
 # =========================
 # INIT
 # =========================
+Push-Location ./bootstrap
+git pull boot
+Pop-Location
+
 $CONFIG = Get-Config
 
 if ($Realm) {

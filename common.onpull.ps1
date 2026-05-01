@@ -25,7 +25,6 @@ if (Test-Path -Path $sourceEnvFile) {
 
 ## SET ENV FILE VARIABLES
 Set-DockerVariable -Name DATADIR    -Value $Script:Context.DataDir.FullName    -Force
-Set-DockerVariable -Name CONFIGDIR  -Value $Script:Context.ConfigDir.FullName  -Force
 Set-DockerVariable -Name INCLUDEDIR -Value $Script:Context.IncludeDir.FullName -Force
 Set-DockerVariable -Name SECRETSDIR -Value $Script:Context.SecretsDir.FullName -Force
 

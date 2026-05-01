@@ -59,13 +59,17 @@ function Grant-DockerPermission {
             else {
                 $temporaryItem = Get-Item -Path $item -Force:$Force
                 if ($temporaryItem -is [IO.FileInfo]) {
-                    $files += @($temporaryItem)
+                    if ($temporaryItem -like $Script:Context.DataDir) {
+                        $files += @($temporaryItem)
+                    }
                 }
                 if ($temporaryItem -is [IO.DirectoryInfo]) {
-                    $directories.Add($temporaryItem)
-                    if ($Recurse.IsPresent) {
-                        $files += @(Get-ChildItem -Path $item -File -Force:$Force -Recurse)
-                        $directories += @(Get-ChildItem -Path $item -Directory -Force:$Force -Recurse)
+                    if ($temporaryItem -like $Script:Context.DataDir) {
+                        $directories += @($temporaryItem)
+                        if ($Recurse.IsPresent) {
+                            $files += @(Get-ChildItem -Path $item -File -Force:$Force -Recurse)
+                            $directories += @(Get-ChildItem -Path $item -Directory -Force:$Force -Recurse)
+                        }
                     }
                 }
             }
@@ -75,12 +79,12 @@ function Grant-DockerPermission {
     end {
         if ($IsLinux) {
             if ($directories) {
-                #$directories.FullName | xargs -r chown ${PUID}:${PGID}
-                #$directories.FullName | xargs -r chmod $directoryPermission
+                $directories.FullName | xargs -r chown ${PUID}:${PGID}
+                $directories.FullName | xargs -r chmod $directoryPermission
             }
             if ($files) {
-                #$files.FullName | xargs -r chown ${PUID}:${PGID}
-                #$files.FullName | xargs -r chmod $filePermission
+                $files.FullName | xargs -r chown ${PUID}:${PGID}
+                $files.FullName | xargs -r chmod $filePermission
             }
         }
 

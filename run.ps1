@@ -234,22 +234,25 @@ if (-not $Command -or $Command -eq "menu") {
                 Write-Host "  2. Development"
                 Write-Host "  q. Return"
 
-                do {
+                :whileloop do {
                     $response = Read-Host
 
-                    switch ($response) {
+                    :switchloop switch ($response) {
                         "1" {
                             Set-Realm "prod" $CONFIG
                             $CONFIG = Get-Config
-                            break 2
+                            break whileloop
                         }
                         "2" {
                             Set-Realm "dev" $CONFIG
                             $CONFIG = Get-Config
-                            break 2 
+                            break whileloop
                         }
                         "q" {
-                            break 2
+                            break whileloop
+                        }
+                        default {
+                            break switchloop
                         }
                     }
                 } while ($true)

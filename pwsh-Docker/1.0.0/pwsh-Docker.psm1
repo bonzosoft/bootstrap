@@ -35,7 +35,7 @@ $Script:Context | Add-Member -MemberType NoteProperty -Name DOCKER_PGID -Value (
 $Script:Context | Add-Member -MemberType NoteProperty -Name TRUENAS     -Value ([bool]($Script:Context.HostInfo).TRUENAS)
 $Script:Context | Add-Member -MemberType NoteProperty -Name REALM       -Value ([string]($Script:Context.HostInfo).REALM)
 
-
+Write-Host $Script:Context.HostInfo.REALM
 ### Look for module assets #####################################################
 # Get public function definition files
 [Collections.Generic.List[IO.FileInfo]]$publicFunctions = Get-ChildItem -Path (Join-Path -Path $PSScriptRoot -ChildPath "public/functions/*.ps1") -ErrorAction SilentlyContinue

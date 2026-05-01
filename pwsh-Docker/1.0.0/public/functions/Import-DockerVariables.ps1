@@ -12,6 +12,9 @@ function Import-DockerVariables {
         [PSCustomObject[]]$Context = $Script:Context
     )
 
+    begin {
+        [PSCustomObject]$object = $null
+    }
     end {
         Get-Content $Path | ForEach-Object {
             if ($PSItem -match '^\s*$' -or $PSItem -match '^\s*#') {

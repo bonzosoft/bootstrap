@@ -1,6 +1,8 @@
 #!/usr/bin/env pwsh
 
 [CmdletBinding()]
+[OutputType([void])]
+
 param(
     [Parameter()]
     [ValidateSet("login", "logout", "setup", "pull", "start", "stop", "menu", "help")]
@@ -55,13 +57,17 @@ function Write-Log {
 }
 
 function Get-DockerPGID {
-    [string[]]$group = Get-Content "/host/etc/group" | Where-Object { $_ -match "^docker:" }
-    Write-Host "pasa por aqui"
-    Write-Host "group: $group"
-    if ($group.Count -eq 1) {
+    [string[]]$group = Get-Content "/host/etc/group" | Where-Object { $PSItem -match "^docker:" }
+
+    if ($group.Count -lt 1) {
+        throw "No 'docker' group has been found on host."
+    }
+    elseif ($group.Count -gt 1) {
+        throw "More than one 'docker' group has been found on host." 
+    }
+    else {
         return [int]($group.Split(":")[2])
     }
-    throw "docker group not found or duplicated"
 }
 
 function Test-IsTruenas {
@@ -244,7 +250,7 @@ if (-not $Command -or $Command -eq "menu") {
             }
         }
 
-        Start-Sleep 1
+        Start-Sleep -MilliSeconds 500
     } while ($true)
 }
 

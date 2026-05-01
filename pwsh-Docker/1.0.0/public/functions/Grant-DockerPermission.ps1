@@ -57,7 +57,7 @@ function Grant-DockerPermission {
             else {
                 $temporaryItem = Get-Item -Path $item -Force:$Force
                 if ($temporaryItem -is [IO.FileInfo]) {
-                    $files += $temporaryItem               
+                    $files += $temporaryItem
                 }
                 if ($temporaryItem -is [IO.DirectoryInfo]) {
                     $directories.Add($temporaryItem)

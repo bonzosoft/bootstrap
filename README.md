@@ -40,18 +40,27 @@ rm -rf * \
 
 ## Uso
 
+### Script
 ````bash
 ./run -Menu
 ````
 
-### Menu
+## Uso avanzado
+
+### Consola
+Para ejecutar la consola de Powershell:
+````bash
+docker compose -f bootstrap/compose.yaml run --rm worker
+````
 
 #### Docker Compose
+Para ejecutar el menú usando Docker Compose:
 ````bash
 docker compose -f ./bootstrap/compose.yaml run --rm worker pwsh ./bootstrap/run.ps1 -Menu
 ````
 
 #### Docker CLI
+Para ejecutar el menú usando Docker CLI:
 ````bash
 docker run -it --rm -w "$(pwd)" -v "/mnt:/mnt" -v "$(pwd)/.config/gh:/root/.config/gh" -v "/var/run/docker.sock:/var/run/docker.sock" ghcr.io/bonzosoft/pwsh:latest pwsh ./bootstrap/run.ps1 -Menu
 ````

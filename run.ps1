@@ -212,22 +212,30 @@ if (-not $Command -or $Command -eq "menu") {
     do {
         Clear-Host
 
-        Write-Host "==========================="
-        Write-Host "===      MAIN MENU   0.3   ==="
-        Write-Host "==========================="
+        Write-Host "==========================================="
+        Write-Host "===              MAIN MENU              ==="
+        Write-Host "==========================================="
         Write-Host "Realm: $($CONFIG.REALM)"
         Write-Host ""
-        Write-Host "1. Login"
-        Write-Host "2. Logout"
-        Write-Host "3. Pull Core"
-        Write-Host "4. Pull Periphery"
-        Write-Host "5. Change Realm"
-        Write-Host "q. Exit"
+        Write-Host "  1. Login"
+        Write-Host "  2. Set Realm"
+        Write-Host "  3. Pull Core"
+        Write-Host "  4. Pull Periphery"
+        Write-Host "  5. Logout"
+        Write-Host "  q. Exit"
 
         switch (Read-Host "Option") {
-            "1" { Connect-Repository }
-            "2" { Disconnect-Repository }
-
+            "1" { 
+                Connect-Repository
+            }
+            "2" {
+                $response = Read-Host "Select realm: [prod|dev]"
+                if ($response -in @("prod","dev")) {
+                    Set-Realm $r $CONFIG
+                    $CONFIG = Get-Config
+                } else {
+                    Write-Log ERRO "Invalid realm"
+                }
             "3" {
                 if (-not (Test-Repository)) {
                     Write-Log ERRO "Login first"
@@ -246,16 +254,11 @@ if (-not $Command -or $Command -eq "menu") {
                 Get-GithubRepo "komodo-periphery"
             }
 
-            "5" {
-                $r = Read-Host "prod/dev"
-                if ($r -in @("prod","dev")) {
-                    Set-Realm $r $CONFIG
-                    $CONFIG = Get-Config
-                } else {
-                    Write-Log ERRO "Invalid realm"
-                }
-            }
 
+            }
+            "5" {
+                Disconnect-Repository
+            }
             "q" {
                 Clear-Host
                 exit

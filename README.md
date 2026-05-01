@@ -41,8 +41,13 @@ rm -rf ./bootstrap \
 ## Uso
 
 ### Script
+Para ejecutar el modo TUI:
 ````bash
-./run -Menu
+./run
+````
+o actualizando:
+````bash
+pushd ./bootstrap && git pull && popd && ./run
 ````
 
 ## Uso avanzado

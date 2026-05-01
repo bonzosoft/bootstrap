@@ -16,7 +16,7 @@ git clone --branch pwsh https://github.com/bonzosoft/bootstrap.git
 
 #### Docker Compose
 ````bash
-docker compose run --rm worker pwsh ./bootstrap/run.ps1
+docker compose -f ./bootstrap/compose.yaml run --rm worker pwsh ./bootstrap/run.ps1
 ````
 
 #### Docker CLI

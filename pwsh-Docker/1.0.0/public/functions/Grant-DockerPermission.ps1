@@ -2,6 +2,7 @@
 function Grant-DockerPermission {
     [CmdletBinding()]
     [OutputType([void])]
+    [OutputType([IO.FileSystemInfo[]])]
 
     param (
         [Parameter(Mandatory, ValueFromPipeline)]
@@ -52,18 +53,18 @@ function Grant-DockerPermission {
     process {
         foreach ($item in $Path) {
             if (-not (Test-Path -Path $item)) {
-                $directories += New-Item -Path $Path -ItemType Directory -Force:$Force
+                $directories += @(New-Item -Path $Path -ItemType Directory -Force:$Force)
             }
             else {
                 $temporaryItem = Get-Item -Path $item -Force:$Force
                 if ($temporaryItem -is [IO.FileInfo]) {
-                    $files += $temporaryItem
+                    $files += @($temporaryItem)
                 }
                 if ($temporaryItem -is [IO.DirectoryInfo]) {
                     $directories.Add($temporaryItem)
                     if ($Recurse.IsPresent) {
-                        $files += Get-ChildItem -Path $item -File -Force:$Force -Recurse
-                        $directories += Get-ChildItem -Path $item -Directory -Force:$Force -Recurse
+                        $files += @(Get-ChildItem -Path $item -File -Force:$Force -Recurse)
+                        $directories += @(Get-ChildItem -Path $item -Directory -Force:$Force -Recurse)
                     }
                 }
             }

@@ -167,7 +167,6 @@ function Get-GithubRepo {
         $Branch="main",
         $Org="bonzosoft"
     )
-    gh auth setup-git
 
     if (-not (Test-Path "./$Name/.git")) {
         Write-Log INFO "Cloning $Name"

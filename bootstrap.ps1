@@ -3,6 +3,282 @@
 [CmdletBinding()]
 param(
     [Parameter()]
+    [ValidateSet("login", "logout", "setup", "pull", "start", "stop", "menu", "help")]
+    [string]$Command = "menu",
+
+    [Parameter()]
+    [string]$Target,
+
+    [Parameter()]
+    [ValidateSet("prod", "dev")]
+    [string]$Realm
+)
+
+Set-StrictMode -Version Latest
+$ErrorActionPreference = "Stop"
+
+# =========================
+# Constants
+# =========================
+[string]$Script:GITHOSTNAME = "github.com"
+[int]$PUID = 568
+[int]$PGID = 568
+[IO.DirectoryInfo]$Script:COMMONDIR = Join-Path -Path (Get-Location) -ChildPath "common"
+[IO.FileInfo]$Script:CONFIGFILE = Join-Path -Path (Get-Location) -ChildPath ".docker.config.json"
+
+# =========================
+# Helpers
+# =========================
+function Write-Log {
+    param(
+        [Parameter(Mandatory)]
+        [ValidateSet("INFO", "WARN", "ERRO", "SUCC")]
+        $Level,
+        $Message
+    )
+
+    $Timestamp = Get-Date -Format "yyyy-MM-ddTHH:mm:ss"
+    $colors = @{
+        INFO = "`e[36m"
+        WARN = "`e[33m"
+        ERRO = "`e[31m"
+        SUCC = "`e[32m"
+        RESET = "`e[0m"
+    }
+
+    if ($Message) {
+        Write-Host "$Timestamp [$($colors[$Level])$Level$($colors.RESET)] $Message"
+    }
+    else {
+        Write-Host "$Timestamp [$($colors[$Level])$Level$($colors.RESET)]"
+    }
+}
+
+function Get-DockerPGID {
+    $group = Get-Content "/host/etc/group" | Where-Object { $_ -match "^docker:" }
+    if ($group.Count -eq 1) {
+        return [int]($group.Split(":")[2])
+    }
+    throw "docker group not found or duplicated"
+}
+
+function Test-IsTruenas {
+    return Test-Path "/host/etc/version"
+}
+
+# =========================
+# Config
+# =========================
+function Get-Config {
+    if (Test-Path $Script:CONFIGFILE) {
+        return Get-Content $Script:CONFIGFILE | ConvertFrom-Json
+    }
+
+    Write-Log WARN "Generating new config..."
+
+    $config = @{
+        PUID        = $PUID
+        PGID        = $PGID
+        DOCKER_PGID = Get-DockerPGID
+        TRUENAS     = Test-IsTruenas
+        REALM       = "prod"
+    }
+
+    $config | ConvertTo-Json | Set-Content $Script:CONFIGFILE
+    return $config
+}
+
+function Save-Config($config) {
+    $config | ConvertTo-Json | Set-Content $Script:CONFIGFILE
+}
+
+function Set-Realm {
+    param($Realm, $Config)
+
+    $Config.REALM = $Realm
+    Save-Config $Config
+    Write-Log SUCC "Realm set to $Realm"
+}
+
+# =========================
+# GitHub
+# =========================
+function Test-Repository {
+    gh auth status *> $null
+    return ($LASTEXITCODE -eq 0)
+}
+
+function Connect-Repository {
+    Write-Log INFO "Logging into GitHub..."
+    gh auth login --hostname $Script:GITHOSTNAME --git-protocol https --web
+    if ($LASTEXITCODE) { Write-Log ERRO "Login failed"; return }
+
+    gh auth setup-git
+    Write-Log SUCC "Login OK"
+}
+
+function Disconnect-Repository {
+    if (-not (Test-Repository)) {
+        Write-Log WARN "No active session"
+        return
+    }
+
+    gh auth logout --hostname $Script:GITHOSTNAME
+    Write-Log SUCC "Logged out"
+}
+
+function Get-GithubRepo {
+    param($Name, $Branch="main", $Org="bonzosoft")
+
+    if (-not (Test-Path "./$Name/.git")) {
+        Write-Log INFO "Cloning $Name"
+        gh repo clone "$Org/$Name" "./$Name"
+        if ($LASTEXITCODE) { Write-Log ERRO "Clone failed"; return }
+    }
+
+    Push-Location "./$Name"
+
+    Write-Log INFO "Syncing $Name"
+    gh repo sync --branch $Branch --force
+    git submodule update --init --recursive
+
+    if (Test-Path "onpull.ps1") {
+        pwsh -File "onpull.ps1"
+    }
+
+    Pop-Location
+    Write-Log SUCC "$Name ready"
+}
+
+# =========================
+# Docker
+# =========================
+function Start-Compose($Name, $Config) {
+    Push-Location "./$Name"
+
+    bash "./predeploy"
+
+    $project = if ($Config.TRUENAS) { "ix-$Name" } else { $Name }
+    docker compose -p $project up -d
+
+    Pop-Location
+    Write-Log SUCC "$Name started"
+}
+
+function Stop-Compose($Name) {
+    Push-Location "./$Name"
+    docker compose down
+    Pop-Location
+    Write-Log SUCC "$Name stopped"
+}
+
+# =========================
+# INIT
+# =========================
+$CONFIG = Get-Config
+
+if ($Realm) {
+    Set-Realm -Realm $Realm -Config $CONFIG
+    $CONFIG = Get-Config
+}
+
+# =========================
+# MENU
+# =========================
+if (-not $Command -or $Command -eq "menu") {
+
+    do {
+        Clear-Host
+
+        Write-Host "==========================="
+        Write-Host "===      MAIN MENU      ==="
+        Write-Host "==========================="
+        Write-Host "Realm: $($CONFIG.REALM)"
+        Write-Host ""
+        Write-Host "1. Login"
+        Write-Host "2. Logout"
+        Write-Host "3. Pull Core"
+        Write-Host "4. Pull Periphery"
+        Write-Host "5. Change Realm"
+        Write-Host "q. Exit"
+
+        switch (Read-Host "Option") {
+            "1" { Connect-Repository }
+            "2" { Disconnect-Repository }
+
+            "3" {
+                if (-not (Test-Repository)) {
+                    Write-Log ERRO "Login first"
+                    break
+                }
+                Get-GithubRepo "komodo-core"
+            }
+
+            "4" {
+                if (-not (Test-Repository)) {
+                    Write-Log ERRO "Login first"
+                    break
+                }
+                Get-GithubRepo "komodo-periphery"
+            }
+
+            "5" {
+                $r = Read-Host "prod/dev"
+                if ($r -in @("prod","dev")) {
+                    Set-Realm $r $CONFIG
+                    $CONFIG = Get-Config
+                } else {
+                    Write-Log ERRO "Invalid realm"
+                }
+            }
+
+            "q" { exit }
+        }
+
+        Start-Sleep 1
+    } while ($true)
+}
+
+# =========================
+# CLI MODE
+# =========================
+switch ($Command) {
+    "login"  { Connect-Repository }
+    "logout" { Disconnect-Repository }
+
+    "pull" {
+        if (-not $Target) { Write-Log ERRO "Missing target"; break }
+        Get-GithubRepo $Target
+    }
+
+    "start" {
+        if (-not $Target) { Write-Log ERRO "Missing target"; break }
+        Start-Compose $Target $CONFIG
+    }
+
+    "stop" {
+        if (-not $Target) { Write-Log ERRO "Missing target"; break }
+        Stop-Compose $Target
+    }
+}
+
+
+
+
+
+
+
+
+
+
+
+
+
+return 
+<#
+[CmdletBinding()]
+param(
+    [Parameter()]
     [ValidateSet("login", "logout", "setup", "pull", "start", "stop", "help")]
     [string]$Command = "menu",
 
@@ -550,6 +826,7 @@ else {
             Write-Host ""
         }
     }
-    #>
+    
 }
 
+#>

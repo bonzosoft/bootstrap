@@ -2,43 +2,48 @@
 # Bootstrap
 
 ## Prerrequisitos
-Se debe tener creada la carpeta ``/mnt`` que será la base de la infraestructura.
+La estructura de directorios recomendada es:
+````
+/mnt/tank0/apps
+|- infra/
+|  |- bootstrap/
+|  |- common/
+|  |- komodo-core/
+|  |- komodo-periphery/
+|  |- run
+|- state/
+   |- komodo-core/
+      |- app/
+      |- db/
+      |- dbwrapper/
+      |- proxy/
+````
 
 ## Instalación
 Descarga de los archivos necesarios:
 ````bash
 rm -rf * \
  && git clone --branch --single-branch pwsh https://github.com/bonzosoft/bootstrap.git \
- && echo '#!/usr/bin/env bash
-docker compose -f ./bootstrap/compose.yaml run --rm worker pwsh ./bootstrap/run.ps1' > run && chmod +x run
+ && echo \
+'#!/usr/bin/env bash
+docker compose -f ./bootstrap/compose.yaml run --rm worker pwsh ./bootstrap/run.ps1' > run \
+ && chmod +x run
 ````
 
 ## Uso
 
 ````bash
-./run
+./run -Menu
 ````
 
 ### Menu
 
 #### Docker Compose
 ````bash
-docker compose -f ./bootstrap/compose.yaml run --rm worker pwsh ./bootstrap/run.ps1
+docker compose -f ./bootstrap/compose.yaml run --rm worker pwsh ./bootstrap/run.ps1 -Menu
 ````
 
 #### Docker CLI
 ````bash
 docker run -it --rm -w "$(pwd)" -v "/mnt:/mnt" -v "$(pwd)/.config/gh:/root/.config/gh" -v "/var/run/docker.sock:/var/run/docker.sock" ghcr.io/bonzosoft/pwsh:latest pwsh ./bootstrap/run.ps1 -Menu
-````
-
-### OnPull
-````bash
-docker run --rm -w "$(pwd)" -v "/mnt:/mnt" -e TERM=dumb ghcr.io/bonzosoft/pwsh:latest pwsh -File ./onclone.ps1 -Realm production
-````
-
-## Depuración
-````pwsh
-Import-Module ./common/posh-Docker
-$compose = Get-DockerCompose -Path ./compose.yaml
-Get-DockerVolumes -Data $compose
 ````

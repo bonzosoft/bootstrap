@@ -233,6 +233,7 @@ if (-not $Command -or $Command -eq "menu") {
                     Write-Log ERRO "Login first"
                     break
                 }
+                Get-GithubRepo "common"
                 Get-GithubRepo "komodo-core"
             }
 
@@ -241,6 +242,7 @@ if (-not $Command -or $Command -eq "menu") {
                     Write-Log ERRO "Login first"
                     break
                 }
+                Get-GithubRepo "common"
                 Get-GithubRepo "komodo-periphery"
             }
 
@@ -268,21 +270,32 @@ if (-not $Command -or $Command -eq "menu") {
 # CLI MODE
 # =========================
 switch ($Command) {
-    "login"  { Connect-Repository }
-    "logout" { Disconnect-Repository }
-
+    "login"  { 
+        Connect-Repository
+    }
+    "logout" {
+        Disconnect-Repository
+    }
     "pull" {
-        if (-not $Target) { Write-Log ERRO "Missing target"; break }
+        if (-not $Target) { 
+            Write-Log ERRO "Missing target"
+            break
+        }
+        Get-GithubRepo "common"
         Get-GithubRepo $Target
     }
-
     "start" {
-        if (-not $Target) { Write-Log ERRO "Missing target"; break }
+        if (-not $Target) {
+            Write-Log ERRO "Missing target"
+            break
+        }
         Start-Compose $Target $CONFIG
     }
-
     "stop" {
-        if (-not $Target) { Write-Log ERRO "Missing target"; break }
+        if (-not $Target) {
+            Write-Log ERRO "Missing target"
+            break 
+        }
         Stop-Compose $Target
     }
 }

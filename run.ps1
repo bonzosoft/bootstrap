@@ -238,7 +238,10 @@ if (-not $Command -or $Command -eq "menu") {
                 }
             }
 
-            "q" { exit }
+            "q" {
+                Clear-Host
+                exit
+            }
         }
 
         Start-Sleep 1

@@ -16,18 +16,12 @@ Write-Host "Loading '$PSCommandPath'."
 . (Get-Item -Path (Join-Path -Path $PSScriptRoot -ChildPath "common.ps1"))
 
 
-## SET ENV FILE
-#[IO.FileInfo]$sourceEnvFile = Join-Path -Path $Script:Context.WorkingDir -ChildPath ".env.$($Script:Context.HostInfo.REALM)"
-#if (Test-Path -Path $sourceEnvFile) {
-#    New-Item -Path $Script:Context.DotEnvFile -ItemType SymbolicLink -Value $sourceEnvFile -Force | Out-Null
-#}
-Set-DockerRealm
-
-
 ## SET ENV FILE VARIABLES
-Set-DockerVariable -Name DATADIR    -Value $Script:Context.DataDir.FullName    -Force
-Set-DockerVariable -Name INCLUDEDIR -Value $Script:Context.IncludeDir.FullName -Force
-Set-DockerVariable -Name SECRETSDIR -Value $Script:Context.SecretsDir.FullName -Force
+Set-DockerRealm
+Set-DockerVariable -Name DATADIR    -Value $Script:Context.DataDir.FullName
+Set-DockerVariable -Name INCLUDEDIR -Value $Script:Context.IncludeDir.FullName
+Set-DockerVariable -Name SECRETSDIR -Value $Script:Context.SecretsDir.FullName
+Import-DockerVariables
 
 
 ## SUBMODULES MANAGEMENT

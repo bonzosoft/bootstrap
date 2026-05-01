@@ -16,13 +16,10 @@ function Set-DockerVariable {
         [string]$Value,
 
         [Parameter()]
-        [switch]$Force, #encuentra archivos que normalmente no (ocultos)
+        [switch]$NoOverwrite, #evita sobrescribir el valor si existe
 
         [Parameter()]
-        [switch]$NoOverwrite, #sobrescribe el valor si existe
-
-        [Parameter()]
-        [switch]$NoAppend, #añade el valor si no existe
+        [switch]$NoAppend, #evita añadir el valor si no existe
 
         [Parameter()]
         [switch]$PassThru
@@ -151,10 +148,10 @@ function Set-DockerVariable {
         $temporaryFile = New-TemporaryFile
         Set-Content -Path $temporaryFile -Value $outputLines -Encoding UTF8
         if ($Path.Linktarget) {
-            Move-Item -Path $temporaryFile -Destination $Path.LinkTarget -Force:$Force
+            Move-Item -Path $temporaryFile -Destination $Path.LinkTarget -Force
         }
         else {
-            Move-Item -Path $temporaryFile -Destination $Path -Force:$Force
+            Move-Item -Path $temporaryFile -Destination $Path -Force
         }
 
         if ($PassThru.IsPresent) {

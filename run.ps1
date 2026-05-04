@@ -180,7 +180,9 @@ function Get-GithubRepo {
     Push-Location "./$Name"
 
     Write-Log INFO "Syncing $Name"
-    gh repo sync --branch $Branch --force
+    #gh repo sync --branch $Branch --force
+    git fetch
+    git reset --hard origin/HEAD
     git submodule update --init --recursive
 
     if (Test-Path "onpull.ps1") {

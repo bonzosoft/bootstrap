@@ -1,4 +1,4 @@
-function Get-DockerContext {
+function Import-DockerContext {
     [CmdletBinding()]
     [OutputType([PSCustomObject])]
 

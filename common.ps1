@@ -22,7 +22,7 @@ Import-Module -Name (Join-Path -Path $PSScriptRoot -ChildPath "pwsh-Docker")
 
 
 ### LOAD CONTEXT ###############################################################
-$Script:Context = Get-DockerContext
+$Script:Context = Import-DockerContext
 
 
 Write-Host "Finishing '$PSCommandPath'."

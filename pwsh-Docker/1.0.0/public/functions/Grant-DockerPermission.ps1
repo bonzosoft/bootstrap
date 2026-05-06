@@ -32,8 +32,8 @@ function Grant-DockerPermission {
     )
 
     begin {
-        [Collections.Generic.List[IO.DirectoryInfo]]$directories = @()
-        [Collections.Generic.List[IO.FileInfo]]$files = @()
+        [IO.DirectoryInfo[]]$directories = @()
+        [IO.FileInfo[]]$files = @()
         [string]$directoryPermission = ""
         [string]$filePermission = ""
         [int]$digit = 0

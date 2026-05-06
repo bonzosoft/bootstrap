@@ -58,7 +58,7 @@ function Grant-DockerPermission {
             }
 
             if (-not (Test-Path -Path $item)) {
-                $directories += @(New-Item -Path $Path -ItemType Directory -Force:$Force)
+                $directories += @(New-Item -Path $item -ItemType Directory -Force:$Force)
             }
             else {
                 $temporaryItem = Get-Item -Path $item -Force:$Force

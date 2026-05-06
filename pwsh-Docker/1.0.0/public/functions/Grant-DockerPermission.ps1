@@ -32,8 +32,8 @@ function Grant-DockerPermission {
     )
 
     begin {
-        [IO.DirectoryInfo[]]$directories = @()
         [IO.FileInfo[]]$files = @()
+        [IO.DirectoryInfo[]]$directories = @()
         [string]$directoryPermission = ""
         [string]$filePermission = ""
         [int]$digit = 0
@@ -58,20 +58,20 @@ function Grant-DockerPermission {
             }
 
             if (-not (Test-Path -Path $item)) {
-                $directories += @(New-Item -Path $item -ItemType Directory -Force:$Force)
+                $directories += New-Item -Path $item -ItemType Directory -Force:$Force
             }
             else {
                 $temporaryItem = Get-Item -Path $item -Force:$Force
                 if ($temporaryItem -is [IO.FileInfo]) {
-                    $files += @($temporaryItem)
+                    $files += $temporaryItem
                     continue
                 }
 
                 if ($temporaryItem -is [IO.DirectoryInfo]) {
                     $directories += @($temporaryItem)
                     if ($Recurse.IsPresent) {
-                        $files += @(Get-ChildItem -Path $item -File -Force:$Force -Recurse)
-                        $directories += @(Get-ChildItem -Path $item -Directory -Force:$Force -Recurse)
+                        $files += Get-ChildItem -Path $item -File -Force:$Force -Recurse
+                        $directories += Get-ChildItem -Path $item -Directory -Force:$Force -Recurse
                     }
                 }
             }

@@ -53,7 +53,7 @@ function Grant-DockerPermission {
     process {
         foreach ($item in $Path) {
             $item
-            if (-not ($item.FullName -contains $Script:Context.DataDir)) {
+            if (-not ($($item.FullName).StartsWith($Script:Context.DataDir))) {
                 Write-Host "System directory. Skipping."
                 continue
             }

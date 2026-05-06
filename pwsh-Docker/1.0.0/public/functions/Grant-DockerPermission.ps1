@@ -76,10 +76,6 @@ function Grant-DockerPermission {
                     }
                 }
             }
-            Write-host "directories:"
-            $directories
-            Write-Host "files:"
-            $files
         }
     }
 
@@ -95,11 +91,6 @@ function Grant-DockerPermission {
                 $files.FullName | xargs -r chmod $filePermission
             }
         }
-
-        Write-Host "Files:"
-        $files
-        Write-Host "Directories:"
-        $directories
         
         if ($PassThru.IsPresent) {
             return $Path

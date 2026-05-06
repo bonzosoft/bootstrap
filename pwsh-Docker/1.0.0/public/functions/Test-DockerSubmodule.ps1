@@ -8,7 +8,7 @@ function Test-DockerSubmodule {
         [IO.FileInfo]$Path = $MyInvocation.PSScriptRoot
     )
 
-    if ($Path.DirectoryName -contains $Script:Context.IncludeDir) {
+    if ($($Path.DirectoryName).StartsWith($Script:Context.IncludeDir)) {
         return $true
     }
     else {

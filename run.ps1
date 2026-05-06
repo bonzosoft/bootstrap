@@ -191,17 +191,9 @@ function Get-GithubRepo {
     #gh repo sync --branch $Branch --force
 
     git fetch origin
-
-    # Cambio de rama
-    git switch -C $Branch origin/$Branch
-    if ($LASTEXITCODE) {
-        Write-Log ERRO "Failed to switch to branch $Branch"
-        Pop-Location
-        return
-    }
-
-    # Forzar sincronización
+    git checkout $Branch
     git reset --hard origin/$Branch
+    git clean -fd
 
     # Submódulos
     git submodule update --init --recursive

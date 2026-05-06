@@ -283,8 +283,8 @@ switch ($PSCmdlet.ParameterSetName) {
                         Write-Log ERRO "Login first"
                         break
                     }
-                    Get-GithubRepo "common"
-                    Get-GithubRepo "komodo-core" -branch mongodb
+                    Get-GithubRepo -Name "common" -Branch "main"
+                    Get-GithubRepo -Name "komodo-core" -Branch "mongodb"
                     Read-Host
                 }
                 "4" {
@@ -292,8 +292,8 @@ switch ($PSCmdlet.ParameterSetName) {
                         Write-Log ERRO "Login first"
                         break
                     }
-                    Get-GithubRepo "common"
-                    Get-GithubRepo "komodo-periphery"
+                    Get-GithubRepo -Name "common" -Branch "main"
+                    Get-GithubRepo -Name "komodo-periphery" -Branch "main"
                     Read-Host
                 }
                 "5" {
@@ -301,8 +301,8 @@ switch ($PSCmdlet.ParameterSetName) {
                         Write-Log ERRO "Login first"
                         break
                     }
-                    Get-GithubRepo "common"
-                    Get-GithubRepo "npmplus"
+                    Get-GithubRepo -Name "common" -Branch "main"
+                    Get-GithubRepo -Name "npmplus" -Branch "main"
                     Read-Host
                 }
                 "6" {

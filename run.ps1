@@ -163,14 +163,22 @@ function Disconnect-Repository {
 
 function Get-GithubRepo {
     param(
-        $Name,
-        $Branch="main",
-        $Org="bonzosoft"
+        [Parameter(Mandatory)]
+        [ValidateNotNullOrWhiteSpace()]
+        [string]$Name,
+
+        [Parameter()]
+        [ValidateNotNullOrWhiteSpace()]
+        [string]$Branch="main",
+
+        [Parameter()]
+        [ValidateNotNullOrWhiteSpace()]
+        [string]$Organization="bonzosoft"
     )
 
     if (-not (Test-Path "./$Name/.git")) {
         Write-Log INFO "Cloning $Name"
-        gh repo clone "$Org/$Name" "./$Name"
+        gh repo clone "$Organization/$Name" "./$Name" -- --branch $Branch
         if ($LASTEXITCODE) {
             Write-Log ERRO "Clone failed"
             return
@@ -179,10 +187,23 @@ function Get-GithubRepo {
 
     Push-Location "./$Name"
 
-    Write-Log INFO "Syncing $Name"
+    Write-Log INFO "Syncing $Name ($Branch)"
     #gh repo sync --branch $Branch --force
-    git fetch
-    git reset --hard origin/HEAD
+
+    git fetch origin
+
+    # Cambio de rama
+    git switch -C $Branch origin/$Branch
+    if ($LASTEXITCODE) {
+        Write-Log ERRO "Failed to switch to branch $Branch"
+        Pop-Location
+        return
+    }
+
+    # Forzar sincronización
+    git reset --hard origin/$Branch
+
+    # Submódulos
     git submodule update --init --recursive
 
     if (Test-Path "onpull.ps1") {

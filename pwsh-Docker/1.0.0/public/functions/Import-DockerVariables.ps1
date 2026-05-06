@@ -10,6 +10,9 @@ function Import-DockerVariables {
         [Parameter()]
         [ValidateNotNullOrEmpty()]
         [PSCustomObject[]]$Context = $Script:Context
+
+        [Parameter()]
+        [switch]$PassThru
     )
 
     begin {
@@ -25,6 +28,9 @@ function Import-DockerVariables {
         }
 
         $Context | Add-Member -MemberType NoteProperty -Name "Environment" -Value $object -Force
-        return $Context
+
+        if ($PassThru.IsPresent) {
+            return $Context
+        }
     }
 }

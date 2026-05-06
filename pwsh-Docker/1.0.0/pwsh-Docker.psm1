@@ -30,6 +30,17 @@ $Script:Context | Add-Member -MemberType NoteProperty -Name SecretsDir  -Value (
 
 $Script:Context | Add-Member -MemberType NoteProperty -Name HostInfo    -Value (Get-Content -Path (Join-Path -Path $Script:Context.WorkingDir.Parent -ChildPath ".config" -AdditionalChildPath "docker.config.json") | ConvertFrom-Json)
 
+$Script:Context | Add-Member -MemberType NoteProperty -Name APP_PUID    -Value 568
+$Script:Context | Add-Member -MemberType NoteProperty -Name APP_PGID    -Value $Script:Context.APP_PUID
+$Script:Context | Add-Member -MemberType NoteProperty -Name PROXY_PUID  -Value $Script:Context.APP_PUID
+$Script:Context | Add-Member -MemberType NoteProperty -Name PROXY_PGID  -Value $Script:Context.APP_PGID
+$Script:Context | Add-Member -MemberType NoteProperty -Name DB_PUID     -Value $Script:Context.APP_PUID
+$Script:Context | Add-Member -MemberType NoteProperty -Name DB_PGID     -Value $Script:Context.APP_PGID
+$Script:Context | Add-Member -MemberType NoteProperty -Name SOCKET_PUID -Value $Script:Context.APP_PUID
+$Script:Context | Add-Member -MemberType NoteProperty -Name SOCKET_PGID -Value $Script:Context.APP_PGID
+$Script:Context | Add-Member -MemberType NoteProperty -Name WORKER_PUID -Value $Script:Context.APP_PUID
+$Script:Context | Add-Member -MemberType NoteProperty -Name WORKER_PGID -Value $Script:Context.APP_PGID
+
 
 ### Look for module assets #####################################################
 # Get public function definition files

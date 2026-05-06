@@ -90,6 +90,11 @@ function Grant-DockerPermission {
             }
         }
 
+        Write-Host "Files:"
+        $files
+        Write-Host "Directories:"
+        $directories
+        
         if ($PassThru.IsPresent) {
             return $Path
         }

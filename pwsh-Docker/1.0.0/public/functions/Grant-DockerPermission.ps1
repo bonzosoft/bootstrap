@@ -75,11 +75,16 @@ function Grant-DockerPermission {
                     }
                 }
             }
+            Write-host "directories:"
+            $directories
+            Write-Host "files:"
+            $files
         }
     }
 
     end {
         if ($IsLinux) {
+            
             if ($directories) {
                 $directories.FullName | xargs -r chown ${PUID}:${PGID}
                 $directories.FullName | xargs -r chmod $directoryPermission

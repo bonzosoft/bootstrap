@@ -284,7 +284,7 @@ switch ($PSCmdlet.ParameterSetName) {
                         break
                     }
                     Get-GithubRepo "common"
-                    Get-GithubRepo "komodo-core"
+                    Get-GithubRepo "komodo-core" -branch mongodb
                     Read-Host
                 }
                 "4" {

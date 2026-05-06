@@ -53,23 +53,26 @@ function Grant-DockerPermission {
     process {
         foreach ($item in $Path) {
             Write-Host $item
+            if (-not ($item.FullName -like $Script:Context.DataDir)) {
+                Write-Host "System directory. Skipping."
+                continue
+            }
+
             if (-not (Test-Path -Path $item)) {
                 $directories += @(New-Item -Path $Path -ItemType Directory -Force:$Force)
             }
             else {
                 $temporaryItem = Get-Item -Path $item -Force:$Force
                 if ($temporaryItem -is [IO.FileInfo]) {
-                    if ($temporaryItem -like $Script:Context.DataDir) {
-                        $files += @($temporaryItem)
-                    }
+                    $files += @($temporaryItem)
+                    continue
                 }
+
                 if ($temporaryItem -is [IO.DirectoryInfo]) {
-                    if ($temporaryItem -like $Script:Context.DataDir) {
-                        $directories += @($temporaryItem)
-                        if ($Recurse.IsPresent) {
-                            $files += @(Get-ChildItem -Path $item -File -Force:$Force -Recurse)
-                            $directories += @(Get-ChildItem -Path $item -Directory -Force:$Force -Recurse)
-                        }
+                    $directories += @($temporaryItem)
+                    if ($Recurse.IsPresent) {
+                        $files += @(Get-ChildItem -Path $item -File -Force:$Force -Recurse)
+                        $directories += @(Get-ChildItem -Path $item -Directory -Force:$Force -Recurse)
                     }
                 }
             }

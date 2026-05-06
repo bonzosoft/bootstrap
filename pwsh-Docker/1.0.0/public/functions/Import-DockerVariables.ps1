@@ -9,7 +9,7 @@ function Import-DockerVariables {
 
         [Parameter()]
         [ValidateNotNullOrEmpty()]
-        [PSCustomObject[]]$Context = $Script:Context
+        [PSCustomObject[]]$Context = $Script:Context,
 
         [Parameter()]
         [switch]$PassThru

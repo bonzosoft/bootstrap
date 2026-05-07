@@ -73,6 +73,7 @@ function Grant-DockerPermission {
                         $files += Get-ChildItem -Path $item -File -Force:$Force -Recurse
                         $directories += Get-ChildItem -Path $item -Directory -Force:$Force -Recurse
                     }
+                    continue
                 }
             }
         }

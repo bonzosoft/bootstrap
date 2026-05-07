@@ -10,10 +10,12 @@ function Grant-DockerPermission {
         [IO.FileSystemInfo[]]$Path,
 
         [Parameter(Mandatory)]
+        [ValidateNotNullOrEmpty()]
         [ValidateRange(0,65535)]
         [int]$PUID,
 
         [Parameter(Mandatory)]
+        [ValidateNotNullOrEmpty()]
         [ValidateRange(0,65535)]
         [int]$PGID,
 

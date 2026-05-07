@@ -41,6 +41,8 @@ $Script:Context | Add-Member -MemberType NoteProperty -Name WEBPROXY_PUID    -Va
 $Script:Context | Add-Member -MemberType NoteProperty -Name WEBPROXY_PGID    -Value $Script:Context.APP_PGID
 $Script:Context | Add-Member -MemberType NoteProperty -Name DB_PUID          -Value $Script:Context.APP_PUID
 $Script:Context | Add-Member -MemberType NoteProperty -Name DB_PGID          -Value $Script:Context.APP_PGID
+$Script:Context | Add-Member -MemberType NoteProperty -Name DBBACKUP_PUID    -Value 0
+$Script:Context | Add-Member -MemberType NoteProperty -Name DBBACKUP_PGID    -Value $Script:Context.APP_PGID
 $Script:Context | Add-Member -MemberType NoteProperty -Name SOCKETPROXY_PUID -Value $Script:Context.APP_PUID
 $Script:Context | Add-Member -MemberType NoteProperty -Name SOCKETPROXY_PGID -Value $Script:Context.HostInfo.DOCKER_PGID
 $Script:Context | Add-Member -MemberType NoteProperty -Name WORKER_PUID      -Value $Script:Context.APP_PUID

@@ -1,7 +1,7 @@
 services:
   worker:
     image: ghcr.io/bonzosoft/pwsh:latest
-    working_dir: ./
+    working_dir: ${PWD}
     #entrypoint: ["pwsh"]
     init: true
     stdin_open: true
@@ -12,4 +12,4 @@ services:
       - /etc/localtime:/etc/localtime:ro
       - /etc:/host/etc:ro                  # acceso a la informacion del sistema
       - /mnt:/mnt:rw                       # acceso a las rutas importantes
-      - ./.config/gh:/root/.config/gh # mantiene la sesion de github entre ejecuciones
+      - ${PWD}/.config/gh:/root/.config/gh # mantiene la sesion de github entre ejecuciones

@@ -89,7 +89,7 @@ function Get-DockerPGID {
     }
 }
 
-fucntion Get-DockerHostname {
+function Get-DockerHostname {
     return Get-Content "/host/etc/hostname"
 }
 

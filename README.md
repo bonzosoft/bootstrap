@@ -69,3 +69,8 @@ Para ejecutar el menú usando Docker CLI:
 ````bash
 docker run -it --rm -w "$(pwd)" -v "/mnt:/mnt" -v "$(pwd)/.config/gh:/root/.config/gh" -v "/var/run/docker.sock:/var/run/docker.sock" ghcr.io/bonzosoft/pwsh:latest pwsh ./bootstrap/run.ps1 -Menu
 ````
+### Reset
+Para resetear todo:
+````bash
+rm -rf /mnt/tank0/apps/infra/* && rm -rf /mnt/tank0/apps/state
+````

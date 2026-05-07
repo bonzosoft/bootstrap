@@ -8,6 +8,11 @@ Write-Host "Importing module '$PSCommandPath'."
 )
 
 
+### List of requried binaries ##################################################
+[string[]]$requiredBinaries = @(
+)
+
+
 ### Public variables ###########################################################
 # nop
 
@@ -60,7 +65,13 @@ $Script:Context | Add-Member -MemberType NoteProperty -Name WORKER_PGID -Value $
 # Import required modules
 foreach ($module in $requiredModules) {
     Write-Host "Importing submodule $module."
-    Import-Module -Name (Join-Path -Path $PSScriptRoot -ChildPath "modules" -AdditionalChildPath $module) -Force
+    Import-Module -Name (Join-Path -Path $PSScriptRoot -ChildPath "etc" -AdditionalChildPath $module) -Force
+}
+
+# Import required binaries
+foreach ($binary in $requiredBinaries) {
+    Write-host "Loading binary $binary."
+    Add-Type -Path (Join-Path -Path $PSScriptRoot -ChildPath "bin" -AdditionalChildPath $binary)
 }
 
 # Dot source function definition files

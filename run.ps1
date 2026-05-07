@@ -89,6 +89,10 @@ function Get-DockerPGID {
     }
 }
 
+fucntion Get-DockerHostname {
+    return Get-Content "/host/etc/hostname"
+}
+
 function Test-IsTruenas {
     return Test-Path "/host/etc/version"
 }
@@ -106,6 +110,7 @@ function Get-Config {
     $config = @{
         PUID        = $PUID
         PGID        = $PGID
+        HOSTNAME    = Get-DockerHostname
         DOCKER_PGID = Get-DockerPGID
         TRUENAS     = Test-IsTruenas
         REALM       = "prod"

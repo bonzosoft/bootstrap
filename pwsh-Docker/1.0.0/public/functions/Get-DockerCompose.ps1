@@ -27,6 +27,7 @@ function Get-DockerCompose {
         if ($LASTEXITCODE) {
             throw "Unable to parse '$Path':`n$composeLines"
         }
+        $composeLines
         $composeData = $composeLines | ConvertFrom-Yaml
     
         Write-Output $composeData

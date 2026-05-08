@@ -16,10 +16,7 @@ function Get-DockerVolumes {
         foreach ($service in $Data.services.Keys) {
             if ($Data.services.$service.Keys -like "volumes") {
                 foreach ($volume in $Data.services.$service.volumes.source) {
-
-                    Write-Host "volume: $volume"
-                    Write-Host "fullname: $($volume.FullName)"
-                    if (-not ($($volume.FullName).StartsWith($Script:Context.DataDir))) {
+                    if (-not ($($volume).StartsWith($Script:Context.DataDir))) {
                         Write-Host "System directory. Skipping."
                         continue
                     }

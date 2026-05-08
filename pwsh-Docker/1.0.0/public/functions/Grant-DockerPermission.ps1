@@ -50,6 +50,8 @@ function Grant-DockerPermission {
                 $digit
             }
         })
+
+        Write-Host $files
     }
 
     process {

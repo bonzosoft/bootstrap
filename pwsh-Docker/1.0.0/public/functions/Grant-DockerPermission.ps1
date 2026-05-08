@@ -54,6 +54,7 @@ function Grant-DockerPermission {
 
     process {
         foreach ($item in $Path) {
+            Write-Host "configurando $($item.Fullaname)"
             if (-not ($($item.FullName).StartsWith($Script:Context.DataDir))) {
                 Write-Host "System directory. Skipping."
                 continue

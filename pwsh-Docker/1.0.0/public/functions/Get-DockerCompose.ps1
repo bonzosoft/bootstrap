@@ -29,7 +29,7 @@ function Get-DockerCompose {
             throw "Unable to parse '$Path':`n$composeLines"
         }
         Write-Host "pasa por aqui 2"
-        $composeLines
+        Write-Host $composeLines
         Write-Host "pasa por aqui 3"
         $composeData = $composeLines | ConvertFrom-Yaml
     

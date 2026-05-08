@@ -13,6 +13,7 @@ function Set-DockerSecret {
         [string]$Name,
 
         [Parameter(ParameterSetName="Value", Mandatory)]
+        [AllowEmptyString()]
         [string]$Value,
 
         [Parameter(ParameterSetName="Password", Mandatory)]

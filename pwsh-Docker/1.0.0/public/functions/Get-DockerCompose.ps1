@@ -18,6 +18,7 @@ function Get-DockerCompose {
             throw "File $($Path.FullName) not found."
         }
     
+        Write-Host "pasa por aqui 1"
         $composeLines = docker compose -f $Path.FullName config 2>&1
             #--no-consistency		Don't check model consistency - warning: may produce invalid Compose output
             #--no-env-resolution	Don't resolve service env files
@@ -27,7 +28,9 @@ function Get-DockerCompose {
         if ($LASTEXITCODE) {
             throw "Unable to parse '$Path':`n$composeLines"
         }
+        Write-Host "pasa por aqui 2"
         $composeLines
+        Write-Host "pasa por aqui 3"
         $composeData = $composeLines | ConvertFrom-Yaml
     
         Write-Output $composeData

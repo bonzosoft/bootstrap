@@ -27,8 +27,9 @@ function Get-DockerCompose {
         if ($LASTEXITCODE) {
             throw "Unable to parse '$Path': $errorMessage"
         }
-    
-        Write-Host $errorMessage
+        if ($errroMessage) {
+            Write-Warning -Message $errorMessage
+        }
 
         $composeData = $composeLines | ConvertFrom-Yaml
         Write-Output $composeData

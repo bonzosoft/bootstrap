@@ -306,6 +306,7 @@ switch ($PSCmdlet.ParameterSetName) {
                         break
                     }
                     Get-GithubRepo -Name "common" -Branch "main"
+                    ln -snf "${PWD}/common/cmd.sh" "${PwD}/cmd"
                     Get-GithubRepo -Name "komodo-core" -Branch "mongodb"
                     Read-Host
                 }
@@ -323,6 +324,7 @@ switch ($PSCmdlet.ParameterSetName) {
                         break
                     }
                     Get-GithubRepo -Name "common" -Branch "main"
+                    ln -snf "${PWD}/common/cmd.sh" "${PwD}/cmd"
                     Get-GithubRepo -Name "komodo-periphery" -Branch "main"
                     Read-Host
                 }

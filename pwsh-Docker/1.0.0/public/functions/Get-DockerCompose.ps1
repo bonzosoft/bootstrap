@@ -32,7 +32,7 @@ function Get-DockerCompose {
         Write-Output $errorMessage
         Write-Host "aquello"
         if ($null -ne $errorMessage) {
-            Write-Warning -Message $errorMessage.ToString()
+            Write-Warning $errorMessage.ToString()
         }
 
         $composeData = $composeLines | ConvertFrom-Yaml

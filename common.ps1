@@ -1,5 +1,6 @@
 #!/usr/bin/env pwsh
 
+
 ### SINGLETON ##################################################################
 if (Get-Variable -Name "__INCLUDED_COMMON" -Scope Global -ErrorAction SilentlyContinue) {
     return
@@ -9,21 +10,20 @@ else {
 }
 
 
-Write-Host "Loading '$PSCommandPath'."
+Write-Verbose -Verbose "Loading '$PSCommandPath'."
 
-Write-Warning (Get-Content -Path /host/etc/hostname).ToUpper()
 
-### CONFIGURATION ##############################################################
+### SCRIPT CONFIGURATION #######################################################
 Set-StrictMode -Version Latest
 $ErrorActionPreference = 'Stop'
 
 
 ### LOAD MODULES ###############################################################
-Import-Module -Name (Join-Path -Path $PSScriptRoot -ChildPath "pwsh-Docker")
+Import-Module -Name (Join-Path -Path $PSScriptRoot -ChildPath "pwsh-Docker") -Verbose
 
 
 ### LOAD CONTEXT ###############################################################
 $Script:Context = Import-DockerContext
 
 
-Write-Host "Finishing '$PSCommandPath'."
+Write-Verbose -Message "Finishing '$PSCommandPath'."

@@ -9,7 +9,10 @@ Una vez instalado el sistema (bootstrap), para ejecutar los scripts usar:
 ````bash
 ../cmd ./onpull.ps1
 ````
-
+Se puede usar verbose para ver el desarrollo:
+````bash
+../cmd ./onpull.ps1 -Verbose
+````
 
 ## Powershell
 

@@ -48,7 +48,7 @@ $Script:Context | Add-Member -MemberType NoteProperty -Name SOCKETPROXY_PGID -Va
 $Script:Context | Add-Member -MemberType NoteProperty -Name WORKER_PUID      -Value $Script:Context.APP_PUID
 $Script:Context | Add-Member -MemberType NoteProperty -Name WORKER_PGID      -Value $Script:Context.APP_PGID
 
-$Script:Context = Import-DockerContext
+#$Script:Context = Import-DockerContext
 
 
 Write-Information -Message "Finishing '$PSCommandPath'."

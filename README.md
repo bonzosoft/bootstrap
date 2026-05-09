@@ -33,7 +33,7 @@ rm -rf ./bootstrap \
 ````bash
 rm -rf ./bootstrap \
   && git clone https://github.com/bonzosoft/bootstrap.git \
-  && ln -sf "${PWD}/bootstrap/bootstrap.sh" "${PWD}/bootstrap.sh" \
+  && ln -snf "${PWD}/bootstrap/bootstrap.sh" "${PWD}/bootstrap.sh" \
   && chmod +x "${PWD}/bootstrap.sh"
 ````
 

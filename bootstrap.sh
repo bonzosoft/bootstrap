@@ -1,1 +1,1 @@
-docker run -v /etc:/host/etc:ro -v /mnt/tank0/apps:/mnt/tank0/apps:rw -e TERM=dummy -w ${PWD} ghcr.io/bonzosoft/pwsh pwsh -NoLogo -NoProfile -File ./bootstrap/bootstrap.ps1
+docker run -v /etc:/host/etc:ro -v /mnt/tank0/apps:/mnt/tank0/apps:rw -e TERM=dummy -w ${PWD} -e TERM=xterm ghcr.io/bonzosoft/pwsh pwsh -NoLogo -NoProfile -File ./bootstrap/bootstrap.ps1

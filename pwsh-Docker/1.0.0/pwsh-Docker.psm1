@@ -66,25 +66,25 @@ Export-ModuleMember -Variable *
 ### Load of module assets ######################################################
 # Import required modules
 foreach ($module in $requiredModules) {
-    Write-Verbose -Message "Importing submodule $module."
+    Write-Information -Message "Importing submodule $module."
     Import-Module -Name (Join-Path -Path $PSScriptRoot -ChildPath "etc" -AdditionalChildPath $module) -Force
 }
 
 # Import required binaries
 foreach ($binary in $requiredBinaries) {
-    Write-Verbose -Message "Loading binary $binary."
+    Write-Information -Message "Loading binary $binary."
     Add-Type -Path (Join-Path -Path $PSScriptRoot -ChildPath "bin" -AdditionalChildPath $binary)
 }
 
 # Dot source function definition files
 foreach ($function in ($publicFunctions + $privateFunctions)) {    
-    Write-Verbose -Message "Sourcing function '$($function.BaseName)'."
+    Write-Information -Message "Sourcing function '$($function.BaseName)'."
     . $function.FullName
 }
 
 ## Dot source classes definition files
 foreach ($class in ($publicClasses + $privateClasses)) {
-    Write-Verbose -Message "Sourcing function '$($class.BaseName)'."
+    Write-Information -Message "Sourcing function '$($class.BaseName)'."
     . $class.FullName
 }
 
@@ -105,4 +105,4 @@ foreach ($class in $PublicClasses) {
 }
 
 
-Write-Verbose -Message "Imported module '$PSCommandPath'."
+Write-Information -Message "Imported module '$PSCommandPath'."

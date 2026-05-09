@@ -10,11 +10,11 @@ else {
 }
 
 
-Write-Verbose -Message "Loading '$PSCommandPath'."
+Write-Information -Message "Loading '$PSCommandPath'."
 
 
 ### LOAD COMMON ASSETS #########################################################
 . (Get-Item -Path (Join-Path -Path $PSScriptRoot -ChildPath "common.ps1"))
 
 
-Write-Verbose -Message "Finishing '$PSCommandPath'."
+Write-Information -Message "Finishing '$PSCommandPath'."

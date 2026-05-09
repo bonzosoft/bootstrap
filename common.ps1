@@ -10,7 +10,7 @@ else {
 }
 
 
-Write-Verbose -Verbose "Loading '$PSCommandPath'."
+Write-Information -Message "Loading '$PSCommandPath'."
 
 
 ### SCRIPT CONFIGURATION #######################################################
@@ -26,4 +26,4 @@ Import-Module -Name (Join-Path -Path $PSScriptRoot -ChildPath "pwsh-Docker")
 $Script:Context = Import-DockerContext
 
 
-Write-Verbose -Message "Finishing '$PSCommandPath'."
+Write-Information -Message "Finishing '$PSCommandPath'."

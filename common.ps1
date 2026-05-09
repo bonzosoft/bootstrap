@@ -11,7 +11,7 @@ else {
 
 Write-Host "Loading '$PSCommandPath'."
 
-Write-Warning (Get-Content -Path /host/etc/hostname).ToUpper
+Write-Warning (Get-Content -Path /host/etc/hostname).ToUpper()
 
 ### CONFIGURATION ##############################################################
 Set-StrictMode -Version Latest

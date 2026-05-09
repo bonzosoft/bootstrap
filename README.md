@@ -1,16 +1,15 @@
-## Inicio del script
+# Scripting
+Scripts disponibles:
+ - onclone.ps1
+ - onpull.ps1
+ - predeploy.ps1
+ - postdeploy.ps1
+
+Una vez instalado el sistema (bootstrap), para ejecutar los scripts usar:
 ````bash
-docker run --rm -w "$(pwd)" -v "/mnt:/mnt" -e TERM=dumb ghcr.io/bonzosoft/pwsh:latest pwsh -File ./onclone.ps1 -Realm production
+../cmd ./onpull.ps1
 ````
 
-## GIT Idempotente sin cambiar de directorio
-````bash
-if (Test-Path "repo/.git") {
-    git -C repo pull
-} else {
-    git clone https://github.com/usuario/repo.git repo
-}
-````
 
 ## Powershell
 

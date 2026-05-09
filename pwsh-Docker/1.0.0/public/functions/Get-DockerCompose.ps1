@@ -27,6 +27,7 @@ function Get-DockerCompose {
         if ($LASTEXITCODE) {
             throw "Unable to parse '$Path': $errorMessage"
         }
+        $errorMessage
         if ($errorMessage) {
             Write-Warning -Message $errorMessage.ToString()
         }

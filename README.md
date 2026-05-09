@@ -21,12 +21,16 @@ La estructura de directorios recomendada es:
 
 ## Instalación
 
+Descargar los archivos:
+
 ````bash
 rm -rf ./bootstrap \
   && git clone --branch --single-branch "main" https://github.com/bonzosoft/bootstrap.git \
   && ln -snf "${PWD}/bootstrap/bootstrap.sh" "${PWD}/bootstrap.sh" \
   && chmod +x "${PWD}/bootstrap.sh"
 ````
+
+El primer paso es iniciar sesión en Github. Luego se puede instalar Komodo Core o Komodo Periphery.
 
 
 ## Uso

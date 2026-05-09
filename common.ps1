@@ -19,7 +19,7 @@ $ErrorActionPreference = 'Stop'
 
 
 ### LOAD MODULES ###############################################################
-Import-Module -Name (Join-Path -Path $PSScriptRoot -ChildPath "pwsh-Docker") -Verbose
+Import-Module -Name (Join-Path -Path $PSScriptRoot -ChildPath "pwsh-Docker")
 
 
 ### LOAD CONTEXT ###############################################################

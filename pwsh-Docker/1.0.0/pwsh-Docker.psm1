@@ -1,5 +1,6 @@
+[IO.FileInfo]$Self = $PSCommandPath
 
-Write-Information -Message "Importing module '$PSCommandPath'."
+Write-Information -Message "Importing module '$($Self.BaseName)'."
 
 
 ### List of required modules ###################################################
@@ -51,29 +52,29 @@ Export-ModuleMember -Variable *
 
 ### Look for module assets #####################################################
 # Get public function definition files
-[IO.FileInfo[]]$publicFunctions = Get-ChildItem -Path (Join-Path -Path $PSScriptRoot -ChildPath "public/functions/*.ps1") -ErrorAction SilentlyContinue
+[IO.FileInfo[]]$publicFunctions = Get-ChildItem -Path (Join-Path -Path $Self.DirectoryName -ChildPath "public/functions/*.ps1") -ErrorAction SilentlyContinue
 
 # Get private function definition files
-[IO.FileInfo[]]$privateFunctions = Get-ChildItem -Path (Join-Path -Path $PSScriptRoot -ChildPath "private/functions/*.ps1") -ErrorAction SilentlyContinue
+[IO.FileInfo[]]$privateFunctions = Get-ChildItem -Path (Join-Path -Path $Self.DirectoryName -ChildPath "private/functions/*.ps1") -ErrorAction SilentlyContinue
 
 # Get public classes definition files
-[IO.FileInfo[]]$publicClasses = Get-ChildItem -Path (Join-Path -Path $PSScriptRoot -ChildPath "public/classes/*.ps1") -ErrorAction SilentlyContinue
+[IO.FileInfo[]]$publicClasses = Get-ChildItem -Path (Join-Path -Path $Self.DirectoryName -ChildPath "public/classes/*.ps1") -ErrorAction SilentlyContinue
 
 # Get private classes definition files
-[IO.FileInfo[]]$privateClasses = Get-ChildItem -Path (Join-Path -Path $PSScriptRoot -ChildPath "private/classes/*.ps1") -ErrorAction SilentlyContinue
+[IO.FileInfo[]]$privateClasses = Get-ChildItem -Path (Join-Path -Path $Self.DirectoryName -ChildPath "private/classes/*.ps1") -ErrorAction SilentlyContinue
 
 
 ### Load of module assets ######################################################
 # Import required modules
 foreach ($module in $requiredModules) {
     Write-Information -Message "Importing submodule $module."
-    Import-Module -Name (Join-Path -Path $PSScriptRoot -ChildPath "etc" -AdditionalChildPath $module) -Force
+    Import-Module -Name (Join-Path -Path $Self.DirectoryName -ChildPath "etc" -AdditionalChildPath $module) -Force
 }
 
 # Import required binaries
 foreach ($binary in $requiredBinaries) {
     Write-Information -Message "Loading binary $binary."
-    Add-Type -Path (Join-Path -Path $PSScriptRoot -ChildPath "bin" -AdditionalChildPath $binary)
+    Add-Type -Path (Join-Path -Path $Self.DirectoryName -ChildPath "bin" -AdditionalChildPath $binary)
 }
 
 # Dot source function definition files
@@ -105,4 +106,4 @@ foreach ($class in $PublicClasses) {
 }
 
 
-Write-Information -Message "Imported module '$PSCommandPath'."
+Write-Information -Message "Imported module '$($Self.BaseName)'."

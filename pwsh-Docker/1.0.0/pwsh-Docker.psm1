@@ -78,18 +78,14 @@ foreach ($binary in $requiredBinaries) {
 
 # Dot source function definition files
 foreach ($function in ($publicFunctions + $privateFunctions)) {    
-    #if ($null -ne $function) {
-        Write-Verbose -Message "Sourcing function '$($function.BaseName)'."
-        . $function.FullName
-    #}
+    Write-Verbose -Message "Sourcing function '$($function.BaseName)'."
+    . $function.FullName
 }
 
 ## Dot source classes definition files
 foreach ($class in ($publicClasses + $privateClasses)) {
-    #if ($null -ne $class) {
-        Write-Verbose -Message "Sourcing function '$($class.BaseName)'."
-        . $class.FullName
-    #}
+    Write-Verbose -Message "Sourcing function '$($class.BaseName)'."
+    . $class.FullName
 }
 
 

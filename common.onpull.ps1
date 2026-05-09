@@ -10,7 +10,7 @@ else {
 }
 
 
-Write-Information -Message "Loading '$PSCommandPath'."
+Write-Information -Message "Loading script '$PSCommandPath'."
 
 
 ### LOAD COMMON ASSETS #########################################################
@@ -36,7 +36,7 @@ if (Test-Path -Path $Script:Context.IncludeDir) {
 
     ## LOAD SUBMODULE SCRIPTS
     Write-Host "Loading submodule scripts."
-    [IO.FileInfo[]]$submoduleScripts = @(Get-Item -Path (Join-Path -Path $Script:Context.IncludeDir -ChildPath "*" -AdditionalChildPath (Split-Path -Path $MyInvocation.PSCommandPath -Leaf)))
+    [IO.FileInfo[]]$submoduleScripts = Get-Item -Path (Join-Path -Path $Script:Context.IncludeDir -ChildPath "*" -AdditionalChildPath (Split-Path -Path $MyInvocation.PSCommandPath -Leaf))
     foreach ($script in $submoduleScripts) {
         Write-Information -Message "Running submodule script '$($script.FullName)'."
         . $script.FullName
@@ -48,4 +48,4 @@ Get-DockerVolumes -Data (Get-DockerCompose -Path $Script:Context.ComposeFile) |
 Grant-DockerPermission -PUID $Script:Context.Environment.PUID -PGID $Script:Context.Environment.PGID -Permission "0755" -Recurse -Force
 
 
-Write-Information -Message "Finishing '$PSCommandPath'."
+Write-Information -Message "Loaded script '$PSCommandPath'."

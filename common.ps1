@@ -10,7 +10,7 @@ else {
 }
 
 
-Write-Information -Message "Loading '$PSCommandPath'."
+Write-Information -Message "Loading script '$PSCommandPath'."
 
 
 ### SCRIPT CONFIGURATION #######################################################
@@ -51,4 +51,4 @@ $Script:Context | Add-Member -MemberType NoteProperty -Name WORKER_PGID      -Va
 #$Script:Context = Import-DockerContext
 
 
-Write-Information -Message "Finishing '$PSCommandPath'."
+Write-Information -Message "Loaded script '$PSCommandPath'."

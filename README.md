@@ -20,45 +20,21 @@ La estructura de directorios recomendada es:
 ````
 
 ## Instalación
-Descarga de los archivos necesarios:
-````bash
-rm -rf ./bootstrap \
- && git clone https://github.com/bonzosoft/bootstrap.git \
- && echo '#!/usr/bin/env bash' > run \
- && echo 'docker run -f ./bootstrap/compose.yaml run --rm worker pwsh ./bootstrap/run.ps1' >> bootstrap \
- && chmod +x run
-````
-
 
 ````bash
 rm -rf ./bootstrap \
-  && git clone https://github.com/bonzosoft/bootstrap.git \
+  && git clone --branch --single-branch "main" https://github.com/bonzosoft/bootstrap.git \
   && ln -snf "${PWD}/bootstrap/bootstrap.sh" "${PWD}/bootstrap.sh" \
   && chmod +x "${PWD}/bootstrap.sh"
 ````
 
-
-
-
-Si estamos en pruebas, podemos indicar el branch:
-````bash
-rm -rf ./bootstrap \
- && git clone --branch --single-branch "pwsh" https://github.com/bonzosoft/bootstrap.git \
- && echo '#!/usr/bin/env bash' > run \
- && echo 'docker compose -f ./bootstrap/compose.yaml run --rm worker pwsh ./bootstrap/run.ps1' >> run \
- && chmod +x run
-````
 
 ## Uso
 
 ### Script
 Para ejecutar el modo TUI:
 ````bash
-./run
-````
-o actualizando:
-````bash
-pushd ./bootstrap && git pull && popd && ./run
+./install
 ````
 
 ## Uso avanzado
@@ -84,4 +60,16 @@ docker run -it --rm -w "$(pwd)" -v "/mnt:/mnt" -v "$(pwd)/.config/gh:/root/.conf
 Para resetear todo:
 ````bash
 rm -rf /mnt/tank0/apps/infra/* && rm -rf /mnt/tank0/apps/state
+````
+
+
+
+# backup
+Descarga de los archivos necesarios:
+````bash
+rm -rf ./bootstrap \
+ && git clone https://github.com/bonzosoft/bootstrap.git \
+ && echo '#!/usr/bin/env bash' > run \
+ && echo 'docker run -f ./bootstrap/compose.yaml run --rm worker pwsh ./bootstrap/run.ps1' >> bootstrap \
+ && chmod +x run
 ````

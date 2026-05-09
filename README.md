@@ -30,16 +30,15 @@ rm -rf ./bootstrap \
   && chmod +x "${PWD}/bootstrap.sh"
 ````
 
-El primer paso es iniciar sesión en Github. Luego se puede instalar Komodo Core o Komodo Periphery.
-
-
 ## Uso
 
 ### Script
-Para ejecutar el modo TUI:
+Ejecutar el script en modo TUI:
 ````bash
 ./install
 ````
+El primer paso es iniciar sesión en Github. Luego se puede instalar Komodo Core o Komodo Periphery.
+
 
 ## Uso avanzado
 

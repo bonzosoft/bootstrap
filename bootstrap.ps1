@@ -326,7 +326,7 @@ switch ($PSCmdlet.ParameterSetName) {
                     }
                     Get-GithubRepo -Name "common" -Branch "main"
                     ln -snf "${PWD}/common/cmd.sh" "${PwD}/cmd"
-                    chmod + "${PwD}/cmd"
+                    chmod +x "${PwD}/cmd"
                     Get-GithubRepo -Name "komodo-periphery" -Branch "main"
                     Read-Host
                 }

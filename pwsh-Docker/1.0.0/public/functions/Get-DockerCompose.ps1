@@ -29,10 +29,12 @@ function Get-DockerCompose {
         }
         Write-Host "esto"
         Write-Host $errorMessage
+        Write-Host "esto3"
         Write-Output $errorMessage
         Write-Host "aquello"
-        if ($null -ne $errorMessage) {
-            Write-Warning $errorMessage.ToString()
+        if ($errorMessage) {
+            Write-Warning -Message $errorMessage.ToString()
+            Write-Warning $errorMessage
         }
 
         $composeData = $composeLines | ConvertFrom-Yaml

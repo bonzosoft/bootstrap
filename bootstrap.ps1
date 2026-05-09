@@ -207,8 +207,8 @@ function Get-GithubRepo {
     # Submódulos
     git submodule update --init --recursive
 
-    if (Test-Path "onpull.ps1") {
-        pwsh -File "onpull.ps1"
+    if (Test-Path "./onpull.ps1") {
+        pwsh -File "./onpull.ps1" -Verbose
     }
 
     Pop-Location

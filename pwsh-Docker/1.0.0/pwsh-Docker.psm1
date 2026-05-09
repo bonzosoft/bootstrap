@@ -68,13 +68,13 @@ Export-ModuleMember -Variable *
 ### Load of module assets ######################################################
 # Import required modules
 foreach ($module in $requiredModules) {
-    Write-Information -Message "Loading submodule $module."
+    Write-Information -Message "Loading submodule '$module'."
     Import-Module -Name (Join-Path -Path $Self.DirectoryName -ChildPath "etc" -AdditionalChildPath $module) -Force
 }
 
 # Import required binaries
 foreach ($binary in $requiredBinaries) {
-    Write-Information -Message "Loading binary $binary."
+    Write-Information -Message "Loading binary '$binary'."
     Add-Type -Path (Join-Path -Path $Self.DirectoryName -ChildPath "bin" -AdditionalChildPath $binary)
 }
 

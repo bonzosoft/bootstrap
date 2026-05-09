@@ -1,5 +1,5 @@
 
-Write-Verbose -Message "Importing module '$PSCommandPath'."
+Write-Information -Message "Importing module '$PSCommandPath'."
 
 
 ### List of required modules ###################################################

@@ -38,13 +38,13 @@ if (Test-Path -Path $Script:Context.IncludeDir) {
     Write-Host "Loading submodule scripts."
     [IO.FileInfo[]]$submoduleScripts = Get-Item -Path (Join-Path -Path $Script:Context.IncludeDir -ChildPath "*" -AdditionalChildPath (Split-Path -Path $MyInvocation.PSCommandPath -Leaf))
     foreach ($script in $submoduleScripts) {
-        Write-Information -Message "Running submodule script '$($script.FullName)'."
+        Write-Information -Message "Running submodule script '$($cript.FullName)'."
         . $script.FullName
     }
 }
 
 ## Set file permisisons for volumes
-Get-DockerVolumes -Data (Get-DockerCompose -Path $Script:Context.ComposeFile.FullName) |
+Get-DockerVolumes -Data (Get-DockerCompose -Path ($Script:Context.ComposeFile).FullName) |
 Grant-DockerPermission -PUID $Script:Context.Environment.PUID -PGID $Script:Context.Environment.PGID -Permission "0755" -Recurse -Force
 
 

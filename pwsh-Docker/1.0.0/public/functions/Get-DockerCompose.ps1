@@ -28,7 +28,7 @@ function Get-DockerCompose {
             throw "Unable to parse '$Path': $errorMessage"
         }
         if ($errorMessage) {
-            Write-Warning -Message $errorMessage
+            Write-Warning -Message $errorMessage.ToString()
         }
 
         $composeData = $composeLines | ConvertFrom-Yaml

@@ -24,10 +24,10 @@ La estructura de directorios recomendada es:
 Descargar los archivos:
 
 ````bash
-rm -rf ./bootstrap \
-  && git clone --branch "main" --single-branch https://github.com/bonzosoft/bootstrap.git \
-  && ln -snf "${PWD}/bootstrap/bootstrap.sh" "${PWD}/install" \
-  && chmod +x "${PWD}/install"
+   rm -rf ./bootstrap \
+&& git clone --branch "main" --single-branch https://github.com/bonzosoft/bootstrap.git \
+&& ln -snf "${PWD}/bootstrap/bootstrap.sh" "${PWD}/install" \
+&& chmod +x "${PWD}/install"
 ````
 
 ## Uso

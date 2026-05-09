@@ -46,7 +46,7 @@ $ErrorActionPreference = "Stop"
 [int]$PGID = 568
 [IO.DirectoryInfo]$Script:COMMONDIR = Join-Path -Path (Get-Location) -ChildPath "common"
 [IO.FileInfo]$Script:CONFIGFILE = Join-Path -Path (Get-Location) -ChildPath ".config" -AdditionalChildPath "docker.config.json"
-
+export GH_CONFIG_DIR=${PWD}/.config/gh
 # =========================
 # Helpers
 # =========================

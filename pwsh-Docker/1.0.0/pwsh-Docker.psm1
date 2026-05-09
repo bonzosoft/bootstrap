@@ -1,7 +1,7 @@
 [IO.FileInfo]$Self = $PSCommandPath
 
 
-Write-Information -Message "Importing module '$($Self.BaseName)'."
+Write-Information -Message "Loading module '$($Self.BaseName)'."
 
 
 ### List of required modules ###################################################
@@ -68,7 +68,7 @@ Export-ModuleMember -Variable *
 ### Load of module assets ######################################################
 # Import required modules
 foreach ($module in $requiredModules) {
-    Write-Information -Message "Importing submodule $module."
+    Write-Information -Message "Loading submodule $module."
     Import-Module -Name (Join-Path -Path $Self.DirectoryName -ChildPath "etc" -AdditionalChildPath $module) -Force
 }
 
@@ -80,13 +80,13 @@ foreach ($binary in $requiredBinaries) {
 
 # Dot source function definition files
 foreach ($function in ($publicFunctions + $privateFunctions)) {    
-    Write-Information -Message "Sourcing function '$($function.BaseName)'."
+    Write-Information -Message "Loading function '$($function.BaseName)'."
     . $function.FullName
 }
 
 ## Dot source classes definition files
 foreach ($class in ($publicClasses + $privateClasses)) {
-    Write-Information -Message "Sourcing function '$($class.BaseName)'."
+    Write-Information -Message "Loading function '$($class.BaseName)'."
     . $class.FullName
 }
 
@@ -107,4 +107,4 @@ foreach ($class in $PublicClasses) {
 }
 
 
-Write-Information -Message "Imported module '$($Self.BaseName)'."
+Write-Information -Message "Loaded module '$($Self.BaseName)'."

@@ -28,7 +28,7 @@ function Get-DockerCompose {
             throw "Unable to parse '$Path': $errorMessage"
         }
         $errorMessage
-        if ($errorMessage) {
+        if ($null -ne $errorMessage) {
             Write-Warning -Message $errorMessage.ToString()
         }
 

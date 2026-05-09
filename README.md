@@ -25,9 +25,20 @@ Descarga de los archivos necesarios:
 rm -rf ./bootstrap \
  && git clone https://github.com/bonzosoft/bootstrap.git \
  && echo '#!/usr/bin/env bash' > run \
- && echo 'docker compose -f ./bootstrap/compose.yaml run --rm worker pwsh ./bootstrap/run.ps1' >> run \
+ && echo 'docker run -f ./bootstrap/compose.yaml run --rm worker pwsh ./bootstrap/run.ps1' >> bootstrap \
  && chmod +x run
 ````
+
+
+````bash
+rm -rf ./bootstrap \
+  && git clone https://github.com/bonzosoft/bootstrap.git \
+  && ln -sf "${PWD}/bootstrap/bootstrap.sh" "${PWD}/bootstrap.sh" \
+  && chmod +x "${PWD}/bootstrap.sh"
+````
+
+
+
 
 Si estamos en pruebas, podemos indicar el branch:
 ````bash

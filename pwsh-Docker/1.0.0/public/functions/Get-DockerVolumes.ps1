@@ -9,45 +9,35 @@ function Get-DockerVolumes {
 
         [Parameter(ValueFromPipeline)]
         [ValidateNotNullOrEmpty()]
-        [string[]]$Service = $InputObject.services.Keys
+        [string[]]$Service = $InputObject.services.Keys,
+
+        [Parameter(ValueFromPipeline)]
+        [switch]$Force
     )
 
     begin {
         [IO.FileSystemInfo[]]$volumesList = @()
-        [hashtable]$volumesObject = @{}
-
+        [hashtable]$volumesTable = @{}
     }
 
     process {
         foreach ($item in $Service) {
-            Write-Host $item
-        }
-        
-    }
-
-    end {
-        
-        foreach ($item in $InputObject.services.Keys) {
             if ($InputObject.services.$item.Keys -like "volumes") {
                 $volumesList = @()
-                foreach ($volume in $InputObject.services.$item.volumes.source) {
-                    if (-not $volume.StartsWith($Script:Context.InputObjectDir)) {
-                        continue
-                    }
-                    
-                    if (Test-Path -Path $volume) {
-                        $volumesList += Get-Item -Path $volume
-                    }
-                    else {
-                        $volumesList += [IO.DirectoryInfo]$volume
-                    }
+                if ((-not $Force) -and (-not $volume.StartsWith($Script:Context.InputObjectDir))) {
+                    continue
                 }
-                if ($volumesList.Count) {
-                    $volumesObject[$item] = $volumesList
+                if (Test-Path -Path $volume) {
+                    $volumesList += Get-Item -Path $volume
                 }
-                
+                else {
+                    $volumesList += [IO.DirectoryInfo]$volume
+                }
+            }
+            if ($volumesList.Count) {
+                $volumesTable[$item] = $volumesList
             }
         }
-        Write-Output -InputObject ([PSCustomObject]$volumesObject)
+        Write-Output -InputObject ([PSCustomObject]$volumesTable)
     }
 }

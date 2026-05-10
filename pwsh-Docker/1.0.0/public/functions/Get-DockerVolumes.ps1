@@ -23,7 +23,10 @@ function Get-DockerVolumes {
     }#
 
     process {
-        Write-Host $Service
+        foreach ($item in $Service) {
+            Write-Host $item
+        }
+        
     }
 
     end {

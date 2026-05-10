@@ -24,15 +24,16 @@ if (Test-Path -Path $Script:Context.IncludeDir) {
     }
 }
 
-$composeData = Get-DockerCompose -Path $script:Context.ComposeFile
-
-
 ## SET ENV FILE VARIABLES
 Switch-DockerRealm
 Set-DockerVariable -Name DATADIR    -Value $Script:Context.DataDir.FullName
 Set-DockerVariable -Name INCLUDEDIR -Value $Script:Context.IncludeDir.FullName
 Set-DockerVariable -Name SECRETSDIR -Value $Script:Context.SecretsDir.FullName
 $Script:Context
+
+$composeData = Get-DockerCompose -Path $script:Context.ComposeFile
+
+
 
 ## Set file permisisons for volumes
 $volumes = Get-DockerVolumes -InputObject (Get-DockerCompose -Path $Script:Context.ComposeFile)

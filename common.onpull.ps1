@@ -48,16 +48,11 @@ $Script:Context
 ## Set file permisisons for volumes
 $composeData = Get-DockerCompose -Path $script:Context.ComposeFile
 $volumes = Get-DockerVolumes -InputObject $composeData -Service $composeData.services.Keys
-
 Set-DockerContext -Name "Service" -Value $volumes
-$Script:Context 
-$Script:Context.Service.db.Volume.FullName
-$Script:Context.Service.Keys
-foreach ($service in $volumes.Keys) {
+
+foreach ($service in $Script:Context.Service.Keys) {
     Write-Information -Message "Configuring storage for service $($service)"
-    $volumes.$service.Path.FullName
-    Write-Host "$($volumes.$service.PUID):$($volumes.$service.PGID)"
-    Grant-DockerPermission -Path $volumes.$service.Volume -PUID $volumes.$service.PUID -PGID $volumes.$service.PUID -Permission "0755" -Recurse -Force
+    Grant-DockerPermission -Path $Script:Context.Service.$service.Volume -PUID $Script:Context.Service.$service.PUID -PGID $Script:Context.Service.$service.PGID -Permission "0755" -Recurse -Force
 }
 
 

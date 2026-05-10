@@ -51,7 +51,7 @@ $volumes = Get-DockerVolumes -InputObject $composeData -Service $composeData.ser
 $volumes
 return
 foreach ($service in $volumes.Keys) {
-    Write-Information -Message "Configuring storage for service $($service.Name)"
+    Write-Information -Message "Configuring storage for service $($service.Key)"
     #$puidName = "$($service.ToUpper())_PUID"
     #$pgidName = "$($service.ToUpper())_PGID"
     #$volumes.$service.FullName

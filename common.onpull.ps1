@@ -36,17 +36,6 @@ Write-Host "prueba 1"
 $composeData.services
 $composeData.services | Get-DockerVolumes -InputObject $composeData
 
-Write-Host "prueba 2"
-Get-DockerVolumes -InputObject $composeData
-
-Write-Host "prueba 3"
-Get-DockerVolumes -InputObject $composeData -Service $composeData.services.Keys
-
-Write-Host "prueba 4"
-Get-DockerVolumes -InputObject $composeData -Service @("servicio1", "servicio2")
-
-Write-Host "prueba 5"
-Get-DockerVolumes -InputObject $composeData -Service "servicio1"
 
 ## Set file permisisons for volumes
 $volumes = Get-DockerVolumes -InputObject (Get-DockerCompose -Path $Script:Context.ComposeFile)

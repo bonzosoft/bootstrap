@@ -35,13 +35,13 @@ function Get-DockerVolumes {
                         $volumesList += [IO.DirectoryInfo]$volume
                     }
                 }
-                if ($volumesList.Count) {
+                #if ($volumesList.Count) {
                     $volumesTable[$item] = @{
                         Volume = $volumesList
                         PUID = [int]($InputObject.services.$item.user -split ":")[0]
                         PGID = [int]($InputObject.services.$item.user -split ":")[1]
                     }
-                }
+                #}
             #}
         }
         Write-Output -InputObject $volumesTable

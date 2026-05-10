@@ -34,18 +34,18 @@ Set-DockerContext -Name SecretsDir       -Value ([IO.DirectoryInfo](Join-Path -P
 Set-DockerContext -Name Realm            -Value (Get-Content -Path (Join-Path -Path $Script:Context.WorkingDir.Parent -ChildPath ".config" -AdditionalChildPath "docker.config.json") | ConvertFrom-Json).REALM
 Set-DockerContext -Name Hostname         -Value (Get-DockerHostname)
 
-Set-DockerContext -Name APP_PUID         -Value 568
-Set-DockerContext -Name APP_PGID         -Value 568
-Set-DockerContext -Name WEBPROXY_PUID    -Value $Script:Context.APP_PUID
-Set-DockerContext -Name WEBPROXY_PGID    -Value $Script:Context.APP_PGID
-Set-DockerContext -Name DB_PUID          -Value $Script:Context.APP_PUID
-Set-DockerContext -Name DB_PGID          -Value $Script:Context.APP_PGID
-Set-DockerContext -Name DBBACKUP_PUID    -Value 0
-Set-DockerContext -Name DBBACKUP_PGID    -Value $Script:Context.APP_PGID
-Set-DockerContext -Name SOCKETPROXY_PUID -Value $Script:Context.APP_PUID
-Set-DockerContext -Name SOCKETPROXY_PGID -Value (Get-DockerGid)
-Set-DockerContext -Name WORKER_PUID      -Value 0
-Set-DockerContext -Name WORKER_PGID      -Value $Script:Context.APP_PGID
+#Set-DockerContext -Name APP_PUID         -Value 568
+#Set-DockerContext -Name APP_PGID         -Value 568
+#Set-DockerContext -Name WEBPROXY_PUID    -Value $Script:Context.APP_PUID
+#Set-DockerContext -Name WEBPROXY_PGID    -Value $Script:Context.APP_PGID
+#Set-DockerContext -Name DB_PUID          -Value $Script:Context.APP_PUID
+#Set-DockerContext -Name DB_PGID          -Value $Script:Context.APP_PGID
+#Set-DockerContext -Name DBBACKUP_PUID    -Value 0
+#Set-DockerContext -Name DBBACKUP_PGID    -Value $Script:Context.APP_PGID
+#Set-DockerContext -Name SOCKETPROXY_PUID -Value $Script:Context.APP_PUID
+#Set-DockerContext -Name SOCKETPROXY_PGID -Value (Get-DockerGid)
+#Set-DockerContext -Name WORKER_PUID      -Value 0
+#Set-DockerContext -Name WORKER_PGID      -Value $Script:Context.APP_PGID
 
 
 Write-Information -Message "Loaded script '$PSCommandPath'."

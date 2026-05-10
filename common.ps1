@@ -1,11 +1,12 @@
 #!/usr/bin/env pwsh
 
 ### SINGLETON ##################################################################
-if (Get-Variable -Name "__INCLUDED_COMMON" -Scope Global -ErrorAction SilentlyContinue) {
+$singleton = ([IO.FileInfo]$PSCommandPath).BaseName.Replace(".","_").ToUpper()
+if (Get-Variable -Name "__INCLUDED_$singleton" -Scope Global -ErrorAction SilentlyContinue) {
     return
 }
 else {
-    New-Variable -Name "__INCLUDED_COMMON" -Scope Global -Value $true
+    New-Variable -Name "__INCLUDED_$singleton" -Scope Global -Value $true
 }
 Write-Information -Message "Loading script '$PSCommandPath'."
 

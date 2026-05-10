@@ -33,8 +33,6 @@ Set-DockerContext -Name ProjectName      -Value ([string]$Script:Context.Working
 Set-DockerContext -Name DataDir          -Value ([IO.DirectoryInfo](Join-Path -Path $Script:Context.WorkingDir.Parent.Parent -ChildPath "state" -AdditionalChildPath $Script:Context.ProjectName))
 Set-DockerContext -Name SecretsDir       -Value ([IO.DirectoryInfo](Join-Path -Path $Script:Context.DataDir -ChildPath ".secrets"))
 
-Set-DockerContext -Name HostInfo         -Value (Get-Content -Path (Join-Path -Path $Script:Context.WorkingDir.Parent -ChildPath ".config" -AdditionalChildPath "docker.config.json") | ConvertFrom-Json)
-
 Set-DockerContext -Name Realm            -Value (Get-Content -Path (Join-Path -Path $Script:Context.WorkingDir.Parent -ChildPath ".config" -AdditionalChildPath "docker.config.json") | ConvertFrom-Json).REALM
 
 Set-DockerContext -Name APP_PUID         -Value 568

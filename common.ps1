@@ -1,6 +1,5 @@
 #!/usr/bin/env pwsh
 
-
 ### SINGLETON ##################################################################
 if (Get-Variable -Name "__INCLUDED_COMMON" -Scope Global -ErrorAction SilentlyContinue) {
     return
@@ -8,8 +7,6 @@ if (Get-Variable -Name "__INCLUDED_COMMON" -Scope Global -ErrorAction SilentlyCo
 else {
     New-Variable -Name "__INCLUDED_COMMON" -Scope Global -Value $true
 }
-
-
 Write-Information -Message "Loading script '$PSCommandPath'."
 
 

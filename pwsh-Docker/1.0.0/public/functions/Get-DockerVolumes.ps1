@@ -23,6 +23,7 @@ function Get-DockerVolumes {
     }#
 
     end {
+        Write-Host $Service
         foreach ($item in $InputObject.services.Keys) {
             if ($InputObject.services.$item.Keys -like "volumes") {
                 $volumesList = @()

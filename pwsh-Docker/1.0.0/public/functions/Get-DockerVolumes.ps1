@@ -17,10 +17,10 @@ function Get-DockerVolumes {
         [IO.FileSystemInfo[]]$volumesList = @()
         [hashtable]$volumesObject = @{}
 
-        if (-not $Service.Count) {
-            $Service = $InputObject.services.Keys
-        }
-    }
+        #if (-not $Service.Count) {
+        #    $Service = $InputObject.services.Keys
+        #}
+    }#
 
     end {
         Write-Host $Service

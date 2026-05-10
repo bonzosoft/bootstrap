@@ -44,8 +44,6 @@ if (Test-Path -Path $Script:Context.IncludeDir) {
 
 ## Set file permisisons for volumes
 $volumes = Get-DockerVolumes -Data (Get-DockerCompose -Path $Script:Context.ComposeFile)
-$volumes
-$volumes.app
 foreach ($service in $volumes.PSObject.Properties.Name) {
     $puidName = "$($service.ToUpper())_PUID"
     $pgidName = "$($service.ToUpper())_PGID"

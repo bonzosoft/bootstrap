@@ -9,7 +9,7 @@ function Get-DockerVolumes {
 
         [Parameter(ValueFromPipeline)]
         [ValidateNotNullOrEmpty()]
-        [string[]]$Service #= $InputObject.services.Keys
+        [string[]]$Service = $InputObject.services.Keys
     )
 
     begin {

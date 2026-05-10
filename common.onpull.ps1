@@ -24,6 +24,14 @@ if (Test-Path -Path $Script:Context.IncludeDir) {
     }
 }
 
+## LOAD SUBMODULES SCRIPTS
+if (Test-Path -Path $Script:Context.IncludeDir) {
+    foreach ($script in (Get-Item -Path (Join-Path -Path $Script:Context.IncludeDir -ChildPath "*" -AdditionalChildPath (Split-Path -Path $MyInvocation.PSCommandPath -Leaf)))) {
+        Write-Information -Message "Loading submodule script '$($script.FullName)'."
+        . $script.FullName
+    }
+}
+
 ## SET ENV FILE VARIABLES
 Switch-DockerRealm
 Set-DockerVariable -Name DATADIR    -Value $Script:Context.DataDir.FullName
@@ -49,13 +57,7 @@ foreach ($service in $volumes.PSObject.Properties.Name) {
 }
 
 
-## LOAD SUBMODULES SCRIPTS
-if (Test-Path -Path $Script:Context.IncludeDir) {
-    foreach ($script in (Get-Item -Path (Join-Path -Path $Script:Context.IncludeDir -ChildPath "*" -AdditionalChildPath (Split-Path -Path $MyInvocation.PSCommandPath -Leaf)))) {
-        Write-Information -Message "Loading submodule script '$($script.FullName)'."
-        . $script.FullName
-    }
-}
+
 
 
 Write-Information -Message "Loaded script '$PSCommandPath'."

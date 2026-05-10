@@ -32,8 +32,9 @@ Set-DockerVariable -Name SECRETSDIR -Value $Script:Context.SecretsDir.FullName
 $Script:Context
 
 $composeData = Get-DockerCompose -Path $script:Context.ComposeFile
-$composeData.services.Keys | Get-DockerVolumes -InputObject $composeData
-Get-DockerVolumes -InputObject $composeData -Service $composeData.services.Keys
+#$composeData.services.Keys | Get-DockerVolumes -InputObject $composeData
+$volumes = Get-DockerVolumes -InputObject $composeData -Service $composeData.services.Keys
+$volumes.db
 return
 
 

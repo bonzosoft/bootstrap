@@ -1,6 +1,6 @@
 function Get-DockerHostname {
     [CmdletBinding()]
-    [OutType([string])]
+    [OutputType([string])]
 
     param (
 

@@ -33,7 +33,7 @@ $Script:Context
 
 Write-Host "prueba 1"
 $composeData = Get-DockerCompose -Path $script:Context.ComposeFile
-$composeData.GetType()
+Write-Host "tipo: $($composeData.GetType())"
 $composeData.services
 $composeData.services | Get-DockerVolumes -InputObject $composeData
 

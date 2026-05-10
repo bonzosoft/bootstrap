@@ -49,7 +49,7 @@ $Script:Context
 $composeData = Get-DockerCompose -Path $script:Context.ComposeFile
 $volumes = Get-DockerVolumes -InputObject $composeData -Service $composeData.services.Keys
 foreach ($service in $volumes.Keys) {
-    Write-Information -Message "Configuring storage for service $($service.Key)"
+    Write-Information -Message "Configuring storage for service $($service)"
     #$puidName = "$($service.ToUpper())_PUID"
     #$pgidName = "$($service.ToUpper())_PGID"
     #$volumes.$service.FullName

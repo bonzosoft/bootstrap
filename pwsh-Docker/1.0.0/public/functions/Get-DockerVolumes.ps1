@@ -1,6 +1,6 @@
 function Get-DockerVolumes {
     [CmdletBinding()]
-    [OutputType([IO.FileSystemInfo[]])]
+    [OutputType([PSCustomObject])]
 
     param (
         [Parameter(Mandatory)]
@@ -10,13 +10,15 @@ function Get-DockerVolumes {
 
     begin {
         [IO.FileSystemInfo[]]$volumesList = @()
+        [hashtable]$volumesObject = @{}
     }
 
     end {
         foreach ($service in $Data.services.Keys) {
             if ($Data.services.$service.Keys -like "volumes") {
+                $volumesList = @()
                 foreach ($volume in $Data.services.$service.volumes.source) {
-                    if (-not ($($volume).StartsWith($Script:Context.DataDir))) {
+                    if (-not $volume.StartsWith($Script:Context.DataDir)) {
                         Write-Host "System directory. Skipping."
                         continue
                     }
@@ -28,8 +30,9 @@ function Get-DockerVolumes {
                         $volumesList += [IO.DirectoryInfo]$volume
                     }
                 }
+                $volumesObject[$service] = $volumesList
             }
         }
-        Write-Output -InputObject $volumesList
+        Write-Output -InputObject ([PSCustomObject]$volumesObject)
     }
 }

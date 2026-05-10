@@ -22,7 +22,6 @@ Switch-DockerRealm
 Set-DockerVariable -Name DATADIR    -Value $Script:Context.DataDir.FullName
 Set-DockerVariable -Name INCLUDEDIR -Value $Script:Context.IncludeDir.FullName
 Set-DockerVariable -Name SECRETSDIR -Value $Script:Context.SecretsDir.FullName
-#Import-DockerVariables
 $Script:Context
 
 
@@ -44,8 +43,13 @@ if (Test-Path -Path $Script:Context.IncludeDir) {
 }
 
 ## Set file permisisons for volumes
-Get-DockerVolumes -Data (Get-DockerCompose -Path $Script:Context.ComposeFile) |
-Grant-DockerPermission -PUID $Script:Context.APP_PUID -PGID $Script:Context.APP_PGID -Permission "0755" -Recurse -Force
+$volumesObject = Get-DockerVolumes -Data (Get-DockerCompose -Path $Script:Context.ComposeFile)
+foreach ($service in $volumesObject.PSObject.Properties.Name) {
+    $puidName = "$($service.ToUpper())_PUID"
+    $pgidName = "$($service.ToUpper())_PGID"
+    Grant-DockerPermission -Path $volumesObject.$service -PUID $Script:Context.$puidName -PGID $Script:Context.$pgidName -Permission "0755" -Recurse -Force
+}
+
 
 
 Write-Information -Message "Loaded script '$PSCommandPath'."

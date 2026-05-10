@@ -30,7 +30,10 @@ function Get-DockerVolumes {
                         $volumesList += [IO.DirectoryInfo]$volume
                     }
                 }
-                $volumesObject[$service] = $volumesList
+                if ($volumesList.Count) {
+                    $volumesObject[$service] = $volumesList
+                }
+                
             }
         }
         Write-Output -InputObject ([PSCustomObject]$volumesObject)

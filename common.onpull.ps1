@@ -34,6 +34,7 @@ Set-DockerVariable -Name DATADIR          -Value $Script:Context.DataDir.FullNam
 Set-DockerVariable -Name INCLUDEDIR       -Value $Script:Context.IncludeDir.FullName
 Set-DockerVariable -Name SECRETSDIR       -Value $Script:Context.SecretsDir.FullName
 Set-DockerVariable -Name SOCKETPROXY_PGID -Value (Get-DockerGid) -NoAppend
+Set-DockerConfigFile -Name SOCKETPROXY_PGID -Value (Get-DockerGid)
 $Script:Context
 
 ## Set file permisisons for volumes

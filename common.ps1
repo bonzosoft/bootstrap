@@ -50,5 +50,4 @@ Set-DockerContext -Name WORKER_PUID      -Value $Script:Context.APP_PUID
 Set-DockerContext -Name WORKER_PGID      -Value $Script:Context.APP_PGID
 
 
-
 Write-Information -Message "Loaded script '$PSCommandPath'."

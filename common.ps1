@@ -38,16 +38,16 @@ Set-DockerContext -Name Hostname         -Value (Get-DockerHostname)
 
 Set-DockerContext -Name APP_PUID         -Value 568
 Set-DockerContext -Name APP_PGID         -Value 568
-Set-DockerContext -Name WEBPROXY_PUID    -Value ($Script:Context.APP_PUID + 3)
-Set-DockerContext -Name WEBPROXY_PGID    -Value ($Script:Context.APP_PGID + 4)
-Set-DockerContext -Name DB_PUID          -Value ($Script:Context.APP_PUID + 5)
-Set-DockerContext -Name DB_PGID          -Value ($Script:Context.APP_PGID + 6)
+Set-DockerContext -Name WEBPROXY_PUID    -Value $Script:Context.APP_PUID
+Set-DockerContext -Name WEBPROXY_PGID    -Value $Script:Context.APP_PGID
+Set-DockerContext -Name DB_PUID          -Value $Script:Context.APP_PUID
+Set-DockerContext -Name DB_PGID          -Value $Script:Context.APP_PGID
 Set-DockerContext -Name DBBACKUP_PUID    -Value 0
 Set-DockerContext -Name DBBACKUP_PGID    -Value $Script:Context.APP_PGID
-Set-DockerContext -Name SOCKETPROXY_PUID -Value ($Script:Context.APP_PUID + 7)
+Set-DockerContext -Name SOCKETPROXY_PUID -Value $Script:Context.APP_PUID
 Set-DockerContext -Name SOCKETPROXY_PGID -Value (Get-DockerGid)
-Set-DockerContext -Name WORKER_PUID      -Value ($Script:Context.APP_PUID + 8)
-Set-DockerContext -Name WORKER_PGID      -Value ($Script:Context.APP_PGID + 9)
+Set-DockerContext -Name WORKER_PUID      -Value $Script:Context.APP_PUID
+Set-DockerContext -Name WORKER_PGID      -Value $Script:Context.APP_PGID
 
 
 

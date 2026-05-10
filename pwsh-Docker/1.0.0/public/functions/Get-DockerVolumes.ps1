@@ -22,7 +22,7 @@ function Get-DockerVolumes {
 
     process {
         foreach ($item in $Service) {
-            if ($InputObject.services.$item.Keys -like "volumes") {
+            #if ($InputObject.services.$item.Keys -like "volumes") {
                 $volumesList = @()
                 foreach ($volume in $InputObject.services.$item.volumes.source) {
                     if ((-not $Force) -and (-not $volume.StartsWith($Script:Context.DataDir))) {
@@ -42,7 +42,7 @@ function Get-DockerVolumes {
                         PGID = [int]($InputObject.services.$item.user -split ":")[1]
                     }
                 }
-            }
+            #}
         }
         Write-Output -InputObject $volumesTable
     }

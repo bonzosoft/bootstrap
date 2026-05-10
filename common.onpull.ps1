@@ -1,7 +1,7 @@
 #!/usr/bin/env pwsh
 
 ### SINGLETON ##################################################################
-$variableName = ([IO.FileInfo]$PSCommandPath).BaseName.Replace(".","_").ToUppder()
+$variableName = ([IO.FileInfo]$PSCommandPath).BaseName.Replace(".","_").ToUpper()
 Write-host $variableName
 if (Get-Variable -Name "__INCLUDED_COMMON_ONPULL" -Scope Global -ErrorAction SilentlyContinue) {
     return

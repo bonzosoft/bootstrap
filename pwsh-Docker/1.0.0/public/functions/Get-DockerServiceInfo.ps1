@@ -1,4 +1,4 @@
-function Get-DockerVolumes {
+function Get-DockerServiceInfo {
     [CmdletBinding()]
     [OutputType([hashtable])]
 
@@ -16,8 +16,8 @@ function Get-DockerVolumes {
     )
 
     begin {
-        [IO.FileSystemInfo[]]$volumesList = @()
-        [hashtable]$volumesTable = @{}
+        [IO.FileSystemInfo[]]$volumes = @()
+        [hashtable]$servicesTable = @{}
     }
 
     process {
@@ -36,7 +36,7 @@ function Get-DockerVolumes {
                     }
                 }
                 #if ($volumesList.Count) {
-                    $volumesTable[$item] = @{
+                    $servicesTable[$item] = @{
                         Volume = $volumesList
                         PUID = [int]($InputObject.services.$item.user -split ":")[0]
                         PGID = [int]($InputObject.services.$item.user -split ":")[1]
@@ -44,6 +44,6 @@ function Get-DockerVolumes {
                 #}
             #}
         }
-        Write-Output -InputObject $volumesTable
+        Write-Output -InputObject $servicesTable
     }
 }

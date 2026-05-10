@@ -37,9 +37,9 @@ Set-DockerVariable -Name SOCKETPROXY_PGID -Value (Get-DockerGid) -NoAppend
 Set-DockerContext -Name SOCKETPROXY_PGID -Value (Get-DockerGid)
 $Script:Context
 
-## Set file permisisons for volumes
+## GET SERVICES DATA
 $composeData = Get-DockerCompose -Path $script:Context.ComposeFile
-$volumes = Get-DockerVolumes -InputObject $composeData -Service $composeData.services.Keys
+$volumes = Get-DockerServiceInfo -InputObject $composeData -Service $composeData.services.Keys
 foreach ($service in $volumes.Keys) {
     Set-DockerContext -Name $service -Value $volumes.$service
 }
@@ -53,16 +53,17 @@ if (Test-Path -Path $Script:Context.IncludeDir) {
     }
 }
 
-
-
-
+## SET STORAGE PERMISSION
 foreach ($service in $Script:Context.Service.Keys) {
     Write-Information -Message "Configuring storage for service $($service)"
-    Grant-DockerPermission -Path $Script:Context.Service.$service.Volume -PUID $Script:Context.Service.$service.PUID -PGID $Script:Context.Service.$service.PGID -Permission "0755" -Recurse -Force
+    Grant-DockerPermission `
+        -Path $Script:Context.$service.Volume `
+        -PUID $Script:Context.$service.PUID `
+        -PGID $Script:Context.$service.PGID `
+        -Permission "0755" `
+        -Recurse `
+        -Force
 }
-
-
-
 
 
 Write-Information -Message "Loaded script '$PSCommandPath'."

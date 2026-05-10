@@ -36,7 +36,7 @@ function Get-DockerVolumes {
                     }
                 }
                 if ($volumesList.Count) {
-                    $volumesTable = @{
+                    $volumesTable[$item] = @{
                         volumes = $volumesList
                         user = 568
                         group = 568

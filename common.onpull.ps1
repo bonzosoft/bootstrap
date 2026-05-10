@@ -49,7 +49,7 @@ $Script:Context
 $composeData = Get-DockerCompose -Path $script:Context.ComposeFile
 $volumes = Get-DockerVolumes -InputObject $composeData -Service $composeData.services.Keys
 
-Set-DockerContext -Name "volumes" -Value $volumes
+Set-DockerContext -Name "Services" -Value $volumes
 $Script:Context 
 
 foreach ($service in $volumes.Keys) {

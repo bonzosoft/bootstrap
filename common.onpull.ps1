@@ -48,8 +48,6 @@ $Script:Context
 ## Set file permisisons for volumes
 $composeData = Get-DockerCompose -Path $script:Context.ComposeFile
 $volumes = Get-DockerVolumes -InputObject $composeData -Service $composeData.services.Keys
-$volumes
-return
 foreach ($service in $volumes.Keys) {
     Write-Information -Message "Configuring storage for service $($service.Key)"
     #$puidName = "$($service.ToUpper())_PUID"

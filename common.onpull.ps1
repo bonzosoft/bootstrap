@@ -31,13 +31,7 @@ Set-DockerVariable -Name INCLUDEDIR -Value $Script:Context.IncludeDir.FullName
 Set-DockerVariable -Name SECRETSDIR -Value $Script:Context.SecretsDir.FullName
 $Script:Context
 
-Write-Host "prueba 1"
-$composeData = Get-DockerCompose -Path $script:Context.ComposeFile
-Write-Host "pasa"
-$composeData.services
-Write-Host "pasa"
-$composeData.services.Keys
-$composeData.services | Get-DockerVolumes -InputObject $composeData
+$composeData.services.Keys | Get-DockerVolumes -InputObject $composeData
 
 
 ## Set file permisisons for volumes

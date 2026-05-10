@@ -15,14 +15,6 @@ Write-Information -Message "Loading script '$PSCommandPath'."
 . (Get-Item -Path (Join-Path -Path $PSScriptRoot -ChildPath "common.ps1"))
 
 
-## SET ENV FILE VARIABLES
-Switch-DockerRealm
-Set-DockerVariable -Name DATADIR    -Value $Script:Context.DataDir.FullName
-Set-DockerVariable -Name INCLUDEDIR -Value $Script:Context.IncludeDir.FullName
-Set-DockerVariable -Name SECRETSDIR -Value $Script:Context.SecretsDir.FullName
-$Script:Context
-
-
 ## PULL SUBMODULES
 if (Test-Path -Path $Script:Context.IncludeDir) {
     Write-Information -Message "Pulling submodules."
@@ -32,8 +24,18 @@ if (Test-Path -Path $Script:Context.IncludeDir) {
     }
 }
 
+$composeData = Get-DockerCompose -Path $script:Context.ComposeFile
+
+
+## SET ENV FILE VARIABLES
+Switch-DockerRealm
+Set-DockerVariable -Name DATADIR    -Value $Script:Context.DataDir.FullName
+Set-DockerVariable -Name INCLUDEDIR -Value $Script:Context.IncludeDir.FullName
+Set-DockerVariable -Name SECRETSDIR -Value $Script:Context.SecretsDir.FullName
+$Script:Context
+
 ## Set file permisisons for volumes
-$volumes = Get-DockerVolumes -Data (Get-DockerCompose -Path $Script:Context.ComposeFile)
+$volumes = Get-DockerVolumes -InputObject (Get-DockerCompose -Path $Script:Context.ComposeFile)
 foreach ($service in $volumes.PSObject.Properties.Name) {
     Write-Information -Message "Configuring storage for service $service"
     $puidName = "$($service.ToUpper())_PUID"

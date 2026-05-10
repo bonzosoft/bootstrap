@@ -1,6 +1,6 @@
 function Get-DockerCompose {
     [CmdletBinding()]
-    [OutputType([hashtable])]
+    [OutputType([PSCustomObject])]
 
     param (
         [Parameter()]

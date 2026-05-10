@@ -5,7 +5,7 @@ function Get-DockerVolumes {
     param (
         [Parameter(Mandatory)]
         [ValidateNotNullOrEmpty()]
-        [PSCustomObject]$Data
+        [PSCustomObject]$InputObject
     )
 
     begin {
@@ -14,11 +14,11 @@ function Get-DockerVolumes {
     }
 
     end {
-        foreach ($service in $Data.services.Keys) {
-            if ($Data.services.$service.Keys -like "volumes") {
+        foreach ($service in $InputObject.services.Keys) {
+            if ($InputObject.services.$service.Keys -like "volumes") {
                 $volumesList = @()
-                foreach ($volume in $Data.services.$service.volumes.source) {
-                    if (-not $volume.StartsWith($Script:Context.DataDir)) {
+                foreach ($volume in $InputObject.services.$service.volumes.source) {
+                    if (-not $volume.StartsWith($Script:Context.InputObjectDir)) {
                         continue
                     }
                     

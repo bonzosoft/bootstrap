@@ -23,20 +23,12 @@ Set-DockerVariable -Name SECRETSDIR -Value $Script:Context.SecretsDir.FullName
 $Script:Context
 
 
-## SUBMODULES MANAGEMENT
+## PULL SUBMODULES
 if (Test-Path -Path $Script:Context.IncludeDir) {
-    ## UPDATE SUBMODULE
     Write-Information -Message "Pulling submodules."
-    if ($IsLinux) {
-        git submodule update --init --recursive --depth 1 2>$null
-    }
-
-    ## LOAD SUBMODULE SCRIPTS
-    Write-Host "Loading submodule scripts."
-    [IO.FileInfo[]]$submoduleScripts = Get-Item -Path (Join-Path -Path $Script:Context.IncludeDir -ChildPath "*" -AdditionalChildPath (Split-Path -Path $MyInvocation.PSCommandPath -Leaf))
-    foreach ($script in $submoduleScripts) {
-        Write-Information -Message "Running submodule script '$($script.FullName)'."
-        . $script.FullName
+    $null = git submodule update --init --recursive --depth 1 2> variable:errorVariable
+    if ($LASTEXITCODE) {
+        throw ($errorVariable | Out-String)
     }
 }
 
@@ -50,6 +42,16 @@ foreach ($service in $volumes.PSObject.Properties.Name) {
     Grant-DockerPermission -Path $volumes.$service -PUID $Script:Context.$puidName -PGID $Script:Context.$pgidName -Permission "0755" -Recurse -Force
 }
 
+
+## LOAD SUBMODULES SCRIPTS
+if (Test-Path -Path $Script:Context.IncludeDir) {
+    Write-Host "Loading submodule scripts."
+    [IO.FileInfo[]]$submoduleScripts = Get-Item -Path (Join-Path -Path $Script:Context.IncludeDir -ChildPath "*" -AdditionalChildPath (Split-Path -Path $MyInvocation.PSCommandPath -Leaf))
+    foreach ($script in $submoduleScripts) {
+        Write-Information -Message "Running submodule script '$($script.FullName)'."
+        . $script.FullName
+    }
+}
 
 
 Write-Information -Message "Loaded script '$PSCommandPath'."

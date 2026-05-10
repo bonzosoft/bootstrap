@@ -33,6 +33,7 @@ $Script:Context
 
 [PSCustomObject]$composeData = Get-DockerCompose -Path $script:Context.ComposeFile
 $composeData.services
+$composeData.services.Keys
 
 
 

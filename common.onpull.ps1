@@ -32,7 +32,8 @@ Set-DockerVariable -Name SECRETSDIR -Value $Script:Context.SecretsDir.FullName
 $Script:Context
 
 Write-Host "prueba 1"
-[hashtable]$composeData = Get-DockerCompose -Path $script:Context.ComposeFile
+$composeData = Get-DockerCompose -Path $script:Context.ComposeFile
+$composeData.GetType()
 $composeData.services
 $composeData.services | Get-DockerVolumes -InputObject $composeData
 

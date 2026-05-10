@@ -43,7 +43,7 @@ $volumes = Get-DockerVolumes -InputObject $composeData -Service $composeData.ser
 foreach ($service in $volumes.Keys) {
     Set-DockerContext -Name $service -Value $volumes.$service
 }
-
+$Script:Context
 
 ## LOAD SUBMODULES SCRIPTS
 if (Test-Path -Path $Script:Context.IncludeDir) {
@@ -61,7 +61,7 @@ foreach ($service in $Script:Context.Service.Keys) {
     Grant-DockerPermission -Path $Script:Context.Service.$service.Volume -PUID $Script:Context.Service.$service.PUID -PGID $Script:Context.Service.$service.PGID -Permission "0755" -Recurse -Force
 }
 
-$Script:Context
+
 
 
 

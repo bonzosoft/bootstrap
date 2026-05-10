@@ -36,7 +36,7 @@ $composeData = Get-DockerCompose -Path $script:Context.ComposeFile
 Write-Host "pasa"
 $composeData.services
 Write-Host "pasa"
-$composeData.services.GetEnumerator()
+$composeData.services.Keys
 $composeData.services | Get-DockerVolumes -InputObject $composeData
 
 

@@ -19,10 +19,10 @@ function Get-DockerVolumes {
                 $volumesList = @()
                 foreach ($volume in $Data.services.$service.volumes.source) {
                     if (-not $volume.StartsWith($Script:Context.DataDir)) {
-                        Write-Host "System directory. Skipping."
+                        Write-Warning -Message "System directory. Skipping."
                         continue
                     }
-
+                    
                     if (Test-Path -Path $volume) {
                         $volumesList += Get-Item -Path $volume
                     }

@@ -35,6 +35,8 @@ Set-DockerContext -Name SecretsDir       -Value ([IO.DirectoryInfo](Join-Path -P
 
 Set-DockerContext -Name HostInfo         -Value (Get-Content -Path (Join-Path -Path $Script:Context.WorkingDir.Parent -ChildPath ".config" -AdditionalChildPath "docker.config.json") | ConvertFrom-Json)
 
+Set-DockerContext -Name Realm            -Value (Get-Content -Path (Join-Path -Path $Script:Context.WorkingDir.Parent -ChildPath ".config" -AdditionalChildPath "docker.config.json") | ConvertFrom-Json).REALM
+
 Set-DockerContext -Name APP_PUID         -Value 568
 Set-DockerContext -Name APP_PGID         -Value 568
 Set-DockerContext -Name WEBPROXY_PUID    -Value $Script:Context.APP_PUID

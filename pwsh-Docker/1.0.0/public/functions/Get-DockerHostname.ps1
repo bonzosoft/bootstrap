@@ -7,6 +7,6 @@ function Get-DockerHostname {
     )
 
     end {
-        Write-Output Get-Content "/host/etc/hostname"
+        Write-Output (Get-Content "/host/etc/hostname")
     }
 }

@@ -17,7 +17,7 @@ function Get-DockerGid {
             throw "More thant one 'docker' group was found on host."
         }
         else {
-            Write-Output -InputObject [int]($dockerGroup.Split(":")[2])
+            Write-Output -InputObject ([int]($dockerGroup.Split(":")[2]))
         }
     }
 }

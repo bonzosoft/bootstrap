@@ -49,14 +49,15 @@ $Script:Context
 $composeData = Get-DockerCompose -Path $script:Context.ComposeFile
 $volumes = Get-DockerVolumes -InputObject $composeData -Service $composeData.services.Keys
 
-Set-DockerContext -Name "Services" -Value $volumes
+Set-DockerContext -Name "Service" -Value $volumes
 $Script:Context 
+$Script:Context.Service.db.Volumes
 
 foreach ($service in $volumes.Keys) {
     Write-Information -Message "Configuring storage for service $($service)"
     $volumes.$service.Path.FullName
     Write-Host "$($volumes.$service.PUID):$($volumes.$service.PGID)"
-    Grant-DockerPermission -Path $volumes.$service.Path -PUID $volumes.$service.PUID -PGID $volumes.$service.PUID -Permission "0755" -Recurse -Force
+    Grant-DockerPermission -Path $volumes.$service.Volume -PUID $volumes.$service.PUID -PGID $volumes.$service.PUID -Permission "0755" -Recurse -Force
 }
 
 

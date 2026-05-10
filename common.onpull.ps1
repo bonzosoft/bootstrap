@@ -40,7 +40,10 @@ $Script:Context
 ## Set file permisisons for volumes
 $composeData = Get-DockerCompose -Path $script:Context.ComposeFile
 $volumes = Get-DockerVolumes -InputObject $composeData -Service $composeData.services.Keys
-Set-DockerContext -Name "Service" -Value $volumes
+foreach ($service in $volumes.Keys) {
+    Set-DockerContext -Name $service -Value $volumes.$service
+}
+
 
 ## LOAD SUBMODULES SCRIPTS
 if (Test-Path -Path $Script:Context.IncludeDir) {

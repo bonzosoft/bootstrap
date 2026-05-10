@@ -36,6 +36,7 @@ function Get-DockerVolumes {
                     }
                 }
                 if ($volumesList.Count) {
+                    Write-Host $volumesList
                     $volumesTable[$item] = $volumesList
                 }
             }

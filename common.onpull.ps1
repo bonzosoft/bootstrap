@@ -34,7 +34,7 @@ $Script:Context
 Write-Host "prueba 1"
 [hashtable]$composeData = Get-DockerCompose -Path $script:Context.ComposeFile
 $composeData.services
-$composeData.services.Name | Get-DockerVolumes -InputObject $composeData
+$composeData.services | Get-DockerVolumes -InputObject $composeData
 
 Write-Host "prueba 2"
 Get-DockerVolumes -InputObject $composeData

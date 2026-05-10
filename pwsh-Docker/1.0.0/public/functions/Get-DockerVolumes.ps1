@@ -35,8 +35,9 @@ function Get-DockerVolumes {
                         $volumesList += [IO.DirectoryInfo]$volume
                     }
                 }
+                Write-Host $volumesList
                 if ($volumesList.Count) {
-                    Write-Host $volumesList
+                    
                     $volumesTable[$item] = $volumesList
                 }
             }

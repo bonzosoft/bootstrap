@@ -42,7 +42,7 @@ if (Test-Path -Path $Script:Context.IncludeDir) {
 Set-DockerVariable -Name DATADIR          -Value $Script:Context.DataDir.FullName
 Set-DockerVariable -Name INCLUDEDIR       -Value $Script:Context.IncludeDir.FullName
 Set-DockerVariable -Name SECRETSDIR       -Value $Script:Context.SecretsDir.FullName
-Set-DockerVariable -Name SOCKETPROXY_PGID -Value (Get-DockerGid)
+Set-DockerVariable -Name SOCKETPROXY_PGID -Value (Get-DockerGid) -NoAppend
 $Script:Context
 
 

@@ -15,6 +15,10 @@ Write-Information -Message "Loading script '$PSCommandPath'."
 . (Get-Item -Path (Join-Path -Path $PSScriptRoot -ChildPath "common.ps1"))
 
 
+## SET REALM
+Switch-DockerRealm
+
+
 ## PULL SUBMODULES
 if (Test-Path -Path $Script:Context.IncludeDir) {
     Write-Information -Message "Pulling submodules."
@@ -24,6 +28,7 @@ if (Test-Path -Path $Script:Context.IncludeDir) {
     }
 }
 
+
 ## LOAD SUBMODULES SCRIPTS
 if (Test-Path -Path $Script:Context.IncludeDir) {
     foreach ($script in (Get-Item -Path (Join-Path -Path $Script:Context.IncludeDir -ChildPath "*" -AdditionalChildPath (Split-Path -Path $MyInvocation.PSCommandPath -Leaf)))) {
@@ -32,8 +37,8 @@ if (Test-Path -Path $Script:Context.IncludeDir) {
     }
 }
 
+
 ## SET ENV FILE VARIABLES
-Switch-DockerRealm
 Set-DockerVariable -Name DATADIR    -Value $Script:Context.DataDir.FullName
 Set-DockerVariable -Name INCLUDEDIR -Value $Script:Context.IncludeDir.FullName
 Set-DockerVariable -Name SECRETSDIR -Value $Script:Context.SecretsDir.FullName

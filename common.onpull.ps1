@@ -45,7 +45,7 @@ if (Test-Path -Path $Script:Context.IncludeDir) {
 
 ## Set file permisisons for volumes
 Get-DockerVolumes -Data (Get-DockerCompose -Path $Script:Context.ComposeFile) |
-Grant-DockerPermission -PUID $Script:Context.Environment.PUID -PGID $Script:Context.Environment.PGID -Permission "0755" -Recurse -Force
+Grant-DockerPermission -PUID $Script:Context.APP_PUID -PGID $Script:Context.APP_PGID -Permission "0755" -Recurse -Force
 
 
 Write-Information -Message "Loaded script '$PSCommandPath'."

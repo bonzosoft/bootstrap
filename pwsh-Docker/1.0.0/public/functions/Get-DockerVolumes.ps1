@@ -41,6 +41,6 @@ function Get-DockerVolumes {
                 $volumesTable[$item] = $volumesList
             }
         }
-        Write-Output -InputObject ([PSCustomObject]$volumesTable)
+        Write-Output -InputObject $volumesTable
     }
 }

@@ -35,7 +35,7 @@ $Script:Context
 $composeData.services
 $composeData.services.Keys
 
-@("app", "worker") | Get-DockerVolumes -InputObject $composeData
+"app", "worker" | Get-DockerVolumes -InputObject $composeData
 
 ## Set file permisisons for volumes
 $volumes = Get-DockerVolumes -InputObject (Get-DockerCompose -Path $Script:Context.ComposeFile)

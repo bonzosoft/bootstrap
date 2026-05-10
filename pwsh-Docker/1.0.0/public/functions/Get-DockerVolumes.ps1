@@ -1,26 +1,22 @@
 function Get-DockerVolumes {
     [CmdletBinding()]
-    [OutputType([PSCustomObject])]
+    [OutputType([hashtable])]
 
     param (
         [Parameter(Mandatory)]
         [ValidateNotNullOrEmpty()]
-        [PSCustomObject]$InputObject,
+        [hashtable]$InputObject,
 
         [Parameter(ValueFromPipeline)]
         [ValidateNotNullOrEmpty()]
-        [string[]]$Service = 33 #$InputObject.services.Keys
+        [string[]]$Service = $InputObject.services.Keys
     )
 
     begin {
-        Write-Host "la funcion pasa por aqui ####################################################"
         [IO.FileSystemInfo[]]$volumesList = @()
         [hashtable]$volumesObject = @{}
 
-        #if (-not $Service.Count) {
-        #    $Service = $InputObject.services.Keys
-        #}
-    }#
+    }
 
     process {
         foreach ($item in $Service) {

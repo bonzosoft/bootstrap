@@ -9,16 +9,16 @@ function Get-DockerCompose {
     )
 
     begin {
-        [string[]]$composeLines = @()
-        [hashtable]$composeData = @{}
+        [string[]]$lines = @()
+        [string[]]$errorMessage = @()
     }
 
     end {
         if (-not (Test-Path -Path $Path.FullName)) {
-            throw "File $($Path.FullName) not found."
+            throw "File '$($Path.FullName)' not found."
         }
     
-        $composeLines = docker compose -f $Path.FullName config 2> variable:errorMessage
+        $lines = docker compose -f $Path.FullName config 2> variable:errorMessage
             #--no-consistency		Don't check model consistency - warning: may produce invalid Compose output
             #--no-env-resolution	Don't resolve service env files
             #--no-interpolate		Don't interpolate environment variables
@@ -27,12 +27,10 @@ function Get-DockerCompose {
         if ($LASTEXITCODE) {
             throw "Unable to parse '$Path': $errorMessage"
         }
-
         if ($errorMessage) {
             Write-Warning -Message ($errorMessage | Out-String)
         }
 
-        $composeData = $composeLines | ConvertFrom-Yaml
-        Write-Output $composeData
+        Write-Output -InputObject ($lines | ConvertFrom-Yaml)
     }
 }

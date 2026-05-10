@@ -2,8 +2,7 @@ function Get-DockerGid {
     [CmdletBinding()]
     [OutputType([int])]
 
-    param (
-    )
+    param ()
 
     begin {
         [string[]]$dockerGroup = Get-Content "/host/etc/group" | Where-Object {$PSItem -match "^docker:"}

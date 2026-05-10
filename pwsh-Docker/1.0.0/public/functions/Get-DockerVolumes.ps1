@@ -30,6 +30,6 @@ function Get-DockerVolumes {
                 }
             }
         }
-        return $volumesList
+        Write-Output -InputObject $volumesList
     }
 }

@@ -9,9 +9,9 @@ function Test-DockerSubmodule {
     )
 
     if ($($Path.DirectoryName).StartsWith($Script:Context.IncludeDir)) {
-        return $true
+        Write-Output -InputObject $true
     }
     else {
-        return $false
+        Write-Output -InputObject $false
     }
 }

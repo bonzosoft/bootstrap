@@ -2,11 +2,9 @@ function Get-DockerHostname {
     [CmdletBinding()]
     [OutputType([string])]
 
-    param (
-
-    )
+    param ()
 
     end {
-        Write-Output (Get-Content "/host/etc/hostname")
+        Write-Output -InputObject (Get-Content "/host/etc/hostname")
     }
 }

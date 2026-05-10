@@ -30,7 +30,7 @@ function Import-DockerVariables {
         $Context | Add-Member -MemberType NoteProperty -Name "Environment" -Value $object -Force
 
         if ($PassThru.IsPresent) {
-            return $Context
+            Write-Output -InputObject $Context
         }
     }
 }

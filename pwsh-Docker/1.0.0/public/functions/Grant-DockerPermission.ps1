@@ -90,7 +90,7 @@ function Grant-DockerPermission {
         }
         
         if ($PassThru.IsPresent) {
-            return $Path
+            Write-Output -InputObject $Path
         }
     }
 }

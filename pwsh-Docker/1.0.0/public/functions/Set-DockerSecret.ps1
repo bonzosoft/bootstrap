@@ -94,7 +94,7 @@ function Set-DockerSecret {
         }
 
         if ($PassThru.IsPresent) {
-            return $secretFile
+            Write-Output -InputObject $secretFile
         }
     }
 

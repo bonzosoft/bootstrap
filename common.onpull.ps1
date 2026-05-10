@@ -56,14 +56,16 @@ if (Test-Path -Path $Script:Context.IncludeDir) {
 
 ## SET STORAGE PERMISSION
 foreach ($service in $Script:Context.Service.Keys) {
-    Write-Information -Message "Configuring storage for service $($service)"
-    Grant-DockerPermission `
-        -Path $Script:Context.Service.$service.Volume `
-        -PUID $Script:Context.Service.$service.PUID `
-        -PGID $Script:Context.Service.$service.PGID `
-        -Permission "0755" `
-        -Recurse `
-        -Force
+    if ($Script:Context.Service.$service.Volume) {
+        Write-Information -Message "Configuring storage for service $($service)"
+        Grant-DockerPermission `
+            -Path $Script:Context.Service.$service.Volume `
+            -PUID $Script:Context.Service.$service.PUID `
+            -PGID $Script:Context.Service.$service.PGID `
+            -Permission "0755" `
+            -Recurse `
+            -Force
+    }
 }
 
 

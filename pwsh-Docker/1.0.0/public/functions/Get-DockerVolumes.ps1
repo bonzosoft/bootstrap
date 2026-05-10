@@ -14,7 +14,6 @@ function Get-DockerVolumes {
 
     begin {
         Write-Host "la funcion pasa por aqui ####################################################"
-        Write-Host $Service
         [IO.FileSystemInfo[]]$volumesList = @()
         [hashtable]$volumesObject = @{}
 
@@ -24,6 +23,7 @@ function Get-DockerVolumes {
     }
 
     end {
+        Write-Host $Service
         foreach ($service in $InputObject.services.Keys) {
             if ($InputObject.services.$service.Keys -like "volumes") {
                 $volumesList = @()

@@ -36,6 +36,10 @@ Set-DockerVariable -Name SECRETSDIR       -Value $Script:Context.SecretsDir.Full
 Set-DockerVariable -Name SOCKETPROXY_PGID -Value (Get-DockerGid) -NoAppend
 $Script:Context
 
+## Set file permisisons for volumes
+$composeData = Get-DockerCompose -Path $script:Context.ComposeFile
+$volumes = Get-DockerVolumes -InputObject $composeData -Service $composeData.services.Keys
+Set-DockerContext -Name "Service" -Value $volumes
 
 ## LOAD SUBMODULES SCRIPTS
 if (Test-Path -Path $Script:Context.IncludeDir) {
@@ -46,10 +50,7 @@ if (Test-Path -Path $Script:Context.IncludeDir) {
 }
 
 
-## Set file permisisons for volumes
-$composeData = Get-DockerCompose -Path $script:Context.ComposeFile
-$volumes = Get-DockerVolumes -InputObject $composeData -Service $composeData.services.Keys
-Set-DockerContext -Name "Service" -Value $volumes
+
 
 foreach ($service in $Script:Context.Service.Keys) {
     Write-Information -Message "Configuring storage for service $($service)"

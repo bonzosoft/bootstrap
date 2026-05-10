@@ -44,10 +44,10 @@ Set-DockerContext -Name DB_PGID          -Value $Script:Context.APP_PGID
 Set-DockerContext -Name DBBACKUP_PUID    -Value [int]0
 Set-DockerContext -Name DBBACKUP_PGID    -Value $Script:Context.APP_PGID
 Set-DockerContext -Name SOCKETPROXY_PUID -Value $Script:Context.APP_PUID
-Set-DockerContext -Name SOCKETPROXY_PGID -Value [int]$(Get-DockerGid)
+Set-DockerContext -Name SOCKETPROXY_PGID -Value (Get-DockerGid)
 Set-DockerContext -Name WORKER_PUID      -Value $Script:Context.APP_PUID
 Set-DockerContext -Name WORKER_PGID      -Value $Script:Context.APP_PGID
-Set-DockerContext -Name HOST_HOSTNAME    -Value [strin]$(Get-DockerHostname)
+Set-DockerContext -Name HOST_HOSTNAME    -Value [string]$(Get-DockerHostname)
 
 
 Write-Information -Message "Loaded script '$PSCommandPath'."

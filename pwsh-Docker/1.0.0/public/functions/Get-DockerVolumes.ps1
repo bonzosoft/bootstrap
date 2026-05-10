@@ -40,7 +40,6 @@ function Get-DockerVolumes {
                 }
             }
         }
-        Write-Host $volumesTable
         Write-Output -InputObject $volumesTable
     }
 }

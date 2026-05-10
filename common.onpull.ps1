@@ -32,7 +32,7 @@ Set-DockerVariable -Name SECRETSDIR -Value $Script:Context.SecretsDir.FullName
 $Script:Context
 
 [PSCustomObject]$composeData = Get-DockerCompose -Path $script:Context.ComposeFile
-$composeData
+$composeData.services
 
 
 

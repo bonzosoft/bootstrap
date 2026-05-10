@@ -53,6 +53,8 @@ foreach ($service in $volumes.Keys) {
     #$puidName = "$($service.ToUpper())_PUID"
     #$pgidName = "$($service.ToUpper())_PGID"
     #$volumes.$service.FullName
+    $volumes.$service.Path
+    $volumes.$service.PUID
     Grant-DockerPermission -Path $volumes.$service.Path -PUID $volumes.$service.PUID -PGID $volumes.$service.PUID -Permission "0755" -Recurse -Force
 }
 

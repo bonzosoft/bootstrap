@@ -22,8 +22,9 @@ function Get-DockerVolumes {
 
     process {
         foreach ($item in $Service) {
-            Write-Host $InputObject.services.$item.Keys
+            #Write-Host $InputObject.services.$item.Keys
             if ($InputObject.services.$item.Keys -like "volumes") {
+                Write-host "pasa"
                 $volumesList = @()
                 if ((-not $Force) -and (-not $volume.StartsWith($Script:Context.InputObjectDir))) {
                     continue

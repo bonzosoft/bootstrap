@@ -56,7 +56,7 @@ foreach ($service in $Script:Context.Service.Keys) {
     Grant-DockerPermission -Path $Script:Context.Service.$service.Volume -PUID $Script:Context.Service.$service.PUID -PGID $Script:Context.Service.$service.PGID -Permission "0755" -Recurse -Force
 }
 
-
+$Script:Context
 
 
 

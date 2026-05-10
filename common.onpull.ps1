@@ -45,10 +45,8 @@ foreach ($service in $volumes.PSObject.Properties.Name) {
 
 ## LOAD SUBMODULES SCRIPTS
 if (Test-Path -Path $Script:Context.IncludeDir) {
-    Write-Host "Loading submodule scripts."
-    [IO.FileInfo[]]$submoduleScripts = Get-Item -Path (Join-Path -Path $Script:Context.IncludeDir -ChildPath "*" -AdditionalChildPath (Split-Path -Path $MyInvocation.PSCommandPath -Leaf))
-    foreach ($script in $submoduleScripts) {
-        Write-Information -Message "Running submodule script '$($script.FullName)'."
+    foreach ($script in (Get-Item -Path (Join-Path -Path $Script:Context.IncludeDir -ChildPath "*" -AdditionalChildPath (Split-Path -Path $MyInvocation.PSCommandPath -Leaf)))) {
+        Write-Information -Message "Loading submodule script '$($script.FullName)'."
         . $script.FullName
     }
 }

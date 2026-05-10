@@ -44,15 +44,12 @@ Set-DockerVariable -Name INCLUDEDIR -Value $Script:Context.IncludeDir.FullName
 Set-DockerVariable -Name SECRETSDIR -Value $Script:Context.SecretsDir.FullName
 $Script:Context
 
-$composeData = Get-DockerCompose -Path $script:Context.ComposeFile
-#$composeData.services.Keys | Get-DockerVolumes -InputObject $composeData
-$volumes = Get-DockerVolumes -InputObject $composeData -Service $composeData.services.Keys
-$volumes.db
-return
-
 
 ## Set file permisisons for volumes
-$volumes = Get-DockerVolumes -InputObject (Get-DockerCompose -Path $Script:Context.ComposeFile)
+$composeData = Get-DockerCompose -Path $script:Context.ComposeFile
+$volumes = Get-DockerVolumes -InputObject $composeData -Service $composeData.services.Keys
+$volumes
+return
 foreach ($service in $volumes.PSObject.Properties.Name) {
     Write-Information -Message "Configuring storage for service $service"
     $puidName = "$($service.ToUpper())_PUID"

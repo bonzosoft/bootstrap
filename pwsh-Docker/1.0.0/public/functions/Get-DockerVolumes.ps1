@@ -26,7 +26,7 @@ function Get-DockerVolumes {
                 $volumesList = @()
                 foreach ($volume in $InputObject.services.$item.volumes.source) {
                     Write-host "volume: $volume"
-                    if ((-not $Force) -and (-not $volume.StartsWith($Script:Context.InputObjectDir))) {
+                    if ((-not $Force) -and (-not $volume.StartsWith($Script:Context.DataDir))) {
                         continue
                     }
                     if (Test-Path -Path $volume) {

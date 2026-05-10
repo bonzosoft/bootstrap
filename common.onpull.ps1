@@ -34,15 +34,16 @@ Set-DockerVariable -Name DATADIR          -Value $Script:Context.DataDir.FullNam
 Set-DockerVariable -Name INCLUDEDIR       -Value $Script:Context.IncludeDir.FullName
 Set-DockerVariable -Name SECRETSDIR       -Value $Script:Context.SecretsDir.FullName
 Set-DockerVariable -Name SOCKETPROXY_PGID -Value (Get-DockerGid) -NoAppend
-Set-DockerContext -Name SOCKETPROXY_PGID -Value (Get-DockerGid)
+#Set-DockerContext -Name SOCKETPROXY_PGID -Value (Get-DockerGid)
 $Script:Context
 
 ## GET SERVICES DATA
 $composeData = Get-DockerCompose -Path $script:Context.ComposeFile
 $volumes = Get-DockerServiceInfo -InputObject $composeData -Service $composeData.services.Keys
-foreach ($service in $volumes.Keys) {
-    Set-DockerContext -Name $service -Value $volumes.$service
-}
+Set-DockerContext -Name Service -Value $volumes
+#foreach ($service in $volumes.Keys) {
+#    Set-DockerContext -Name $service -Value $volumes.$service
+#}
 $Script:Context
 
 ## LOAD SUBMODULES SCRIPTS
@@ -57,9 +58,9 @@ if (Test-Path -Path $Script:Context.IncludeDir) {
 foreach ($service in $Script:Context.Service.Keys) {
     Write-Information -Message "Configuring storage for service $($service)"
     Grant-DockerPermission `
-        -Path $Script:Context.$service.Volume `
-        -PUID $Script:Context.$service.PUID `
-        -PGID $Script:Context.$service.PGID `
+        -Path $Script:Context.Service.$service.Volume `
+        -PUID $Script:Context.Service.$service.PUID `
+        -PGID $Script:Context.Service.$service.PGID `
         -Permission "0755" `
         -Recurse `
         -Force

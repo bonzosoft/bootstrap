@@ -75,32 +75,6 @@ function Write-Log {
     }
 }
 
-function Get-DockerPGID {
-    [CmdletBinding()]
-    [OutputType([int])]
-
-
-    [string[]]$group = Get-Content "/host/etc/group" | Where-Object { $PSItem -match "^docker:" }
-
-    if ($group.Count -lt 1) {
-        throw "No 'docker' group has been found on host."
-    }
-    elseif ($group.Count -gt 1) {
-        throw "More than one 'docker' group has been found on host." 
-    }
-    else {
-        return [int]($group.Split(":")[2])
-    }
-}
-
-function Get-DockerHostname {
-    return Get-Content "/host/etc/hostname"
-}
-
-function Test-IsTruenas {
-    return Test-Path "/host/etc/version"
-}
-
 # =========================
 # Config
 # =========================
@@ -112,12 +86,7 @@ function Get-Config {
     Write-Log WARN "Generating new config..."
 
     $config = @{
-        PUID        = $PUID
-        PGID        = $PGID
-        HOSTNAME    = Get-DockerHostname
-        DOCKER_PGID = Get-DockerPGID
-        TRUENAS     = Test-IsTruenas
-        REALM       = "prod"
+        REALM = "prod"
     }
 
     $config | ConvertTo-Json | Set-Content $Script:CONFIGFILE

@@ -5,12 +5,20 @@ function Get-DockerVolumes {
     param (
         [Parameter(Mandatory)]
         [ValidateNotNullOrEmpty()]
-        [PSCustomObject]$InputObject
+        [PSCustomObject]$InputObject,
+
+        [Parameter(ValueFromPipeline)]
+        [ValidateNotNullOrEmpty()]
+        [string[]]$Service = $InputObject.services.Keys
     )
 
     begin {
         [IO.FileSystemInfo[]]$volumesList = @()
         [hashtable]$volumesObject = @{}
+
+        if (-not $Service.Count) {
+            $Service = $InputObject.services.Keys
+        }
     }
 
     end {

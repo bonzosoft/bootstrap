@@ -35,7 +35,6 @@ function Get-DockerVolumes {
                         $volumesList += [IO.DirectoryInfo]$volume
                     }
                 }
-                Write-Host $InputObject.services.$item.user
                 if ($volumesList.Count) {
                     $volumesTable[$item] = @{
                         Path = $volumesList

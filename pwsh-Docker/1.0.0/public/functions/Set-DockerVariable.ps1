@@ -147,7 +147,6 @@ function Set-DockerVariable {
        
         $temporaryFile = New-TemporaryFile
         Set-Content -Path $temporaryFile -Value $outputLines -Encoding UTF8
-        Write-Host "pasa por aqui"
         if ($Path.LinkTarget) {
             Move-Item -Path $temporaryFile -Destination $Path.LinkTarget -Force
         }

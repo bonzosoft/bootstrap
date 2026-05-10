@@ -16,10 +16,10 @@ function Set-DockerVariable {
         [string]$Value,
 
         [Parameter()]
-        [switch]$NoOverwrite, #evita sobrescribir el valor si existe
+        [switch]$NoOverwrite, # evita sobrescribir el valor si existe
 
         [Parameter()]
-        [switch]$NoAppend, #evita añadir el valor si no existe
+        [switch]$NoAppend, # evita añadir el valor si no existe
 
         [Parameter()]
         [switch]$PassThru

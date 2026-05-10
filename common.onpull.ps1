@@ -31,7 +31,8 @@ Set-DockerVariable -Name INCLUDEDIR -Value $Script:Context.IncludeDir.FullName
 Set-DockerVariable -Name SECRETSDIR -Value $Script:Context.SecretsDir.FullName
 $Script:Context
 
-$composeData = Get-DockerCompose -Path $script:Context.ComposeFile
+[PSCustomObject]$composeData = Get-DockerCompose -Path $script:Context.ComposeFile
+$composeData
 
 
 

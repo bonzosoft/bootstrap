@@ -33,9 +33,7 @@ $Script:Context
 
 [PSCustomObject]$composeData = Get-DockerCompose -Path $script:Context.ComposeFile
 $composeData.services
-$composeData.services.Keys
-
-@("app", "worker") | Get-DockerVolumes -InputObject $composeData
+$composeData.services.Keys | Get-DockerVolumes -InputObject $composeData
 
 ## Set file permisisons for volumes
 $volumes = Get-DockerVolumes -InputObject (Get-DockerCompose -Path $Script:Context.ComposeFile)

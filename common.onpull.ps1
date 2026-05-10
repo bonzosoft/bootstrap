@@ -51,7 +51,7 @@ $volumes = Get-DockerVolumes -InputObject $composeData -Service $composeData.ser
 
 Set-DockerContext -Name "Service" -Value $volumes
 $Script:Context 
-$Script:Context.Service.db.Volume
+$Script:Context.Service.db.Volume.FullName
 
 foreach ($service in $volumes.Keys) {
     Write-Information -Message "Configuring storage for service $($service)"

@@ -13,6 +13,7 @@ function Get-DockerVolumes {
     )
 
     begin {
+        Write-Host "la funcion pasa por aqui ####################################################"
         [IO.FileSystemInfo[]]$volumesList = @()
         [hashtable]$volumesObject = @{}
 

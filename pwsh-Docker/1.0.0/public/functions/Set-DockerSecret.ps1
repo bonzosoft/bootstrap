@@ -43,7 +43,7 @@ function Set-DockerSecret {
         [IO.FileInfo]$secretFile = Join-Path -Path $Path.FullName -ChildPath $Name
         [IO.FileInfo]$temporaryFile = $null
         [string]$currentValue = ""
-        [IO.UnixFileMode]$filePermission = [IO.UnixFileMode]::UserRead + [IO.UnixFileMode]::GroupRead
+        [IO.UnixFileMode]$filePermission = [IO.UnixFileMode]::UserRead + [IO.UnixFileMode]::UserWrite
 
     }
 

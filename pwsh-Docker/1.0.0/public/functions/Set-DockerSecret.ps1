@@ -43,7 +43,7 @@ function Set-DockerSecret {
         [IO.FileInfo]$secretFile = Join-Path -Path $Path.FullName -ChildPath $Name
         [IO.FileInfo]$temporaryFile = $null
         [string]$currentValue = ""
-        [IO.UnixFileMode]$filePermission = [IO.UnixFileMode]::UserRead + [IO.UnixFileMode]::UserWrite
+        #[IO.UnixFileMode]$filePermission = [IO.UnixFileMode]::UserRead + [IO.UnixFileMode]::UserWrite
 
     }
 
@@ -76,6 +76,7 @@ function Set-DockerSecret {
             if ($IsLinux) {
                 [IO.File]::SetUnixFileMode($temporaryFile.FullName, [IO.UnixFileMode]::UserWrite)
             }
+            Set-Content -Path $temporaryFile.FullName -Value $currentValue -Encoding UTF8 -NoNewLine
 
             New-Item -Path $secretFile.Directory -ItemType Directory -Force | Out-Null
             if ($secretFile.Linktarget) {

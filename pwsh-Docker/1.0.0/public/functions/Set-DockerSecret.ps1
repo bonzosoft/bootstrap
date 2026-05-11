@@ -67,7 +67,6 @@ function Set-DockerSecret {
         SetGroup	    1024    Set group permission.
         SetUser	        2048    Set user permission.
         #>
-
     }
 
     end {
@@ -97,8 +96,8 @@ function Set-DockerSecret {
         if (-not (Test-Path -Path $secretFile.FullName) -or $Overwrite.IsPresent) {
             $temporaryFile = New-TemporaryFile
             if ($IsLinux) {
-                [System.IO.File]::SetUnixFileMode($temporaryFile.FullName, $fileMode)
-                #chmod 600 "$($temporaryFile.FullName)"
+                #[IO.File]::SetUnixFileMode($temporaryFile.FullName, $fileMode)
+                chmod 600 "$($temporaryFile.FullName)"
             }
 
             New-Item -Path $secretFile.Directory -ItemType Directory -Force | Out-Null
@@ -109,14 +108,14 @@ function Set-DockerSecret {
                 Move-Item -Path $temporaryFile.FullName -Destination $secretFile.FullName -Force
             }
             if ($IsLinux) {
-                [System.IO.File]::SetUnixFileMode($secretFile.FullName, $fileMode)
-                #chmod 600 "$($secretFile.FullName)"
+                #[IO.File]::SetUnixFileMode($secretFile.FullName, $fileMode)
+                chmod 600 "$($secretFile.FullName)"
             }
         }
         else {
             if ($IsLinux) {
-                [System.IO.File]::SetUnixFileMode($secretFile.FullName, $fileMode)
-                #chmod 600 "$($secretFile.FullName)"
+                #[IO.File]::SetUnixFileMode($secretFile.FullName, $fileMode)
+                chmod 600 "$($secretFile.FullName)"
             }
         }
 

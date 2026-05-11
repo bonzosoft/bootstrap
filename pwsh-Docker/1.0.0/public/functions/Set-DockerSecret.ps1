@@ -76,7 +76,7 @@ function Set-DockerSecret {
             if ($IsLinux) {
                 chmod 600 "$($temporaryFile.FullName)"
             }
-            
+            Get-Content -Path $temporaryFile.FullName
             New-Item -Path $secretFile.Directory -ItemType Directory -Force | Out-Null
             if ($secretFile.Linktarget) {
                 Move-Item -Path $temporaryFile.FullName -Destination $secretFile.LinkTarget -Force

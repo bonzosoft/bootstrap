@@ -15,11 +15,11 @@ Write-Information -Message "Loading script '$PSCommandPath'."
 . (Get-Item -Path (Join-Path -Path $PSScriptRoot -ChildPath "common.ps1"))
 
 
-## SET REALM
+## SELECT REALM ################################################################
 Switch-DockerRealm
 
 
-## PULL SUBMODULES
+## PULL SUBMODULES #############################################################
 if (Test-Path -Path $Script:Context.IncludeDir) {
     Write-Information -Message "Pulling submodules."
     $null = git submodule update --init --recursive --depth 1 2> variable:errorVariable
@@ -30,23 +30,23 @@ if (Test-Path -Path $Script:Context.IncludeDir) {
 
 
 ## SET ENV FILE VARIABLES
+Set-DockerVariable -Name PUID             -Value $Script:Context.PUID
+Set-DockerVariable -Name PGID             -Value $Script:Context.PGID
 Set-DockerVariable -Name DATADIR          -Value $Script:Context.DataDir.FullName
 Set-DockerVariable -Name INCLUDEDIR       -Value $Script:Context.IncludeDir.FullName
 Set-DockerVariable -Name SECRETSDIR       -Value $Script:Context.SecretsDir.FullName
 Set-DockerVariable -Name SOCKETPROXY_PGID -Value (Get-DockerGid) -NoAppend
-#Set-DockerContext -Name SOCKETPROXY_PGID -Value (Get-DockerGid)
-$Script:Context
 
-## GET SERVICES DATA
-$composeData = Get-DockerCompose -Path $script:Context.ComposeFile
-$volumes = Get-DockerServiceInfo -InputObject $composeData -Service $composeData.services.Keys
+
+## GET SERVICES INFORMATION ####################################################
+Write-Information -InputObject $Script:Context
+$compose = Get-DockerCompose -Path $Script:Context.ComposeFile
+$volumes = Get-DockerServiceInfo -InputObject $compose -Service $compose.services.Keys
 Set-DockerContext -Name Service -Value $volumes
-#foreach ($service in $volumes.Keys) {
-#    Set-DockerContext -Name $service -Value $volumes.$service
-#}
-$Script:Context
+Write-Information -InputObject $Script:Context
 
-## LOAD SUBMODULES SCRIPTS
+
+## LOAD SUBMODULES SCRIPTS #####################################################
 if (Test-Path -Path $Script:Context.IncludeDir) {
     foreach ($script in (Get-Item -Path (Join-Path -Path $Script:Context.IncludeDir -ChildPath "*" -AdditionalChildPath (Split-Path -Path $MyInvocation.PSCommandPath -Leaf)))) {
         Write-Information -Message "Loading submodule script '$($script.FullName)'."
@@ -54,7 +54,7 @@ if (Test-Path -Path $Script:Context.IncludeDir) {
     }
 }
 
-## SET STORAGE PERMISSION
+## SET STORAGE PERMISSION ######################################################
 foreach ($service in $Script:Context.Service.Keys) {
     if ($Script:Context.Service.$service.Volume) {
         Write-Information -Message "Configuring storage for service $($service)"

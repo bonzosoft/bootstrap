@@ -34,5 +34,8 @@ Set-DockerContext -Name SecretsDir  -Value ([IO.DirectoryInfo](Join-Path -Path $
 Set-DockerContext -Name Realm       -Value (Get-Content -Path (Join-Path -Path $Script:Context.WorkingDir.Parent -ChildPath ".config" -AdditionalChildPath "docker.config.json") | ConvertFrom-Json).REALM
 Set-DockerContext -Name Hostname    -Value (Get-DockerHostname)
 
+Set-DockerContext -Name PUID        -Value ([int]568)
+Set-DockerContext -Name PGID        -Value ([int]568)
+
 
 Write-Information -Message "Loaded script '$PSCommandPath'."

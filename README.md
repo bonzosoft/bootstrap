@@ -21,8 +21,8 @@ La estructura de directorios recomendada es:
 
 ## Instalación
 
-Descargar los archivos:
-
+### 1.- Descarga de archivos
+Ejecutar:
 ````bash
    rm -rf ./bootstrap \
 && git clone --branch "main" --single-branch https://github.com/bonzosoft/bootstrap.git \
@@ -30,14 +30,35 @@ Descargar los archivos:
 && chmod +x "${PWD}/install"
 ````
 
-## Uso
-
-### Script
-Ejecutar el script en modo TUI:
+### 2.- Ejecución del helper
+Ejecutar:
 ````bash
 ./install
 ````
-El primer paso es iniciar sesión en Github. Luego se puede instalar Komodo Core o Komodo Periphery.
+
+### 3.- Inicio de sesión en Github
+Seleccionar:
+````
+Login
+````
+Y seguir las instrucciones.
+
+### 4.- Selección del Realm
+Seleccionar:
+````
+Set Realm
+````
+Y seguir las instrucciones. En AST seleccionar ``Production``.
+
+#### 5.- Instalar el programa
+En el servidor principal seleccionar:
+````
+Komodo Core pull
+````
+En el servidor secundario seleccionar:
+````
+Komodo Periphery pull
+````
 
 
 ## Uso avanzado
@@ -59,20 +80,9 @@ Para ejecutar el menú usando Docker CLI:
 ````bash
 docker run -it --rm -w "$(pwd)" -v "/mnt:/mnt" -v "$(pwd)/.config/gh:/root/.config/gh" -v "/var/run/docker.sock:/var/run/docker.sock" ghcr.io/bonzosoft/pwsh:latest pwsh ./bootstrap/run.ps1 -Menu
 ````
+
 ### Reset
 Para resetear todo:
 ````bash
 rm -rf /mnt/tank0/apps/infra/* && rm -rf /mnt/tank0/apps/state
-````
-
-
-
-# backup
-Descarga de los archivos necesarios:
-````bash
-rm -rf ./bootstrap \
- && git clone https://github.com/bonzosoft/bootstrap.git \
- && echo '#!/usr/bin/env bash' > run \
- && echo 'docker run -f ./bootstrap/compose.yaml run --rm worker pwsh ./bootstrap/run.ps1' >> bootstrap \
- && chmod +x run
 ````

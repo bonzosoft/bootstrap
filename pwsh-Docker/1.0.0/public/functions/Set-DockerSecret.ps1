@@ -43,6 +43,30 @@ function Set-DockerSecret {
         [IO.FileInfo]$secretFile = Join-Path -Path $Path.FullName -ChildPath $Name
         [IO.FileInfo]$temporaryFile = $null
         [string]$currentValue = ""
+
+        [System.IO.UnixFileMode]$fileMode =  ([System.IO.UnixFileMode]::UserRead -bor
+                                              [System.IO.UnixFileMode]::UserWrite)
+        
+        <#
+        None            0	    No permissions.
+        
+        OtherExecute    1	    Execute permission for others.
+        OtherWrite  	2	    Write permission for others.
+        OtherRead	    4	    Read permission for others.
+
+        GroupExecute	8	    Execute permission for group.
+        GroupWrite	    16	    Write permission for group.
+        GroupRead	    32	    Read permission for group.
+
+        UserExecute	    64	    Execute permission for owner.
+        UserWrite	    128	    Write permission for owner.
+        UserRead	    256	    Read permission for owner.
+
+        StickyBit	    512	    Sticky bit permission.
+        SetGroup	    1024    Set group permission.
+        SetUser	        2048    Set user permission.
+        #>
+
     }
 
     end {
@@ -71,12 +95,11 @@ function Set-DockerSecret {
         
         if (-not (Test-Path -Path $secretFile.FullName) -or $Overwrite.IsPresent) {
             $temporaryFile = New-TemporaryFile
-            Write-Host "temporaryFile: $($temporaryFile.FullName)"
-            Set-Content -Path $temporaryFile.FullName -Value $currentValue -Encoding UTF8 -NoNewLine
             if ($IsLinux) {
-                chmod 600 "$($temporaryFile.FullName)"
+                [System.IO.File]::SetUnixFileMode($temporaryFile.FullName, $fileMode)
+                #chmod 600 "$($temporaryFile.FullName)"
             }
-            Get-Content -Path $temporaryFile.FullName
+
             New-Item -Path $secretFile.Directory -ItemType Directory -Force | Out-Null
             if ($secretFile.Linktarget) {
                 Move-Item -Path $temporaryFile.FullName -Destination $secretFile.LinkTarget -Force
@@ -85,12 +108,14 @@ function Set-DockerSecret {
                 Move-Item -Path $temporaryFile.FullName -Destination $secretFile.FullName -Force
             }
             if ($IsLinux) {
-                chmod 600 $temporaryFile.FullName
+                [System.IO.File]::SetUnixFileMode($secretFile.FullName, $fileMode)
+                #chmod 600 "$($secretFile.FullName)"
             }
         }
         else {
             if ($IsLinux) {
-                chmod 600 $secretFile.FullName
+                [System.IO.File]::SetUnixFileMode($secretFile.FullName, $fileMode)
+                #chmod 600 "$($secretFile.FullName)"
             }
         }
 
@@ -98,7 +123,4 @@ function Set-DockerSecret {
             Write-Output -InputObject $secretFile
         }
     }
-
-    
-
 }

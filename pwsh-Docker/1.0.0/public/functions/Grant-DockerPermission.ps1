@@ -39,13 +39,13 @@ function Grant-DockerPermission {
         [IO.UnixFileMode]$directoryPermission = ConvertTo-UnixFileMode -Octal $Permission
         #[IO.UnixFileMode]$filePermission = $directoryPermission - ([IO.UnixFileMode]::UserExecute + [IO.UnixFileMode]::GroupExecute + [IO.UnixFileMode]::OtherExecute)
         if ($directoryPermission -band [IO.UnixFileMode]::UserExecute) {
-            $filePermission -= [IO.UnixFileMode]::UserExecute
+            [IO.UnixFileMode]$filePermission -= [IO.UnixFileMode]::UserExecute
         }
         if ($directoryPermission -band [IO.UnixFileMode]::GroupExecute) {
-            $filePermission -= [IO.UnixFileMode]::GroupExecute
+            [IO.UnixFileMode]$filePermission -= [IO.UnixFileMode]::GroupExecute
         }
         if ($directoryPermission -band [IO.UnixFileMode]::OtherExecute) {
-            $filePermission -= [IO.UnixFileMode]::OtherExecute
+            [IO.UnixFileMode]$filePermission -= [IO.UnixFileMode]::OtherExecute
         }
     }
 

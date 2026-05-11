@@ -70,17 +70,16 @@ function Grant-DockerPermission {
             if ($directories) {
                 $directories.FullName | xargs -r chown ${PUID}:${PGID}
                 foreach ($directory in $directories) {
+                    Write-Host "Configurando $($directory.FullName) con $directoryPermission"
                     [IO.File]::SetUnixFileMode($directory.FullName, $directoryPermission)
                 }
-                #$directories.FullName | xargs -r chmod $directoryPermission
             }
             if ($files) {
                 $files.FullName | xargs -r chown ${PUID}:${PGID}
                 foreach ($file in $files) {
+                    Write-Host "Configurando $($file.FullName) con $filePermission"
                     [IO.File]::SetUnixFileMode($file.FullName, $filePermission)
                 }
-                
-                #$files.FullName | xargs -r chmod $filePermission
             }
         }
         

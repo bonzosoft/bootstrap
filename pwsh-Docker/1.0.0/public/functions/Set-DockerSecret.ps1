@@ -46,7 +46,7 @@ function Set-DockerSecret {
 
         #[System.IO.UnixFileMode]$fileMode =  ([System.IO.UnixFileMode]::UserRead -bor
         #                                      [System.IO.UnixFileMode]::UserWrite)
-        [System.IO.UnixFileMode]$fileMode = [System.IO.UnixFileMode]"UserRead,UserWrite"
+        [IO.UnixFileMode]$fileMode = [IO.UnixFileMode]::UserRead + [IO.UnixFileMode]::UserWrite
         Write-Host $fileMode
         <#
         None            0	    No permissions.

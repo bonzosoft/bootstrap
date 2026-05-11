@@ -47,6 +47,9 @@ function Grant-DockerPermission {
         if ($directoryPermission -band [IO.UnixFileMode]::OtherExecute) {
             [IO.UnixFileMode]$filePermission -= [IO.UnixFileMode]::OtherExecute
         }
+
+        Write-Host $directoryPermission
+        Write-host $filePermission
     }
 
     process {

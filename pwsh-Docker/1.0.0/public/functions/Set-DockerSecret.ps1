@@ -74,7 +74,7 @@ function Set-DockerSecret {
         if (-not (Test-Path -Path $secretFile.FullName) -or $Overwrite.IsPresent) {
             $temporaryFile = New-TemporaryFile
             if ($IsLinux) {
-                [IO.File]::SetUnixFileMode($temporaryFile.FullName, $filePermission)
+                [IO.File]::SetUnixFileMode($temporaryFile.FullName, [IO.UnixFileMode]::UserWrite)
             }
 
             New-Item -Path $secretFile.Directory -ItemType Directory -Force | Out-Null

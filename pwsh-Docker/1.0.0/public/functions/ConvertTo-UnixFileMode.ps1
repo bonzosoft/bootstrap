@@ -34,17 +34,3 @@ function ConvertTo-UnixFileMode {
         Write-Output -InputObject ([IO.UnixFileMode]$intMode)
     }
 }
-
-<#
-[IO.UnixFileMode]$directoryPermission = ConvertTo-UnixFileMode -Octal 0740
-[IO.UnixFileMode]$filePermission = $directoryPermission - ([IO.UnixFileMode]::UserExecute + [IO.UnixFileMode]::GroupExecute + [IO.UnixFileMode]::OtherExecute)
-
-$directoryPermission
-#$filePermission       
-
-$filePermission = $directoryPermission
-if ($directoryPermission -band [IO.UnixFileMode]::UserExecute) {
-    $filePermission -= [IO.UnixFileMode]::UserExecute
-}
-$filePermission
-#>

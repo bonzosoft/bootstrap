@@ -37,19 +37,16 @@ function Grant-DockerPermission {
         [IO.FileInfo[]]$files = @()
         [IO.DirectoryInfo[]]$directories = @()
         [IO.UnixFileMode]$directoryPermission = ConvertTo-UnixFileMode -Octal $Permission
-        #[IO.UnixFileMode]$filePermission = $directoryPermission - ([IO.UnixFileMode]::UserExecute + [IO.UnixFileMode]::GroupExecute + [IO.UnixFileMode]::OtherExecute)
-        if ($directoryPermission -band [IO.UnixFileMode]::UserExecute) {
-            [IO.UnixFileMode]$filePermission -= [IO.UnixFileMode]::UserExecute
+        [IO.UnixFileMode]$filePermission = $directoryPermission
+        if ($filePermission -band [IO.UnixFileMode]::UserExecute) {
+            $filePermission -= [IO.UnixFileMode]::UserExecute
         }
-        if ($directoryPermission -band [IO.UnixFileMode]::GroupExecute) {
-            [IO.UnixFileMode]$filePermission -= [IO.UnixFileMode]::GroupExecute
+        if ($filePermission -band [IO.UnixFileMode]::GroupExecute) {
+            $filePermission -= [IO.UnixFileMode]::GroupExecute
         }
-        if ($directoryPermission -band [IO.UnixFileMode]::OtherExecute) {
-            [IO.UnixFileMode]$filePermission -= [IO.UnixFileMode]::OtherExecute
+        if ($filePermission -band [IO.UnixFileMode]::OtherExecute) {
+            $filePermission -= [IO.UnixFileMode]::OtherExecute
         }
-
-        Write-Host $directoryPermission
-        Write-host $filePermission
     }
 
     process {

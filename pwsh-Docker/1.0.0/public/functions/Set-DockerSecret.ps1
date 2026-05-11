@@ -85,14 +85,14 @@ function Set-DockerSecret {
                 Move-Item -Path $temporaryFile.FullName -Destination $secretFile.FullName -Force
             }
 
-            if ($IsLinux) {
-                [IO.File]::SetUnixFileMode($secretFile.FullName, $filePermission)
-            }
+            #if ($IsLinux) {
+            #    [IO.File]::SetUnixFileMode($secretFile.FullName, $filePermission)
+            #}
         }
         else {
-            if ($IsLinux) {
-                [IO.File]::SetUnixFileMode($secretFile.FullName, $filePermission)
-            }
+            #if ($IsLinux) {
+            #    [IO.File]::SetUnixFileMode($secretFile.FullName, $filePermission)
+            #}
         }
 
         if ($PassThru.IsPresent) {

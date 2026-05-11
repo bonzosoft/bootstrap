@@ -44,25 +44,7 @@ function Set-DockerSecret {
         [IO.FileInfo]$temporaryFile = $null
         [string]$currentValue = ""
         [IO.UnixFileMode]$fileMode = [IO.UnixFileMode]::UserRead + [IO.UnixFileMode]::GroupRead
-            <#
-            None            0	    No permissions.
-            
-            OtherExecute    1	    Execute permission for others.
-            OtherWrite  	2	    Write permission for others.
-            OtherRead	    4	    Read permission for others.
 
-            GroupExecute	8	    Execute permission for group.
-            GroupWrite	    16	    Write permission for group.
-            GroupRead	    32	    Read permission for group.
-
-            UserExecute	    64	    Execute permission for owner.
-            UserWrite	    128	    Write permission for owner.
-            UserRead	    256	    Read permission for owner.
-
-            StickyBit	    512	    Sticky bit permission.
-            SetGroup	    1024    Set group permission.
-            SetUser	        2048    Set user permission.
-            #>
     }
 
     end {

@@ -36,20 +36,8 @@ function Grant-DockerPermission {
     begin {
         [IO.FileInfo[]]$files = @()
         [IO.DirectoryInfo[]]$directories = @()
-        [string]$directoryPermission = ""
-        [string]$filePermission = ""
-        [int]$digit = 0
-
-        $directoryPermission = $Permission
-        $filePermission = -join ($Permission.ToCharArray() | ForEach-Object {
-            $digit = [int]::Parse($PSItem)
-            if ($digit % 2) {
-                $digit-1
-            }
-            else {
-                $digit
-            }
-        })
+        [IO.UnixFileMode]$directoryPermission = ConvertTo-UnixFileMode -Octal $Permission
+        [IO.UnixFileMode]$filePermission = $directoryPermission - ([IO.UnixFileMode]::UserExecute + [IO.UnixFileMode]::GroupExecute + [IO.UnixFileMode]::OtherExecute)
     }
 
     process {
@@ -81,11 +69,13 @@ function Grant-DockerPermission {
             
             if ($directories) {
                 $directories.FullName | xargs -r chown ${PUID}:${PGID}
-                $directories.FullName | xargs -r chmod $directoryPermission
+                [IO.File]::SetUnixFileMode($directories.FullName, $directoryPermission)
+                #$directories.FullName | xargs -r chmod $directoryPermission
             }
             if ($files) {
                 $files.FullName | xargs -r chown ${PUID}:${PGID}
-                $files.FullName | xargs -r chmod $filePermission
+                [IO.File]::SetUnixFileMode($files.FullName, $filePermission)
+                #$files.FullName | xargs -r chmod $filePermission
             }
         }
         

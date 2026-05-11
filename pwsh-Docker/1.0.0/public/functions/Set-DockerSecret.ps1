@@ -71,8 +71,9 @@ function Set-DockerSecret {
         
         if (-not (Test-Path -Path $secretFile.FullName) -or $Overwrite.IsPresent) {
             $temporaryFile = New-TemporaryFile
+            Write-Host "temporaryFile: $($temporaryFile.FullName)"
             if ($IsLinux) {
-                chmod 600 $temporaryFile.FullName
+                chmod 600 "$($temporaryFile.FullName)"
             }
             Set-Content -Path $temporaryFile.FullName -Value $currentValue -Encoding UTF8 -NoNewLine
     

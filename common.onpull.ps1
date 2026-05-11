@@ -39,11 +39,11 @@ Set-DockerVariable -Name SOCKETPROXY_PGID -Value (Get-DockerGid) -NoAppend
 
 
 ## GET SERVICES INFORMATION ####################################################
-$Script:Context
+Write-Information -Message ($Script:Context | Out-String)
 $compose = Get-DockerCompose -Path $Script:Context.ComposeFile
 $volumes = Get-DockerServiceInfo -InputObject $compose -Service $compose.services.Keys
 Set-DockerContext -Name Service -Value $volumes
-$Script:Context
+Write-Information -Message ($Script:Context | Out-String)
 
 
 ## LOAD SUBMODULES SCRIPTS #####################################################

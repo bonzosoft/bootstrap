@@ -43,30 +43,26 @@ function Set-DockerSecret {
         [IO.FileInfo]$secretFile = Join-Path -Path $Path.FullName -ChildPath $Name
         [IO.FileInfo]$temporaryFile = $null
         [string]$currentValue = ""
-
-        #[System.IO.UnixFileMode]$fileMode =  ([System.IO.UnixFileMode]::UserRead -bor
-        #                                      [System.IO.UnixFileMode]::UserWrite)
         [IO.UnixFileMode]$fileMode = [IO.UnixFileMode]::UserRead + [IO.UnixFileMode]::UserWrite
-        Write-Host $fileMode
-        <#
-        None            0	    No permissions.
-        
-        OtherExecute    1	    Execute permission for others.
-        OtherWrite  	2	    Write permission for others.
-        OtherRead	    4	    Read permission for others.
+            <#
+            None            0	    No permissions.
+            
+            OtherExecute    1	    Execute permission for others.
+            OtherWrite  	2	    Write permission for others.
+            OtherRead	    4	    Read permission for others.
 
-        GroupExecute	8	    Execute permission for group.
-        GroupWrite	    16	    Write permission for group.
-        GroupRead	    32	    Read permission for group.
+            GroupExecute	8	    Execute permission for group.
+            GroupWrite	    16	    Write permission for group.
+            GroupRead	    32	    Read permission for group.
 
-        UserExecute	    64	    Execute permission for owner.
-        UserWrite	    128	    Write permission for owner.
-        UserRead	    256	    Read permission for owner.
+            UserExecute	    64	    Execute permission for owner.
+            UserWrite	    128	    Write permission for owner.
+            UserRead	    256	    Read permission for owner.
 
-        StickyBit	    512	    Sticky bit permission.
-        SetGroup	    1024    Set group permission.
-        SetUser	        2048    Set user permission.
-        #>
+            StickyBit	    512	    Sticky bit permission.
+            SetGroup	    1024    Set group permission.
+            SetUser	        2048    Set user permission.
+            #>
     }
 
     end {
@@ -96,8 +92,8 @@ function Set-DockerSecret {
         if (-not (Test-Path -Path $secretFile.FullName) -or $Overwrite.IsPresent) {
             $temporaryFile = New-TemporaryFile
             if ($IsLinux) {
-                #[IO.File]::SetUnixFileMode($temporaryFile.FullName, $fileMode)
-                chmod 600 "$($temporaryFile.FullName)"
+                [IO.File]::SetUnixFileMode($temporaryFile.FullName, $fileMode)
+                #chmod 600 "$($temporaryFile.FullName)"
             }
 
             New-Item -Path $secretFile.Directory -ItemType Directory -Force | Out-Null
@@ -108,14 +104,14 @@ function Set-DockerSecret {
                 Move-Item -Path $temporaryFile.FullName -Destination $secretFile.FullName -Force
             }
             if ($IsLinux) {
-                #[IO.File]::SetUnixFileMode($secretFile.FullName, $fileMode)
-                chmod 600 "$($secretFile.FullName)"
+                [IO.File]::SetUnixFileMode($secretFile.FullName, $fileMode)
+                #chmod 600 "$($secretFile.FullName)"
             }
         }
         else {
             if ($IsLinux) {
-                #[IO.File]::SetUnixFileMode($secretFile.FullName, $fileMode)
-                chmod 600 "$($secretFile.FullName)"
+                [IO.File]::SetUnixFileMode($secretFile.FullName, $fileMode)
+                #chmod 600 "$($secretFile.FullName)"
             }
         }
 

@@ -43,7 +43,7 @@ function Set-DockerSecret {
         [IO.FileInfo]$secretFile = Join-Path -Path $Path.FullName -ChildPath $Name
         [IO.FileInfo]$temporaryFile = $null
         [string]$currentValue = ""
-        [IO.UnixFileMode]$fileMode = [IO.UnixFileMode]::UserRead + [IO.UnixFileMode]::GroupRead
+        [IO.UnixFileMode]$filePermission = [IO.UnixFileMode]::UserRead + [IO.UnixFileMode]::GroupRead
 
     }
 
@@ -74,8 +74,7 @@ function Set-DockerSecret {
         if (-not (Test-Path -Path $secretFile.FullName) -or $Overwrite.IsPresent) {
             $temporaryFile = New-TemporaryFile
             if ($IsLinux) {
-                [IO.File]::SetUnixFileMode($temporaryFile.FullName, $fileMode)
-                #chmod 600 "$($temporaryFile.FullName)"
+                [IO.File]::SetUnixFileMode($temporaryFile.FullName, $filePermission)
             }
 
             New-Item -Path $secretFile.Directory -ItemType Directory -Force | Out-Null
@@ -85,15 +84,14 @@ function Set-DockerSecret {
             else {
                 Move-Item -Path $temporaryFile.FullName -Destination $secretFile.FullName -Force
             }
+
             if ($IsLinux) {
-                [IO.File]::SetUnixFileMode($secretFile.FullName, $fileMode)
-                #chmod 600 "$($secretFile.FullName)"
+                [IO.File]::SetUnixFileMode($secretFile.FullName, $filePermission)
             }
         }
         else {
             if ($IsLinux) {
-                [IO.File]::SetUnixFileMode($secretFile.FullName, $fileMode)
-                #chmod 600 "$($secretFile.FullName)"
+                [IO.File]::SetUnixFileMode($secretFile.FullName, $filePermission)
             }
         }
 

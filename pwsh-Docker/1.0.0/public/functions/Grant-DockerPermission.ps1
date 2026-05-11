@@ -38,6 +38,9 @@ function Grant-DockerPermission {
         [IO.DirectoryInfo[]]$directories = @()
         [IO.UnixFileMode]$directoryPermission = ConvertTo-UnixFileMode -Octal $Permission
         [IO.UnixFileMode]$filePermission = $directoryPermission - ([IO.UnixFileMode]::UserExecute + [IO.UnixFileMode]::GroupExecute + [IO.UnixFileMode]::OtherExecute)
+        Write-Host "Permission: $Permission"
+        Write-Host "Directory: $directoryPermission"
+        Write-Host "File: $filePermission"
     }
 
     process {
@@ -70,14 +73,12 @@ function Grant-DockerPermission {
             if ($directories) {
                 $directories.FullName | xargs -r chown ${PUID}:${PGID}
                 foreach ($directory in $directories) {
-                    Write-Host "Configurando $($directory.FullName) con $directoryPermission"
                     [IO.File]::SetUnixFileMode($directory.FullName, $directoryPermission)
                 }
             }
             if ($files) {
                 $files.FullName | xargs -r chown ${PUID}:${PGID}
                 foreach ($file in $files) {
-                    Write-Host "Configurando $($file.FullName) con $filePermission"
                     [IO.File]::SetUnixFileMode($file.FullName, $filePermission)
                 }
             }

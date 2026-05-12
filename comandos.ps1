@@ -2,4 +2,4 @@ docker run -v /etc:/host/etc -it ghcr.io/bonzosoft/pwsh:latest pwsh -Command Get
 
 
 
-docker run -v /etc:/host/etc:ro -v /mnt/tank0/apps:/mnt/tank0/apps:rw -w ${PWD} ghcr.io/bonzosoft/pwsh pwsh -NoLogo -NoProfile -Command "$@"
+docker run -v /etc:/host/etc:ro -v /mnt/tank0/apps:/mnt/tank0/apps:rw -w ${PWD} ghcr.io/bonzosoft/pwsh pwsh -NoLogo -NoProfile -Command "$@" -InformationAction Continue

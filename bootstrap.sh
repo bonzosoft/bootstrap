@@ -1,4 +1,5 @@
 docker run \
+    --rm \
     -it \
     -v /etc:/host/etc:ro \
     -v /mnt/tank0/apps:/mnt/tank0/apps:rw \

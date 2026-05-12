@@ -1,4 +1,5 @@
 docker run \
+    --rm \
     -v /etc:/host/etc:ro \
     -v /mnt/tank0/apps:/mnt/tank0/apps:rw \
     -w ${PWD} \

@@ -1,0 +1,6 @@
+x-portals:
+  - host: 0.0.0.0
+    name: "Web"
+    path: /
+    port: 3082 #add webui port here
+    scheme: http

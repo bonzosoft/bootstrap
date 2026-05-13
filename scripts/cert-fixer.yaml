@@ -1,0 +1,20 @@
+services:
+  cert-fixer:
+    image:              alpine:latest
+    container_name:     cert-fixer
+    user:               0:0
+    # Este comando es la clave:
+    # A. Copia los archivos de los symlinks a archivos reales (-L)
+    # B. Cambia el dueño a 999 (usuario postgres)
+    # C. Pone permisos 600 (solo lectura dueño) para la clave privada
+    command: >
+      sh -c "cp /source/fullchain.pem /target/server.crt &&
+             cp /source/privkey.pem /target/server.key &&
+             chown 999:999 /target/server.crt /target/server.key &&
+             chmod 600 /target/server.key"
+    volumes:
+      # Para que funcione correctamente, la ruta tiene que ser absoluta y los mismos
+      # nombres de archivo para poder seguir los symlinks, si no dara error de que no existe
+      - /mnt/tank0/apps/npmplus/app/tls/certbot/live/npm-24/fullchain.pem:/source/fullchain.pem:ro
+      - /mnt/tank0/apps/npmplus/app/tls/certbot/live/npm-24/privkey.pem:/source/privkey.pem:ro
+      - ./certs:/target:rw

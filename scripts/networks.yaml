@@ -1,0 +1,8 @@
+networks:
+  public:
+    external:       true
+  private:
+    external:       false
+    driver:         bridge
+    enable_ipv4:    true
+    enable_ipv6:    false

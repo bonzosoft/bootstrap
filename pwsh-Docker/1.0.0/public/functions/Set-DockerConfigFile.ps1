@@ -5,7 +5,7 @@ function Set-DockerConfigFile {
     param (
         [Parameter(Mandatory, ValueFromPipeline)]
         [ValidateNotNullOrWhiteSpace()]
-        [string[]]$Name,
+        [IO.FileSystemInfo[]]$Name,
 
         [Parameter(Mandatory)]
         [ValidateNotNullOrWhiteSpace()]
@@ -22,8 +22,8 @@ function Set-DockerConfigFile {
     )
    
     begin {
-        [IO.FileInfo]$source = $null
-        [IO.FileInfo]$target = $null
+        [IO.FileSystemInfo]$source = $null
+        [IO.FileSystemInfo]$target = $null
     }
     process {
         foreach ($item in $Name) {

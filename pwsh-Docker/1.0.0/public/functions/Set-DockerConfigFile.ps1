@@ -33,6 +33,7 @@ function Set-DockerConfigFile {
             
             Write-Host "source: '$source'."
             Write-Host "target: '$target'."
+            Write-Host "directory: $($target.DirectoryName)"
             
             if (-not (Test-Path -Path $target.DirectoryName)) {
                 New-Item -Path $taget.DirectoryName -ItemType Directory -Force:$Force

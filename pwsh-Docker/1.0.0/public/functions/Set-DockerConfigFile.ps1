@@ -38,7 +38,7 @@ function Set-DockerConfigFile {
                 New-Item -Path $target.FullName -ItemType SymbolicLink -Value $source.FullName -Force:$Force | Out-Null
             }
             else {
-                Copy-Item -Path $source.FullName -Destination $target.FullName -Force:$Force @splat | Out-Null
+                Copy-Item -Path $source.FullName -Destination $target.FullName -Force:$Force | Out-Null
             }
             
             if ($PassThru.IsPresent) {

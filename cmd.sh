@@ -1,6 +1,7 @@
 docker run \
     --rm \
+    -it \
     -v /etc:/host/etc:ro \
     -v /mnt/tank0/apps:/mnt/tank0/apps:rw \
     -w ${PWD} \
-    ghcr.io/bonzosoft/pwsh pwsh -NoLogo -NoProfile -Command "$@" -InformationAction Continue
+    ghcr.io/bonzosoft/pwsh pwsh -NoLogo -NoProfile -InformationAction Continue -Command "$@" -InformationAction Continue

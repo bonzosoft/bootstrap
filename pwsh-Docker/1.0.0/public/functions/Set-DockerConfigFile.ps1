@@ -37,6 +37,8 @@ function Set-DockerConfigFile {
             }
             else {
                 $target = [IO.FileInfo](Join-Path -Path $Script:Context.DataDir -ChildPath $Service -AdditionalChildPath $item)
+                $splat = @{
+                }
             }
 
             Write-Host "source: '$source'."

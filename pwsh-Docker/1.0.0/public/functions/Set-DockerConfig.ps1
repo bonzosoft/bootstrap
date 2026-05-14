@@ -54,8 +54,8 @@ function Set-DockerConfig {
                 New-Item -Path $target.FullName -ItemType SymbolicLink -Value $source.FullName -Force:$Force | Out-Null
             }
             else {
-                if (-not (Test-Path -Path $target.DirectoryName)) {
-                    New-Item -Path $target.DirectoryName -ItemType Directory -Force:$Force | Out-Null
+                if (-not (Test-Path -Path $target.Parent)) {
+                    New-Item -Path $target.Parent -ItemType Directory -Force:$Force | Out-Null
                 }
                 Copy-Item -Path $source.FullName -Destination $target.FullName -Force:$Force @splat | Out-Null
             }

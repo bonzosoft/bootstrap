@@ -35,6 +35,9 @@ function Set-DockerConfigFile {
             else {
                 $target = [IO.FileInfo](Join-Path -Path $Script:Context.DataDir -ChildPath $Service -AdditionalChildPath $item)
             }
+
+            Write-Host "source: '$source'."
+            Write-Host "target: '$target'."
             
             
             if (-not (Test-Path -Path $source.FullName)) {

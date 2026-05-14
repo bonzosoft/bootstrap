@@ -31,6 +31,9 @@ function Set-DockerConfigFile {
             
             if ($source.PSIsContainer) {
                 $target = [IO.DirectoryInfo](Join-Path -Path $Script:Context.DataDir -ChildPath $Service -AdditionalChildPath $item)
+                $splat = @{
+                    Recurse = $true
+                }
             }
             else {
                 $target = [IO.FileInfo](Join-Path -Path $Script:Context.DataDir -ChildPath $Service -AdditionalChildPath $item)
@@ -48,7 +51,7 @@ function Set-DockerConfigFile {
                 New-Item -Path $target.FullName -ItemType SymbolicLink -Value $source.FullName -Force:$Force | Out-Null
             }
             else {
-                Copy-Item -Path $source.FullName -Destination $target.FullName -Force:$Force | Out-Null
+                Copy-Item -Path $source.FullName -Destination $target.FullName -Force:$Force @splat | Out-Null
             }
             
             if ($PassThru.IsPresent) {

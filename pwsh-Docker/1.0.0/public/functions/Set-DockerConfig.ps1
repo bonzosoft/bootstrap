@@ -1,4 +1,4 @@
-function Set-DockerConfigFile {
+function Set-DockerConfig {
     [CmdletBinding()]
     [OutputType([void])]
 

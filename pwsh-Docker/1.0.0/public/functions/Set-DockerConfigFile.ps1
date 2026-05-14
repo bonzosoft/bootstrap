@@ -34,6 +34,10 @@ function Set-DockerConfigFile {
             Write-Host "source: '$source'."
             Write-Host "target: '$target'."
             
+            if (-not (Test-Path -Path $target.DirectoryName)) {
+                New-Item -Path $taget.DirectoryName -ItemType Directory -Force:$Force
+            }
+            
             if ($Link.IsPresent) {
                 New-Item -Path $target.FullName -ItemType SymbolicLink -Value $source.FullName -Force:$Force | Out-Null
             }

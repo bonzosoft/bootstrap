@@ -43,7 +43,7 @@ function Set-DockerConfig {
 
             Write-Host "source: '$source'."
             Write-Host "target: '$target'."
-            Write-Host ($target | Out-String)
+            Write-Host ($target | Format-List * | Out-String)
             
             
             if (-not (Test-Path -Path $source.FullName)) {

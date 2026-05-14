@@ -214,7 +214,11 @@ git pull
 Pop-Location
 
 $Script:Config = Get-Config
-write-host $PSCmdlet.ParameterSetName
+
+if (-not (docker network inspect backup | Out-Null)) {
+    docker network create backup | Out-Null
+}
+
 switch ($PSCmdlet.ParameterSetName) {
     "TUI" {
         do {
@@ -277,6 +281,8 @@ switch ($PSCmdlet.ParameterSetName) {
                     Get-GithubRepo -Name "common" -Branch "main"
                     ln -snf "${PWD}/common/cmd.sh" "${PwD}/cmd"
                     chmod +x "${PwD}/cmd"
+                    ln -snf "${PWD}/common/console.sh" "${PwD}/console"
+                    chmod +x "${PwD}/console"
                     Get-GithubRepo -Name "komodo-core" -Branch "main"
                     Read-Host
                 }
@@ -296,6 +302,8 @@ switch ($PSCmdlet.ParameterSetName) {
                     Get-GithubRepo -Name "common" -Branch "main"
                     ln -snf "${PWD}/common/cmd.sh" "${PwD}/cmd"
                     chmod +x "${PwD}/cmd"
+                    ln -snf "${PWD}/common/console.sh" "${PwD}/console"
+                    chmod +x "${PwD}/console"
                     Get-GithubRepo -Name "komodo-periphery" -Branch "main"
                     Read-Host
                 }

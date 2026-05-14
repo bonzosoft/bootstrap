@@ -5,7 +5,7 @@ function Set-DockerConfigFile {
     param (
         [Parameter(Mandatory, ValueFromPipeline)]
         [ValidateNotNullOrWhiteSpace()]
-        [IO.FileSystemInfo[]]$Name,
+        [string[]]$Name,
 
         [Parameter(Mandatory)]
         [ValidateNotNullOrWhiteSpace()]

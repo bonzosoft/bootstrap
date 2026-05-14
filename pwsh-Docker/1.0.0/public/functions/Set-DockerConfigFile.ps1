@@ -27,8 +27,8 @@ function Set-DockerConfigFile {
     }
     process {
         foreach ($item in $Name) {
-            $source = Join-Path -Path $MyInvocation.PSScriptRoot -ChildPath (Split-Path -Path $Script:Context.ConfigDir -Leaf) -AdditionalChildPath $item
-            $target = Join-Path -Path $Script:Context.DataDir -ChildPath $Service -AdditionalChildPath $item
+            $source = [IO.FileSystemInfo](Join-Path -Path $MyInvocation.PSScriptRoot -ChildPath (Split-Path -Path $Script:Context.ConfigDir -Leaf) -AdditionalChildPath $item)
+            $target = [IO.FileSystemInfo](Join-Path -Path $Script:Context.DataDir -ChildPath $Service -AdditionalChildPath $item)
             
             if (-not (Test-Path -Path $source.FullName)) {
                 Write-Error -Message "File '$($source.FullName)' not found."

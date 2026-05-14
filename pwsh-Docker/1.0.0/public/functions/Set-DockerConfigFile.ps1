@@ -27,13 +27,8 @@ function Set-DockerConfigFile {
     }
     process {
         foreach ($item in $Name) {
-            #$source = Join-Path -Path $MyInvocation.PSScriptRoot -ChildPath (Split-Path -Path $Script:Context.ConfigDir -Leaf) -AdditionalChildPath $item
             $source = Get-Item -Path (Join-Path -Path $MyInvocation.PSScriptRoot -ChildPath $Script:Context.ConfigDir.Name -AdditionalChildPath $item)
             $target = Join-Path -Path $Script:Context.DataDir -ChildPath $Service -AdditionalChildPath $item
-            
-            Write-Host "source: '$source'."
-            Write-Host "target: '$target'."
-            Write-Host "directory: $($target.DirectoryName)"
             
             if (-not (Test-Path -Path $target.DirectoryName)) {
                 New-Item -Path $target.DirectoryName -ItemType Directory -Force:$Force

@@ -29,7 +29,7 @@ function Set-DockerConfigFile {
         foreach ($item in $Name) {
             $source = Get-Item -Path (Join-Path -Path $MyInvocation.PSScriptRoot -ChildPath (Split-Path -Path $Script:Context.ConfigDir -Leaf) -AdditionalChildPath $item)
             
-            if ($source.IsContainer) {
+            if ($source.PSIsContainer) {
                 $target = [IO.DirectoryInfo](Join-Path -Path $Script:Context.DataDir -ChildPath $Service -AdditionalChildPath $item)
             }
             else {

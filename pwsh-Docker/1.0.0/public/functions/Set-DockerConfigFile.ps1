@@ -47,7 +47,7 @@ function Set-DockerConfigFile {
             }
             
             if ($PassThru.IsPresent) {
-                Write-Output -InputObject $source
+                Write-Output -InputObject $target
             }
         }
     }

@@ -37,6 +37,7 @@ function Get-DockerServiceInfo {
                     }
                 }
                 #if ($volumesList.Count) {
+                    Write-Host "user: $($InputObject.services.$item.user)"
                     $servicesTable[$item] = @{
                         Volume = $volumesList
                         PUID = [int]($InputObject.services.$item.user -split ":")[0]

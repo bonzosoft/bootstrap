@@ -16,35 +16,30 @@ function Get-DockerServiceInfo {
     )
 
     begin {
-        [IO.FileSystemInfo[]]$volumes = @()
+        #[IO.FileSystemInfo[]]$volumes = @()
         [hashtable]$servicesTable = @{}
     }
 
     process {
         foreach ($item in $Service) {
-            #if ($InputObject.services.$item.Keys -like "volumes") {
-                $volumesList = @()
-                foreach ($volume in $InputObject.services.$item.volumes.source) {
-                    if ((-not $Force) -and (-not $volume.StartsWith($Script:Context.DataDir))) {
-                        continue
-                    }
-                    Write-Host "volume: $volume"
-                    if (Test-Path -Path $volume) {
-                        $volumesList += Get-Item -Path $volume
-                    }
-                    else {
-                        $volumesList += [IO.DirectoryInfo]$volume
-                    }
+            $volumesList = @()
+            foreach ($volume in $InputObject.services.$item.volumes.source) {
+                if ((-not $Force) -and (-not $volume.StartsWith($Script:Context.DataDir))) {
+                    continue
                 }
-                #if ($volumesList.Count) {
-                    Write-Host "user: $($InputObject.services.$item.user)"
-                    $servicesTable[$item] = @{
-                        Volume = $volumesList
-                        PUID = [int]($InputObject.services.$item.user -split ":")[0]
-                        PGID = [int]($InputObject.services.$item.user -split ":")[1]
-                    }
-                #}
-            #}
+                Write-Host "volume: $volume"
+                if (Test-Path -Path $volume) {
+                    $volumesList += Get-Item -Path $volume
+                }
+                else {
+                    $volumesList += [IO.DirectoryInfo]$volume
+                }
+            }
+            $servicesTable[$item] = @{
+                Volume = $volumesList
+                PUID = [int]($InputObject.services.$item.user -split ":")[0]
+                PGID = [int]($InputObject.services.$item.user -split ":")[1]
+            }
         }
         Write-Output -InputObject $servicesTable
     }

@@ -28,6 +28,7 @@ function Get-DockerServiceInfo {
                     if ((-not $Force) -and (-not $volume.StartsWith($Script:Context.DataDir))) {
                         continue
                     }
+                    Write-Host "volume: $volume"
                     if (Test-Path -Path $volume) {
                         $volumesList += Get-Item -Path $volume
                     }

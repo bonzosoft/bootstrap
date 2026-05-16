@@ -60,7 +60,7 @@ foreach ($service in $Script:Context.Service.Keys) {
             -Path $Script:Context.Service.$service.Volume `
             -PUID $Script:Context.Service.$service.PUID `
             -PGID $Script:Context.Service.$service.PGID `
-            -Permission "0755" `
+            -Permission "0775" `
             -Recurse `
             -Force
     }

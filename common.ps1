@@ -37,5 +37,16 @@ Set-DockerContext -Name Hostname    -Value (Get-DockerHostname)
 Set-DockerContext -Name PUID        -Value ([int]568)
 Set-DockerContext -Name PGID        -Value ([int]568)
 
+#if ($Script.Context.Realm -eq "prod") {
+#    Set-DockerContext -Name Smtp -Value "smtp.ast-ingenieria.com:587"
+#    Set-DockerContext -Name Smtp -Value "soporte@ast-ingenieria.com"
+#    Set-DockerContext -Name Smtp -Value "2908cc6d-93cc-4ca2-997f-e668edfa890d"
+#}
+#else {
+#    Set-DockerContext -Name Smtp -Value "smtp.<domain>:587"
+#    Set-DockerContext -Name Smtp -Value "soporte@<domain>"
+#    Set-DockerContext -Name Smtp -Value "<secret>"
+#}
+
 
 Write-Information -Message "Loaded script '$PSCommandPath'."

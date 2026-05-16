@@ -34,6 +34,9 @@ Set-DockerVariable -Name PUID             -Value $Script:Context.PUID
 Set-DockerVariable -Name PGID             -Value $Script:Context.PGID
 Set-DockerVariable -Name DATADIR          -Value $Script:Context.DataDir.FullName
 Set-DockerVariable -Name SOCKETPROXY_PGID -Value (Get-DockerGid) -NoAppend
+#Set-DockerVariable -Name SMTP_HOSTNAME    -Value $Script:Context.SmptHostName
+#Set-DockerVariable -Name SMTP_USERNAME    -Value $Script:Context.SmptUserName
+#Set-DockerVariable -Name SMTP_USERPASS    -Value $Script:Context.SmptUserPass
 
 
 ## GET SERVICES INFORMATION ####################################################

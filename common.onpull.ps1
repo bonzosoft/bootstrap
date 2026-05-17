@@ -30,18 +30,19 @@ if (Test-Path -Path $Script:Context.IncludeDir) {
 
 
 ## SET ENV FILE VARIABLES
+Set-DockerVariable -Name DATADIR                -Value $Script:Context.DataDir.FullName
 Set-DockerVariable -Name PUID                   -Value $Script:Context.PUID
 Set-DockerVariable -Name PGID                   -Value $Script:Context.PGID
-Set-DockerVariable -Name DATADIR                -Value $Script:Context.DataDir.FullName
-Set-DockerVariable -Name SOCKETPROXY_PGID       -Value (Get-DockerGid)                        -NoAppend
-Set-DockerVariable -Name SMTP_HOSTNAME          -Value $Script:Context.SMTP_HOSTNAME          -NoAppend
-Set-DockerVariable -Name SMTP_PORT              -Value $Script:Context.SMTP_PORT              -NoAppend
-Set-DockerVariable -Name SMTP_USERNAME          -Value $Script:Context.SMTP_USERNAME          -NoAppend
-Set-DockerVariable -Name SMTP_USERPASS          -Value $Script:Context.SMTP_USERPASS          -NoAppend
-Set-DockerVariable -Name SMTP_PROVIDER_HOSTNAME -Value $Script:Context.SMTP_PROVIDER_HOSTNAME -NoAppend
-Set-DockerVariable -Name SMTP_PROVIDER_PORT     -Value $Script:Context.SMTP_PROVIDER_PORT     -NoAppend
-Set-DockerVariable -Name SMTP_PROVIDER_USERNAME -Value $Script:Context.SMTP_PROVIDER_USERNAME -NoAppend
-Set-DockerVariable -Name SMTP_PROVIDER_USERPASS -Value $Script:Context.SMTP_PROVIDER_USERPASS -NoAppend
+Set-DockerVariable -Name SOCKETPROXY_PGID       -Value (Get-DockerGid)                      -NoAppend
+Set-DockerVariable -Name DOMAIN                 -Value $Script:Context.Domain               -NoAppend
+Set-DockerVariable -Name SMTP_HOSTNAME          -Value $Script:Context.SmtpHostname         -NoAppend
+Set-DockerVariable -Name SMTP_PORT              -Value $Script:Context.SmtpPort             -NoAppend
+Set-DockerVariable -Name SMTP_USERNAME          -Value $Script:Context.SmtpUserName         -NoAppend
+Set-DockerVariable -Name SMTP_USERPASS          -Value $Script:Context.SmtpUserPass         -NoAppend
+Set-DockerVariable -Name SMTP_PROVIDER_HOSTNAME -Value $Script:Context.SmtpProviderHostname -NoAppend
+Set-DockerVariable -Name SMTP_PROVIDER_PORT     -Value $Script:Context.SmtpProviderPort     -NoAppend
+Set-DockerVariable -Name SMTP_PROVIDER_USERNAME -Value $Script:Context.SmtpProviderUserName -NoAppend
+Set-DockerVariable -Name SMTP_PROVIDER_USERPASS -Value $Script:Context.SmtpProviderUserPass -NoAppend
 
 
 ## GET SERVICES INFORMATION ####################################################

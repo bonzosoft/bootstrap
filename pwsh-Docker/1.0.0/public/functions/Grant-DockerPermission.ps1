@@ -1,4 +1,3 @@
-
 function Grant-DockerPermission {
     [CmdletBinding()]
     [OutputType([void])]

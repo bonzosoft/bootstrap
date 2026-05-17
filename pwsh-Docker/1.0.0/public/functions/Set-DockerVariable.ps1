@@ -140,7 +140,7 @@ function Set-DockerVariable {
             $outputLines.Add($newLine)
         }
     
-        if (-not $keyFound -and -not($NoAdd.IsPresent)) {
+        if (-not $keyFound -and -not($NoAppend.IsPresent)) {
             $newLine = $Name + $delimiter + $Value 
             $outputLines.Add($newLine)
         }

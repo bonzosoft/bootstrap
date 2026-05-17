@@ -40,13 +40,13 @@ Set-DockerContext -Name PGID        -Value ([int]568)
 if ($Script:Context.Realm -eq "prod") {
     Set-DockerContext -Name Domain               -Value "ast-ingenieria.com"
     Set-DockerContext -Name SmtpHostname         -Value "smtp.ast-ingenieria.com"
-    Set-DockerContext -Name SmtpPort             -Value "587"
+    Set-DockerContext -Name SmtpHostPort         -Value "587"
     Set-DockerContext -Name SmtpUserName         -Value "soporte@ast-ingenieria.com"
-    Set-DockerContext -Name SmtpUserPass         -Value "2908cc6d-93cc-4ca2-997f-e668edfa890d"
+    Set-DockerContext -Name SmtpUserPass         -Value (ConvertTo-SecureString -String "2908cc6d-93cc-4ca2-997f-e668edfa890d" -AsPlainText)
     Set-DockerContext -Name SmtpProviderHostname -Value "smtp.gmail.com"
     Set-DockerContext -Name SmtpProviderPort     -Value "465"
     Set-DockerContext -Name SmtpProviderUserName -Value "soporte@ast-ingenieria.com"
-    Set-DockerContext -Name SmtpProviderUserPass -Value "ijac opkc encu oobu"
+    Set-DockerContext -Name SmtpProviderUserPass -Value (ConvertTo-SecureString -String "ijac opkc encu oobu" -AsPlainText)
 }
 else {
     Set-DockerContext -Name Domain               -Value "ast-ingenieria.com"

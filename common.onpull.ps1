@@ -36,13 +36,13 @@ Set-DockerVariable -Name PGID                   -Value $Script:Context.PGID
 Set-DockerVariable -Name SOCKETPROXY_PGID       -Value (Get-DockerGid)                      -NoAppend
 Set-DockerVariable -Name DOMAIN                 -Value $Script:Context.Domain               -NoAppend
 Set-DockerVariable -Name SMTP_HOSTNAME          -Value $Script:Context.SmtpHostname         -NoAppend
-Set-DockerVariable -Name SMTP_PORT              -Value $Script:Context.SmtpPort             -NoAppend
+Set-DockerVariable -Name SMTP_HOSTPORT              -Value $Script:Context.SmtpHostPort         -NoAppend
 Set-DockerVariable -Name SMTP_USERNAME          -Value $Script:Context.SmtpUserName         -NoAppend
-Set-DockerVariable -Name SMTP_USERPASS          -Value $Script:Context.SmtpUserPass         -NoAppend
+Set-DockerVariable -Name SMTP_USERPASS          -Value (ConvertFrom-SecureString -SecureString $Script:Context.SmtpUserPass -AsPlainText) -NoAppend
 Set-DockerVariable -Name SMTP_PROVIDER_HOSTNAME -Value $Script:Context.SmtpProviderHostname -NoAppend
 Set-DockerVariable -Name SMTP_PROVIDER_PORT     -Value $Script:Context.SmtpProviderPort     -NoAppend
 Set-DockerVariable -Name SMTP_PROVIDER_USERNAME -Value $Script:Context.SmtpProviderUserName -NoAppend
-Set-DockerVariable -Name SMTP_PROVIDER_USERPASS -Value $Script:Context.SmtpProviderUserPass -NoAppend
+Set-DockerVariable -Name SMTP_PROVIDER_USERPASS -Value (ConvertFrom-SecureString -SecureString $Script:Context.SmtpProviderUserPass -AsPlainText) -NoAppend
 
 
 ## GET SERVICES INFORMATION ####################################################

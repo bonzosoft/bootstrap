@@ -37,16 +37,26 @@ Set-DockerContext -Name Hostname    -Value (Get-DockerHostname)
 Set-DockerContext -Name PUID        -Value ([int]568)
 Set-DockerContext -Name PGID        -Value ([int]568)
 
-#if ($Script.Context.Realm -eq "prod") {
-#    Set-DockerContext -Name Smtp -Value "smtp.ast-ingenieria.com:587"
-#    Set-DockerContext -Name Smtp -Value "soporte@ast-ingenieria.com"
-#    Set-DockerContext -Name Smtp -Value "2908cc6d-93cc-4ca2-997f-e668edfa890d"
-#}
-#else {
-#    Set-DockerContext -Name Smtp -Value "smtp.<domain>:587"
-#    Set-DockerContext -Name Smtp -Value "soporte@<domain>"
-#    Set-DockerContext -Name Smtp -Value "<secret>"
-#}
+if ($Script.Context.Realm -eq "prod") {
+    Set-DockerContext -Name SMTP_HOSTNAME          -Value "smtp.ast-ingenieria.com"
+    Set-DockerContext -Name SMTP_PORT              -Value "587"
+    Set-DockerContext -Name SMTP_USERNAME          -Value "soporte@ast-ingenieria.com"
+    Set-DockerContext -Name SMTP_USERPASS          -Value "2908cc6d-93cc-4ca2-997f-e668edfa890d"
+    Set-DockerContext -Name SMTP_PROVIDER_HOSTNAME -Value "smtp.gmail.com"
+    Set-DockerContext -Name SMTP_PROVIDER_PORT     -Value "465"
+    Set-DockerContext -Name SMTP_PROVIDER_USERNAME -Value "soporte@ast-ingenieria.com"
+    Set-DockerContext -Name SMTP_PROVIDER_USERPASS -Value "ijac opkc encu oobu"
+}
+else {
+    Set-DockerContext -Name Smtp                   -Value ""
+    Set-DockerContext -Name SMTP_PORT              -Value "587"
+    Set-DockerContext -Name Smtp                   -Value ""
+    Set-DockerContext -Name Smtp                   -Value ""
+    Set-DockerContext -Name SMTP_PROVIDER_HOSTNAME -Value "smtp.gmail.com"
+    Set-DockerContext -Name SMTP_PROVIDER_PORT     -Value "465"
+    Set-DockerContext -Name SMTP_PROVIDER_USERNAME -Value ""
+    Set-DockerContext -Name SMTP_PROVIDER_USERPASS -Value ""
+}
 
 
 Write-Information -Message "Loaded script '$PSCommandPath'."

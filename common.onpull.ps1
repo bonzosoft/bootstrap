@@ -33,15 +33,15 @@ if (Test-Path -Path $Script:Context.IncludeDir) {
 Set-DockerVariable -Name PUID                   -Value $Script:Context.PUID
 Set-DockerVariable -Name PGID                   -Value $Script:Context.PGID
 Set-DockerVariable -Name DATADIR                -Value $Script:Context.DataDir.FullName
-Set-DockerVariable -Name SOCKETPROXY_PGID       -Value (Get-DockerGid)              -NoAppend
-Set-DockerVariable -Name SMTP_HOSTNAME          -Value $Script:Context.SmptHostName -NoAppend
-Set-DockerVariable -Name SMTP_PORT              -Value $Script:Context.SmptPort     -NoAppend
-Set-DockerVariable -Name SMTP_USERNAME          -Value $Script:Context.SmptUserName -NoAppend
-Set-DockerVariable -Name SMTP_USERPASS          -Value $Script:Context.SmptUserPass -NoAppend
-Set-DockerVariable -Name SMTP_PROVIDER_HOSTNAME -Value $Script:Context.SmptHostName -NoAppend
-Set-DockerVariable -Name SMTP_PROVIDER_PORT     -Value $Script:Context.SmptPort     -NoAppend
-Set-DockerVariable -Name SMTP_PROVIDER_USERNAME -Value $Script:Context.SmptUserName -NoAppend
-Set-DockerVariable -Name SMTP_PROVIDER_USERPASS -Value $Script:Context.SmptUserPass -NoAppend
+Set-DockerVariable -Name SOCKETPROXY_PGID       -Value (Get-DockerGid)                        -NoAppend
+Set-DockerVariable -Name SMTP_HOSTNAME          -Value $Script:Context.SMTP_HOSTNAME          -NoAppend
+Set-DockerVariable -Name SMTP_PORT              -Value $Script:Context.SMTP_PORT              -NoAppend
+Set-DockerVariable -Name SMTP_USERNAME          -Value $Script:Context.SMTP_USERNAME          -NoAppend
+Set-DockerVariable -Name SMTP_USERPASS          -Value $Script:Context.SMTP_USERPASS          -NoAppend
+Set-DockerVariable -Name SMTP_PROVIDER_HOSTNAME -Value $Script:Context.SMTP_PROVIDER_HOSTNAME -NoAppend
+Set-DockerVariable -Name SMTP_PROVIDER_PORT     -Value $Script:Context.SMTP_PROVIDER_PORT     -NoAppend
+Set-DockerVariable -Name SMTP_PROVIDER_USERNAME -Value $Script:Context.SMTP_PROVIDER_USERNAME -NoAppend
+Set-DockerVariable -Name SMTP_PROVIDER_USERPASS -Value $Script:Context.SMTP_PROVIDER_USERPASS -NoAppend
 
 
 ## GET SERVICES INFORMATION ####################################################

@@ -48,10 +48,10 @@ if ($Script:Context.Realm -eq "prod") {
     Set-DockerContext -Name SMTP_PROVIDER_USERPASS -Value "ijac opkc encu oobu"
 }
 else {
-    Set-DockerContext -Name Smtp                   -Value ""
+    Set-DockerContext -Name SMTP_HOSTNAME          -Value ""
     Set-DockerContext -Name SMTP_PORT              -Value "587"
-    Set-DockerContext -Name Smtp                   -Value ""
-    Set-DockerContext -Name Smtp                   -Value ""
+    Set-DockerContext -Name SMTP_USERNAME          -Value ""
+    Set-DockerContext -Name SMTP_USERPASS          -Value ""
     Set-DockerContext -Name SMTP_PROVIDER_HOSTNAME -Value "smtp.gmail.com"
     Set-DockerContext -Name SMTP_PROVIDER_PORT     -Value "465"
     Set-DockerContext -Name SMTP_PROVIDER_USERNAME -Value ""

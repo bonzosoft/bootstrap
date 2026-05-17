@@ -38,26 +38,26 @@ Set-DockerContext -Name PUID        -Value ([int]568)
 Set-DockerContext -Name PGID        -Value ([int]568)
 
 if ($Script:Context.Realm -eq "prod") {
-    Set-DockerContext -Name Domain              -Value "ast-ingenieria.com"
-    Set-DockerContext -Name SmtpHostname        -Value "smtp.ast-ingenieria.com"
-    Set-DockerContext -Name SmtpPort            -Value "587"
-    Set-DockerContext -Name SmtpUserName        -Value "soporte@ast-ingenieria.com"
-    Set-DockerContext -Name SmtpUserPass        -Value "2908cc6d-93cc-4ca2-997f-e668edfa890d"
-    Set-DockerContext -Name SmtpProvierHostname -Value "smtp.gmail.com"
-    Set-DockerContext -Name SmtpProvierPort     -Value "465"
-    Set-DockerContext -Name SmtpProvierUserName -Value "soporte@ast-ingenieria.com"
-    Set-DockerContext -Name SmtpProvierUserPass -Value "ijac opkc encu oobu"
+    Set-DockerContext -Name Domain               -Value "ast-ingenieria.com"
+    Set-DockerContext -Name SmtpHostname         -Value "smtp.ast-ingenieria.com"
+    Set-DockerContext -Name SmtpPort             -Value "587"
+    Set-DockerContext -Name SmtpUserName         -Value "soporte@ast-ingenieria.com"
+    Set-DockerContext -Name SmtpUserPass         -Value "2908cc6d-93cc-4ca2-997f-e668edfa890d"
+    Set-DockerContext -Name SmtpProviderHostname -Value "smtp.gmail.com"
+    Set-DockerContext -Name SmtpProviderPort     -Value "465"
+    Set-DockerContext -Name SmtpProviderUserName -Value "soporte@ast-ingenieria.com"
+    Set-DockerContext -Name SmtpProviderUserPass -Value "ijac opkc encu oobu"
 }
 else {
-    Set-DockerContext -Name Domain              -Value "ast-ingenieria.com"
-    Set-DockerContext -Name SmtpHostname        -Value ""
-    Set-DockerContext -Name SmtpPort            -Value "587"
-    Set-DockerContext -Name SmtpUserName        -Value ""
-    Set-DockerContext -Name SmtpUserPass        -Value ""
-    Set-DockerContext -Name SmtpProvierHostname -Value "smtp.gmail.com"
-    Set-DockerContext -Name SmtpProvierPort     -Value "465"
-    Set-DockerContext -Name SmtpProvierUserName -Value ""
-    Set-DockerContext -Name SmtpProvierUserPass -Value ""
+    Set-DockerContext -Name Domain               -Value "ast-ingenieria.com"
+    Set-DockerContext -Name SmtpHostname         -Value ""
+    Set-DockerContext -Name SmtpPort             -Value "587"
+    Set-DockerContext -Name SmtpUserName         -Value ""
+    Set-DockerContext -Name SmtpUserPass         -Value ""
+    Set-DockerContext -Name SmtpProviderHostname -Value "smtp.gmail.com"
+    Set-DockerContext -Name SmtpProviderPort     -Value "465"
+    Set-DockerContext -Name SmtpProviderUserName -Value ""
+    Set-DockerContext -Name SmtpProviderUserPass -Value ""
 }
 
 

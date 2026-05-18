@@ -44,6 +44,7 @@ Set-DockerVariable -Name SMTP_PROVIDER_PORT     -Value $Script:Context.smtp.prov
 Set-DockerVariable -Name SMTP_PROVIDER_USERNAME -Value $Script:Context.smtp.provider.username -NoAppend
 Set-DockerVariable -Name SMTP_PROVIDER_USERPASS -Value $Script:Context.smtp.provider.userpass -NoAppend #(ConvertFrom-SecureString -SecureString $Script:Context.SmtpProviderUserPass -AsPlainText) -NoAppend
 
+
 ## GET SERVICES INFORMATION ####################################################
 Write-Information -Message ($Script:Context | Out-String)
 $compose = Get-DockerCompose -Path $Script:Context.ComposeFile
@@ -52,6 +53,7 @@ $Script:Context += @{
     "Service"= $volumes
 }
 Write-Information -Message ($Script:Context | Out-String)
+
 
 ## LOAD SUBMODULES SCRIPTS #####################################################
 if (Test-Path -Path $Script:Context.IncludeDir) {

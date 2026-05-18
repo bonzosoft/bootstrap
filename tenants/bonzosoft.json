@@ -1,0 +1,23 @@
+{
+    "general": {
+        "domain": "",
+        "puid": 568,
+        "pgid": 568
+    },
+    "admin": {
+        "name": "alex",
+        "email": ""
+    },
+    "smtp": {
+        "hostname": "smtp.",
+        "hostport": 587,
+        "username": "",
+        "userpass": ""
+    },
+    "smtp-provider": {
+        "hostname": "smtp.gmail.com",
+        "hostport": 465,
+        "username": "",
+        "userpass": ""
+    }
+}

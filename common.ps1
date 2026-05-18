@@ -45,7 +45,7 @@ $Script:Context = @{
 
 $tenantData = Join-Path -Path $Script:Context.CommonDir -ChildPath "tenants" -AdditionalChildPath "$($Script:Context.Tenant).json"
 #$Script:Context += Get-Content -Path $tenantData -Encoding utf8 | ForEach-Object {
-Get-Content -Path $tenantData -Encoding utf8 | ForEach-Object {
+$var = Get-Content -Path $tenantData -Encoding utf8 | ForEach-Object {
     $key, $value = $PSItem -split("=", 2)
     if ($key -like "*pass") {
         if ($value) {
@@ -53,6 +53,7 @@ Get-Content -Path $tenantData -Encoding utf8 | ForEach-Object {
         }
     }
 } | ConvertFrom-Json -AsHashTable
+$var
 Write-Information "Tracing:`n$($Script:Context | Out-String)"
 exit 1
 

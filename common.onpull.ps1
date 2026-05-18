@@ -44,17 +44,19 @@ if (Test-Path -Path $Script:Context.DotEnvFile) {
     Set-DockerVariable -Name SMTP_PROVIDER_PORT     -Value $Script:Context.smtp.provider.port     -NoAppend
     Set-DockerVariable -Name SMTP_PROVIDER_USERNAME -Value $Script:Context.smtp.provider.username -NoAppend
     Set-DockerVariable -Name SMTP_PROVIDER_USERPASS -Value $Script:Context.smtp.provider.userpass -NoAppend #(ConvertFrom-SecureString -SecureString $Script:Context.SmtpProviderUserPass -AsPlainText) -NoAppend
-}
 
 ## GET SERVICES INFORMATION ####################################################
-Write-Information -Message ($Script:Context | Out-String)
-$compose = Get-DockerCompose -Path $Script:Context.ComposeFile
-$volumes = Get-DockerServiceInfo -InputObject $compose -Service $compose.services.Keys
-$Script:Context += @{
-    "Service"= $volumes
+    Write-Information -Message ($Script:Context | Out-String)
+    $compose = Get-DockerCompose -Path $Script:Context.ComposeFile
+    $volumes = Get-DockerServiceInfo -InputObject $compose -Service $compose.services.Keys
+    $Script:Context += @{
+        "Service"= $volumes
+    }
+    Write-Information -Message ($Script:Context | Out-String)
 }
-Write-Information -Message ($Script:Context | Out-String)
-
+else {
+    Write-Information "Skipping as no '.env' file was found."
+}
 
 ## LOAD SUBMODULES SCRIPTS #####################################################
 if (Test-Path -Path $Script:Context.IncludeDir) {

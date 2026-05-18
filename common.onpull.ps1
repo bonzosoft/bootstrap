@@ -50,6 +50,7 @@ Set-DockerVariable -Name SMTP_PROVIDER_USERPASS -Value $Script:Context.smtp.prov
 Get-Content -Path $Script:Context.DotEnvFile | ForEach-Object {
     $PSItem.Replace('[[DOMAIN]]', $Script:Context.Domain)
 } | Set-Content -Path "$($Script:Context.DotEnvFile).tmp"
+Move-Item -Path "$($Script:Context.DotEnvFile).tmp" -Destination $Script:Context.DotEnvFile -Force
 
 
 ## GET SERVICES INFORMATION ####################################################

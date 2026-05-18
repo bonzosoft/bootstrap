@@ -35,7 +35,7 @@ Set-DockerVariable -Name PUID                   -Value $Script:Context.Docker.PU
 Set-DockerVariable -Name PGID                   -Value $Script:Context.Docker.PGID
 Set-DockerVariable -Name SOCKETPROXY_PGID       -Value $Script:Context.Docker.DockerPGID      -NoAppend
 Set-DockerVariable -Name DOMAIN                 -Value $Script:Context.Domain                 -NoAppend
-Set-DockerVariable -Name ADMIN_USERN AME        -Value $Script:Context.admin.username         -NoAppend
+Set-DockerVariable -Name ADMIN_USERNAME         -Value $Script:Context.admin.username         -NoAppend
 Set-DockerVariable -Name ADMIN_USERP            -Value $Script:Context.admin.userpass         -NoAppend 
 Set-DockerVariable -Name ADMIN_EMAIL            -Value $Script:Context.admin.email            -NoAppend 
 Set-DockerVariable -Name SMTP_RELAY_HOSTNAME    -Value $Script:Context.smtp.relay.hostname    -NoAppend

@@ -3,7 +3,7 @@ Write-Host "pasa"
 $Script:Context = @{
     "general" = @{
         "hostname" =    [string](Get-DockerHostname)
-        "tenant" =      (Get-Content -Path (Join-Path -Path $Script:Context.WorkingDir.Parent -ChildPath ".config" -AdditionalChildPath "docker.config.json") | ConvertFrom-Json).TENANT
+        "tenant" =      (Get-Content -Path (Join-Path -Path $WorkingDir.Parent -ChildPath ".config" -AdditionalChildPath "docker.config.json") | ConvertFrom-Json).TENANT
     }
     "path"= @{
         "workingDir" =  $WorkingDir

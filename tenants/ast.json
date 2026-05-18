@@ -5,13 +5,13 @@
         "userpass": "changeme",
         "email": "a.suarez@ast-ingenieria.com"
     },
-    "smtp": {
+    "SMTP": {
         "hostname": "smtp.ast-ingenieria.com",
         "port": 587,
         "username": "soporte@ast-ingenieria.com",
         "userpass": "2908cc6d-93cc-4ca2-997f-e668edfa890d"
     },
-    "smtpProvider": {
+    "ProviderSMTP": {
         "hostname": "smtp.gmail.com",
         "port": 465,
         "userpame": "soporte@ast-ingenieria.com",

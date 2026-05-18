@@ -68,5 +68,5 @@ $Script:Context += Get-Content -Path $json -Encoding utf8 | ConvertFrom-Json -As
 #}
 
 $Script:Context
-return
+
 Write-Information -Message "Loaded script '$PSCommandPath'."

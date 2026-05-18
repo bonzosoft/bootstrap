@@ -36,17 +36,17 @@ Set-DockerVariable -Name PGID                   -Value $Script:Context.Docker.PG
 Set-DockerVariable -Name SOCKETPROXY_PGID       -Value $Script:Context.Docker.DockerPGID     -NoAppend
 Set-DockerVariable -Name DOMAIN                 -Value $Script:Context.Domain                -NoAppend
 Write-host "pasa1"
-Set-DockerVariable -Name SMTP_HOSTNAME          -Value $Script:Context.mail.relay.hostname         -NoAppend
+Set-DockerVariable -Name SMTP_HOSTNAME          -Value $Script:Context.smtp.relay.hostname         -NoAppend
 Write-host "pasa2"
-Set-DockerVariable -Name SMTP_HOSTPORT          -Value $Script:Context.mail.relay.port             -NoAppend
-Set-DockerVariable -Name SMTP_USERNAME          -Value $Script:Context.mail.relay.username         -NoAppend
-Set-DockerVariable -Name SMTP_USERPASS          -Value $Script:Context.mail.relay.userpass -NoAppend #(ConvertFrom-SecureString -SecureString $Script:Context.SMTP.UserPass -AsPlainText) -NoAppend
+Set-DockerVariable -Name SMTP_HOSTPORT          -Value $Script:Context.smtp.relay.port             -NoAppend
+Set-DockerVariable -Name SMTP_USERNAME          -Value $Script:Context.smtp.relay.username         -NoAppend
+Set-DockerVariable -Name SMTP_USERPASS          -Value $Script:Context.smtp.relay.userpass -NoAppend #(ConvertFrom-SecureString -SecureString $Script:Context.SMTP.UserPass -AsPlainText) -NoAppend
 Write-host "pasa3"
-Set-DockerVariable -Name SMTP_PROVIDER_HOSTNAME -Value $Script:Context.mail.provider.hostname -NoAppend
+Set-DockerVariable -Name SMTP_PROVIDER_HOSTNAME -Value $Script:Context.smtp.provider.hostname -NoAppend
 Write-host "pasa4"
-Set-DockerVariable -Name SMTP_PROVIDER_PORT     -Value $Script:Context.mail.provider.port     -NoAppend
-Set-DockerVariable -Name SMTP_PROVIDER_USERNAME -Value $Script:Context.mail.provider.username -NoAppend
-Set-DockerVariable -Name SMTP_PROVIDER_USERPASS -Value $Script:Context.mail.provider.userpass -NoAppend #(ConvertFrom-SecureString -SecureString $Script:Context.SmtpProviderUserPass -AsPlainText) -NoAppend
+Set-DockerVariable -Name SMTP_PROVIDER_PORT     -Value $Script:Context.smtp.provider.port     -NoAppend
+Set-DockerVariable -Name SMTP_PROVIDER_USERNAME -Value $Script:Context.smtp.provider.username -NoAppend
+Set-DockerVariable -Name SMTP_PROVIDER_USERPASS -Value $Script:Context.smtp.provider.userpass -NoAppend #(ConvertFrom-SecureString -SecureString $Script:Context.SmtpProviderUserPass -AsPlainText) -NoAppend
 
 
 ## GET SERVICES INFORMATION ####################################################

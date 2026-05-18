@@ -21,7 +21,7 @@ Import-Module -Name (Join-Path -Path $PSScriptRoot -ChildPath "pwsh-Docker")
 
 
 ### LOAD CONTEXT ###############################################################
-. common.context.ps1
+. Join-Path -Path [IO.FileInfo]$PSCommandPath -ChildPath "common.context.ps1"
 
 #Set-DockerContext -Name WorkingDir  -Value ([IO.DirectoryInfo](Get-Location).Path)
 #Set-DockerContext -Name ConfigDir   -Value ([IO.DirectoryInfo](Join-Path -Path $Script:Context.WorkingDir -ChildPath "config"))

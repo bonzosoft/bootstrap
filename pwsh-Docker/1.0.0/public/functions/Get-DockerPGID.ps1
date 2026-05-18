@@ -1,4 +1,4 @@
-function Get-DockerGid {
+function Get-DockerGID {
     [CmdletBinding()]
     [OutputType([int])]
 

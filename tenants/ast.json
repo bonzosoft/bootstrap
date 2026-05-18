@@ -1,23 +1,26 @@
 {
     "general": {
-        "domain": "ast-ingenieria.com",
-        "puid": 568,
-        "pgid": 568
+        "domain": "ast-ingenieria.com"
+    },
+    "docker": {
+        "PUID": 568,
+        "PGID": 568
     },
     "admin": {
-        "name": "alex",
+        "username": "alex",
+        "userpass": "changeme",
         "email": "a.suarez@ast-ingenieria.com"
     },
     "smtp": {
         "hostname": "smtp.ast-ingenieria.com",
-        "hostport": 587,
+        "port": 587,
         "username": "soporte@ast-ingenieria.com",
         "userpass": "2908cc6d-93cc-4ca2-997f-e668edfa890d"
     },
-    "smtp-provider": {
+    "smtpProvider": {
         "hostname": "smtp.gmail.com",
-        "hostport": 465,
-        "username": "soporte@ast-ingenieria.com",
+        "port": 465,
+        "userpame": "soporte@ast-ingenieria.com",
         "userpass": "ijac opkc encu oobu"
     }
 }

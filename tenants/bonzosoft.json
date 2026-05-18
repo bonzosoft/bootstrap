@@ -1,22 +1,25 @@
 {
     "general": {
-        "domain": "",
-        "puid": 568,
-        "pgid": 568
+        "domain": "985337789.xyz"
+    },
+    "docker": {
+        "PUID": 568,
+        "PGID": 568
     },
     "admin": {
-        "name": "alex",
-        "email": ""
+        "username": "alex",
+        "userpass": "changeme",
+        "email": "alex@985337789.xyz"
     },
     "smtp": {
-        "hostname": "smtp.",
-        "hostport": 587,
-        "username": "",
+        "hostname": "smtp.985337789.xyz",
+        "port": 587,
+        "username": "alex@985337789.xyz",
         "userpass": ""
     },
-    "smtp-provider": {
+    "smtpProvider": {
         "hostname": "smtp.gmail.com",
-        "hostport": 465,
+        "port": 465,
         "username": "",
         "userpass": ""
     }

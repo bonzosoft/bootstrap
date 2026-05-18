@@ -44,7 +44,7 @@ $Script:Context = @{
 }
 
 $tenantData = Join-Path -Path $Script:Context.CommonDir -ChildPath "tenants" -AdditionalChildPath "$($Script:Context.Tenant).json"
-$Script:Context += Get-Content -Path $tenantData -Encoding utf8  ConvertFrom-Json -AsHashTable
+$Script:Context += Get-Content -Path $tenantData -Encoding utf8 | ConvertFrom-Json -AsHashTable
 Write-Information "Tracing:`n$($Script:Context | Out-String)"
 
 

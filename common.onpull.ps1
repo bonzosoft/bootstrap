@@ -35,14 +35,21 @@ Set-DockerVariable -Name PUID                   -Value $Script:Context.Docker.PU
 Set-DockerVariable -Name PGID                   -Value $Script:Context.Docker.PGID
 Set-DockerVariable -Name SOCKETPROXY_PGID       -Value $Script:Context.Docker.DockerPGID      -NoAppend
 Set-DockerVariable -Name DOMAIN                 -Value $Script:Context.Domain                 -NoAppend
-Set-DockerVariable -Name SMTP_HOSTNAME          -Value $Script:Context.smtp.relay.hostname    -NoAppend
-Set-DockerVariable -Name SMTP_HOSTPORT          -Value $Script:Context.smtp.relay.port        -NoAppend
-Set-DockerVariable -Name SMTP_USERNAME          -Value $Script:Context.smtp.relay.username    -NoAppend
-Set-DockerVariable -Name SMTP_USERPASS          -Value $Script:Context.smtp.relay.userpass    -NoAppend #(ConvertFrom-SecureString -SecureString $Script:Context.SMTP.UserPass -AsPlainText) -NoAppend
+Set-DockerVariable -Name ADMIN_USERN AME        -Value $Script:Context.admin.username         -NoAppend
+Set-DockerVariable -Name ADMIN_USERP            -Value $Script:Context.admin.userpass         -NoAppend 
+Set-DockerVariable -Name ADMIN_EMAIL            -Value $Script:Context.admin.email            -NoAppend 
+Set-DockerVariable -Name SMTP_RELAY_HOSTNAME    -Value $Script:Context.smtp.relay.hostname    -NoAppend
+Set-DockerVariable -Name SMTP_RELAY_HOSTPORT    -Value $Script:Context.smtp.relay.port        -NoAppend
+Set-DockerVariable -Name SMTP_RELAY_USERNAME    -Value $Script:Context.smtp.relay.username    -NoAppend
+Set-DockerVariable -Name SMTP_RELAY_USERPASS    -Value $Script:Context.smtp.relay.userpass    -NoAppend #(ConvertFrom-SecureString -SecureString $Script:Context.SMTP.UserPass -AsPlainText) -NoAppend
 Set-DockerVariable -Name SMTP_PROVIDER_HOSTNAME -Value $Script:Context.smtp.provider.hostname -NoAppend
 Set-DockerVariable -Name SMTP_PROVIDER_PORT     -Value $Script:Context.smtp.provider.port     -NoAppend
 Set-DockerVariable -Name SMTP_PROVIDER_USERNAME -Value $Script:Context.smtp.provider.username -NoAppend
 Set-DockerVariable -Name SMTP_PROVIDER_USERPASS -Value $Script:Context.smtp.provider.userpass -NoAppend #(ConvertFrom-SecureString -SecureString $Script:Context.SmtpProviderUserPass -AsPlainText) -NoAppend
+
+Get-Content -Path $Script:Context.DotEnvFile | ForEach-Object {
+    $PSItem -replace "[[DOMAIN]]", $Script:Contest.Domain
+} | Set-Content -Path "$($Script:Context.DotEnvFile).tmp"
 
 
 ## GET SERVICES INFORMATION ####################################################

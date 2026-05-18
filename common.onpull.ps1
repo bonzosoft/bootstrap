@@ -48,7 +48,7 @@ Set-DockerVariable -Name SMTP_PROVIDER_USERNAME -Value $Script:Context.smtp.prov
 Set-DockerVariable -Name SMTP_PROVIDER_USERPASS -Value $Script:Context.smtp.provider.userpass -NoAppend #(ConvertFrom-SecureString -SecureString $Script:Context.SmtpProviderUserPass -AsPlainText) -NoAppend
 
 Get-Content -Path $Script:Context.DotEnvFile | ForEach-Object {
-    $PSItem -replace "[[DOMAIN]]", $Script:Context.Domain
+    $PSItem -replace '[[DOMAIN]]', $Script:Context.Domain
 } | Set-Content -Path "$($Script:Context.DotEnvFile).tmp"
 
 

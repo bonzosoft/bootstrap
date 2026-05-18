@@ -1,7 +1,5 @@
 {
-    "general": {
-        "domain": "ast-ingenieria.com"
-    },
+    "domain": "ast-ingenieria.com",
     "admin": {
         "username": "alex",
         "userpass": "changeme",

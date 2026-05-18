@@ -30,32 +30,35 @@ if (Test-Path -Path $Script:Context.Path.IncludeDir) {
 
 
 ## SET ENV FILE VARIABLES
-Set-DockerVariable -Name DATADIR                -Value $Script:Context.DataDir.FullName
-Set-DockerVariable -Name PUID                   -Value $Script:Context.PUID
-Set-DockerVariable -Name PGID                   -Value $Script:Context.PGID
-Set-DockerVariable -Name SOCKETPROXY_PGID       -Value (Get-DockerGid)                      -NoAppend
-Set-DockerVariable -Name DOMAIN                 -Value $Script:Context.Domain               -NoAppend
-Set-DockerVariable -Name SMTP_HOSTNAME          -Value $Script:Context.SmtpHostname         -NoAppend
-Set-DockerVariable -Name SMTP_HOSTPORT          -Value $Script:Context.SmtpHostPort         -NoAppend
-Set-DockerVariable -Name SMTP_USERNAME          -Value $Script:Context.SmtpUserName         -NoAppend
-Set-DockerVariable -Name SMTP_USERPASS          -Value (ConvertFrom-SecureString -SecureString $Script:Context.SmtpUserPass -AsPlainText) -NoAppend
-Set-DockerVariable -Name SMTP_PROVIDER_HOSTNAME -Value $Script:Context.SmtpProviderHostname -NoAppend
-Set-DockerVariable -Name SMTP_PROVIDER_PORT     -Value $Script:Context.SmtpProviderPort     -NoAppend
-Set-DockerVariable -Name SMTP_PROVIDER_USERNAME -Value $Script:Context.SmtpProviderUserName -NoAppend
-Set-DockerVariable -Name SMTP_PROVIDER_USERPASS -Value (ConvertFrom-SecureString -SecureString $Script:Context.SmtpProviderUserPass -AsPlainText) -NoAppend
+Set-DockerVariable -Name DATADIR                -Value $Script:Context.Path.DataDir.FullName
+Set-DockerVariable -Name PUID                   -Value $Script:Context.Docker.PUID
+Set-DockerVariable -Name PGID                   -Value $Script:Context.Docker.PGID
+Set-DockerVariable -Name SOCKETPROXY_PGID       -Value $Script:Context.Docker.DockerPGID     -NoAppend
+Set-DockerVariable -Name DOMAIN                 -Value $Script:Context.Domain                -NoAppend
+Set-DockerVariable -Name SMTP_HOSTNAME          -Value $Script:Context.SMTP.Hostname         -NoAppend
+Set-DockerVariable -Name SMTP_HOSTPORT          -Value $Script:Context.SMTP.Port             -NoAppend
+Set-DockerVariable -Name SMTP_USERNAME          -Value $Script:Context.SMTP.UserName         -NoAppend
+Set-DockerVariable -Name SMTP_USERPASS          -Value $Script:Context.SMTP.UserPass -NoAppend #(ConvertFrom-SecureString -SecureString $Script:Context.SMTP.UserPass -AsPlainText) -NoAppend
+Set-DockerVariable -Name SMTP_PROVIDER_HOSTNAME -Value $Script:Context.ProviderSMTP.Hostname -NoAppend
+Set-DockerVariable -Name SMTP_PROVIDER_PORT     -Value $Script:Context.ProviderSMTP.Port     -NoAppend
+Set-DockerVariable -Name SMTP_PROVIDER_USERNAME -Value $Script:Context.ProviderSMTP.UserName -NoAppend
+Set-DockerVariable -Name SMTP_PROVIDER_USERPASS -Value $Script:Context.ProviderSMTP.UserPass -NoAppend #(ConvertFrom-SecureString -SecureString $Script:Context.SmtpProviderUserPass -AsPlainText) -NoAppend
 
 
 ## GET SERVICES INFORMATION ####################################################
 Write-Information -Message ($Script:Context | Out-String)
-$compose = Get-DockerCompose -Path $Script:Context.ComposeFile
+$compose = Get-DockerCompose -Path $Script:Context.Path.ComposeFile
 $volumes = Get-DockerServiceInfo -InputObject $compose -Service $compose.services.Keys
-Set-DockerContext -Name Service -Value $volumes
+#Set-DockerContext -Name Service -Value $volumes
+$Script:Context += @{
+    "service"= $voumes
+}
 Write-Information -Message ($Script:Context | Out-String)
 
 
 ## LOAD SUBMODULES SCRIPTS #####################################################
-if (Test-Path -Path $Script:Context.IncludeDir) {
-    foreach ($script in (Get-Item -Path (Join-Path -Path $Script:Context.IncludeDir -ChildPath "*" -AdditionalChildPath (Split-Path -Path $MyInvocation.PSCommandPath -Leaf)))) {
+if (Test-Path -Path $Script:Context.Path.IncludeDir) {
+    foreach ($script in (Get-Item -Path (Join-Path -Path $Script:Context.Path.IncludeDir -ChildPath "*" -AdditionalChildPath (Split-Path -Path $MyInvocation.PSCommandPath -Leaf)))) {
         Write-Information -Message "Loading submodule script '$($script.FullName)'."
         . $script.FullName
     }

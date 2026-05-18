@@ -31,7 +31,7 @@ Set-DockerContext -Name ProjectName -Value ([string]$Script:Context.WorkingDir.B
 Set-DockerContext -Name DataDir     -Value ([IO.DirectoryInfo](Join-Path -Path $Script:Context.WorkingDir.Parent.Parent -ChildPath "state" -AdditionalChildPath $Script:Context.ProjectName))
 Set-DockerContext -Name SecretsDir  -Value ([IO.DirectoryInfo](Join-Path -Path $Script:Context.DataDir -ChildPath ".secrets"))
 
-Set-DockerContext -Name Realm       -Value (Get-Content -Path (Join-Path -Path $Script:Context.WorkingDir.Parent -ChildPath ".config" -AdditionalChildPath "docker.config.json") | ConvertFrom-Json).TENANT
+Set-DockerContext -Name Tenant       -Value (Get-Content -Path (Join-Path -Path $Script:Context.WorkingDir.Parent -ChildPath ".config" -AdditionalChildPath "docker.config.json") | ConvertFrom-Json).TENANT
 Set-DockerContext -Name Hostname    -Value (Get-DockerHostname)
 
 Set-DockerContext -Name PUID        -Value ([int]568)

@@ -1,11 +1,5 @@
 {
-    "general": {
-        "domain": "985337789.xyz"
-    },
-    "docker": {
-        "PUID": 568,
-        "PGID": 568
-    },
+    "domain": "985337789.xyz",
     "admin": {
         "username": "alex",
         "userpass": "changeme",

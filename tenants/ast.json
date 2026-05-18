@@ -2,10 +2,6 @@
     "general": {
         "domain": "ast-ingenieria.com"
     },
-    "docker": {
-        "PUID": 568,
-        "PGID": 568
-    },
     "admin": {
         "username": "alex",
         "userpass": "changeme",

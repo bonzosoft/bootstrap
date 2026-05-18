@@ -1,10 +1,8 @@
 $WorkingDir = ([IO.DirectoryInfo](Get-Location).Path)
 
 $Script:Context = @{
-    "general" = @{
-        "hostname" =    [string](Get-DockerHostname)
-        "tenant" =      (Get-Content -Path (Join-Path -Path $WorkingDir.Parent -ChildPath ".config" -AdditionalChildPath "docker.config.json") | ConvertFrom-Json).TENANT
-    }
+    "hostname" =    [string](Get-DockerHostname)
+    "tenant" =      (Get-Content -Path (Join-Path -Path $WorkingDir.Parent -ChildPath ".config" -AdditionalChildPath "docker.config.json") | ConvertFrom-Json).TENANT
     "path"= @{
         "workingDir" =  $WorkingDir
         "dataDir" =     [IO.DirectoryInfo](Join-Path -Path $WorkingDir.Parent.Parent -ChildPath "" -AdditionalChildPath @("state", $WorkingDir.BaseName))
@@ -15,6 +13,8 @@ $Script:Context = @{
     }
     "docker" = @{
         "projectname"=  [string]($WorkingDir.BaseName)
+        "PUID" =        [int]568
+        "PGID" =        [int]568
         "dockerPGID" =  [int](Get-DockerPGID)
     }
 }

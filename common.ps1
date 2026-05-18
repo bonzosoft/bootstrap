@@ -41,8 +41,8 @@ Write-Host "Context: $context"
 #Set-DockerContext -Name PUID        -Value ([int]568)
 #Set-DockerContext -Name PGID        -Value ([int]568)
 $json = Join-Path -Path ([IO.FileInfo]$PSCommandPath).DirectoryName -ChildPath "tenants" -AdditionalChildPath "$($Script:Context.General.Tenant).json"
-Write-host "json: $json"
-$Script:Context += $json | ConvertFrom-Json -AsHashTable
+
+$Script:Context += Get-Content -Path $json | ConvertFrom-Json -AsHashTable
 
 #if ($Script:Context.General.Tenant -eq "ast") {
 #    Set-DockerContext -Name Domain               -Value "ast-ingenieria.com"

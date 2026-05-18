@@ -1,5 +1,5 @@
 $WorkingDir = ([IO.DirectoryInfo](Get-Location).Path)
-Write-Host "pasa"
+
 $Script:Context = @{
     "general" = @{
         "hostname" =    [string](Get-DockerHostname)
@@ -18,5 +18,3 @@ $Script:Context = @{
         "dockerPGID" =  [int](Get-DockerPGID)
     }
 }
-Write-Host "no pasa"
-$Context

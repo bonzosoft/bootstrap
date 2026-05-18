@@ -21,7 +21,9 @@ Import-Module -Name (Join-Path -Path $PSScriptRoot -ChildPath "pwsh-Docker")
 
 
 ### LOAD CONTEXT ###############################################################
-. (Join-Path -Path ([IO.FileInfo]$PSCommandPath).DirectoryName -ChildPath "common.context.ps1")
+$context = Join-Path -Path ([IO.FileInfo]$PSCommandPath).DirectoryName -ChildPath "common.context.ps1"
+Write-Host "Context: $context"
+. $context
 
 #Set-DockerContext -Name WorkingDir  -Value ([IO.DirectoryInfo](Get-Location).Path)
 #Set-DockerContext -Name ConfigDir   -Value ([IO.DirectoryInfo](Join-Path -Path $Script:Context.WorkingDir -ChildPath "config"))
@@ -39,6 +41,7 @@ Import-Module -Name (Join-Path -Path $PSScriptRoot -ChildPath "pwsh-Docker")
 #Set-DockerContext -Name PUID        -Value ([int]568)
 #Set-DockerContext -Name PGID        -Value ([int]568)
 $json = Join-Path -Path ([IO.FileInfo]$PSCommandPath).DirectoryName -ChildPath "tenants" -AdditionalChildPath "$($Script:Context.General.Tenant).json"
+Write-host "json: $json"
 $Script:Context += $json | ConvertFrom-Json -AsHashTable
 
 #if ($Script:Context.General.Tenant -eq "ast") {

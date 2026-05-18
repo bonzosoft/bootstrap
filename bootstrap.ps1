@@ -27,9 +27,9 @@ param(
     [ValidateNotNullOrWhiteSpace()]
     [string]$Stop,
 
-    [Parameter(Mandatory, ParameterSetName = "Realm")]
-    [ValidateSet("prod", "dev")]
-    [string]$Realm,
+    [Parameter(Mandatory, ParameterSetName = "Tenant")]
+    [ValidateSet("ast", "bonzosoft")]
+    [string]$Tenant,
 
     [Parameter(Mandatory, ParameterSetName = "Help")]
     [switch]$Help
@@ -86,7 +86,7 @@ function Get-Config {
     Write-Log WARN "Generating new config..."
 
     $config = @{
-        REALM = "prod"
+        TENANT = "ast"
     }
 
     $config | ConvertTo-Json | Set-Content $Script:CONFIGFILE
@@ -97,12 +97,12 @@ function Save-Config($config) {
     $config | ConvertTo-Json | Set-Content $Script:CONFIGFILE
 }
 
-function Set-Realm {
-    param($Realm, $Config)
+function Set-Tenant {
+    param($Tenant, $Config)
 
-    $Config.REALM = $Realm
+    $Config.TENANT = $Tenant
     Save-Config $Config
-    Write-Log SUCC "Realm set to $Realm"
+    Write-Log SUCC "Realm set to $Tenant"
 }
 
 # =========================
@@ -227,7 +227,7 @@ switch ($PSCmdlet.ParameterSetName) {
             Write-Host "==========================================="
             Write-Host "===              MAIN MENU              ==="
             Write-Host "==========================================="
-            Write-Host "Realm: $($Script:Config.REALM)"
+            Write-Host "Realm: $($Script:Config.TENANT)"
             Write-Host ""
             Write-Host "  1. Login"
             Write-Host "  2. Set Realm"
@@ -255,12 +255,12 @@ switch ($PSCmdlet.ParameterSetName) {
                     :whileloop do {
                         :switchloop switch (Read-Host "Option") {
                             "1" {
-                                Set-Realm "prod" $Script:Config
+                                Set-Tenant "ast" $Script:Config
                                 $Script:Config = Get-Config
                                 break whileloop
                             }
                             "2" {
-                                Set-Realm "dev" $Script:Config
+                                Set-Tenant "bonzosoft" $Script:Config
                                 $Script:Config = Get-Config
                                 break whileloop
                             }
@@ -320,7 +320,7 @@ switch ($PSCmdlet.ParameterSetName) {
         } while ($true)
     }
     "Realm" {
-        Set-Realm -Realm $Realm -Config $Script:Config
+        Set-Tenant -Realm $Tenant -Config $Script:Config
         $Script:Config = Get-Config
     }
     "Login" {

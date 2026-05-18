@@ -18,7 +18,7 @@ function Switch-DockerTenant {
             Copy-Item -Path $source -Destination $target -Force | Out-Null
         }
         else {
-            throw "Source '.env' file not found."
+            Write-Error -Message "Source '.env' file not found for tenant '$($Script:Context.Tenant)'."
         }
     
         if ($PassThru.IsPresent) {

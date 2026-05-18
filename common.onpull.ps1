@@ -20,7 +20,7 @@ Switch-DockerTenant
 
 
 ## PULL SUBMODULES #############################################################
-if (Test-Path -Path $Script:Context.IncludeDir) {
+if (Test-Path -Path $Script:Context.Path.IncludeDir) {
     Write-Information -Message "Pulling submodules."
     $null = git submodule update --init --recursive --depth 1 2> variable:errorVariable
     if ($LASTEXITCODE) {

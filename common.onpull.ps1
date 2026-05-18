@@ -51,7 +51,7 @@ $compose = Get-DockerCompose -Path $Script:Context.Path.ComposeFile
 $volumes = Get-DockerServiceInfo -InputObject $compose -Service $compose.services.Keys
 #Set-DockerContext -Name Service -Value $volumes
 $Script:Context += @{
-    "service"= $voumes
+    "service"= $volumes
 }
 Write-Information -Message ($Script:Context | Out-String)
 

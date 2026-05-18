@@ -30,25 +30,41 @@ if (Test-Path -Path $Script:Context.IncludeDir) {
 
 
 ## SET ENV FILE VARIABLES ######################################################
-Set-DockerVariable -Name DATADIR                -Value $Script:Context.DataDir.FullName
-Set-DockerVariable -Name PUID                   -Value $Script:Context.Docker.PUID
-Set-DockerVariable -Name PGID                   -Value $Script:Context.Docker.PGID
-Set-DockerVariable -Name SOCKETPROXY_PGID       -Value $Script:Context.Docker.DockerPGID      -NoAppend
-Set-DockerVariable -Name DOMAIN                 -Value $Script:Context.Domain                 -NoAppend
-Set-DockerVariable -Name ADMIN_USERNAME         -Value $Script:Context.admin.username         -NoAppend
-Set-DockerVariable -Name ADMIN_USERP            -Value $Script:Context.admin.userpass         -NoAppend 
-Set-DockerVariable -Name ADMIN_EMAIL            -Value $Script:Context.admin.email            -NoAppend 
-Set-DockerVariable -Name SMTP_RELAY_HOSTNAME    -Value $Script:Context.smtp.relay.hostname    -NoAppend
-Set-DockerVariable -Name SMTP_RELAY_HOSTPORT    -Value $Script:Context.smtp.relay.port        -NoAppend
-Set-DockerVariable -Name SMTP_RELAY_USERNAME    -Value $Script:Context.smtp.relay.username    -NoAppend
-Set-DockerVariable -Name SMTP_RELAY_USERPASS    -Value $Script:Context.smtp.relay.userpass    -NoAppend #(ConvertFrom-SecureString -SecureString $Script:Context.SMTP.UserPass -AsPlainText) -NoAppend
-Set-DockerVariable -Name SMTP_PROVIDER_HOSTNAME -Value $Script:Context.smtp.provider.hostname -NoAppend
-Set-DockerVariable -Name SMTP_PROVIDER_PORT     -Value $Script:Context.smtp.provider.port     -NoAppend
-Set-DockerVariable -Name SMTP_PROVIDER_USERNAME -Value $Script:Context.smtp.provider.username -NoAppend
-Set-DockerVariable -Name SMTP_PROVIDER_USERPASS -Value $Script:Context.smtp.provider.userpass -NoAppend #(ConvertFrom-SecureString -SecureString $Script:Context.SmtpProviderUserPass -AsPlainText) -NoAppend
+#Set-DockerVariable -Name DATADIR                -Value $Script:Context.DataDir.FullName
+#Set-DockerVariable -Name PUID                   -Value $Script:Context.Docker.PUID
+#Set-DockerVariable -Name PGID                   -Value $Script:Context.Docker.PGID
+#Set-DockerVariable -Name SOCKETPROXY_PGID       -Value $Script:Context.Docker.DockerPGID      -NoAppend
+#Set-DockerVariable -Name DOMAIN                 -Value $Script:Context.Domain                 -NoAppend
+#Set-DockerVariable -Name ADMIN_USERNAME         -Value $Script:Context.admin.username         -NoAppend
+#Set-DockerVariable -Name ADMIN_USERP            -Value $Script:Context.admin.userpass         -NoAppend 
+#Set-DockerVariable -Name ADMIN_EMAIL            -Value $Script:Context.admin.email            -NoAppend 
+#Set-DockerVariable -Name SMTP_RELAY_HOSTNAME    -Value $Script:Context.smtp.relay.hostname    -NoAppend
+#Set-DockerVariable -Name SMTP_RELAY_HOSTPORT    -Value $Script:Context.smtp.relay.port        -NoAppend
+#Set-DockerVariable -Name SMTP_RELAY_USERNAME    -Value $Script:Context.smtp.relay.username    -NoAppend
+#Set-DockerVariable -Name SMTP_RELAY_USERPASS    -Value $Script:Context.smtp.relay.userpass    -NoAppend #(ConvertFrom-SecureString -SecureString $Script:Context.SMTP.UserPass -AsPlainText) -NoAppend
+#Set-DockerVariable -Name SMTP_PROVIDER_HOSTNAME -Value $Script:Context.smtp.provider.hostname -NoAppend
+#Set-DockerVariable -Name SMTP_PROVIDER_PORT     -Value $Script:Context.smtp.provider.port     -NoAppend
+#Set-DockerVariable -Name SMTP_PROVIDER_USERNAME -Value $Script:Context.smtp.provider.username -NoAppend
+#Set-DockerVariable -Name SMTP_PROVIDER_USERPASS -Value $Script:Context.smtp.provider.userpass -NoAppend #(ConvertFrom-SecureString -SecureString $Script:Context.SmtpProviderUserPass -AsPlainText) -NoAppend
 
 Get-Content -Path $Script:Context.DotEnvFile | ForEach-Object {
+    $PSItem.Replace('[[DATADIR]]', $Script:Context.DataDir.FullName)
     $PSItem.Replace('[[DOMAIN]]', $Script:Context.Domain)
+    $PSItem.Replace('[[PUID]]', $Script:Context.Docker.PUID)
+    $PSItem.Replace('[[PGID]]', $Script:Context.Docker.PGID)
+    $PSItem.Replace('[[SOCKETPROXY_PGID]]', $Script:Context.Docker.DockerPGID)
+    $PSItem.Replace('[[ADMIN_USERNAME]]', $Script:Context.admin.username)
+    $PSItem.Replace('[[ADMIN_USERPASS]]', $Script:Context.admin.userpass)
+    $PSItem.Replace('[[ADMIN_EMAIL]]', $Script:Context.admin.email)
+    $PSItem.Replace('[[SMTP_RELAY_HOST]]', $Script:Context.smtp.relay.hostname)
+    $PSItem.Replace('[[SMTP_RELAY_PORT]]', $Script:Context.smtp.relay.port)
+    $PSItem.Replace('[[SMTP_RELAY_USER]]', $Script:Context.smtp.relay.username)
+    $PSItem.Replace('[[SMTP_RELAY_PASS]]', $Script:Context.smtp.relay.userpass)
+    $PSItem.Replace('[[SMTP_PROVIDER_HOST]]', $Script:Context.smtp.provider.hostname)
+    $PSItem.Replace('[[SMTP_PROVIDER_PORT]]', $Script:Context.smtp.provider.port)
+    $PSItem.Replace('[[SMTP_PROVIDER_USER]]', $Script:Context.smtp.provider.username)
+    $PSItem.Replace('[[SMTP_PROVIDER_PASS]]', $Script:Context.smtp.provider.userpass)
+
 } | Set-Content -Path "$($Script:Context.DotEnvFile).tmp"
 Move-Item -Path "$($Script:Context.DotEnvFile).tmp" -Destination $Script:Context.DotEnvFile -Force
 

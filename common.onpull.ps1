@@ -30,20 +30,21 @@ if (Test-Path -Path $Script:Context.IncludeDir) {
 
 
 ## SET ENV FILE VARIABLES
-Set-DockerVariable -Name DATADIR                -Value $Script:Context.DataDir.FullName
-Set-DockerVariable -Name PUID                   -Value $Script:Context.Docker.PUID
-Set-DockerVariable -Name PGID                   -Value $Script:Context.Docker.PGID
-Set-DockerVariable -Name SOCKETPROXY_PGID       -Value $Script:Context.Docker.DockerPGID      -NoAppend
-Set-DockerVariable -Name DOMAIN                 -Value $Script:Context.Domain                 -NoAppend
-Set-DockerVariable -Name SMTP_HOSTNAME          -Value $Script:Context.smtp.relay.hostname    -NoAppend
-Set-DockerVariable -Name SMTP_HOSTPORT          -Value $Script:Context.smtp.relay.port        -NoAppend
-Set-DockerVariable -Name SMTP_USERNAME          -Value $Script:Context.smtp.relay.username    -NoAppend
-Set-DockerVariable -Name SMTP_USERPASS          -Value $Script:Context.smtp.relay.userpass    -NoAppend #(ConvertFrom-SecureString -SecureString $Script:Context.SMTP.UserPass -AsPlainText) -NoAppend
-Set-DockerVariable -Name SMTP_PROVIDER_HOSTNAME -Value $Script:Context.smtp.provider.hostname -NoAppend
-Set-DockerVariable -Name SMTP_PROVIDER_PORT     -Value $Script:Context.smtp.provider.port     -NoAppend
-Set-DockerVariable -Name SMTP_PROVIDER_USERNAME -Value $Script:Context.smtp.provider.username -NoAppend
-Set-DockerVariable -Name SMTP_PROVIDER_USERPASS -Value $Script:Context.smtp.provider.userpass -NoAppend #(ConvertFrom-SecureString -SecureString $Script:Context.SmtpProviderUserPass -AsPlainText) -NoAppend
-
+if (Test-Path -Path $Script:Context.DotEnvFile) {
+    Set-DockerVariable -Name DATADIR                -Value $Script:Context.DataDir.FullName
+    Set-DockerVariable -Name PUID                   -Value $Script:Context.Docker.PUID
+    Set-DockerVariable -Name PGID                   -Value $Script:Context.Docker.PGID
+    Set-DockerVariable -Name SOCKETPROXY_PGID       -Value $Script:Context.Docker.DockerPGID      -NoAppend
+    Set-DockerVariable -Name DOMAIN                 -Value $Script:Context.Domain                 -NoAppend
+    Set-DockerVariable -Name SMTP_HOSTNAME          -Value $Script:Context.smtp.relay.hostname    -NoAppend
+    Set-DockerVariable -Name SMTP_HOSTPORT          -Value $Script:Context.smtp.relay.port        -NoAppend
+    Set-DockerVariable -Name SMTP_USERNAME          -Value $Script:Context.smtp.relay.username    -NoAppend
+    Set-DockerVariable -Name SMTP_USERPASS          -Value $Script:Context.smtp.relay.userpass    -NoAppend #(ConvertFrom-SecureString -SecureString $Script:Context.SMTP.UserPass -AsPlainText) -NoAppend
+    Set-DockerVariable -Name SMTP_PROVIDER_HOSTNAME -Value $Script:Context.smtp.provider.hostname -NoAppend
+    Set-DockerVariable -Name SMTP_PROVIDER_PORT     -Value $Script:Context.smtp.provider.port     -NoAppend
+    Set-DockerVariable -Name SMTP_PROVIDER_USERNAME -Value $Script:Context.smtp.provider.username -NoAppend
+    Set-DockerVariable -Name SMTP_PROVIDER_USERPASS -Value $Script:Context.smtp.provider.userpass -NoAppend #(ConvertFrom-SecureString -SecureString $Script:Context.SmtpProviderUserPass -AsPlainText) -NoAppend
+}
 
 ## GET SERVICES INFORMATION ####################################################
 Write-Information -Message ($Script:Context | Out-String)

@@ -6,13 +6,13 @@
         "email": "a.suarez@ast-ingenieria.com"
     },
     "SMTP": {
-        "hostname": "smtp.ast-ingenieria.com",
+        "Hostname": "smtp.ast-ingenieria.com",
         "port": 587,
         "username": "soporte@ast-ingenieria.com",
         "userpass": "2908cc6d-93cc-4ca2-997f-e668edfa890d"
     },
     "ProviderSMTP": {
-        "hostname": "smtp.gmail.com",
+        "Hostname": "smtp.gmail.com",
         "port": 465,
         "userpame": "soporte@ast-ingenieria.com",
         "userpass": "ijac opkc encu oobu"

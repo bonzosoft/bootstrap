@@ -33,17 +33,13 @@ if (Test-Path -Path $Script:Context.IncludeDir) {
 Set-DockerVariable -Name DATADIR                -Value $Script:Context.DataDir.FullName
 Set-DockerVariable -Name PUID                   -Value $Script:Context.Docker.PUID
 Set-DockerVariable -Name PGID                   -Value $Script:Context.Docker.PGID
-Set-DockerVariable -Name SOCKETPROXY_PGID       -Value $Script:Context.Docker.DockerPGID     -NoAppend
-Set-DockerVariable -Name DOMAIN                 -Value $Script:Context.Domain                -NoAppend
-Write-host "pasa1"
-Set-DockerVariable -Name SMTP_HOSTNAME          -Value $Script:Context.smtp.relay.hostname         -NoAppend
-Write-host "pasa2"
-Set-DockerVariable -Name SMTP_HOSTPORT          -Value $Script:Context.smtp.relay.port             -NoAppend
-Set-DockerVariable -Name SMTP_USERNAME          -Value $Script:Context.smtp.relay.username         -NoAppend
-Set-DockerVariable -Name SMTP_USERPASS          -Value $Script:Context.smtp.relay.userpass -NoAppend #(ConvertFrom-SecureString -SecureString $Script:Context.SMTP.UserPass -AsPlainText) -NoAppend
-Write-host "pasa3"
+Set-DockerVariable -Name SOCKETPROXY_PGID       -Value $Script:Context.Docker.DockerPGID      -NoAppend
+Set-DockerVariable -Name DOMAIN                 -Value $Script:Context.Domain                 -NoAppend
+Set-DockerVariable -Name SMTP_HOSTNAME          -Value $Script:Context.smtp.relay.hostname    -NoAppend
+Set-DockerVariable -Name SMTP_HOSTPORT          -Value $Script:Context.smtp.relay.port        -NoAppend
+Set-DockerVariable -Name SMTP_USERNAME          -Value $Script:Context.smtp.relay.username    -NoAppend
+Set-DockerVariable -Name SMTP_USERPASS          -Value $Script:Context.smtp.relay.userpass    -NoAppend #(ConvertFrom-SecureString -SecureString $Script:Context.SMTP.UserPass -AsPlainText) -NoAppend
 Set-DockerVariable -Name SMTP_PROVIDER_HOSTNAME -Value $Script:Context.smtp.provider.hostname -NoAppend
-Write-host "pasa4"
 Set-DockerVariable -Name SMTP_PROVIDER_PORT     -Value $Script:Context.smtp.provider.port     -NoAppend
 Set-DockerVariable -Name SMTP_PROVIDER_USERNAME -Value $Script:Context.smtp.provider.username -NoAppend
 Set-DockerVariable -Name SMTP_PROVIDER_USERPASS -Value $Script:Context.smtp.provider.userpass -NoAppend #(ConvertFrom-SecureString -SecureString $Script:Context.SmtpProviderUserPass -AsPlainText) -NoAppend
@@ -53,9 +49,8 @@ Set-DockerVariable -Name SMTP_PROVIDER_USERPASS -Value $Script:Context.smtp.prov
 Write-Information -Message ($Script:Context | Out-String)
 $compose = Get-DockerCompose -Path $Script:Context.ComposeFile
 $volumes = Get-DockerServiceInfo -InputObject $compose -Service $compose.services.Keys
-#Set-DockerContext -Name Service -Value $volumes
 $Script:Context += @{
-    "service"= $volumes
+    "Service"= $volumes
 }
 Write-Information -Message ($Script:Context | Out-String)
 
@@ -68,17 +63,11 @@ if (Test-Path -Path $Script:Context.IncludeDir) {
     }
 }
 
+
 ## SET STORAGE PERMISSION ######################################################
 foreach ($service in $Script:Context.Service.Keys) {
     if ($Script:Context.Service.$service.Volume) {
         Write-Information -Message "Configuring storage for service $($service)"
-        #Grant-DockerPermission `
-        #    -Path $Script:Context.Service.$service.Volume `
-        #    -PUID $Script:Context.Service.$service.PUID `
-        #    -PGID $Script:Context.Service.$service.PGID `
-        #    -Permission "0775" `
-        #    -Recurse `
-        #    -Force
         Grant-DockerPermission `
             -Path $Script:Context.Service.$service.Volume `
             -PUID $Script:Context.Service.$service.PUID `

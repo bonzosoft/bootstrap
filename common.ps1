@@ -38,7 +38,7 @@ Import-Module -Name (Join-Path -Path $PSScriptRoot -ChildPath "pwsh-Docker")
 #
 #Set-DockerContext -Name PUID        -Value ([int]568)
 #Set-DockerContext -Name PGID        -Value ([int]568)
-$json = Join-Path -Path ([IO.FileInfo]$PSCommandPath).DirectoryName -ChildPath "tenants" -AdditionalChildPath "$($Script:Context.General.Tenant).json")
+$json = Join-Path -Path ([IO.FileInfo]$PSCommandPath).DirectoryName -ChildPath "tenants" -AdditionalChildPath "$($Script:Context.General.Tenant).json"
 $Script:Context += $json | ConvertFrom-Json -AsHashTable
 
 #if ($Script:Context.General.Tenant -eq "ast") {

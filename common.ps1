@@ -43,8 +43,9 @@ $Script:Context = @{
     }
 }
 
-$tenantData = Join-Path -Path ([IO.DirectoryInfo]$PSCommandPath).DirectoryName -ChildPath "tenants" -AdditionalChildPath "$($Script:Context.Tenant).json"
+$tenantData = Join-Path -Path $Script:Context.CommonDir -ChildPath "tenants" -AdditionalChildPath "$($Script:Context.Tenant).json"
 $Script:Context += Get-Content -Path $tenantData -Encoding utf8 | ConvertFrom-Json -AsHashTable
-$Script:Context
+Write-Information "Tracing:`n$($Script:Context | Out-String)"
+
 
 Write-Information -Message "Loaded script '$PSCommandPath'."

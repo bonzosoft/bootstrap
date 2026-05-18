@@ -15,7 +15,7 @@ Write-Information -Message "Loading script '$PSCommandPath'."
 . (Get-Item -Path (Join-Path -Path $PSScriptRoot -ChildPath "common.ps1"))
 
 
-## SELECT REALM ################################################################
+## SELECT TENANT ################################################################
 Switch-DockerRealm
 
 

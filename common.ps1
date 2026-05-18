@@ -31,13 +31,13 @@ Set-DockerContext -Name ProjectName -Value ([string]$Script:Context.WorkingDir.B
 Set-DockerContext -Name DataDir     -Value ([IO.DirectoryInfo](Join-Path -Path $Script:Context.WorkingDir.Parent.Parent -ChildPath "state" -AdditionalChildPath $Script:Context.ProjectName))
 Set-DockerContext -Name SecretsDir  -Value ([IO.DirectoryInfo](Join-Path -Path $Script:Context.DataDir -ChildPath ".secrets"))
 
-Set-DockerContext -Name Realm       -Value (Get-Content -Path (Join-Path -Path $Script:Context.WorkingDir.Parent -ChildPath ".config" -AdditionalChildPath "docker.config.json") | ConvertFrom-Json).REALM
+Set-DockerContext -Name Realm       -Value (Get-Content -Path (Join-Path -Path $Script:Context.WorkingDir.Parent -ChildPath ".config" -AdditionalChildPath "docker.config.json") | ConvertFrom-Json).TENANT
 Set-DockerContext -Name Hostname    -Value (Get-DockerHostname)
 
 Set-DockerContext -Name PUID        -Value ([int]568)
 Set-DockerContext -Name PGID        -Value ([int]568)
 
-if ($Script:Context.Realm -eq "prod") {
+if ($Script:Context.Realm -eq "ast") {
     Set-DockerContext -Name Domain               -Value "ast-ingenieria.com"
     Set-DockerContext -Name SmtpHostname         -Value "smtp.ast-ingenieria.com"
     Set-DockerContext -Name SmtpHostPort         -Value "587"

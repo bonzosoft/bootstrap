@@ -5,7 +5,7 @@ function Set-DockerVariable {
     param (
         [Parameter()]
         [ValidateNotNullOrEmpty()]
-        [IO.FileInfo]$Path = $Script:Context.DotEnvFile,
+        [IO.FileInfo]$Path = $Script:Context.Path.DotEnvFile,
 
         [Parameter(Mandatory)]
         [ValidateNotNullOrWhiteSpace()]

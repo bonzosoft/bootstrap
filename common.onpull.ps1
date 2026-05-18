@@ -20,7 +20,7 @@ Switch-DockerTenant
 
 
 ## PULL SUBMODULES #############################################################
-if (Test-Path -Path $Script:Context.Path.IncludeDir) {
+if (Test-Path -Path $Script:Context.IncludeDir) {
     Write-Information -Message "Pulling submodules."
     $null = git submodule update --init --recursive --depth 1 2> variable:errorVariable
     if ($LASTEXITCODE) {
@@ -30,28 +30,28 @@ if (Test-Path -Path $Script:Context.Path.IncludeDir) {
 
 
 ## SET ENV FILE VARIABLES
-Set-DockerVariable -Name DATADIR                -Value $Script:Context.Path.DataDir.FullName
+Set-DockerVariable -Name DATADIR                -Value $Script:Context.DataDir.FullName
 Set-DockerVariable -Name PUID                   -Value $Script:Context.Docker.PUID
 Set-DockerVariable -Name PGID                   -Value $Script:Context.Docker.PGID
 Set-DockerVariable -Name SOCKETPROXY_PGID       -Value $Script:Context.Docker.DockerPGID     -NoAppend
 Set-DockerVariable -Name DOMAIN                 -Value $Script:Context.Domain                -NoAppend
 Write-host "pasa1"
-Set-DockerVariable -Name SMTP_HOSTNAME          -Value $Script:Context.smtp.hostname         -NoAppend
+Set-DockerVariable -Name SMTP_HOSTNAME          -Value $Script:Context.mail.relay.hostname         -NoAppend
 Write-host "pasa2"
-Set-DockerVariable -Name SMTP_HOSTPORT          -Value $Script:Context.smtp.port             -NoAppend
-Set-DockerVariable -Name SMTP_USERNAME          -Value $Script:Context.smtp.username         -NoAppend
-Set-DockerVariable -Name SMTP_USERPASS          -Value $Script:Context.smtp.userpass -NoAppend #(ConvertFrom-SecureString -SecureString $Script:Context.SMTP.UserPass -AsPlainText) -NoAppend
+Set-DockerVariable -Name SMTP_HOSTPORT          -Value $Script:Context.mail.relay.port             -NoAppend
+Set-DockerVariable -Name SMTP_USERNAME          -Value $Script:Context.mail.relay.username         -NoAppend
+Set-DockerVariable -Name SMTP_USERPASS          -Value $Script:Context.mail.relay.userpass -NoAppend #(ConvertFrom-SecureString -SecureString $Script:Context.SMTP.UserPass -AsPlainText) -NoAppend
 Write-host "pasa3"
-Set-DockerVariable -Name SMTP_PROVIDER_HOSTNAME -Value $Script:Context.providersmtp.hostname -NoAppend
+Set-DockerVariable -Name SMTP_PROVIDER_HOSTNAME -Value $Script:Context.mail.provider.hostname -NoAppend
 Write-host "pasa4"
-Set-DockerVariable -Name SMTP_PROVIDER_PORT     -Value $Script:Context.providersmtp.port     -NoAppend
-Set-DockerVariable -Name SMTP_PROVIDER_USERNAME -Value $Script:Context.providersmtp.username -NoAppend
-Set-DockerVariable -Name SMTP_PROVIDER_USERPASS -Value $Script:Context.providersmtp.userpass -NoAppend #(ConvertFrom-SecureString -SecureString $Script:Context.SmtpProviderUserPass -AsPlainText) -NoAppend
+Set-DockerVariable -Name SMTP_PROVIDER_PORT     -Value $Script:Context.mail.provider.port     -NoAppend
+Set-DockerVariable -Name SMTP_PROVIDER_USERNAME -Value $Script:Context.mail.provider.username -NoAppend
+Set-DockerVariable -Name SMTP_PROVIDER_USERPASS -Value $Script:Context.mail.provider.userpass -NoAppend #(ConvertFrom-SecureString -SecureString $Script:Context.SmtpProviderUserPass -AsPlainText) -NoAppend
 
 
 ## GET SERVICES INFORMATION ####################################################
 Write-Information -Message ($Script:Context | Out-String)
-$compose = Get-DockerCompose -Path $Script:Context.Path.ComposeFile
+$compose = Get-DockerCompose -Path $Script:Context.ComposeFile
 $volumes = Get-DockerServiceInfo -InputObject $compose -Service $compose.services.Keys
 #Set-DockerContext -Name Service -Value $volumes
 $Script:Context += @{
@@ -61,8 +61,8 @@ Write-Information -Message ($Script:Context | Out-String)
 
 
 ## LOAD SUBMODULES SCRIPTS #####################################################
-if (Test-Path -Path $Script:Context.Path.IncludeDir) {
-    foreach ($script in (Get-Item -Path (Join-Path -Path $Script:Context.Path.IncludeDir -ChildPath "*" -AdditionalChildPath (Split-Path -Path $MyInvocation.PSCommandPath -Leaf)))) {
+if (Test-Path -Path $Script:Context.IncludeDir) {
+    foreach ($script in (Get-Item -Path (Join-Path -Path $Script:Context.IncludeDir -ChildPath "*" -AdditionalChildPath (Split-Path -Path $MyInvocation.PSCommandPath -Leaf)))) {
         Write-Information -Message "Loading submodule script '$($script.FullName)'."
         . $script.FullName
     }

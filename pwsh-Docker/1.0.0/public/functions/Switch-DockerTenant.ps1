@@ -8,8 +8,8 @@ function Switch-DockerTenant {
     )
     
     begin {
-        [IO.FileInfo]$source = Join-Path -Path $Script:Context.Path.DotEnvFile.Directory -ChildPath "$($Script:Context.Path.DotEnvFile.Name).$($Script:Context.Tenant)"
-        [IO.FileInfo]$target = $Script:Context.Path.DotEnvFile
+        [IO.FileInfo]$source = Join-Path -Path $Script:Context.DotEnvFile.Directory -ChildPath "$($Script:Context.DotEnvFile.Name).$($Script:Context.Tenant)"
+        [IO.FileInfo]$target = $Script:Context.DotEnvFile
     }
 
     end {

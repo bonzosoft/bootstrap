@@ -37,7 +37,7 @@ Set-DockerContext -Name Hostname    -Value (Get-DockerHostname)
 Set-DockerContext -Name PUID        -Value ([int]568)
 Set-DockerContext -Name PGID        -Value ([int]568)
 
-if ($Script:Context.Realm -eq "ast") {
+if ($Script:Context.Tenant -eq "ast") {
     Set-DockerContext -Name Domain               -Value "ast-ingenieria.com"
     Set-DockerContext -Name SmtpHostname         -Value "smtp.ast-ingenieria.com"
     Set-DockerContext -Name SmtpHostPort         -Value "587"

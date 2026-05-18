@@ -16,7 +16,7 @@ Write-Information -Message "Loading script '$PSCommandPath'."
 
 
 ## SELECT TENANT ################################################################
-Switch-DockerRealm
+Switch-DockerTenant
 
 
 ## PULL SUBMODULES #############################################################

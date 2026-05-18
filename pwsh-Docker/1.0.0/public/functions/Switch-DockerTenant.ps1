@@ -1,4 +1,4 @@
-function Switch-DockerRealm {
+function Switch-DockerTenant {
     [CmdletBinding()]
     [OutputType([void])]
 
@@ -8,7 +8,7 @@ function Switch-DockerRealm {
     )
     
     begin {
-        [IO.FileInfo]$source = Join-Path -Path $Script:Context.DotEnvFile.Directory -ChildPath "$($Script:Context.DotEnvFile.Name).$($Script:Context.Realm)"
+        [IO.FileInfo]$source = Join-Path -Path $Script:Context.DotEnvFile.Directory -ChildPath "$($Script:Context.DotEnvFile.Name).$($Script:Context.Tenant)"
         [IO.FileInfo]$target = $Script:Context.DotEnvFile
     }
 

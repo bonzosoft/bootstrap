@@ -5,13 +5,13 @@
         "userpass": "changeme",
         "email": "alex@985337789.xyz"
     },
-    "SMTP": {
+    "smtp": {
         "hostname": "smtp.985337789.xyz",
         "port": 587,
         "username": "alex@985337789.xyz",
         "userpass": ""
     },
-    "ProviderSMTP": {
+    "providersmtp": {
         "hostname": "smtp.gmail.com",
         "port": 465,
         "username": "",

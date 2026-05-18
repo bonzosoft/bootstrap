@@ -40,7 +40,7 @@ Write-Host "Context: $context"
 #
 #Set-DockerContext -Name PUID        -Value ([int]568)
 #Set-DockerContext -Name PGID        -Value ([int]568)
-$json = Join-Path -Path ([IO.FileInfo]$PSCommandPath).DirectoryName -ChildPath "tenants" -AdditionalChildPath "$($Script:Context.General.Tenant).json"
+$json = Join-Path -Path ([IO.FileInfo]$PSCommandPath).DirectoryName -ChildPath "tenants" -AdditionalChildPath "$($Script:Context.Tenant).json"
 
 $Script:Context += Get-Content -Path $json -Encoding utf8 | ConvertFrom-Json -AsHashTable
 

@@ -44,17 +44,8 @@ $Script:Context = @{
 }
 
 $tenantData = Join-Path -Path $Script:Context.CommonDir -ChildPath "tenants" -AdditionalChildPath "$($Script:Context.Tenant).json"
-#$Script:Context += Get-Content -Path $tenantData -Encoding utf8 | ForEach-Object {
-$var = Get-Content -Path $tenantData -Encoding utf8 | ForEach-Object {
-    $key, $value = $PSItem -split("=", 2)
-    if ($key -like "*pass") {
-        if ($value) {
-            Write-Output "$($key.Trim()) = $(ConvertTo-SecureString -InputObject $value.Trim() -AsPlainText)"
-        }
-    }
-} | ConvertFrom-Json -AsHashTable
-$var
+$Script:Context += Get-Content -Path $tenantData -Encoding utf8  ConvertFrom-Json -AsHashTable
 Write-Information "Tracing:`n$($Script:Context | Out-String)"
-exit 1
+
 
 Write-Information -Message "Loaded script '$PSCommandPath'."

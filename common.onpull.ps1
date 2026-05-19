@@ -49,7 +49,7 @@ if (Test-Path -Path $Script:Context.IncludeDir) {
 
 Get-Content -Path $Script:Context.DotEnvFile | ForEach-Object {
     $string = $PSItem
-    $string = $string.Replace('[[HOSTNAME]]', $Script:Context.Hostname)
+    $string = $string.Replace('[[DOCKER_HOSTNAME]]', $Script:Context.Hostname)
     $string = $string.Replace('[[DATADIR]]', $Script:Context.DataDir.FullName)
     $string = $string.Replace('[[DOMAIN]]', $Script:Context.Domain)
     $string = $string.Replace('[[PUID]]', $Script:Context.Docker.PUID)

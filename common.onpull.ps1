@@ -49,23 +49,25 @@ if (Test-Path -Path $Script:Context.IncludeDir) {
 
 Get-Content -Path $Script:Context.DotEnvFile | ForEach-Object {
     $string = $PSItem
-    $string = $string.Replace('[[DOCKER_HOSTNAME]]', $Script:Context.Hostname)
-    $string = $string.Replace('[[DATADIR]]', $Script:Context.DataDir.FullName)
-    $string = $string.Replace('[[DOMAIN]]', $Script:Context.Domain)
-    $string = $string.Replace('[[PUID]]', $Script:Context.Docker.PUID)
-    $string = $string.Replace('[[PGID]]', $Script:Context.Docker.PGID)
-    $string = $string.Replace('[[SOCKETPROXY_PGID]]', $Script:Context.Docker.DockerPGID)
-    $string = $string.Replace('[[ADMIN_USER]]', $Script:Context.admin.username)
-    $string = $string.Replace('[[ADMIN_PASS]]', $Script:Context.admin.userpass)
-    $string = $string.Replace('[[ADMIN_EMAIL]]', $Script:Context.admin.email)
-    $string = $string.Replace('[[SMTP_RELAY_HOST]]', $Script:Context.smtp.relay.hostname)
-    $string = $string.Replace('[[SMTP_RELAY_PORT]]', $Script:Context.smtp.relay.port)
-    $string = $string.Replace('[[SMTP_RELAY_USER]]', $Script:Context.smtp.relay.username)
-    $string = $string.Replace('[[SMTP_RELAY_PASS]]', $Script:Context.smtp.relay.userpass)
-    $string = $string.Replace('[[SMTP_PROVIDER_HOST]]', $Script:Context.smtp.provider.hostname)
-    $string = $string.Replace('[[SMTP_PROVIDER_PORT]]', $Script:Context.smtp.provider.port)
-    $string = $string.Replace('[[SMTP_PROVIDER_USER]]', $Script:Context.smtp.provider.username)
-    $string = $string.Replace('[[SMTP_PROVIDER_PASS]]', $Script:Context.smtp.provider.userpass)
+    if (-not ($string.Trim() -like "^#")) {
+        $string = $string.Replace('[[DOCKER_HOSTNAME]]', $Script:Context.Hostname)
+        $string = $string.Replace('[[DATADIR]]', $Script:Context.DataDir.FullName)
+        $string = $string.Replace('[[DOMAIN]]', $Script:Context.Domain)
+        $string = $string.Replace('[[PUID]]', $Script:Context.Docker.PUID)
+        $string = $string.Replace('[[PGID]]', $Script:Context.Docker.PGID)
+        $string = $string.Replace('[[SOCKETPROXY_PGID]]', $Script:Context.Docker.DockerPGID)
+        $string = $string.Replace('[[ADMIN_USER]]', $Script:Context.admin.username)
+        $string = $string.Replace('[[ADMIN_PASS]]', $Script:Context.admin.userpass)
+        $string = $string.Replace('[[ADMIN_EMAIL]]', $Script:Context.admin.email)
+        $string = $string.Replace('[[SMTP_RELAY_HOST]]', $Script:Context.smtp.relay.hostname)
+        $string = $string.Replace('[[SMTP_RELAY_PORT]]', $Script:Context.smtp.relay.port)
+        $string = $string.Replace('[[SMTP_RELAY_USER]]', $Script:Context.smtp.relay.username)
+        $string = $string.Replace('[[SMTP_RELAY_PASS]]', $Script:Context.smtp.relay.userpass)
+        $string = $string.Replace('[[SMTP_PROVIDER_HOST]]', $Script:Context.smtp.provider.hostname)
+        $string = $string.Replace('[[SMTP_PROVIDER_PORT]]', $Script:Context.smtp.provider.port)
+        $string = $string.Replace('[[SMTP_PROVIDER_USER]]', $Script:Context.smtp.provider.username)
+        $string = $string.Replace('[[SMTP_PROVIDER_PASS]]', $Script:Context.smtp.provider.userpass)
+    }
     Write-Output -InputObject $string
 } | Set-Content -Path "$($Script:Context.DotEnvFile).tmp"
 Move-Item -Path "$($Script:Context.DotEnvFile).tmp" -Destination $Script:Context.DotEnvFile -Force

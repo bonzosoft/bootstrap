@@ -64,7 +64,7 @@ function Set-DockerSecret {
             "Base64" {
                 $bytes = [Security.Cryptography.RandomNumberGenerator]::GetBytes($Length)
                 $currentValue = [Convert]::ToBase64String($bytes)
-                $currentValue = "base64:" + $currentValue
+                #$currentValue = "base64:" + $currentValue
             }
             default {
                 throw "Unknown ParameterSetName '$($PSCmdlet.ParameterSetName)'."

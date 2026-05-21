@@ -4,10 +4,14 @@ Proxmox VE Scripts
 
 ## Aplicaciones
 
+### Código
+ByteStash
+
 ### Diógenes
 ArchiveBox 
 LinkWarden
 Karakeep
+Wallbag
 
 ### Musica 
 Navidrome
@@ -39,3 +43,7 @@ Bookstack
 ### Notificación
 Gotify
 Ntfy
+
+### Time management
+Traggo
+Planka

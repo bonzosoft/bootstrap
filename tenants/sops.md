@@ -1,9 +1,3 @@
-Sí, ese flujo es bastante común y encaja muy bien con:
-
-* GitHub
-* SOPS
-* Vaultwarden/Bitwarden
-* secretos cifrados en repos Git
 
 La arquitectura sería algo así:
 
@@ -19,15 +13,7 @@ Local:
   5. usar .env localmente
 ```
 
-Y sí: es una práctica razonable y bastante segura si separas bien:
-
-* repositorio Git
-* claves de descifrado
-* credenciales Bitwarden
-
----
-
-# La parte importante: QUÉ guardar en Bitwarden
+# QUÉ guardar en Bitwarden
 
 Con SOPS normalmente hay 3 enfoques:
 
@@ -187,7 +173,6 @@ Mejor:
 SOPS_AGE_KEY="$(bw get notes sops-age-key)" sops -d .env.enc
 ```
 
----
 
 # Alternativa más avanzada
 
@@ -208,3 +193,46 @@ es probablemente el punto óptimo entre:
 * seguridad
 * portabilidad
 * DX.
+
+De nada 🙂
+Ese stack (`Vaultwarden + SOPS + age + Git`) queda muy sólido para homelab, VPS y proyectos personales.
+
+Un detalle final útil: si automatizas mucho, vale la pena crear un pequeño script tipo:
+
+```bash
+#!/usr/bin/env bash
+
+export SOPS_AGE_KEY="$(bw get notes sops-age-key --session "$BW_SESSION")"
+
+sops -d .env.enc > .env
+```
+
+Así:
+
+* no dejas la clave escrita en disco
+* reutilizas la sesión desbloqueada de Bitwarden
+* simplificas onboarding en nuevas máquinas
+
+Y si más adelante quieres endurecer aún más:
+
+* mover la clave age a hardware (YubiKey)
+* usar múltiples recipients en SOPS
+* separar claves por entorno (`dev/staging/prod`)
+* integrar CI con `sops-nix` o `agenix`
+
+son evoluciones naturales de ese setup.
+
+
+
+
+
+````pwsh
+$env:SOPS_AGE_KEY = bw get notes sops-age-key --session $env:BW_SESSION
+
+$envfile = sops -d .env.enc
+
+# cargar variables necesarias
+# ejecutar script
+
+Remove-Item Env:SOPS_AGE_KEY
+````

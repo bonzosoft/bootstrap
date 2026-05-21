@@ -5,14 +5,37 @@ Proxmox VE Scripts
 ## Aplicaciones
 
 ### Diógenes
-ArchiveBox ()
+ArchiveBox 
+LinkWarden
+Karakeep
 
 ### Musica 
 Navidrome
 Airsonic
+Subsonic
+Gonic
 
 ### Libros / PDF
 pdfding
+Grimmory
 
+### SSO
+VoidAuth
+TinyAuth
+Authentik
+Authelia
+Keycloak
+Authentik
+Zitadel
 
+### Wiki
+DokuWiki
+Wiki-Go
+X-Wiki
+MediaWiki
+Wiki.js
+Bookstack
 
+### Notificación
+Gotify
+Ntfy

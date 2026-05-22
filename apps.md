@@ -31,6 +31,7 @@ Authelia
 Keycloak
 Authentik
 Zitadel
+OAuth2-Proxy
 
 ### Wiki
 DokuWiki
@@ -48,3 +49,14 @@ Ntfy
 ### Time management
 Traggo
 Planka
+
+### Contraseñas
+VaultWarden
+AliasVault
+Passbolt
+
+### Certificados
+step-ca
+LabCA
+Certimate
+Infisical

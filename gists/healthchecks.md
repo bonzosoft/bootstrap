@@ -5,6 +5,10 @@
 ````bash
 test: ["CMD", "wget", "--quiet", "--spider", "http://127.0.0.1/${APP_PORT:?}"]
 ````
+o en https:
+````bash
+test: ["CMD", "wget", "--quiet", "--spider", "--no-check-certificate", "http://127.0.0.1/${APP_PORT:?}"]
+````
 
 ## Curl
 ````bash

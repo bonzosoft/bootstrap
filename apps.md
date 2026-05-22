@@ -60,3 +60,11 @@ step-ca
 LabCA
 Certimate
 Infisical
+
+### Acceso remoto
+Kasm Workspaces
+Pangolin
+
+### Kasm environment
+gimp
+inkscape

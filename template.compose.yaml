@@ -99,15 +99,15 @@ volumes: {}
   # 
 
 ## CONFIGS #####################################################################
-configs:
-  http-:
-    file: ./config/
-  http-:
-    file: ./config/
-  http-:
-    file: ./config/
-  http-:
-    file: ./config/
+configs: {}
+  #http-:
+  #  file: ./config/
+  #http-:
+  #  file: ./config/
+  #http-:
+  #  file: ./config/
+  #http-:
+  #  file: ./config/
 
 ## SERVICES ####################################################################
 services:

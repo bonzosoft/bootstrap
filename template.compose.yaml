@@ -120,9 +120,9 @@ services:
     <<:
       - *resources
       - *hardening
-    depends_on: {}
-    #  webproxy:
-    #     condition: service_healthy
+    depends_on:
+      webproxy:
+         condition: service_healthy
     #entrypoint: ["sh", "-c"]
     #command:
       #- |

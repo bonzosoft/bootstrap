@@ -162,7 +162,7 @@ services:
       - ${APP_PORT:?}
       #- 
     ports:
-      - 0.0.0.0:${APP_EXT_PORT:?}:${APP_EXT_PORT:?}
+      #- 0.0.0.0:${APP_EXT_PORT:?}:${APP_EXT_PORT:?}
       #- 0.0.0.0:
     extra_hosts: {}
       #- host.docker.internal:host-gateway
@@ -182,7 +182,7 @@ services:
       #-
     tmpfs:
       - /tmp:rw,noexec,nosuid,nodev,mode=1777
-      - /var/run:rw,noexec,nosuid,nodev,mode=0775,uid=${APP_PUID:-${PUID}},gid=${APP_PGID:-${PGID}}
+      #- /var/run:rw,noexec,nosuid,nodev,mode=0775,uid=${APP_PUID:-${PUID}},gid=${APP_PGID:-${PGID}}
       #-
       #-
       #-
@@ -196,7 +196,7 @@ services:
       #-
       #-
       #-
-    configs:
+    configs: []
       #- source:
       #  target:
       #- source:

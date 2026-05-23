@@ -161,10 +161,10 @@ services:
     expose:
       - ${APP_PORT:?}
       #- 
-    ports:
+    ports: []
       #- 0.0.0.0:${APP_EXT_PORT:?}:${APP_EXT_PORT:?}
       #- 0.0.0.0:
-    extra_hosts: {}
+    extra_hosts: []
       #- host.docker.internal:host-gateway
       #- 
 

@@ -25,7 +25,7 @@ function Get-DockerCompose {
             #--no-normalize		    Don't normalize compose model (convierte formatos cortos a largos)
             #--no-path-resolution	Don't resolve file paths
         if ($LASTEXITCODE) {
-            throw "Unable to parse '$Path': $errorMessage"
+            throw "Unable to parse '$($Path.FullName)': $errorMessage"
         }
         if ($errorMessage) {
             Write-Warning -Message ($errorMessage | Out-String)

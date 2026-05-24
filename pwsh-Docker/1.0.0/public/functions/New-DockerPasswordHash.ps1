@@ -27,7 +27,7 @@ function New-DockerPasswordHash {
 
     begin {
         [byte[]]$seed = @()
-        [securestring]$hashedString = $null
+        #[securestring]$hashedString = $null
     }
 
     process {

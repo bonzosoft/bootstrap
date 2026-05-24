@@ -18,21 +18,33 @@ function Get-DockerServiceInfo {
     begin {
         #[IO.FileSystemInfo[]]$volumes = @()
         [hashtable]$servicesTable = @{}
+        [string]$volumePath = ""
     }
 
     process {
         foreach ($item in $Service) {
             $volumesList = @()
-            foreach ($volume in $InputObject.services.$item.volumes.source) {
-                if ((-not $Force) -and (-not $volume.StartsWith($Script:Context.DataDir))) {
+            foreach ($volume in $InputObject.services.$item.volumes) {
+                switch ($InputObject.services.$item.$volume.type) {
+                    "bind" {
+                        $volumePath = $InputObject.services.$item.$volume.source
+                    }
+                    "volume" {
+                        $volumePath = $InputObject.volumes.$volume.driver_opts.device
+                    }
+                    default {
+                        continue
+                    }
+                }
+                if ((-not $Force) -and (-not $volumePath.StartsWith($Script:Context.DataDir))) {
                     continue
                 }
-                Write-Host "volume: $volume"
-                if (Test-Path -Path $volume) {
-                    $volumesList += Get-Item -Path $volume
+                Write-Host "volume: $volumePath"
+                if (Test-Path -Path $volumePath) {
+                    $volumesList += Get-Item -Path $volumePath
                 }
                 else {
-                    $volumesList += [IO.DirectoryInfo]$volume
+                    $volumesList += [IO.DirectoryInfo]$volumePath
                 }
             }
             $servicesTable[$item] = @{

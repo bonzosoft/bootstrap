@@ -28,7 +28,8 @@ function Get-DockerServiceInfo {
             $volumesList = @()
             
             foreach ($volume in $InputObject.services.$item.volumes) {
-                Write-Host "volume: $volume"
+                Write-Host "volume: $($volume.source)"
+                Write-Host $($volume | Out-String)
                 switch ($InputObject.services.$item.$volume.type) {
                     "bind" {
                         Write-host "is bind"

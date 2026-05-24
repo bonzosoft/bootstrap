@@ -35,7 +35,7 @@ function Get-DockerServiceInfo {
                         $volumePath = $volume.source
                     }
                     "volume" {
-                        $volumePath = $InputObject.volumes.$($volume.source).driver_opts.device
+                        $volumePath = Join-Path -Path $InputObject.volumes.$($volume.source).driver_opts.device -ChildPath $volume.volume.subpath
                     }
                     default {
                         continue

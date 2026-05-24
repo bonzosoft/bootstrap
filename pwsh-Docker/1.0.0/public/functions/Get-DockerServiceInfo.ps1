@@ -24,13 +24,18 @@ function Get-DockerServiceInfo {
     process {
         foreach ($item in $Service) {
             Write-Host " Comprobando servicio $item ########################################################"
+
             $volumesList = @()
+            
             foreach ($volume in $InputObject.services.$item.volumes) {
+                Write-Host "volume: $volume"
                 switch ($InputObject.services.$item.$volume.type) {
                     "bind" {
+                        Write-host "is bind"
                         $volumePath = $InputObject.services.$item.$volume.source
                     }
                     "volume" {
+                        Write-Host "is volume"
                         $volumePath = $InputObject.volumes.$volume.driver_opts.device
                     }
                     default {

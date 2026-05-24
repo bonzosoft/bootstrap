@@ -43,14 +43,14 @@ Get-Content -Path $Script:Context.DotEnvFile | ForEach-Object {
         $string = $string.Replace('[[ADMIN_USER]]',         $Script:Context.Admin.username)
         $string = $string.Replace('[[ADMIN_PASS]]',         $Script:Context.Admin.userpass)
         $string = $string.Replace('[[ADMIN_EMAIL]]',        $Script:Context.Admin.email)
-        $string = $string.Replace('[[SMTP_RELAY_HOST]]',    $Script:Context.Smtp.Relay.hostname)
-        $string = $string.Replace('[[SMTP_RELAY_PORT]]',    $Script:Context.Smtp.Relay.port)
-        $string = $string.Replace('[[SMTP_RELAY_USER]]',    $Script:Context.Smtp.Relay.username)
-        $string = $string.Replace('[[SMTP_RELAY_PASS]]',    $Script:Context.Smtp.Relay.userpass)
-        $string = $string.Replace('[[SMTP_PROVIDER_HOST]]', $Script:Context.Smtp.Provider.hostname)
-        $string = $string.Replace('[[SMTP_PROVIDER_PORT]]', $Script:Context.Smtp.Provider.port)
-        $string = $string.Replace('[[SMTP_PROVIDER_USER]]', $Script:Context.Smtp.Provider.username)
-        $string = $string.Replace('[[SMTP_PROVIDER_PASS]]', $Script:Context.Smtp.Provider.userpass)
+        $string = $string.Replace('[[SMTP_RELAY_HOST]]',    $Script:Context.Smtp.relay.hostname)
+        $string = $string.Replace('[[SMTP_RELAY_PORT]]',    $Script:Context.Smtp.relay.port)
+        $string = $string.Replace('[[SMTP_RELAY_USER]]',    $Script:Context.Smtp.relay.username)
+        $string = $string.Replace('[[SMTP_RELAY_PASS]]',    $Script:Context.Smtp.relay.userpass)
+        $string = $string.Replace('[[SMTP_PROVIDER_HOST]]', $Script:Context.Smtp.provider.hostname)
+        $string = $string.Replace('[[SMTP_PROVIDER_PORT]]', $Script:Context.Smtp.provider.port)
+        $string = $string.Replace('[[SMTP_PROVIDER_USER]]', $Script:Context.Smtp.provider.username)
+        $string = $string.Replace('[[SMTP_PROVIDER_PASS]]', $Script:Context.Smtp.provider.userpass)
     }
     Write-Output -InputObject $string
 } | Set-Content -Path "$($Script:Context.DotEnvFile).tmp"

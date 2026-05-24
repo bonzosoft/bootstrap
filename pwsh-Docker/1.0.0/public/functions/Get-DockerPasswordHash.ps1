@@ -40,6 +40,9 @@ function Get-DockerPasswordHash {
         }
 
         switch ($PSCmdlet.ParameterSetName) {
+            "Plain" {
+                $hashedString = $tmp
+            }
             "Base64" {
                 $hashedString = [System.Convert]::ToBase64String([Text.Encoding]::UTF8.GetBytes( $tmp ))
             }

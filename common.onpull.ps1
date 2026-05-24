@@ -77,7 +77,7 @@ Move-Item -Path "$($Script:Context.DotEnvFile).tmp" -Destination $Script:Context
 ## GET SERVICES INFORMATION ####################################################
 Write-Information -Message ($Script:Context | Out-String)
 $compose = Get-DockerCompose -Path $Script:Context.ComposeFile
-$volumes = Get-DockerServiceInfo -InputObject $compose -Service $compose.services.Keys
+$volumes = Get-DockerServiceInfo -InputObject $compose -Service $compose.services.Keys -Verbose
 $Script:Context += @{
     "Service"= $volumes
 }

@@ -55,22 +55,13 @@ function New-DockerPasswordHash {
                 if (-not (Get-Command -Name "argon2" -ErrorAction SilentlyContinue)) {
                     throw "Command 'argon2' not found. Please install 'argon2' package."
                 }
-                $hashedString = & argon2 `
-                    --iterations 3 `
-                    --memory-cost 65536 `
-                    --parallelism 1 `
-                    --hash-length $Length `
-                    --encoded
-                    $tmp
+                $hashedString = $tmp | argon2 $seed -id -t 3 -k 65536 -p1 -l $Length -e
             }
             "BCrypt" {
                 if (-not (Get-Command -Name "mkpasswd" -ErrorAction SilentlyContinue)) {
                     throw "Command 'mkpasswd' not found. Please install 'whois' package."
                 }
-                $hashedString = & mkpasswd `
-                    --method=bcrypt `
-                    --rounds=10 `
-                    $tmp
+                $hashedString = $tmp | mkpasswd --method=bcrypt --rounds=10
             }
             default {
                 throw "Unknonw encryption type."

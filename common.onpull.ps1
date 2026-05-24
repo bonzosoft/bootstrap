@@ -40,7 +40,7 @@ Get-Content -Path $Script:Context.DotEnvFile | ForEach-Object {
         $string = $string.Replace('[[PUID]]',               $Script:Context.Docker.PUID)
         $string = $string.Replace('[[PGID]]',               $Script:Context.Docker.PGID)
         $string = $string.Replace('[[SOCKETPROXY_PGID]]',   $Script:Context.Docker.DockerPGID)
-        $string = $string.Replace('[[ADMIN_USER]]',         $Script:Context.Admin.Username)
+        $string = $string.Replace('[[ADMIN_USER]]',         $Script:Context.Admin.username)
         $string = $string.Replace('[[ADMIN_PASS]]',         $Script:Context.Admin.Userpass)
         $string = $string.Replace('[[ADMIN_EMAIL]]',        $Script:Context.Admin.Email)
         $string = $string.Replace('[[SMTP_RELAY_HOST]]',    $Script:Context.Smtp.Relay.Hostname)

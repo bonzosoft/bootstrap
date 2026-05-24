@@ -17,6 +17,13 @@ $ErrorActionPreference = 'Stop'
 $VerbosePreference = 'Continue'
 
 
+### LOAD MODULES ###############################################################
+$verboseBackup = $VerbosePreference
+$VerbosePreference = 'SilentlyContinue'
+Import-Module -Name (Join-Path -Path $PSScriptRoot -ChildPath "pwsh-Docker") -Verbose:$false
+$VerbosePreference = $verboseBackup
+
+
 
 $password = "contraseña de prueba"
 New-DockerPasswordHash -Password $password -Base64 | ConvertFrom-SecureString -AsPlainText
@@ -24,12 +31,6 @@ New-DockerPasswordHash -Password $password -Base64Url | ConvertFrom-SecureString
 New-DockerPasswordHash -Password $password -Jwt | ConvertFrom-SecureString -AsPlainText
 New-DockerPasswordHash -Password $password -Argon2 | ConvertFrom-SecureString -AsPlainText
 New-DockerPasswordHash -Password $password -BCrypt | ConvertFrom-SecureString -AsPlainText
-
-### LOAD MODULES ###############################################################
-$verboseBackup = $VerbosePreference
-$VerbosePreference = 'SilentlyContinue'
-Import-Module -Name (Join-Path -Path $PSScriptRoot -ChildPath "pwsh-Docker") -Verbose:$false
-$VerbosePreference = $verboseBackup
 
 ### LOAD CONTEXT ###############################################################
 $WorkingDir = [IO.DirectoryInfo](Get-Location).Path

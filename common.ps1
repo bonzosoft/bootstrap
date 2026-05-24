@@ -14,6 +14,7 @@ Write-Information -Message "Loading script '$PSCommandPath'."
 ### SCRIPT CONFIGURATION #######################################################
 Set-StrictMode -Version Latest
 $ErrorActionPreference = 'Stop'
+$VerbosePreference = 'Continue'
 
 
 ### LOAD MODULES ###############################################################

@@ -36,15 +36,16 @@ function New-DockerPasswordHash {
             $Password = ConvertTo-SecureString -String ([System.Buffers.Text.Base64Url]::EncodeToString($seed)) -AsPlainText
         }
 
+        Write-Host (ConvertFrom-SecureString -SecureString $Password -AsPlainText)
         switch ($PSCmdlet.ParameterSetName) {
             "Base64" {
-                $hashedString = [System.Convert]::ToBase64String([Text.Encoding]::UTF8.GetBytes( (ConvertFrom-SecureString -SecureString $Password -AsPlainText) )) | ConvertTo-SecureString -AsPlainText
+                $hashedString = [System.Convert]::ToBase64String([Text.Encoding]::UTF8.GetBytes( (ConvertFrom-SecureString -SecureString $Password -AsPlainText) ))
             }
             "Base64Url" {
-                $hashedString = [System.Buffers.Text.Base64Url]::EncodeToString([Text.Encoding]::UTF8.GetBytes( (ConvertFrom-SecureString -SecureString $Password -AsPlainText) )) | ConvertTo-SecureString -AsPlainText
+                $hashedString = [System.Buffers.Text.Base64Url]::EncodeToString([Text.Encoding]::UTF8.GetBytes( (ConvertFrom-SecureString -SecureString $Password -AsPlainText) ))
             }
             "Jwt" {
-                $hashedString = [System.Buffers.Text.Base64Url]::EncodeToString([Text.Encoding]::UTF8.GetBytes( (ConvertFrom-SecureString -SecureString $Password -AsPlainText) )) | ConvertTo-SecureString -AsPlainText
+                $hashedString = [System.Buffers.Text.Base64Url]::EncodeToString([Text.Encoding]::UTF8.GetBytes( (ConvertFrom-SecureString -SecureString $Password -AsPlainText) ))
             }
             "Argon2" {
                 if (-not (Get-Command -Name "argon2" -ErrorAction SilentlyContinue)) {
@@ -56,7 +57,7 @@ function New-DockerPasswordHash {
                     --parallelism 1 `
                     --hash-length $Length `
                     --encoded
-                    (ConvertFrom-SecureString -SecureString $Password -AsPlainText) | ConvertTo-SecureString -AsPlainText
+                    (ConvertFrom-SecureString -SecureString $Password -AsPlainText)
             }
             "BCrypt" {
                 if (-not (Get-Command -Name "mkpasswd" -ErrorAction SilentlyContinue)) {
@@ -65,7 +66,7 @@ function New-DockerPasswordHash {
                 $hashedString = & mkpasswd `
                     --method=bcrypt `
                     --rounds=10 `
-                    (ConvertFrom-SecureString -SecureString $Password -AsPlainText) | ConvertTo-SecureString -AsPlainText
+                    (ConvertFrom-SecureString -SecureString $Password -AsPlainText)
             }
             default {
                 throw "Unknonw encryption type."

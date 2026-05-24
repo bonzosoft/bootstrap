@@ -55,6 +55,8 @@ function New-DockerPasswordHash {
                 if (-not (Get-Command -Name "argon2" -ErrorAction SilentlyContinue)) {
                     throw "Command 'argon2' not found. Please install 'argon2' package."
                 }
+                Write-Host $tmp
+                Write-host ([Convert]::ToBase64String($seed))
                 $hashedString = $tmp | argon2 ([Convert]::ToBase64String($seed)) -id -t 3 -k 65536 -p 1 -l $Length -e
                 if ($LASTEXITCODE) {
                     throw "A problem was found hashing the password."

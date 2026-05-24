@@ -23,6 +23,7 @@ function Get-DockerServiceInfo {
 
     process {
         foreach ($item in $Service) {
+            Write-Host " Comprobando servicio $item ########################################################"
             $volumesList = @()
             foreach ($volume in $InputObject.services.$item.volumes) {
                 switch ($InputObject.services.$item.$volume.type) {
@@ -39,7 +40,7 @@ function Get-DockerServiceInfo {
                 if ((-not $Force) -and (-not $volumePath.StartsWith($Script:Context.DataDir))) {
                     continue
                 }
-                Write-Host "volume: $volumePath"
+                Write-Host "volume: $volumePath #####################################################"
                 if (Test-Path -Path $volumePath) {
                     $volumesList += Get-Item -Path $volumePath
                 }

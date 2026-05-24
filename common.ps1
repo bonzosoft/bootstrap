@@ -49,7 +49,9 @@ $Script:Context = [ordered]@{
 
 $tenantData = Join-Path -Path $Script:Context.CommonDir -ChildPath "tenants" -AdditionalChildPath "$($Script:Context.Tenant).json"
 $Script:Context += Get-Content -Path $tenantData -Encoding utf8 | ConvertFrom-Json -AsHashTable -Depth 9
-
+$Script:Context.Admin.userpass = ConvertTo-SecureString -String $Script:Context.Admin.userpass -AsPlainText
+$Script:Context.Smtp.relay.userpass = ConvertTo-SecureString -String $Script:Context.Smtp.relay.userpass -AsPlainText
+$Script:Context.Smtp.provider.userpass = ConvertTo-SecureString -String $Script:Context.Smtp.provider.userpass -AsPlainText
 Write-Verbose -Message ($Script:Context | Out-String)
 
 

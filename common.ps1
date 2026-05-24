@@ -18,8 +18,10 @@ $VerbosePreference = 'Continue'
 
 
 ### LOAD MODULES ###############################################################
+$verboseBackup = $VerbosePreference
+$VerbosePreference = 'SilentlyContinue'
 Import-Module -Name (Join-Path -Path $PSScriptRoot -ChildPath "pwsh-Docker") -Verbose:$false
-
+$VerbosePreference = $verboseBackup
 
 ### LOAD CONTEXT ###############################################################
 $WorkingDir = [IO.DirectoryInfo](Get-Location).Path

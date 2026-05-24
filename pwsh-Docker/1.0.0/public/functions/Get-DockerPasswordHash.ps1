@@ -7,7 +7,7 @@ function Get-DockerPasswordHash {
         [securestring]$Password = $null,
 
         [Parameter(Mandatory, ParameterSetName = "Plain")]
-        [switch]$Base64,
+        [switch]$Plain,
 
         [Parameter(Mandatory, ParameterSetName = "Base64")]
         [switch]$Base64,

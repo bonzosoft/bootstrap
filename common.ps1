@@ -27,7 +27,7 @@ $VerbosePreference = $verboseBackup
 $WorkingDir = [IO.DirectoryInfo](Get-Location).Path
 $CommonDir = [IO.DirectoryInfo]([IO.FileInfo]$PSCommandPath).Directory
 
-$Script:Context = @{
+$Script:Context = [ordered]@{
     "WorkingDir" =  $WorkingDir
     "CommonDir"  =  $CommonDir
     "IncludeDir" =  [IO.DirectoryInfo](Join-Path -Path $WorkingDir -ChildPath "include")

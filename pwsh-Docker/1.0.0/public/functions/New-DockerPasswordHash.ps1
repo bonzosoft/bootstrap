@@ -76,7 +76,7 @@ function New-DockerPasswordHash {
                 throw "Unknonw encryption type."
             }
         }
-        Write-Host $tmp
+        Write-Host $hashedString
         Write-Output -InputObject (ConvertTo-SecureString -String $hashedString -AsPlainText)
     }
 

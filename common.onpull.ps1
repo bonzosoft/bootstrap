@@ -48,7 +48,6 @@ Get-Content -Path $Script:Context.DotEnvFile | ForEach-Object {
         $string = $string.Replace('[[SMTP_PROVIDER_USER]]', $Script:Context.Smtp.provider.username)
         $string = $string.Replace('[[SMTP_PROVIDER_PASS]]', $Script:Context.Smtp.provider.userpass)
     }
-    Write-Output -InputObject $string
 } | Set-Content -Path "$($Script:Context.DotEnvFile).tmp"
 Move-Item -Path "$($Script:Context.DotEnvFile).tmp" -Destination $Script:Context.DotEnvFile -Force
 

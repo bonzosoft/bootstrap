@@ -14,25 +14,11 @@ Write-Information -Message "Loading script '$PSCommandPath'."
 ### SCRIPT CONFIGURATION #######################################################
 Set-StrictMode -Version Latest
 $ErrorActionPreference = 'Stop'
-$VerbosePreference = 'Continue'
 
 
 ### LOAD MODULES ###############################################################
 Import-Module -Name (Join-Path -Path $PSScriptRoot -ChildPath "pwsh-Docker")
-
-
-# encriptacion a desarrollar:
-#  bcrypt:
-#     sudo apt install whois
-#     mkpasswd --method=bcrypt --rounds=10 "miPassword"
-#     
-#  argon2
-#  argon2 "miPassword" -t 3 -m 16 -p 1 -l 32 -e
-#        --iterations 3 \
-#        --memory-cost 65536 \
-#        --parallelism 1 \
-#        --hash-length 32 \
-#        --encoded
+$VerbosePreference = 'Continue'
 
 
 ### LOAD CONTEXT ###############################################################

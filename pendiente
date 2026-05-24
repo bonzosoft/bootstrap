@@ -1,1 +1,16 @@
 añadir valkey a glpi
+
+
+
+# encriptacion a desarrollar:
+#  bcrypt:
+#     sudo apt install whois
+#     mkpasswd --method=bcrypt --rounds=10 "miPassword"
+#     
+#  argon2
+#  argon2 "miPassword" -t 3 -m 16 -p 1 -l 32 -e
+#        --iterations 3 \
+#        --memory-cost 65536 \
+#        --parallelism 1 \
+#        --hash-length 32 \
+#        --encoded

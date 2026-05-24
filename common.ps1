@@ -25,7 +25,7 @@ $VerbosePreference = $verboseBackup
 
 
 
-$password = "contraseña de prueba"
+$password = ConvertTo-SecureString -String "contraseña de prueba" -AsPlainText
 New-DockerPasswordHash -Password $password -Base64 | ConvertFrom-SecureString -AsPlainText
 New-DockerPasswordHash -Password $password -Base64Url | ConvertFrom-SecureString -AsPlainText
 New-DockerPasswordHash -Password $password -Jwt | ConvertFrom-SecureString -AsPlainText

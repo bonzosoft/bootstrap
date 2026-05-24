@@ -4,8 +4,10 @@ Proxmox VE Scripts
 
 ## Aplicaciones
 
-### Scada
+### Apps
 thingsboard
+code-server (vscode web)
+
 
 ### Código
 ByteStash

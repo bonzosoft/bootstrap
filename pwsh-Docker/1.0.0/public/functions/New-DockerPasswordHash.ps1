@@ -1,0 +1,80 @@
+function New-DockerPasswordHash {
+    [CmdletBinding(DefaultParameterSetName = "Base64")]
+    [OutputType([securestring])]
+
+    param (
+        [Parameter()]
+        [securestring]$Password = $null,
+
+        [Parameter(Mandatory, ParameterSetName = "Base64")]
+        [switch]$Base64,
+
+        [Parameter(Mandatory, ParameterSetName = "Base64Url")]
+        [switch]$Base64Url,
+
+        [Parameter(Mandatory, ParameterSetName = "Jwt")]
+        [switch]$Jwt,
+
+        [Parameter(Mandatory, ParameterSetName = "Argon2")]
+        [switch]$Argon2,
+
+        [Parameter(Mandatory, ParameterSetName = "BCrypt")]
+        [switch]$BCrypt,
+
+        [Parameter()]
+        [int]$Length = 32
+    )
+
+    begin {
+        [byte[]]$seed = @()
+        [securestring]$hashedString = $null
+    }
+
+    process {
+        if ($null -eq $Password) {
+            $seed = [System.Security.Cryptography.RandomNumberGenerator]::GetBytes($Length)
+            $Password = ConvertTo-SecureString -String ([System.Buffers.Text.Base64Url]::EncodeToString($seed)) -AsPlainText
+        }
+
+        switch ($PSCmdlet.ParameterSetName) {
+            "Base64" {
+                $hashedString = [System.Convert]::ToBase64String([Text.Encoding]::UTF8.GetBytes( (ConvertFrom-SecureString -SecureString $Password -AsPlainText) )) | ConvertTo-SecureString -AsPlainText
+            }
+            "Base64Url" {
+                $hashedString = [System.Buffers.Text.Base64Url]::EncodeToString([Text.Encoding]::UTF8.GetBytes( (ConvertFrom-SecureString -SecureString $Password -AsPlainText) )) | ConvertTo-SecureString -AsPlainText
+            }
+            "Jwt" {
+                $hashedString = [System.Buffers.Text.Base64Url]::EncodeToString([Text.Encoding]::UTF8.GetBytes( (ConvertFrom-SecureString -SecureString $Password -AsPlainText) )) | ConvertTo-SecureString -AsPlainText
+            }
+            "Argon2" {
+                if (-not (Get-Command -Name "argon2" -ErrorAction SilentlyContinue)) {
+                    throw "Command 'argon2' not found. Please install 'argon2' package."
+                }
+                $hashedString = & argon2 `
+                    --iterations 3 `
+                    --memory-cost 65536 `
+                    --parallelism 1 `
+                    --hash-length $Length `
+                    --encoded
+                    (ConvertFrom-SecureString -SecureString $Password -AsPlainText) | ConvertTo-SecureString -AsPlainText
+            }
+            "BCrypt" {
+                if (-not (Get-Command -Name "mkpasswd" -ErrorAction SilentlyContinue)) {
+                    throw "Command 'mkpasswd' not found. Please install 'whois' package."
+                }
+                $hashedString = & mkpasswd `
+                    --method=bcrypt `
+                    --rounds=10 `
+                    (ConvertFrom-SecureString -SecureString $Password -AsPlainText) | ConvertTo-SecureString -AsPlainText
+            }
+            default {
+                throw "Unknonw encryption type."
+            }
+        }
+        Write-Output -InputObject (ConvertTo-SecureString -String $hashedString -AsPlainText)
+    }
+
+    end {
+    
+    }
+}

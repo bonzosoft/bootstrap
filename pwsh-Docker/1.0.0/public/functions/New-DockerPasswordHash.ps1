@@ -39,8 +39,6 @@ function New-DockerPasswordHash {
             $tmp = ConvertFrom-SecureString -SecureString $Password -AsPlainText
         }
 
-        Write-Host $tmp
-
         switch ($PSCmdlet.ParameterSetName) {
             "Base64" {
                 $hashedString = [System.Convert]::ToBase64String([Text.Encoding]::UTF8.GetBytes( $tmp ))
@@ -74,7 +72,7 @@ function New-DockerPasswordHash {
                 throw "Unknonw encryption type."
             }
         }
-        Write-Host $hashedString
+  
         Write-Output -InputObject (ConvertTo-SecureString -String $hashedString -AsPlainText)
     }
 

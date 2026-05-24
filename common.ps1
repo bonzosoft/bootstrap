@@ -26,11 +26,11 @@ $VerbosePreference = $verboseBackup
 
 
 $password = ConvertTo-SecureString -String "contraseña segura" -AsPlainText
-New-DockerPasswordHash -Password $password -Base64
-New-DockerPasswordHash -Password $password -Base64Url
-New-DockerPasswordHash -Password $password -Jwt
-New-DockerPasswordHash -Password $password -Argon2
-New-DockerPasswordHash -Password $password -BCrypt
+(New-DockerPasswordHash -Password $password -Base64 ) | ConvertFrom-SecureString -AsPlainText
+(New-DockerPasswordHash -Password $password -Base64Url) | ConvertFrom-SecureString -AsPlainText
+(New-DockerPasswordHash -Password $password -Jwt) | ConvertFrom-SecureString -AsPlainText
+(New-DockerPasswordHash -Password $password -Argon2) | ConvertFrom-SecureString -AsPlainText
+(New-DockerPasswordHash -Password $password -BCrypt) | ConvertFrom-SecureString -AsPlainText
 
 ### LOAD CONTEXT ###############################################################
 $WorkingDir = [IO.DirectoryInfo](Get-Location).Path

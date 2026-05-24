@@ -15,10 +15,6 @@ Write-Information -Message "Loading script '$PSCommandPath'."
 . (Get-Item -Path (Join-Path -Path $PSScriptRoot -ChildPath "common.ps1"))
 
 
-## SELECT TENANT ################################################################
-#Switch-DockerTenant
-
-
 ## PULL SUBMODULES #############################################################
 if (Test-Path -Path $Script:Context.IncludeDir) {
     Write-Information -Message "Pulling submodules."
@@ -64,7 +60,7 @@ $volumes = Get-DockerServiceInfo -InputObject $compose -Service $compose.service
 $Script:Context += @{
     "Service"= $volumes
 }
-Write-Information -Message ($Script:Context | Out-String)
+Write-Verbose -Message ($Script:Context | Out-String)
 
 
 ## LOAD SUBMODULES SCRIPTS #####################################################

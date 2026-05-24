@@ -1,7 +1,7 @@
 [IO.FileInfo]$Self = $PSCommandPath
 
 
-Write-Information -Message "Loading module '$($Self.BaseName)'."
+Write-Verbose -Message "Loading module '$($Self.BaseName)'."
 
 
 ### List of required modules ###################################################
@@ -44,25 +44,25 @@ Export-ModuleMember -Variable *
 ### Load of module assets ######################################################
 # Import required modules
 foreach ($module in $requiredModules) {
-    Write-Information -Message "Loading submodule '$module'."
+    Write-Verbose -Message "Loading submodule '$module'."
     Import-Module -Name (Join-Path -Path $Self.DirectoryName -ChildPath "etc" -AdditionalChildPath $module) -Force
 }
 
 # Import required binaries
 foreach ($binary in $requiredBinaries) {
-    Write-Information -Message "Loading binary '$binary'."
+    Write-Verbose -Message "Loading binary '$binary'."
     Add-Type -Path (Join-Path -Path $Self.DirectoryName -ChildPath "bin" -AdditionalChildPath $binary)
 }
 
 # Dot source function definition files
 foreach ($function in ($publicFunctions + $privateFunctions)) {    
-    Write-Information -Message "Loading function '$($function.BaseName)'."
+    Write-Verbose -Message "Loading function '$($function.BaseName)'."
     . $function.FullName
 }
 
 ## Dot source classes definition files
 foreach ($class in ($publicClasses + $privateClasses)) {
-    Write-Information -Message "Loading function '$($class.BaseName)'."
+    Write-Verbose -Message "Loading function '$($class.BaseName)'."
     . $class.FullName
 }
 
@@ -83,4 +83,4 @@ foreach ($class in $PublicClasses) {
 }
 
 
-Write-Information -Message "Loaded module '$($Self.BaseName)'."
+Write-Verbose -Message "Loaded module '$($Self.BaseName)'."

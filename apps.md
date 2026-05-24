@@ -4,6 +4,9 @@ Proxmox VE Scripts
 
 ## Aplicaciones
 
+### Scada
+thingsboard
+
 ### Código
 ByteStash
 

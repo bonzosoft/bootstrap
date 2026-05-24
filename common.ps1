@@ -14,11 +14,11 @@ Write-Information -Message "Loading script '$PSCommandPath'."
 ### SCRIPT CONFIGURATION #######################################################
 Set-StrictMode -Version Latest
 $ErrorActionPreference = 'Stop'
+$VerbosePreference = 'Continue'
 
 
 ### LOAD MODULES ###############################################################
-Import-Module -Name (Join-Path -Path $PSScriptRoot -ChildPath "pwsh-Docker")
-$VerbosePreference = 'Continue'
+Import-Module -Name (Join-Path -Path $PSScriptRoot -ChildPath "pwsh-Docker") -Verbose:$false
 
 
 ### LOAD CONTEXT ###############################################################

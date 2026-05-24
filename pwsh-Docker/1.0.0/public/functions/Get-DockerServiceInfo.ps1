@@ -23,12 +23,12 @@ function Get-DockerServiceInfo {
 
     process {
         foreach ($item in $Service) {
-            Write-Verbose "Checking service '$item' for volumes."
+            Write-Information "Checking service '$item' for volumes."
 
             $volumesList = @()
             
             foreach ($volume in $InputObject.services.$item.volumes) {
-                Write-Verbose "Checking volume '$($volume.source)'. Type is $($volume.type)"
+                Write-Information "Checking volume '$($volume.source)'. Type is $($volume.type)"
 
                 switch ($volume.type) {
                     "bind" {
@@ -42,10 +42,10 @@ function Get-DockerServiceInfo {
                     }
                 }
                 if ((-not $Force) -and (-not $volumePath.StartsWith($Script:Context.DataDir))) {
-                    Write-Verbose "Skipping system volume."
+                    Write-Information "Skipping system volume."
                     continue
                 }
-                Write-Verbose "Adding volume path: '$volumePath'."
+                Write-Information "Adding volume path: '$volumePath'."
                 if (Test-Path -Path $volumePath) {
                     $volumesList += Get-Item -Path $volumePath
                 }

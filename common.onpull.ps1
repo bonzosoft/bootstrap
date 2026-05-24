@@ -53,6 +53,7 @@ Get-Content -Path $Script:Context.DotEnvFile | ForEach-Object {
 Move-Item -Path "$($Script:Context.DotEnvFile).tmp" -Destination $Script:Context.DotEnvFile -Force
 Write-Verbose -Message ($Script:Context | Out-String)
 
+
 ## GET SERVICES INFORMATION ####################################################
 $compose = Get-DockerCompose -Path $Script:Context.ComposeFile
 $volumes = Get-DockerServiceInfo -InputObject $compose -Service $compose.services.Keys -Verbose

@@ -78,7 +78,6 @@ function Grant-DockerPermission {
                 $directories.FullName | xargs -r chown ${PUID}:${PGID}
                 foreach ($directory in $directories) {
                     [IO.File]::SetUnixFileMode($directory.FullName, $directoryPermission)
-                    setfacl -m u:568:rwx $directory.FullName
                 }
             }
             if ($files) {

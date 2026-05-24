@@ -78,10 +78,6 @@ secrets: {}
   #  file: ${DATADIR:?}/.secrets/
   #app-:
   #  file: ${DATADIR:?}/.secrets/
-  #app-:
-  #  file: ${DATADIR:?}/.secrets/
-  #app-:
-  #  file: ${DATADIR:?}/.secrets/
 
 ## VOLUMES #####################################################################
 volumes: {}

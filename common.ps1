@@ -62,8 +62,8 @@ $tenantData = Join-Path -Path $Script:Context.CommonDir -ChildPath "tenants" -Ad
 #$Script:Context += [System.Collections.Hashtable]::new($jsonHash, [System.StringComparer]::OrdinalIgnoreCase)
 #$Script:Context += Get-Content -Path $tenantData -Encoding utf8 | ConvertFrom-Json -AsHashTable -NoEnumerate
 $Script:Context += Get-Content -Path $tenantData | ConvertFrom-Json -AsHashTable -Depth 9
-$Script:Context = [hashtable]::new($Script:Context, [System.StringComparer]::OrdinalIgnoreCase)
-Write-Information -Message ($Script:Context | Out-String)
+#$Script:Context = [hashtable]::new($Script:Context, [System.StringComparer]::OrdinalIgnoreCase)
+Write-Verbose -Message ($Script:Context | Out-String)
 
 
 Write-Information -Message "Loaded script '$PSCommandPath'."

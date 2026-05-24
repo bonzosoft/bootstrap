@@ -1,10 +1,13 @@
 function Get-DockerPasswordHash {
-    [CmdletBinding(DefaultParameterSetName = "Base64")]
+    [CmdletBinding(DefaultParameterSetName = "Plain")]
     [OutputType([securestring])]
 
     param (
         [Parameter()]
         [securestring]$Password = $null,
+
+        [Parameter(Mandatory, ParameterSetName = "Plain")]
+        [switch]$Base64,
 
         [Parameter(Mandatory, ParameterSetName = "Base64")]
         [switch]$Base64,

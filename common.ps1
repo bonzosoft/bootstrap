@@ -60,7 +60,7 @@ $Script:Context = @{
 $tenantData = Join-Path -Path $Script:Context.CommonDir -ChildPath "tenants" -AdditionalChildPath "$($Script:Context.Tenant).json"
 #$jsonHash = Get-Content -Path $tenantData -Encoding utf8 | ConvertFrom-Json -AsHashTable
 #$Script:Context += [System.Collections.Hashtable]::new($jsonHash, [System.StringComparer]::OrdinalIgnoreCase)
-$Script:Context += Get-Content -Path $tenantData -Encoding utf8 | ConvertFrom-Json -AsHashTable
+$Script:Context += Get-Content -Path $tenantData -Encoding utf8 | ConvertFrom-Json -AsHashTable -NoEnumerate
 $Script:Context = [hashtable]::new($Script:Context, [System.StringComparer]::OrdinalIgnoreCase)
 Write-Information -Message ($Script:Context | Out-String)
 

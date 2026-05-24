@@ -55,7 +55,7 @@ function New-DockerPasswordHash {
                 if (-not (Get-Command -Name "argon2" -ErrorAction SilentlyContinue)) {
                     throw "Command 'argon2' not found. Please install 'argon2' package."
                 }
-                $hashedString = $tmp | argon2 $seed -id -t 3 -k 65536 -p1 -l $Length -e
+                $hashedString = $tmp | argon2 $seed -id -t 3 -k 65536 -p 1 -l $Length -e
             }
             "BCrypt" {
                 if (-not (Get-Command -Name "mkpasswd" -ErrorAction SilentlyContinue)) {

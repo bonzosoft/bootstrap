@@ -1,4 +1,4 @@
-function Get-DockerPasswordHash {
+function New-DockerPassword {
     [CmdletBinding(DefaultParameterSetName = "Plain")]
     [OutputType([securestring])]
 

@@ -11,6 +11,7 @@ code-server (vscode web)
 
 ### Código
 ByteStash
+massCode
 
 ### Diógenes
 ArchiveBox 

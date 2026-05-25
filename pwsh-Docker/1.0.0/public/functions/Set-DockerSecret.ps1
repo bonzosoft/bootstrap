@@ -26,7 +26,6 @@ function Set-DockerSecret {
     begin {
         [IO.FileInfo]$secretFile = Join-Path -Path $Path.FullName -ChildPath $Name
         [IO.FileInfo]$temporaryFile = $null
-        [string]$currentValue = ""
     }
 
     end {        
@@ -35,7 +34,7 @@ function Set-DockerSecret {
             if ($IsLinux) {
                 [IO.File]::SetUnixFileMode($temporaryFile.FullName, [IO.UnixFileMode]::UserWrite)
             }
-            Set-Content -Path $temporaryFile.FullName -Value $currentValue -Encoding UTF8 -NoNewLine
+            Set-Content -Path $temporaryFile.FullName -Value $Value -Encoding UTF8 -NoNewLine
 
             New-Item -Path $secretFile.Directory -ItemType Directory -Force | Out-Null
             if ($secretFile.Linktarget) {

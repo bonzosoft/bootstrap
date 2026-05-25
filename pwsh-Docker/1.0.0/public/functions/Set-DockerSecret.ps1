@@ -14,7 +14,7 @@ function Set-DockerSecret {
 
         [Parameter(Mandatory)]
         [AllowEmptyString()]
-        [string]$Value,
+        [object]$Value,
 
         [Parameter()]
         [switch]$Overwrite,
@@ -34,7 +34,13 @@ function Set-DockerSecret {
             if ($IsLinux) {
                 [IO.File]::SetUnixFileMode($temporaryFile.FullName, [IO.UnixFileMode]::UserWrite)
             }
-            Set-Content -Path $temporaryFile.FullName -Value $Value -Encoding UTF8 -NoNewLine
+            if ($Value -is [SecureString]) {
+                Set-Content -Path $temporaryFile.FullName -Value (ConvertFrom-SecureString -SecureString $Value -AsPlainText) -Encoding UTF8 -NoNewLine
+            }
+            else {
+                Set-Content -Path $temporaryFile.FullName -Value $Value -Encoding UTF8 -NoNewLine
+            }
+            
 
             New-Item -Path $secretFile.Directory -ItemType Directory -Force | Out-Null
             if ($secretFile.Linktarget) {

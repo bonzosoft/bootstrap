@@ -129,6 +129,8 @@ services:
       #
       #
       #
+      #
+      #
     healthcheck:
       test: ["CMD", "wget", "--quiet", "--spider", "http://127.0.0.1:${APP_PORT:?}"]
       interval:        30s

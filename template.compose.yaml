@@ -3,8 +3,6 @@ include: []
   #- path: ./include/
   #- path: ./include/
   #- path: ./include/
-  #- path: ./include/
-  #- path: ./include/
   #  project_directory: .
 
 ## HARDENING ###################################################################
@@ -131,10 +129,6 @@ services:
       #
       #
       #
-      #
-      #
-      #
-      #
     healthcheck:
       test: ["CMD", "wget", "--quiet", "--spider", "http://127.0.0.1:${APP_PORT:?}"]
       interval:        30s
@@ -145,8 +139,8 @@ services:
     stop_grace_period: 15s
 
     ##--- NETWORK -------------------##
-    hostname: ${PROJECTNAME}-${SERVER_HOSTNAME:?}
-    #network_mode: bridge # bridge|host|none|service:[servicename]|container:[containername]
+    hostname: ${PROJECTNAME}-${SERVERNAME:?}
+
     networks:
       internal:
         aliases:
@@ -157,17 +151,9 @@ services:
     expose:
       - ${APP_PORT:?}
       #- 
-      #-
-      #-
-      #-
-      #-
     ports: []
       #- 0.0.0.0:${APP_EXT_PORT:?}:${APP_EXT_PORT:?}
       #- 0.0.0.0:
-      #-
-      #-
-      #-
-      #-
     extra_hosts: {}
       #- host.docker.internal:host-gateway
       #- 

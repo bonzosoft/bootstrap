@@ -29,7 +29,7 @@ if (Test-Path -Path $Script:Context.IncludeDir) {
 Get-Content -Path $Script:Context.DotEnvFile | ForEach-Object {
     $string = $PSItem
     if (-not ($string.Trim() -like "^#")) {
-        $string = $string.Replace('[[SERVER_HOSTNAME]]',    $Script:Context.Hostname)
+        $string = $string.Replace('[[SERVERNAME]]',    $Script:Context.Hostname)
         $string = $string.Replace('[[DATADIR]]',            $Script:Context.DataDir.FullName)
         $string = $string.Replace('[[DOMAIN]]',             $Script:Context.Domain)
         $string = $string.Replace('[[PROJECTNAME]]',        $Script:Context.Docker.ProjectName)

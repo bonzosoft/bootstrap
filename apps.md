@@ -111,4 +111,4 @@ inkscape
 ### Backup
 [Volumerize](https://github.com/blacklabelops/volumerize)
 
-[Docker-Volume-Backup](https://offen.github.io/docker-volume-backup/)
+[Docker-Volume-Backup](https://github.com/offen/docker-volume-backup)

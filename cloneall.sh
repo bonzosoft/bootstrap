@@ -10,9 +10,9 @@ cd "$DESTINO" || exit 1
 echo "Obteniendo repositorios de $ORG..."
 
 gh repo list "$ORG" \
-  --limit 1000 \
-  --json name,sshUrl \
-  --jq '.[] | .sshUrl' | while read -r repo; do
+    --limit 1000 \
+    --json name,url \
+    --jq '.[] | .url' | while read -r repo; do
 
     nombre=$(basename "$repo" .git)
 

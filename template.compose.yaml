@@ -57,52 +57,6 @@ x-resources: &resources
     #  soft: -1
     #  hard: -1
 
-## NETWORKS ####################################################################
-networks:
-  internal:
-    driver: bridge
-    external: false
-  #backup:
-  #  driver: bridge
-  #  external: true
-
-## SECRETS #####################################################################
-secrets: {}
-  #app-:
-  #  file: ${DATADIR:?}/.secrets/
-  #app-:
-  #  file: ${DATADIR:?}/.secrets/
-  #app-:
-  #  file: ${DATADIR:?}/.secrets/
-  #app-:
-  #  file: ${DATADIR:?}/.secrets/
-
-## VOLUMES #####################################################################
-volumes: {}
-  #app-data:
-  #  driver: local
-  #  driver_opts:
-  #    type: none
-  #    device: ${DATADIR:?}/app/data
-  #    o: bind
-  #db-socket:
-  #  driver: local
-  #  driver_opts:
-  #    type: tmpfs
-  #    device: tmpfs
-  #    o: size=10m,mode=777
-
-## CONFIGS #####################################################################
-configs: {}
-  #http-:
-  #  file: ./config/
-  #http-:
-  #  file: ./config/
-  #http-:
-  #  file: ./config/
-  #http-:
-  #  file: ./config/
-
 ## SERVICES ####################################################################
 services:
   ##--- APP ------------------------------------------------------------------##
@@ -142,7 +96,6 @@ services:
 
     ##--- NETWORK -------------------##
     hostname: ${PROJECTNAME}-${SERVERNAME:?}
-
     networks:
       internal:
         aliases:
@@ -162,23 +115,57 @@ services:
 
     ##--- STORAGE -------------------##
     volumes:
-      - ${DATADIR:?}/app/config:/config/:rw
-      #-
-      #-
-      #-
-      #-
-      #-
-      #-
-      #-
-      #-
-      #-
+      ###### bind
+      #- type:       volume
+      #  source:     app-
+      #  target:     /app
+      #  volume:
+      #    subpath:  data
+      #    nocopy:   false
+      #  read_only:  false
+      ###### bind
+      #- type:       volume
+      #  source:     app-
+      #  target:     /app
+      #  volume:
+      #    subpath:  data
+      #    nocopy:   false
+      #  read_only:  false
+      ###### bind
+      #- type:       volume
+      #  source:     app-
+      #  target:     /app
+      #  volume:
+      #    subpath:  data
+      #    nocopy:   false
+      #  read_only:  false
+      ###### bind
+      #- type:       volume
+      #  source:     app-
+      #  target:     /app
+      #  volume:
+      #    subpath:  data
+      #    nocopy:   false
+      #  read_only:  false
+      ###### bind
+      #- type:       volume
+      #  source:     app-
+      #  target:     /app
+      #  volume:
+      #    subpath:  data
+      #    nocopy:   false
+      #  read_only:  false
+      ###### bind
+      #- type:       volume
+      #  source:     app-
+      #  target:     /app
+      #  volume:
+      #    subpath:  data
+      #    nocopy:   false
+      #  read_only:  false
     tmpfs:
       - /tmp:rw,noexec,nosuid,nodev,mode=1777
       #- /var/run:rw,noexec,nosuid,nodev,mode=0775,uid=${APP_PUID:-${PUID}},gid=${APP_PGID:-${PGID}}
-      #-
-      #-
-      #-
-      #-
 
     ##--- CONFIGURATION -------------##
     secrets: []
@@ -195,3 +182,61 @@ services:
       #  target:
     environment:
       TZ:                                   Europe/Madrid
+
+## VOLUMES #####################################################################
+volumes: {}
+  #app-:
+  #  driver: local
+  #  driver_opts:
+  #    type: none
+  #    device: ${DATADIR:?}
+  #    o: bind
+  #app-:
+  #  driver: local
+  #  driver_opts:
+  #    type: none
+  #    device: ${DATADIR:?}
+  #    o: bind
+  #app-:
+  #  driver: local
+  #  driver_opts:
+  #    type: none
+  #    device: ${DATADIR:?}
+  #    o: bind
+  #app-:
+  #  driver: local
+  #  driver_opts:
+  #    type: tmpfs
+  #    device: tmpfs
+  #    o: size=10m,mode=755,uid=${DB_PUID:-${PUID}},gid=${DB_PGID:-${PGID}}
+
+## NETWORKS ####################################################################
+networks:
+  internal:
+    driver: bridge
+    external: false
+  #backup:
+  #  driver: bridge
+  #  external: true
+
+## SECRETS #####################################################################
+secrets: {}
+  #app-:
+  #  file: ${DATADIR:?}/.secrets/
+  #app-:
+  #  file: ${DATADIR:?}/.secrets/
+  #app-:
+  #  file: ${DATADIR:?}/.secrets/
+  #app-:
+  #  file: ${DATADIR:?}/.secrets/
+
+## CONFIGS #####################################################################
+configs: {}
+  #app-:
+  #  file: ./config/
+  #app-:
+  #  file: ./config/
+  #app-:
+  #  file: ./config/
+  #app-:
+  #  file: ./config/

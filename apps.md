@@ -7,7 +7,7 @@ Proxmox VE Scripts
 ### Apps
 thingsboard
 code-server (vscode web)
-
+Termix
 
 ### Código
 ByteStash

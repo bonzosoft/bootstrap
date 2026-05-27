@@ -26,10 +26,10 @@ if (Test-Path -Path $Script:Context.IncludeDir) {
 
 
 ## SET ENV FILE VARIABLES ######################################################
-Get-Content -Path $Script:Context.DotEnvFile | ForEach-Object {
+Get-Content -Path $Script:Context.DotEnvFile -Encoding utf8 | ForEach-Object {
     $string = $PSItem
     if (-not ($string.Trim() -like "^#")) {
-        $string = $string.Replace('[[SERVERNAME]]',    $Script:Context.Hostname)
+        $string = $string.Replace('[[SERVERNAME]]',         $Script:Context.Hostname)
         $string = $string.Replace('[[DATADIR]]',            $Script:Context.DataDir.FullName)
         $string = $string.Replace('[[DOMAIN]]',             $Script:Context.Domain)
         $string = $string.Replace('[[PROJECTNAME]]',        $Script:Context.Docker.ProjectName)
@@ -49,7 +49,7 @@ Get-Content -Path $Script:Context.DotEnvFile | ForEach-Object {
         $string = $string.Replace('[[SMTP_PROVIDER_PASS]]', $Script:Context.Smtp.provider.userpass)
     }
     Write-Output -InputObject $string
-} | Set-Content -Path "$($Script:Context.DotEnvFile).tmp"
+} | Set-Content -Path "$($Script:Context.DotEnvFile).tmp" -Encoding utf8
 Move-Item -Path "$($Script:Context.DotEnvFile).tmp" -Destination $Script:Context.DotEnvFile -Force
 Write-Verbose -Message ($Script:Context | Out-String)
 

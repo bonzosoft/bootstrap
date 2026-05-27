@@ -166,6 +166,8 @@ services:
     tmpfs:
       - /tmp:rw,noexec,nosuid,nodev,mode=1777
       #- /var/run:rw,noexec,nosuid,nodev,mode=0775,uid=${APP_PUID:-${PUID}},gid=${APP_PGID:-${PGID}}
+      #-
+      #-
 
     ##--- CONFIGURATION -------------##
     secrets: []
@@ -229,6 +231,10 @@ secrets: {}
   #  file: ${DATADIR:?}/.secrets/
   #app-:
   #  file: ${DATADIR:?}/.secrets/
+  #app-:
+  #  file: ${DATADIR:?}/.secrets/
+  #app-:
+  #  file: ${DATADIR:?}/.secrets/
 
 ## CONFIGS #####################################################################
 configs: {}
@@ -240,3 +246,4 @@ configs: {}
   #  file: ./config/
   #app-:
   #  file: ./config/
+  

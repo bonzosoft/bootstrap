@@ -37,16 +37,16 @@ Get-Content -Path $Script:Context.DotEnvFile -Encoding utf8 | ForEach-Object {
         $string = $string.Replace('[[PGID]]',               $Script:Context.Docker.PGID)
         $string = $string.Replace('[[SOCKETPROXY_PGID]]',   $Script:Context.Docker.DockerPGID)
         $string = $string.Replace('[[ADMIN_USER]]',         $Script:Context.Admin.username)
-        $string = $string.Replace('[[ADMIN_PASS]]',         $Script:Context.Admin.userpass)
+        $string = $string.Replace('[[ADMIN_PASS]]',         (ConvertFrom-SecureString -SecureString $Script:Context.Admin.userpass -AsPlainText))
         $string = $string.Replace('[[ADMIN_EMAIL]]',        $Script:Context.Admin.email)
         $string = $string.Replace('[[SMTP_RELAY_HOST]]',    $Script:Context.Smtp.relay.hostname)
         $string = $string.Replace('[[SMTP_RELAY_PORT]]',    $Script:Context.Smtp.relay.port)
         $string = $string.Replace('[[SMTP_RELAY_USER]]',    $Script:Context.Smtp.relay.username)
-        $string = $string.Replace('[[SMTP_RELAY_PASS]]',    $Script:Context.Smtp.relay.userpass)
+        $string = $string.Replace('[[SMTP_RELAY_PASS]]',    (ConvertFrom-SecureString -SecureString $Script:Context.Smtp.relay.userpass -AsPlainText))
         $string = $string.Replace('[[SMTP_PROVIDER_HOST]]', $Script:Context.Smtp.provider.hostname)
         $string = $string.Replace('[[SMTP_PROVIDER_PORT]]', $Script:Context.Smtp.provider.port)
         $string = $string.Replace('[[SMTP_PROVIDER_USER]]', $Script:Context.Smtp.provider.username)
-        $string = $string.Replace('[[SMTP_PROVIDER_PASS]]', $Script:Context.Smtp.provider.userpass)
+        $string = $string.Replace('[[SMTP_PROVIDER_PASS]]', (ConvertFrom-SecureString -SecureString $Script:Context.Smtp.provider.userpass -AsPlainText))
     }
     Write-Output -InputObject $string
 } | Set-Content -Path "$($Script:Context.DotEnvFile).tmp" -Encoding utf8

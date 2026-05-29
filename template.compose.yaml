@@ -121,7 +121,7 @@ services:
       #  target:     /app
       #  volume:
       #    subpath:  data
-      #    nocopy:   false
+      #    nocopy:   true
       #  read_only:  false
       ###### bind
       #- type:       volume
@@ -129,7 +129,7 @@ services:
       #  target:     /app
       #  volume:
       #    subpath:  data
-      #    nocopy:   false
+      #    nocopy:   true
       #  read_only:  false
       ###### bind
       #- type:       volume
@@ -137,7 +137,7 @@ services:
       #  target:     /app
       #  volume:
       #    subpath:  data
-      #    nocopy:   false
+      #    nocopy:   true
       #  read_only:  false
       ###### bind
       #- type:       volume
@@ -145,7 +145,7 @@ services:
       #  target:     /app
       #  volume:
       #    subpath:  data
-      #    nocopy:   false
+      #    nocopy:   true
       #  read_only:  false
       ###### bind
       #- type:       volume
@@ -153,7 +153,7 @@ services:
       #  target:     /app
       #  volume:
       #    subpath:  data
-      #    nocopy:   false
+      #    nocopy:   true
       #  read_only:  false
       ###### bind
       #- type:       volume
@@ -161,7 +161,7 @@ services:
       #  target:     /app
       #  volume:
       #    subpath:  data
-      #    nocopy:   false
+      #    nocopy:   true
       #  read_only:  false
     tmpfs:
       - /tmp:rw,noexec,nosuid,nodev,mode=1777

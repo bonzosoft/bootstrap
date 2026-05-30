@@ -187,25 +187,25 @@ services:
 
 ## VOLUMES #####################################################################
 volumes: {}
-  #app-:
+  #app:
   #  driver: local
   #  driver_opts:
   #    type: none
   #    device: ${DATADIR:?}
   #    o: bind
-  #app-:
+  #app:
   #  driver: local
   #  driver_opts:
   #    type: none
   #    device: ${DATADIR:?}
   #    o: bind
-  #app-:
+  #app:
   #  driver: local
   #  driver_opts:
   #    type: none
   #    device: ${DATADIR:?}
   #    o: bind
-  #app-:
+  #tmp:
   #  driver: local
   #  driver_opts:
   #    type: tmpfs

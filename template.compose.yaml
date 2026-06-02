@@ -234,10 +234,10 @@ volumes: {}
 ## NETWORKS ####################################################################
 networks:
   internal:
-    driver: bridge
+    driver:   bridge
     external: false
   #backup:
-  #  driver: bridge
+  #  driver:   bridge
   #  external: true
 
 ## SECRETS #####################################################################

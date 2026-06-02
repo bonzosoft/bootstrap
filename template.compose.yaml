@@ -242,27 +242,27 @@ networks:
 
 ## SECRETS #####################################################################
 secrets: {}
-  #app-:
+  #app:
   #  file: ${DATADIR:?}/.secrets/
-  #app-:
+  #app:
   #  file: ${DATADIR:?}/.secrets/
-  #app-:
+  #app:
   #  file: ${DATADIR:?}/.secrets/
-  #app-:
+  #app:
   #  file: ${DATADIR:?}/.secrets/
-  #app-:
+  #app:
   #  file: ${DATADIR:?}/.secrets/
-  #app-:
+  #app:
   #  file: ${DATADIR:?}/.secrets/
 
 ## CONFIGS #####################################################################
 configs: {}
-  #app-:
+  #app:
   #  file: ./config/
-  #app-:
+  #app:
   #  file: ./config/
-  #app-:
+  #app:
   #  file: ./config/
-  #app-:
+  #app:
   #  file: ./config/
   

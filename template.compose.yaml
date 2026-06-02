@@ -64,7 +64,7 @@ services:
   ##--- APP ------------------------------------------------------------------##
   app:
     ##--- GENERAL -------------------##
-    image: <imagename>:${APP_VERSION:-?}
+    image: <imagename>:${APP_VERSION:?}
     user: ${APP_PUID:-${PUID}}:${APP_PGID:-${PGID}}
     restart: unless-stopped
     <<:

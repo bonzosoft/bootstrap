@@ -1,7 +1,9 @@
 ## INCLUDE #####################################################################
 include: []
   #- path: ./include/
+  #  project_directory: .
   #- path: ./include/
+  #  project_directory: .
   #- path: ./include/
   #  project_directory: .
 
@@ -62,7 +64,7 @@ services:
   ##--- APP ------------------------------------------------------------------##
   app:
     ##--- GENERAL -------------------##
-    image: :${APP_VERSION:-}
+    image: <imagename>:${APP_VERSION:-?}
     user: ${APP_PUID:-${PUID}}:${APP_PGID:-${PGID}}
     restart: unless-stopped
     <<:
@@ -71,9 +73,7 @@ services:
     depends_on:
       webproxy:
          condition: service_healthy
-    #entrypoint: ["sh", "-c"]
-    #command:
-      #- |
+    entrypoint: null
       #
       #
       #
@@ -85,8 +85,12 @@ services:
       #
       #
       #
+      #
+      #
+      #
+    command: null
     healthcheck:
-      test: ["CMD", "wget", "--quiet", "--spider", "http://127.0.0.1:${APP_PORT:?}"]
+      test: null #["CMD", "wget", "--quiet", "--spider", "http://127.0.0.1:${APP_PORT:?}"] | ["CMD", "curl", "--fail", "http://localhost:${APP_PORT:?}/status.php"]
       interval:        30s
       timeout:          3s
       start_period:    60s
@@ -98,8 +102,8 @@ services:
     hostname: ${PROJECTNAME}-${SERVERNAME:?}
     networks:
       internal:
-        aliases:
-          - ${APP_HOSTNAME:?}
+        #aliases:
+        #  - ${APP_HOSTNAME:?}
       #backup:
         #aliases:
         #  - ${APP_HOSTNAME:?}
@@ -107,69 +111,18 @@ services:
       - ${APP_PORT:?}
       #- 
     ports: []
-      #- 0.0.0.0:${APP_EXT_PORT:?}:${APP_EXT_PORT:?}
+      #- 0.0.0.0:${APP_EXT_PORT:?}:${APP_PORT:?}
       #- 0.0.0.0:
     extra_hosts: {}
       #- host.docker.internal:host-gateway
       #- 
 
-    ##--- STORAGE -------------------##
-    volumes:
-      ###### bind
-      #- type:       volume
-      #  source:     app-
-      #  target:     /app
-      #  volume:
-      #    subpath:  data
-      #    nocopy:   true
-      #  read_only:  false
-      ###### bind
-      #- type:       volume
-      #  source:     app-
-      #  target:     /app
-      #  volume:
-      #    subpath:  data
-      #    nocopy:   true
-      #  read_only:  false
-      ###### bind
-      #- type:       volume
-      #  source:     app-
-      #  target:     /app
-      #  volume:
-      #    subpath:  data
-      #    nocopy:   true
-      #  read_only:  false
-      ###### bind
-      #- type:       volume
-      #  source:     app-
-      #  target:     /app
-      #  volume:
-      #    subpath:  data
-      #    nocopy:   true
-      #  read_only:  false
-      ###### bind
-      #- type:       volume
-      #  source:     app-
-      #  target:     /app
-      #  volume:
-      #    subpath:  data
-      #    nocopy:   true
-      #  read_only:  false
-      ###### bind
-      #- type:       volume
-      #  source:     app-
-      #  target:     /app
-      #  volume:
-      #    subpath:  data
-      #    nocopy:   true
-      #  read_only:  false
-    tmpfs:
-      - /tmp:rw,noexec,nosuid,nodev,mode=1777
-      #- /var/run:rw,noexec,nosuid,nodev,mode=0775,uid=${APP_PUID:-${PUID}},gid=${APP_PGID:-${PGID}}
-      #-
-      #-
-
     ##--- CONFIGURATION -------------##
+    env_file:
+      - path: ./.environment
+        required: true
+    environment:
+      TZ: Europe/Madrid
     secrets: []
       #-
       #-
@@ -182,35 +135,101 @@ services:
       #  target:
       #- source:
       #  target:
-    environment:
-      TZ:                                   Europe/Madrid
+
+    ##--- STORAGE -------------------##
+    tmpfs:
+      - /tmp:rw,noexec,nosuid,nodev,mode=1777
+      #- /var/run:rw,noexec,nosuid,nodev,mode=0775,uid=${APP_PUID:-${PUID}},gid=${APP_PGID:-${PGID}}
+      #-
+      #-
+      #-
+      #-
+    volumes:
+      ###### bind
+      #- type:       volume
+      #  source:     app
+      #  target:     /app
+      #  volume:
+      #    subpath:  ""
+      #    nocopy:   true
+      #  read_only:  false
+      ###### bind
+      #- type:       volume
+      #  source:     app
+      #  target:     /app
+      #  volume:
+      #    subpath:  ""
+      #    nocopy:   true
+      #  read_only:  false
+      ###### bind
+      #- type:       volume
+      #  source:     app
+      #  target:     /app
+      #  volume:
+      #    subpath:  ""
+      #    nocopy:   true
+      #  read_only:  false
+      ###### bind
+      #- type:       volume
+      #  source:     app
+      #  target:     /app
+      #  volume:
+      #    subpath:  ""
+      #    nocopy:   true
+      #  read_only:  false
+      ###### bind
+      #- type:       volume
+      #  source:     app
+      #  target:     /app
+      #  volume:
+      #    subpath:  ""
+      #    nocopy:   true
+      #  read_only:  false
+      ###### bind
+      #- type:       volume
+      #  source:     app
+      #  target:     /app
+      #  volume:
+      #    subpath:  ""
+      #    nocopy:   true
+      #  read_only:  false
+
+  ##--- WEBPROXY -------------------------------------------------------------##
+  webproxy:
+    ##--- OVERRIDES -----------------##
+    # nop
+
+  ##--- DB -------------------------------------------------------------------##
+  db:
+    ##--- OVERRIDES -----------------##
+    # nop
 
 ## VOLUMES #####################################################################
 volumes: {}
   #app:
-  #  driver: local
+  #  driver:   local
   #  driver_opts:
-  #    type: none
-  #    device: ${DATADIR:?}
-  #    o: bind
+  #    type:   none
+  #    device: ${DATADIR:?}/app
+  #    o:      bind
   #app:
-  #  driver: local
+  #  driver:   local
   #  driver_opts:
-  #    type: none
-  #    device: ${DATADIR:?}
-  #    o: bind
+  #    type:   none
+  #    device: ${DATADIR:?}/app
+  #    o:      bind
   #app:
-  #  driver: local
+  #  driver:   local
   #  driver_opts:
-  #    type: none
-  #    device: ${DATADIR:?}
-  #    o: bind
+  #    type:   none
+  #    device: ${DATADIR:?}/app
+  #    o:      bind
   #tmp:
-  #  driver: local
+  #  driver:   local
   #  driver_opts:
-  #    type: tmpfs
+  #    type:   tmpfs
   #    device: tmpfs
-  #    o: size=10m,mode=755,uid=${DB_PUID:-${PUID}},gid=${DB_PGID:-${PGID}}
+  #    o:      size=10m,mode=755,uid=${APP_PUID:-${PUID}},gid=${APP_PGID:-${PGID}}
 
 ## NETWORKS ####################################################################
 networks:

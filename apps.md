@@ -5,6 +5,8 @@ Proxmox VE Scripts
 
 ## Aplicaciones
 
+Libretranslate
+
 ### Apps
 thingsboard
 

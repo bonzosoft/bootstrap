@@ -119,7 +119,7 @@ services:
 
     ##--- CONFIGURATION -------------##
     env_file:
-      - path: ./.environment
+      - path: ./.env.app
         required: true
     environment:
       TZ: Europe/Madrid

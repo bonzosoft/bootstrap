@@ -8,6 +8,7 @@ Write-Verbose -Message "Loading module '$($Self.BaseName)'."
 [string[]]$requiredModules = @(
     "powershell-yaml"
     "pwsh-dotenv"
+    "Convert"
 )
 
 

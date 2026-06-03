@@ -36,31 +36,32 @@ function New-DockerPassword {
     process {
         if ($null -eq $Password) {
             $seed = [System.Security.Cryptography.RandomNumberGenerator]::GetBytes($Length)
-            $tmp = [System.Buffers.Text.Base64Url]::EncodeToString($seed)
         }
         else {
-            $tmp = ConvertFrom-SecureString -SecureString $Password -AsPlainText
+            $seed = [System.Text.Encoding]::UTF8.GetBytes((ConvertFrom-SecureString -SecureString $Password -AsPlainText))
         }
 
         switch ($PSCmdlet.ParameterSetName) {
             "Plain" {
-                $hashedString = $tmp
+                $hashedString = $seed
             }
             "Base64" {
-                $hashedString = [System.Convert]::ToBase64String([Text.Encoding]::UTF8.GetBytes( $tmp ))
+                $hashedString = [Convert]::ToBase64String($seed)
             }
             "Base64Url" {
-                $hashedString = [System.Buffers.Text.Base64Url]::EncodeToString([Text.Encoding]::UTF8.GetBytes( $tmp ))
+                #$hashedString = [System.Buffers.Text.Base64Url]::EncodeToString([Text.Encoding]::UTF8.GetBytes($seed))
+                $hashedString = [Convert]::ToBase64String($bytes).TrimEnd('=').Replace('+','-').Replace('/','_')
             }
             "Jwt" {
-                $hashedString = [System.Buffers.Text.Base64Url]::EncodeToString([Text.Encoding]::UTF8.GetBytes( $tmp ))
+                #$hashedString = [System.Buffers.Text.Base64Url]::EncodeToString([Text.Encoding]::UTF8.GetBytes($seed))
+                $hashedString = [Convert]::ToBase64String($seed)
             }
             "Argon2" {
                 if (-not (Get-Command -Name "argon2" -ErrorAction SilentlyContinue)) {
                     throw "Command 'argon2' not found. Please install 'argon2' package."
                 }
                 $salt = [Convert]::ToBase64String([System.Security.Cryptography.RandomNumberGenerator]::GetBytes(16))
-                $hashedString = $tmp | argon2 $salt -id -t 3 -k 65536 -p 1 -l $Length -e
+                $hashedString = [System.Text.Encoding]::UTF8.GetString($seed) | argon2 $salt -id -t 3 -k 65536 -p 1 -l $Length -e
                 if ($LASTEXITCODE) {
                     throw "A problem was found hashing the password."
                 }
@@ -69,7 +70,7 @@ function New-DockerPassword {
                 if (-not (Get-Command -Name "mkpasswd" -ErrorAction SilentlyContinue)) {
                     throw "Command 'mkpasswd' not found. Please install 'whois' package."
                 }
-                $hashedString = $tmp | mkpasswd --method=bcrypt --rounds=10
+                $hashedString = [System.Text.Encoding]::UTF8.GetString($seed) | mkpasswd --method=bcrypt --rounds=10
                 if ($LASTEXITCODE) {
                     throw "A problem was found hashing the password."
                 }

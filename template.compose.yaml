@@ -1,5 +1,7 @@
 ## INCLUDE #####################################################################
-include: []
+include:
+  - path: ./compose.global.yaml
+  #  project_directory: .
   #- path: ./include/
   #  project_directory: .
   #- path: ./include/
@@ -109,11 +111,19 @@ services:
         #aliases:
         #  - ${APP_HOSTNAME:?}
     expose:
-      - ${APP_PORT:?}
-      #- 
+      - ${APP_PORT:?}/tcp
+      #-
+      #-
+      #-
+      #-
+      #-
     ports: []
-      #- 0.0.0.0:${APP_EXT_PORT:?}:${APP_PORT:?}
-      #- 0.0.0.0:
+      #- 0.0.0.0:${APP_EXT_PORT:?}:${APP_PORT:?}/tcp
+      #-
+      #-
+      #-
+      #-
+      #-
     extra_hosts: {}
       #- host.docker.internal:host-gateway
       #- 
@@ -146,14 +156,12 @@ services:
       #-
       #-
     volumes:
-      ###### bind
-      #- type:       volume
-      #  source:     app
-      #  target:     /app
-      #  volume:
-      #    subpath:  ""
-      #    nocopy:   true
-      #  read_only:  false
+      #- 
+      #- 
+      #- 
+      #- 
+      #- 
+      #- 
       ###### bind
       #- type:       volume
       #  source:     app
@@ -204,66 +212,3 @@ services:
   db:
     ##--- OVERRIDES -----------------##
     # nop
-
-## VOLUMES #####################################################################
-volumes: {}
-  #app:
-  #  driver:   local
-  #  driver_opts:
-  #    type:   none
-  #    device: ${DATADIR:?}/app
-  #    o:      bind
-  #app:
-  #  driver:   local
-  #  driver_opts:
-  #    type:   none
-  #    device: ${DATADIR:?}/app
-  #    o:      bind
-  #app:
-  #  driver:   local
-  #  driver_opts:
-  #    type:   none
-  #    device: ${DATADIR:?}/app
-  #    o:      bind
-  #tmp:
-  #  driver:   local
-  #  driver_opts:
-  #    type:   tmpfs
-  #    device: tmpfs
-  #    o:      size=10m,mode=755,uid=${APP_PUID:-${PUID}},gid=${APP_PGID:-${PGID}}
-
-## NETWORKS ####################################################################
-networks:
-  internal:
-    driver:   bridge
-    external: false
-  #backup:
-  #  driver:   bridge
-  #  external: true
-
-## SECRETS #####################################################################
-secrets: {}
-  #app:
-  #  file: ${DATADIR:?}/.secrets/
-  #app:
-  #  file: ${DATADIR:?}/.secrets/
-  #app:
-  #  file: ${DATADIR:?}/.secrets/
-  #app:
-  #  file: ${DATADIR:?}/.secrets/
-  #app:
-  #  file: ${DATADIR:?}/.secrets/
-  #app:
-  #  file: ${DATADIR:?}/.secrets/
-
-## CONFIGS #####################################################################
-configs: {}
-  #app:
-  #  file: ./config/
-  #app:
-  #  file: ./config/
-  #app:
-  #  file: ./config/
-  #app:
-  #  file: ./config/
-  

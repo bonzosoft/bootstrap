@@ -1,0 +1,62 @@
+## VOLUMES #####################################################################
+volumes: {}
+  #app:
+  #  driver:   local
+  #  driver_opts:
+  #    type:   none
+  #    device: ${DATADIR:?}/app
+  #    o:      bind
+  #app:
+  #  driver:   local
+  #  driver_opts:
+  #    type:   none
+  #    device: ${DATADIR:?}/app
+  #    o:      bind
+  #app:
+  #  driver:   local
+  #  driver_opts:
+  #    type:   none
+  #    device: ${DATADIR:?}/app
+  #    o:      bind
+  #tmp:
+  #  driver:   local
+  #  driver_opts:
+  #    type:   tmpfs
+  #    device: tmpfs
+  #    o:      size=10m,mode=755,uid=${APP_PUID:-${PUID}},gid=${APP_PGID:-${PGID}}
+
+## NETWORKS ####################################################################
+networks:
+  internal:
+    driver:   bridge
+    external: false
+  #backup:
+  #  driver:   bridge
+  #  external: true
+
+## SECRETS #####################################################################
+secrets: {}
+  #app:
+  #  file: ${DATADIR:?}/.secrets/
+  #app:
+  #  file: ${DATADIR:?}/.secrets/
+  #app:
+  #  file: ${DATADIR:?}/.secrets/
+  #app:
+  #  file: ${DATADIR:?}/.secrets/
+  #app:
+  #  file: ${DATADIR:?}/.secrets/
+  #app:
+  #  file: ${DATADIR:?}/.secrets/
+
+## CONFIGS #####################################################################
+configs: {}
+  #app:
+  #  file: ./config/
+  #app:
+  #  file: ./config/
+  #app:
+  #  file: ./config/
+  #app:
+  #  file: ./config/
+  

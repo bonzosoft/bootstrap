@@ -73,22 +73,23 @@ services:
     depends_on:
       webproxy:
          condition: service_healthy
-    entrypoint: null
-      #
-      #
-      #
-      #
-      #
-      #
-      #
-      #
-      #
-      #
-      #
-      #
-      #
-      #
+    entrypoint: null #["/bin/sh", "-c"]
     command: null
+      #- | 
+      #  set -e
+      #
+      #
+      #
+      #
+      #
+      #
+      #
+      #
+      #
+      #
+      #
+      #
+      #
     healthcheck:
       test: null #["CMD", "wget", "--quiet", "--spider", "http://127.0.0.1:${APP_PORT:?}"] | ["CMD", "curl", "--fail", "http://localhost:${APP_PORT:?}/status.php"]
       interval:        30s

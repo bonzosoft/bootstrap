@@ -60,7 +60,9 @@ function New-DockerPassword {
                 if (-not (Get-Command -Name "argon2" -ErrorAction SilentlyContinue)) {
                     throw "Command 'argon2' not found. Please install 'argon2' package."
                 }
-                $salt = [Convert]::ToBase64String([System.Security.Cryptography.RandomNumberGenerator]::GetBytes(16))
+                #$salt = [Convert]::ToBase64String([System.Security.Cryptography.RandomNumberGenerator]::GetBytes(16))
+                $salt = [System.Convert]::ToHexString([System.Security.Cryptography.RandomNumberGenerator]::GetBytes(16))
+                $salt
                 $hashedString = [System.Text.Encoding]::UTF8.GetString($seed) | argon2 $salt -id -t 3 -k 65536 -p 1 -l $Length -e
                 if ($LASTEXITCODE) {
                     throw "A problem was found hashing the password."

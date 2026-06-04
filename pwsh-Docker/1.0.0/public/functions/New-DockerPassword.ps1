@@ -36,7 +36,6 @@ function New-DockerPassword {
 
     process {
         if ($null -eq $Password) {
-            #$seed = [System.Security.Cryptography.RandomNumberGenerator]::GetBytes($Length)
             $plainString = New-Guid
         }
         else {
@@ -48,8 +47,8 @@ function New-DockerPassword {
 
         switch ($PSCmdlet.ParameterSetName) {
             "Plain" {
-                
                 $hashedString = $plainString
+                Write-Warning $hashedString
             }
             {"Base64" -or "Jwt"} {
                 $hashedString = [Convert]::ToBase64String($seed)

@@ -32,14 +32,15 @@ function New-DockerPassword {
         [byte[]]$seed = @()
         [string]$plainString = $null
         [string]$hashedString = $null
+        [string]$chars = "0123456789abcdefghijklmnopqrstuvwxyzABCDEFGHIJKLMNOPQRSTUVWXYZ"
     }
 
     process {
         if ($null -eq $Password) {
-            #$plainString = New-Guid
-
-            [byte[]]$bytes = [System.Security.Cryptography.RandomNumberGenerator]::GetBytes($Length)
-            $plainString = [System.Convert]::ToBase64String($bytes)           
+            
+            $plainString = -join ((1..16) | ForEach-Object { 
+                $chars[[System.Security.Cryptography.RandomNumberGenerator]::GetInt32(0, $chars.Length)] 
+            })        
         }
         else {
             $plainString = ConvertFrom-SecureString -SecureString $Password -AsPlainText

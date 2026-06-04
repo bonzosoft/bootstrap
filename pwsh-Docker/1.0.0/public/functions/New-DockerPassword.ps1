@@ -53,7 +53,6 @@ function New-DockerPassword {
                 $hashedString = [Convert]::ToBase64String($bytes).TrimEnd('=').Replace('+','-').Replace('/','_')
             }
             "Jwt" {
-                #$hashedString = [System.Buffers.Text.Base64Url]::EncodeToString([Text.Encoding]::UTF8.GetBytes($seed))
                 $hashedString = [Convert]::ToBase64String($seed)
             }
             "Argon2" {
@@ -64,9 +63,9 @@ function New-DockerPassword {
                 #$hexString = [System.Convert]::ToHexString([System.Security.Cryptography.RandomNumberGenerator]::GetBytes(16))
                 #Write-Information "salt: $hexStringt"
                 #$caracteres = "abcdefghijklmnopqrstuvwxyzABCDEFGHIJKLMNOPQRSTUVWXYZ0123456789"
-                $caracteres = "0123456789ABCDEF"
+                $chars = "0123456789ABCDEF"
                 $salt = -join ((1..16) | ForEach-Object { 
-                    $caracteres[[System.Security.Cryptography.RandomNumberGenerator]::GetInt32(0, $caracteres.Length)] 
+                    $chars[[System.Security.Cryptography.RandomNumberGenerator]::GetInt32(0, $chars.Length)] 
                 })
 
                 #$salt = "aaaaaaaaaaaaaaaa"
@@ -77,6 +76,7 @@ function New-DockerPassword {
                 Write-Warning $salt
                 $salt = $salt -replace '(..)', '\x$1'
                 Write-Warning $salt
+                Write-Warning $seed
                 
                 # 3. Construimos el comando completo.
                 # Usamos $(printf ...) para que bash genere los bytes en bruto en ese mismo instante.

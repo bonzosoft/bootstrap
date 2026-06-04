@@ -34,7 +34,6 @@ function Set-DockerSecret {
             if ($IsLinux) {
                 [IO.File]::SetUnixFileMode($temporaryFile.FullName, [IO.UnixFileMode]::UserWrite)
             }
-            Write-Warning "value: $Value"
             if ($Value -is [SecureString]) {
                 Set-Content -Path $temporaryFile.FullName -Value (ConvertFrom-SecureString -SecureString $Value -AsPlainText) -Encoding UTF8 -NoNewLine
             }

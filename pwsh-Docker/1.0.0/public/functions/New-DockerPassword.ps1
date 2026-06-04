@@ -123,9 +123,9 @@ function New-DockerPassword {
 
 
 
-                if ($LASTEXITCODE) {
-                    throw "A problem was found hashing the password."
-                }
+                #if ($LASTEXITCODE) {
+                #    throw "A problem was found hashing the password."
+                #}
             }
             "BCrypt" {
                 if (-not (Get-Command -Name "mkpasswd" -ErrorAction SilentlyContinue)) {

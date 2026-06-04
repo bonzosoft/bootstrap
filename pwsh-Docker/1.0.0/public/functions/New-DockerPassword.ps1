@@ -74,7 +74,7 @@ function New-DockerPassword {
                 
                 # 2. Convertimos "aaaaaaaaaaaaaaaa" a un formato de escape: "\xaa\xaa\xaa\xaa\xaa\xaa\xaa\xaa"
                 # Bash interpreta esto a nivel de bytes sin corromper nada.
-                $salt
+                Write-Warning $salt
                 $salt = $salt -replace '(..)', '\x$1'
                 Write-Warning $salt
                 

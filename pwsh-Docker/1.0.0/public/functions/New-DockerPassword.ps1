@@ -30,23 +30,23 @@ function New-DockerPassword {
 
     begin {
         [byte[]]$seed = @()
-        [securestring]$SecureString = $null
+        [string]$plainString = $null
         [securestring]$hashedString = $null
     }
 
     process {
         if ($null -eq $Password) {
             #$seed = [System.Security.Cryptography.RandomNumberGenerator]::GetBytes($Length)
-            $secureString = ConvertTo-SecureString -String (New-Guid) -AsPlainText
+            $plainString = New-Guid
         }
         else {
-            $secureString = $Password
+            $plainString = ConvertFrom-SecureString -SecureString $Password -AsPlainText
         }
-        $seed = [System.Text.Encoding]::UTF8.GetBytes( (ConvertFrom-SecureString -SecureString $secureString -AsPlainText) )
+        $seed = [System.Text.Encoding]::UTF8.GetBytes($plainString)
 
         switch ($PSCmdlet.ParameterSetName) {
             "Plain" {
-                $hashedString = $seed
+                $hashedString = $plainString
             }
             ("Base64" -or "Jwt") {
                 $hashedString = [Convert]::ToBase64String($seed)
@@ -68,7 +68,7 @@ function New-DockerPassword {
                 #[bytes[]]$salt = $salt -replace '(..)', '\x$1'
                 [byte[]]$salt = [System.Security.Cryptography.RandomNumberGenerator]::GetBytes(16)
                 
-                $hashedString = /bin/bash -c "echo -n '$(ConvertFrom-SecureString -SecureString $secureString -AsPlainText)' | argon2 `$(printf '$salt') -id -t 3 -k 65536 -p 1 -e"
+                $hashedString = /bin/bash -c "echo -n '$plainString' | argon2 `$(printf '$salt') -id -t 3 -k 65536 -p 1 -e"
 
                 if ($LASTEXITCODE) {
                     throw "A problem was found hashing the password."
@@ -88,7 +88,8 @@ function New-DockerPassword {
             }
         }
   
-        Write-Output -InputObject (ConvertTo-SecureString -String $hashedString -AsPlainText)
+        #Write-Output -InputObject (ConvertTo-SecureString -String $hashedString -AsPlainText)
+        Write-Output -InputObject $hashedString
     }
 
     end {

@@ -84,13 +84,9 @@ function New-DockerPassword {
                 throw "Unknown encryption type."
             }
         }
-        Write-Warning "pasa4"
-        Write-Warning $hashedString
-        Write-Warning "fin"
-        Write-Output -InputObject $hashedString
     }
 
     end {
-    
+        Write-Output -InputObject $hashedString
     }
 }

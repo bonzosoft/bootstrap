@@ -48,7 +48,7 @@ function New-DockerPassword {
             "Plain" {
                 $hashedString = $plainString
             }
-            ("Base64" -or "Jwt") {
+            {"Base64" -or "Jwt"} {
                 $hashedString = [Convert]::ToBase64String($seed)
             }
             "Base64Url" {
@@ -84,7 +84,7 @@ function New-DockerPassword {
                 }
             }
             default {
-                throw "Unknonw encryption type."
+                throw "Unknown encryption type."
             }
         }
   

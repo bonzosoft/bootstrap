@@ -76,15 +76,14 @@ function New-DockerPassword {
                 # Bash interpreta esto a nivel de bytes sin corromper nada.
                 $salt
                 $salt = $salt -replace '(..)', '\x$1'
-                $salt
+                Write-Warning $salt
                 
                 # 3. Construimos el comando completo.
                 # Usamos $(printf ...) para que bash genere los bytes en bruto en ese mismo instante.
                 # (El parámetro -e le dice a argon2 que devuelva el string final $argon2id$...)
-                $comando = "echo -n '$password' | argon2 `$(printf '$salt') -id -t 3 -k 65536 -p 1 -e"
                 
-                $hashedString = /bin/bash -c $comando
-                $hashedString
+                $hashedString = /bin/bash -c "echo -n '$seed' | argon2 `$(printf '$salt') -id -t 3 -k 65536 -p 1 -e"
+                Write-Warning $hashedString
 
                 #$hashedString = [System.Text.Encoding]::UTF8.GetString($seed) | argon2 $salt -id -t 3 -k 65536 -p 1 -l $Length -e
 

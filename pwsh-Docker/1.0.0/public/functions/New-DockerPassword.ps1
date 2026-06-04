@@ -70,10 +70,14 @@ function New-DockerPassword {
                 #[bytes[]]$salt = $salt -replace '(..)', '\x$1'
                 Write-Warning "pasa1"
                 [byte[]]$salt = [System.Security.Cryptography.RandomNumberGenerator]::GetBytes(16)
+                $salt = $hexString -replace '(..)', '\x$1'
                 Write-Warning "pasa2"
                 Write-Warning ($salt | Out-String)
                 Write-Warning "plainstring: $plainString"
+                
+                $hashedString = /bin/bash -c "echo -n '$plainString' | argon2 `$(printf $salt) -id -t 3 -k 65536 -p 1 -e"
                 $hashedString = /bin/bash -c "echo -n '$plainString' | argon2 `$(printf '$salt') -id -t 3 -k 65536 -p 1 -e"
+                # /bin/bash -c "echo -n '$plainString' | argon2 `$(printf $salt) -id -t 3 -k 65536 -p 1 -e"
                 Write-Warning "hashedstring: $hashedString"
                 Write-Warning "pasa3"
                 #if ($LASTEXITCODE) {

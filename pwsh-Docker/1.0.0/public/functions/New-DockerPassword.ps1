@@ -36,7 +36,10 @@ function New-DockerPassword {
 
     process {
         if ($null -eq $Password) {
-            $plainString = New-Guid
+            #$plainString = New-Guid
+
+            $seed = [System.Security.Cryptography.RandomNumberGenerator]::GetBytes($Length)
+            $plainString = [System.Convert]::ToBase64String($bytes)           
         }
         else {
             $plainString = ConvertFrom-SecureString -SecureString $Password -AsPlainText

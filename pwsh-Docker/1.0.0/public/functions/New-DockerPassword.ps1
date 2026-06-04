@@ -43,12 +43,12 @@ function New-DockerPassword {
         }
         $seed = [System.Text.Encoding]::UTF8.GetBytes($plainString)
 
+        Write-Warning $PSCmdlet.ParameterSetName
         Write-Warning $plainString
 
         switch ($PSCmdlet.ParameterSetName) {
             "Plain" {
                 $hashedString = $plainString
-                Write-Warning $hashedString
             }
             {"Base64" -or "Jwt"} {
                 $hashedString = [Convert]::ToBase64String($seed)
@@ -89,7 +89,8 @@ function New-DockerPassword {
                 throw "Unknown encryption type."
             }
         }
-  
+        Write-Warning $hashedString
+        Write-Warning "fin"
         Write-Output -InputObject $hashedString
     }
 

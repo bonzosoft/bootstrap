@@ -38,7 +38,7 @@ function New-DockerPassword {
         if ($null -eq $Password) {
             #$plainString = New-Guid
 
-            $seed = [System.Security.Cryptography.RandomNumberGenerator]::GetBytes($Length)
+            [byte[]]$bytes = [System.Security.Cryptography.RandomNumberGenerator]::GetBytes($Length)
             $plainString = [System.Convert]::ToBase64String($bytes)           
         }
         else {

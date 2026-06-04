@@ -61,24 +61,30 @@ function New-DockerPassword {
                     throw "Command 'argon2' not found. Please install 'argon2' package."
                 }
                 #$salt = [Convert]::ToBase64String([System.Security.Cryptography.RandomNumberGenerator]::GetBytes(16))
-                $hexString = [System.Convert]::ToHexString([System.Security.Cryptography.RandomNumberGenerator]::GetBytes(16))
-                Write-Information "salt: $hexStringt"
+                #$hexString = [System.Convert]::ToHexString([System.Security.Cryptography.RandomNumberGenerator]::GetBytes(16))
+                #Write-Information "salt: $hexStringt"
+                #$caracteres = "abcdefghijklmnopqrstuvwxyzABCDEFGHIJKLMNOPQRSTUVWXYZ0123456789"
+                $caracteres = "0123456789ABCDEF"
+                $salt = -join ((1..16) | ForEach-Object { 
+                    $caracteres[[System.Security.Cryptography.RandomNumberGenerator]::GetInt32(0, $caracteres.Length)] 
+                })
 
-
-                #$hexString = "aaaaaaaaaaaaaaaa"
+                #$salt = "aaaaaaaaaaaaaaaa"
                 #$password = "tu_contraseña_aqui" # Reemplaza por la misma contraseña que usaste en it-tools
                 
                 # 2. Convertimos "aaaaaaaaaaaaaaaa" a un formato de escape: "\xaa\xaa\xaa\xaa\xaa\xaa\xaa\xaa"
                 # Bash interpreta esto a nivel de bytes sin corromper nada.
-                $bashSalt = $hexString -replace '(..)', '\x$1'
+                $salt
+                $salt = $salt -replace '(..)', '\x$1'
+                $salt
                 
                 # 3. Construimos el comando completo.
                 # Usamos $(printf ...) para que bash genere los bytes en bruto en ese mismo instante.
                 # (El parámetro -e le dice a argon2 que devuelva el string final $argon2id$...)
-                $comando = "echo -n '$password' | argon2 `$(printf '$bashSalt') -id -t 3 -k 65536 -p 1 -e"
+                $comando = "echo -n '$password' | argon2 `$(printf '$salt') -id -t 3 -k 65536 -p 1 -e"
                 
                 $hashedString = /bin/bash -c $comando
-
+                $hashedString
 
                 #$hashedString = [System.Text.Encoding]::UTF8.GetString($seed) | argon2 $salt -id -t 3 -k 65536 -p 1 -l $Length -e
 

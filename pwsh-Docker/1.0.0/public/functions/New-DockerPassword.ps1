@@ -40,7 +40,7 @@ function New-DockerPassword {
             $secureString = ConvertTo-SecureString -String (New-Guid) -AsPlainText
         }
         else {
-            $secureString = ConvertFrom-SecureString -SecureString $secureString -AsPlainText
+            $secureString = ConvertFrom-SecureString -SecureString $Password -AsPlainText
         }
         $seed = [System.Text.Encoding]::UTF8.GetBytes($secureString)
 

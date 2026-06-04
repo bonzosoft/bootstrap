@@ -32,13 +32,13 @@ function New-DockerPassword {
         [byte[]]$seed = @()
         [string]$plainString = $null
         [string]$hashedString = $null
-        [string]$chars = "0123456789abcdefghijklmnopqrstuvwxyzABCDEFGHIJKLMNOPQRSTUVWXYZ"
+        [string]$validChars = "0123456789abcdefghijklmnopqrstuvwxyzABCDEFGHIJKLMNOPQRSTUVWXYZ_+-@#~%&()"
     }
 
     process {
         if ($null -eq $Password) {
             $plainString = -join ((1..32) | ForEach-Object { 
-                $chars[[System.Security.Cryptography.RandomNumberGenerator]::GetInt32(0, $chars.Length)] 
+                $validChars[[System.Security.Cryptography.RandomNumberGenerator]::GetInt32(0, $validChars.Length)] 
             })        
         }
         else {
@@ -72,7 +72,8 @@ function New-DockerPassword {
                 ## converting salt to hex bytes
                 #[bytes[]]$salt = $salt -replace '(..)', '\x$1'
                 [byte[]]$salt = [System.Security.Cryptography.RandomNumberGenerator]::GetBytes(16)
-                [string]$hexSalt = $salt -join '' -replace '(..)', '\x$1'               
+                $hexSalt = $salt -replace '(..)', '\x$1'               
+                #$hexSalt = ($saltBytes | ForEach-Object { '\x' + $_.ToString('x2') }) -join ''
                 $hashedString = /bin/bash -c "echo -n '$plainString' | argon2 `$(printf $hexSalt) -id -t 3 -k 65536 -p 1 -e"
 
                 if ($LASTEXITCODE) {

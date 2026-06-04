@@ -4,7 +4,7 @@ function New-DockerPassword {
 
     param (
         [Parameter()]
-        [securestring]$Password = $null,
+        [SecureString]$Password = $null,
 
         [Parameter(Mandatory, ParameterSetName = "Plain")]
         [switch]$AsPlainText,
@@ -30,16 +30,19 @@ function New-DockerPassword {
 
     begin {
         [byte[]]$seed = @()
-        #[securestring]$hashedString = $null
+        [securestring]$SecureString = $null
+        [securestring]$hashedString = $null
     }
 
     process {
         if ($null -eq $Password) {
-            $seed = [System.Security.Cryptography.RandomNumberGenerator]::GetBytes($Length)
+            #$seed = [System.Security.Cryptography.RandomNumberGenerator]::GetBytes($Length)
+            $secureString = ConvertTo-SecureString -String (New-Guid) -AsPlainText
         }
         else {
-            $seed = [System.Text.Encoding]::UTF8.GetBytes((ConvertFrom-SecureString -SecureString $Password -AsPlainText))
+            $secureString = ConvertFrom-SecureString -SecureString $secureString -AsPlainText
         }
+        $seed = [System.Text.Encoding]::UTF8.GetBytes($secureString)
 
         switch ($PSCmdlet.ParameterSetName) {
             "Plain" {
@@ -49,22 +52,23 @@ function New-DockerPassword {
                 $hashedString = [Convert]::ToBase64String($seed)
             }
             "Base64Url" {
-                #$hashedString = [System.Buffers.Text.Base64Url]::EncodeToString([Text.Encoding]::UTF8.GetBytes($seed))
                 $hashedString = [Convert]::ToBase64String($seed).TrimEnd('=').Replace('+','-').Replace('/','_')
             }
             "Argon2" {
                 if (-not (Get-Command -Name "argon2" -ErrorAction SilentlyContinue)) {
                     throw "Command 'argon2' not found. Please install 'argon2' package."
                 }
-                $chars = "0123456789ABCDEF"
-                # generating salt
-                $salt = -join ((1..16) | ForEach-Object { 
-                    $chars[[System.Security.Cryptography.RandomNumberGenerator]::GetInt32(0, $chars.Length)] 
-                })
-                # converting salt to hex
-                $salt = $salt -replace '(..)', '\x$1'
                 
-                $hashedString = /bin/bash -c "echo -n '$(ConvertFrom-SecureString -SecureString $Password -AsPlainText)' | argon2 `$(printf '$seed') -id -t 3 -k 65536 -p 1 -e"
+                # generating salt
+                #$chars = "0123456789ABCDEF"
+                #[string]$salt = -join ((1..16) | ForEach-Object { 
+                #    $chars[[System.Security.Cryptography.RandomNumberGenerator]::GetInt32(0, $chars.Length)] 
+                #})
+                ## converting salt to hex bytes
+                #[bytes[]]$salt = $salt -replace '(..)', '\x$1'
+                [byte[]]$salt = [System.Security.Cryptography.RandomNumberGenerator]::GetBytes(16)
+                
+                $hashedString = /bin/bash -c "echo -n '$(ConvertFrom-SecureString -SecureString $secureString -AsPlainText)' | argon2 `$(printf '$salt') -id -t 3 -k 65536 -p 1 -e"
 
                 if ($LASTEXITCODE) {
                     throw "A problem was found hashing the password."

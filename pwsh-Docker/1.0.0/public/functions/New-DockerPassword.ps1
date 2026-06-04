@@ -54,7 +54,7 @@ function New-DockerPassword {
                 Write-Warning "2 - $plainString"
                 Write-Warning "2 - $hashedString"
             }
-            {"Base64" -or "Jwt"} {
+            {($PSItem -eq "Base64") -or ($PSItem -eq "Jwt")} {
                 $hashedString = [Convert]::ToBase64String($seed)
             }
             "Base64Url" {

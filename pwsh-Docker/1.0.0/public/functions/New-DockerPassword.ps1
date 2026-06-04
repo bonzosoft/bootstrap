@@ -72,7 +72,7 @@ function New-DockerPassword {
                 [byte[]]$salt = [System.Security.Cryptography.RandomNumberGenerator]::GetBytes(16)
                 Write-Warning "pasa2"
                 Write-Warning ($salt | Out-String)
-                Write-Warning $plainString
+                Write-Warning "plainstring: $plainString"
                 $hashedString = /bin/bash -c "echo -n '$plainString' | argon2 `$(printf '$salt') -id -t 3 -k 65536 -p 1 -e"
                 Write-Warning $hashedString
                 Write-Warning "pasa3"

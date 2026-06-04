@@ -44,8 +44,11 @@ function New-DockerPassword {
         }
         $seed = [System.Text.Encoding]::UTF8.GetBytes($plainString)
 
+        Write-Warning $plainString
+
         switch ($PSCmdlet.ParameterSetName) {
             "Plain" {
+                
                 $hashedString = $plainString
             }
             {"Base64" -or "Jwt"} {
@@ -70,9 +73,9 @@ function New-DockerPassword {
                 
                 $hashedString = /bin/bash -c "echo -n '$plainString' | argon2 `$(printf '$salt') -id -t 3 -k 65536 -p 1 -e"
 
-                if ($LASTEXITCODE) {
-                    throw "A problem was found hashing the password."
-                }
+                #if ($LASTEXITCODE) {
+                #    throw "A problem was found hashing the password."
+                #}
             }
             "BCrypt" {
                 if (-not (Get-Command -Name "mkpasswd" -ErrorAction SilentlyContinue)) {
@@ -88,7 +91,6 @@ function New-DockerPassword {
             }
         }
   
-        #Write-Output -InputObject (ConvertTo-SecureString -String $hashedString -AsPlainText)
         Write-Output -InputObject $hashedString
     }
 

@@ -64,16 +64,9 @@ function New-DockerPassword {
                     throw "Command 'argon2' not found. Please install 'argon2' package."
                 }
                 
-                # generating salt
-                #$chars = "0123456789ABCDEF"
-                #[string]$salt = -join ((1..16) | ForEach-Object { 
-                #    $chars[[System.Security.Cryptography.RandomNumberGenerator]::GetInt32(0, $chars.Length)] 
-                #})
-                ## converting salt to hex bytes
-                #[bytes[]]$salt = $salt -replace '(..)', '\x$1'
                 [byte[]]$saltBytes = [System.Security.Cryptography.RandomNumberGenerator]::GetBytes(16)
-                #$hexSalt = $saltBytes -replace '(..)', '\x$1' -join ''
-                $hexSalt = ($saltBytes | ForEach-Object { '\x' + $_.ToString('x2') }) -join ''
+                $hexSalt = ($saltBytes -replace '(..)', '\x$1') -join ''
+                #$hexSalt = ($saltBytes | ForEach-Object { '\x' + $PSItem.ToString('x2') }) -join ''
                 $hashedString = /bin/bash -c "echo -n '$plainString' | argon2 `$(printf $hexSalt) -id -t 3 -k 65536 -p 1 -e"
 
                 if ($LASTEXITCODE) {

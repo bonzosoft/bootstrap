@@ -66,9 +66,7 @@ function New-DockerPassword {
                 
                 [byte[]]$saltBytes = [System.Security.Cryptography.RandomNumberGenerator]::GetBytes(16)
                 $hexSalt = ($saltBytes | ForEach-Object { '\x' + $PSItem.ToString('x2') }) -join ''
-                #$hashedString = /bin/bash -c "echo -n '$plainString' | argon2 `$(printf $hexSalt) -id -t 3 -k 65536 -p 1 -e"
-                $hashedString = $plainString | argon2 $hexSalt -id -t 3 -k 65536 -p 1 -e
-
+                $hashedString = /bin/bash -c "echo -n '$plainString' | argon2 `$(printf $hexSalt) -id -t 3 -k 65536 -p 1 -e"
                 if ($LASTEXITCODE) {
                     throw "A problem was found hashing the password."
                 }

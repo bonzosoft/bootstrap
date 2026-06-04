@@ -69,18 +69,12 @@ function New-DockerPassword {
                 ## converting salt to hex bytes
                 #[bytes[]]$salt = $salt -replace '(..)', '\x$1'
                 [byte[]]$salt = [System.Security.Cryptography.RandomNumberGenerator]::GetBytes(16)
-                [string]$hexSalt = $salt -join '' -replace '(..)', '\x$1'
-                Write-Warning $hexSalt
-                Write-Warning "plainstring: $plainString"
-                
+                [string]$hexSalt = $salt -join '' -replace '(..)', '\x$1'               
                 $hashedString = /bin/bash -c "echo -n '$plainString' | argon2 `$(printf $hexSalt) -id -t 3 -k 65536 -p 1 -e"
-                #$hashedString = /bin/bash -c "echo -n '$plainString' | argon2 `$(printf '$hexSalt') -id -t 3 -k 65536 -p 1 -e"
-                # /bin/bash -c "echo -n '$plainString' | argon2 `$(printf $salt) -id -t 3 -k 65536 -p 1 -e"
-                Write-Warning "hashedstring: $hashedString"
-                Write-Warning "pasa3"
-                #if ($LASTEXITCODE) {
-                #    throw "A problem was found hashing the password."
-                #}
+
+                if ($LASTEXITCODE) {
+                    throw "A problem was found hashing the password."
+                }
             }
             "BCrypt" {
                 if (-not (Get-Command -Name "mkpasswd" -ErrorAction SilentlyContinue)) {

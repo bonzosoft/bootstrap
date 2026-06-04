@@ -77,7 +77,7 @@ function New-DockerPassword {
                 # (El parámetro -e le dice a argon2 que devuelva el string final $argon2id$...)
                 $comando = "echo -n '$password' | argon2 `$(printf '$bashSalt') -id -t 3 -k 65536 -p 1 -e"
                 
-                $hashedString = /bin/sh -c $comando
+                $hashedString = /bin/bash -c $comando
 
 
                 #$hashedString = [System.Text.Encoding]::UTF8.GetString($seed) | argon2 $salt -id -t 3 -k 65536 -p 1 -l $Length -e

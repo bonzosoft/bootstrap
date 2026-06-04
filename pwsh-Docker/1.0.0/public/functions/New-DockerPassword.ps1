@@ -48,13 +48,9 @@ function New-DockerPassword {
 
         switch ($PSCmdlet.ParameterSetName) {
             "Plain" {
-                Write-Warning "1 - $plainString"
-                Write-Warning "1 - $hashedString"
                 $hashedString = $plainString
-                Write-Warning "2 - $plainString"
-                Write-Warning "2 - $hashedString"
             }
-            ({($PSItem -eq "Base64") -or ($PSItem -eq "Jwt")}) {
+            ( {($PSItem -eq "Base64") -or ($PSItem -eq "Jwt")} ) {
                 $hashedString = [Convert]::ToBase64String($seed)
             }
             "Base64Url" {
@@ -72,10 +68,11 @@ function New-DockerPassword {
                 #})
                 ## converting salt to hex bytes
                 #[bytes[]]$salt = $salt -replace '(..)', '\x$1'
+                Write-Warning "pasa1"
                 [byte[]]$salt = [System.Security.Cryptography.RandomNumberGenerator]::GetBytes(16)
-                
+                Write-Warning "pasa2"
                 $hashedString = /bin/bash -c "echo -n '$plainString' | argon2 `$(printf '$salt') -id -t 3 -k 65536 -p 1 -e"
-
+                Write-Warning "pasa3"
                 #if ($LASTEXITCODE) {
                 #    throw "A problem was found hashing the password."
                 #}
@@ -93,6 +90,7 @@ function New-DockerPassword {
                 throw "Unknown encryption type."
             }
         }
+        Write-Warning "pasa4"
         Write-Warning $hashedString
         Write-Warning "fin"
         Write-Output -InputObject $hashedString

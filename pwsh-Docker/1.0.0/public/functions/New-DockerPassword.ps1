@@ -42,7 +42,7 @@ function New-DockerPassword {
         else {
             $secureString = $Password
         }
-        $seed = [System.Text.Encoding]::UTF8.GetBytes($secureString)
+        $seed = [System.Text.Encoding]::UTF8.GetBytes( (ConvertFrom-SecureString -SecureString $secureString -AsPlainText) )
 
         switch ($PSCmdlet.ParameterSetName) {
             "Plain" {

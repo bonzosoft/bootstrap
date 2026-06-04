@@ -48,7 +48,11 @@ function New-DockerPassword {
 
         switch ($PSCmdlet.ParameterSetName) {
             "Plain" {
+                Write-Warning "1 - $plainString"
+                Write-Warning "1 - $hashedString"
                 $hashedString = $plainString
+                Write-Warning "2 - $plainString"
+                Write-Warning "2 - $hashedString"
             }
             {"Base64" -or "Jwt"} {
                 $hashedString = [Convert]::ToBase64String($seed)

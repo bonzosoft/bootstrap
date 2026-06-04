@@ -72,7 +72,7 @@ function New-DockerPassword {
                 ## converting salt to hex bytes
                 #[bytes[]]$salt = $salt -replace '(..)', '\x$1'
                 [byte[]]$salt = [System.Security.Cryptography.RandomNumberGenerator]::GetBytes(16)
-                $hexSalt = $salt -replace '(..)', '\x$1'               
+                $hexSalt = $salt -replace '(..)', '\x$1' -join ''
                 #$hexSalt = ($saltBytes | ForEach-Object { '\x' + $_.ToString('x2') }) -join ''
                 $hashedString = /bin/bash -c "echo -n '$plainString' | argon2 `$(printf $hexSalt) -id -t 3 -k 65536 -p 1 -e"
 

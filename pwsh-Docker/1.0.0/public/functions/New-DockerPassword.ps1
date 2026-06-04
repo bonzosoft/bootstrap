@@ -81,10 +81,11 @@ function New-DockerPassword {
                 # 3. Construimos el comando completo.
                 # Usamos $(printf ...) para que bash genere los bytes en bruto en ese mismo instante.
                 # (El parámetro -e le dice a argon2 que devuelva el string final $argon2id$...)
-                
+                $plain = $(ConvertFrom-SecureString -SecureString $Password -AsPlainText)
                 #$hashedString = /bin/bash -c "echo -n '$seed' | argon2 `$(printf '$salt') -id -t 3 -k 65536 -p 1 -e"
-                $hashedString = /bin/bash -c "echo -n '$(ConvertFrom-SecureString -SecureString $Password -AsPlainText))' | argon2 `$(printf '$salt') -id -t 3 -k 65536 -p 1 -e"
+                $hashedString = /bin/bash -c "echo -n '$plain' | argon2 `$(printf '$salt') -id -t 3 -k 65536 -p 1 -e"
                 Write-Warning $hashedString
+                Write-Warning $plain
 
                 #$hashedString = [System.Text.Encoding]::UTF8.GetString($seed) | argon2 $salt -id -t 3 -k 65536 -p 1 -l $Length -e
 

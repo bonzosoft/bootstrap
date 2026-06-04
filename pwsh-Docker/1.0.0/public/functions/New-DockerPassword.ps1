@@ -61,9 +61,62 @@ function New-DockerPassword {
                     throw "Command 'argon2' not found. Please install 'argon2' package."
                 }
                 #$salt = [Convert]::ToBase64String([System.Security.Cryptography.RandomNumberGenerator]::GetBytes(16))
-                $salt = [System.Convert]::ToHexString([System.Security.Cryptography.RandomNumberGenerator]::GetBytes(16))
-                Write-Information "salt: $salt"
-                $hashedString = [System.Text.Encoding]::UTF8.GetString($seed) | argon2 $salt -id -t 3 -k 65536 -p 1 -l $Length -e
+                $hexString = [System.Convert]::ToHexString([System.Security.Cryptography.RandomNumberGenerator]::GetBytes(16))
+                Write-Information "salt: $hexStringt"
+
+
+                #$hexString = "aaaaaaaaaaaaaaaa"
+                #$password = "tu_contraseña_aqui" # Reemplaza por la misma contraseña que usaste en it-tools
+                
+                # 2. Convertimos "aaaaaaaaaaaaaaaa" a un formato de escape: "\xaa\xaa\xaa\xaa\xaa\xaa\xaa\xaa"
+                # Bash interpreta esto a nivel de bytes sin corromper nada.
+                $bashSalt = $hexString -replace '(..)', '\x$1'
+                
+                # 3. Construimos el comando completo.
+                # Usamos $(printf ...) para que bash genere los bytes en bruto en ese mismo instante.
+                # (El parámetro -e le dice a argon2 que devuelva el string final $argon2id$...)
+                $comando = "echo -n '$password' | argon2 `$(printf '$bashSalt') -id -t 3 -k 65536 -p 1 -e"
+                
+                $hashedString = /bin/sh -c $comando
+
+
+                #$hashedString = [System.Text.Encoding]::UTF8.GetString($seed) | argon2 $salt -id -t 3 -k 65536 -p 1 -l $Length -e
+
+
+                ### powershell
+                ## argon 2
+                #Add-Type -Path "./Konscious.Security.Cryptography.Argon2.dll"
+                #
+                #$password = "changeme"
+                #
+                ## salt aleatorio
+                #$salt = New-Object byte[] 16
+                #[System.Security.Cryptography.RandomNumberGenerator]::Create().GetBytes($salt)
+                #
+                ## convertir password
+                #$passwordBytes = [System.Text.Encoding]::UTF8.GetBytes($password)
+                #
+                ## crear Argon2id
+                #$argon2 = New-Object Konscious.Security.Cryptography.Argon2id($passwordBytes)
+                #
+                #$argon2.Salt = $salt
+                #$argon2.Iterations = 4
+                #$argon2.MemorySize = 65536   # 64 MB
+                #$argon2.DegreeOfParallelism = 2
+                #
+                ## hash
+                #$hash = $argon2.GetBytes(32)
+                #
+                ## base64 para guardar
+                #$hashB64 = [Convert]::ToBase64String($hash)
+                #$saltB64 = [Convert]::ToBase64String($salt)
+                #
+                #$hashB64
+                #$saltB64
+
+
+
+
                 if ($LASTEXITCODE) {
                     throw "A problem was found hashing the password."
                 }

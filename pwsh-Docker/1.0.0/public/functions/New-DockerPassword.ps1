@@ -37,8 +37,7 @@ function New-DockerPassword {
 
     process {
         if ($null -eq $Password) {
-            
-            $plainString = -join ((1..16) | ForEach-Object { 
+            $plainString = -join ((1..32) | ForEach-Object { 
                 $chars[[System.Security.Cryptography.RandomNumberGenerator]::GetInt32(0, $chars.Length)] 
             })        
         }

@@ -46,9 +46,6 @@ function New-DockerPassword {
         }
         $seed = [System.Text.Encoding]::UTF8.GetBytes($plainString)
 
-        Write-Warning $PSCmdlet.ParameterSetName
-        Write-Warning $plainString
-
         switch ($PSCmdlet.ParameterSetName) {
             "Plain" {
                 $hashedString = $plainString

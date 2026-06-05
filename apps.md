@@ -7,17 +7,29 @@ Proxmox VE Scripts
 
 Libretranslate
 
-### Apps
+### Admin
 thingsboard
 
-code-server (vscode web)
-
 Termix
+
+[ZotRegistry](https://zotregistry.dev) sustituto de registry:2
+
+[CronMaster](https://github.com/fccview/cronmaster)
+
+[Nexterm](https://nexterm.dev/)
 
 ### Código
 ByteStash
 
 massCode
+
+code-server (vscode web)
+
+Gitea
+
+[gitea-mirror](https://github.com/RayLabsHQ/gitea-mirror/tree/main)
+
+Forgejo
 
 ### Diógenes
 ArchiveBox 
@@ -43,19 +55,19 @@ pdfding
 Grimmory
 
 ### SSO
-VoidAuth
+~VoidAuth~
 
 TinyAuth
 
-Authentik
+~Authelia~
 
-Authelia
+~Keycloak~
 
-Keycloak
-
-Authentik
+~Authentik~
 
 Zitadel
+
+[Kanidm (LDAP)](https://github.com/kanidm/kanidm)
 
 OAuth2-Proxy
 
@@ -83,6 +95,8 @@ postgresql-wiltondb
 Gotify
 
 Ntfy
+
+[Healthchecks.io](https://healthchecks.io/)
 
 ### Time management
 Traggo

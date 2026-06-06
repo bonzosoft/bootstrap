@@ -5,9 +5,11 @@ Proxmox VE Scripts
 
 ## Aplicaciones
 
-Libretranslate
+LibreTsranslate
 
 ### Admin
+pawelmalak/flame
+
 thingsboard
 
 Termix
@@ -17,6 +19,8 @@ Termix
 [CronMaster](https://github.com/fccview/cronmaster)
 
 [Nexterm](https://nexterm.dev/)
+
+Beszel
 
 ### Código
 ByteStash

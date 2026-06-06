@@ -26,13 +26,13 @@ volumes: {}
   #    o:      size=10m,mode=755,uid=${APP_PUID:-${PUID}},gid=${APP_PGID:-${PGID}}
 
 ## NETWORKS ####################################################################
-networks:
-  internal:
-    driver:   bridge
-    external: false
-  #backup:
-  #  driver:   bridge
-  #  external: true
+networks: {}
+  #internal:
+  #  driver: bridge
+  #  external: false
+  #  ipam:
+  #    config:
+  #      - subnet: 172.10.0.0/24
 
 ## SECRETS #####################################################################
 secrets: {}

@@ -75,6 +75,8 @@ services:
     depends_on:
       webproxy:
          condition: service_healthy
+      #cache:
+      #  condition: service_healthy
     entrypoint: null #["/bin/sh", "-c"]
     command: null
       #- | 
@@ -104,10 +106,12 @@ services:
     ##--- NETWORK -------------------##
     hostname: ${PROJECTNAME}-${SERVERNAME:?}
     networks:
-      internal:
+      internal: {}
+        #ipv4_address: 172.10.0.2
         #aliases:
         #  - ${APP_HOSTNAME:?}
       #backup:
+        #ipv4_address: 172.20.0.2
         #aliases:
         #  - ${APP_HOSTNAME:?}
     expose:

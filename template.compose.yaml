@@ -107,13 +107,13 @@ services:
     hostname: ${PROJECTNAME}-${SERVERNAME:?}
     networks:
       internal: {}
+        #aliases:
+        #  - ${APP_HOSTNAME:?}
         #ipv4_address: 172.10.0.2
-        #aliases:
-        #  - ${APP_HOSTNAME:?}
       #backup:
-        #ipv4_address: 172.20.0.2
         #aliases:
         #  - ${APP_HOSTNAME:?}
+        #ipv4_address: 172.20.0.2
     expose:
       - ${APP_PORT:?}/tcp
       #-

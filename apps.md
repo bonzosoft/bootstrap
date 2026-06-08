@@ -95,6 +95,8 @@ postgresql-ferretdb
 
 postgresql-wiltondb
 
+[litestream](https://litestream.io/guides/docker/)
+
 ### Notificación
 Gotify
 

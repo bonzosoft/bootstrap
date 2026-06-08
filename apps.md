@@ -130,6 +130,8 @@ Kasm Workspaces
 
 Pangolin
 
+Netbird
+
 ### Kasm environment
 gimp
 

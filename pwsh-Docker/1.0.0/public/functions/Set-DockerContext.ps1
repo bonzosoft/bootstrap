@@ -47,7 +47,7 @@ function Set-DockerContext {
         #    $context.LfsStorageDir = [IO.DirectoryInfo](Join-Path -Path $context.WorkingDir.Parent.Parent -ChildPath "" -AdditionalChildPath @("storage", $context.ProjectName))
         #}
         $context | Out-String
-        exit 1
+        
     }
 
     end {

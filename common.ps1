@@ -20,14 +20,18 @@ $VerbosePreference = 'Continue'
 ### LOAD MODULES ###############################################################
 $verboseBackup = $VerbosePreference
 $VerbosePreference = 'SilentlyContinue'
-Write-Information "pasa"
 Import-Module -Name (Join-Path -Path $PSScriptRoot -ChildPath "pwsh-Docker")
-Write-Information "no pasa"
 $VerbosePreference = $verboseBackup
 
 
 ### SETUP CONTEXT ##############################################################
-$Script:Context = [ordered]@{}
+$Script:Context 
+
+$context = Set-DockerContext
+
+$context
+
+exit 1
 
 
 $tenantData = Join-Path -Path $Script:Context.CommonDir -ChildPath "tenants" -AdditionalChildPath "$($Script:Context.Tenant).json"

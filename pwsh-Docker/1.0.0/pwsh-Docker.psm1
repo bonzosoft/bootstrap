@@ -17,7 +17,7 @@ Write-Verbose -Message "Loading module '$($Self.BaseName)'."
 
 
 ### Public variables ###########################################################
-[hashtable]$Script:Context = Set-DockerContext
+[hashtable]$Script:Context = [ordered]@{}
 
 # export public variables
 Export-ModuleMember -Variable *

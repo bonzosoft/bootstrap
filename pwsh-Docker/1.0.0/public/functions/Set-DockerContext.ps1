@@ -29,9 +29,9 @@ function Set-DockerContext {
         # CommonDir
         $context.CommonDir       = [IO.DirectoryInfo]($PSScriptRoot)  # ([IO.FileInfo]$PSCommandPath).Directory
         # Docker
-        $context.Docker.PUID     = [int]568
-        $context.Docker.PGID     = [int]568
-        $context.Docker.HostPGID = [int](Get-DockerHostPGID)
+        #$context.Docker.PUID     = [int]568
+        #$context.Docker.PGID     = [int]568
+        #$context.Docker.HostPGID = [int](Get-DockerHostPGID)
         # Tenant
         $context.Tenant.Name     = (Get-Content -Path $context.HostConfigFile | ConvertFrom-Json).Tenant
         $context.TenantsDir      = [IO.DirectoryInfo](Join-Path -Path $context.CommonDir                -ChildPath "" -AdditionalChildPath @("tenants"))       

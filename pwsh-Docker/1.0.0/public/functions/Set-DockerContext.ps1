@@ -8,7 +8,7 @@ function Set-DockerContext {
 
     begin {
         [System.Management.Automation.OrderedHashtable]$context = [ordered]@{}
-        $context.GetType()
+        Write-Information $context.GetType()
     }
 
     process {

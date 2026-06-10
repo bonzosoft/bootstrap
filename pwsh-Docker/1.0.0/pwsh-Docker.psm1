@@ -18,7 +18,7 @@ Write-Verbose -Message "Loading module '$($Self.BaseName)'."
 
 ### Public variables ###########################################################
 [System.Management.Automation.OrderedHashtable]$Script:Context = [ordered]@{}
-$Script:Context.GetType()
+Write-Information $Script:Context.GetType()
 # export public variables
 Export-ModuleMember -Variable *
 

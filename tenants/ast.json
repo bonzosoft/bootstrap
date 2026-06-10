@@ -1,22 +1,23 @@
 {
-    "domain": "ast-ingenieria.com",
-    "admin": {
-        "username": "alex",
-        "userpass": "changeme",
-        "email": "a.suarez@ast-ingenieria.com"
+    "Domain": "ast-ingenieria.com",
+    "Admin": {
+        "Name": "alex",
+        "Password": "changeme",
+        "Email": "a.suarez@ast-ingenieria.com"
     },
-    "smtp": {
-        "relay": {
-            "hostname": "smtp.ast-ingenieria.com",
-            "port": 587,
-            "username": "soporte@ast-ingenieria.com",
-            "userpass": "2908cc6d-93cc-4ca2-997f-e668edfa890d"
+    "Smtp": {
+        "Relay": {
+            "Host": "smtp.ast-ingenieria.com",
+            "Port": 587,
+            "Name": "soporte@ast-ingenieria.com",
+            "Password": "2908cc6d-93cc-4ca2-997f-e668edfa890d"
         },
-        "provider": {
-            "hostname": "smtp.gmail.com",
-            "port": 465,
-            "username": "soporte@ast-ingenieria.com",
-            "userpass": "ijac opkc encu oobu"
+        "Provider": {
+            "Host": "smtp.gmail.com",
+            "Port": 465,
+            "Name": "soporte@ast-ingenieria.com",
+            "Password": "ijac opkc encu oobu"
         }
-    }
+    },
+    "LfsStorage": ""
 }

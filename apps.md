@@ -7,6 +7,8 @@ Proxmox VE Scripts
 
 LibreTsranslate
 
+tinyMediaManager
+
 ### Admin
 pawelmalak/flame
 

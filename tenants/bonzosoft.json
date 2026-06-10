@@ -1,22 +1,23 @@
 {
-    "domain": "985337789.xyz",
-    "admin": {
-        "username": "alex",
-        "userpass": "changeme",
-        "email": "alex@985337789.xyz"
+    "Domain": "985337789.xyz",
+    "Admin": {
+        "Name": "alex",
+        "Password": "changeme",
+        "Email": "alex@985337789.xyz"
     },
-    "smtp": {
-        "relay": {
-            "hostname": "smtp.985337789.xyz",
-            "port": 587,
-            "username": "alex@985337789.xyz",
-            "userpass": ""
+    "Smtp": {
+        "Relay": {
+            "Host": "smtp.985337789.xyz",
+            "Port": 587,
+            "Name": "alex@985337789.xyz",
+            "Password": ""
         },
-        "provider": {
-            "hostname": "smtp.gmail.com",
-            "port": 465,
-            "username": "",
-            "userpass": ""
+        "Provider": {
+            "Host": "smtp.gmail.com",
+            "Port": 465,
+            "Name": "",
+            "Password": ""
         }
-    }
+    },
+    "LfsStorage": ""
 }

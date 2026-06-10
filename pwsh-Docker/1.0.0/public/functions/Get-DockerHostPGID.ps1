@@ -1,4 +1,4 @@
-function Get-DockerPGID {
+function Get-DockerHostPGID {
     [CmdletBinding()]
     [OutputType([int])]
 

@@ -20,38 +20,17 @@ $VerbosePreference = 'Continue'
 ### LOAD MODULES ###############################################################
 $verboseBackup = $VerbosePreference
 $VerbosePreference = 'SilentlyContinue'
-Import-Module -Name (Join-Path -Path $PSScriptRoot -ChildPath "pwsh-Docker") -Verbose:$false
+Import-Module -Name (Join-Path -Path $PSScriptRoot -ChildPath "pwsh-Docker")
 $VerbosePreference = $verboseBackup
 
 
-### LOAD CONTEXT ###############################################################
-$WorkingDir = [IO.DirectoryInfo](Get-Location).Path
-$CommonDir = [IO.DirectoryInfo]([IO.FileInfo]$PSCommandPath).Directory
+### SETUP CONTEXT ##############################################################
+$Script:Context = [ordered]@{}
 
-$Script:Context = [ordered]@{
-    "WorkingDir" =  $WorkingDir
-    "CommonDir"  =  $CommonDir
-    "IncludeDir" =  [IO.DirectoryInfo](Join-Path -Path $WorkingDir -ChildPath "include")
-    "DataDir" =     [IO.DirectoryInfo](Join-Path -Path $WorkingDir.Parent.Parent -ChildPath "" -AdditionalChildPath @("state", $WorkingDir.BaseName))
-    "SecretsDir" =  [IO.DirectoryInfo](Join-Path -Path $WorkingDir.Parent.Parent -ChildPath "" -AdditionalChildPath @("state", $WorkingDir.BaseName, ".secrets"))
-    "ComposeFile" = [IO.FileInfo](Join-Path -Path $WorkingDir -ChildPath "compose.yaml")
-    "DotEnvFile" =  [IO.FileInfo](Join-Path -Path $WorkingDir -ChildPath ".env")
-    "ConfigFile" =  [IO.FileInfo](Join-Path -Path $WorkingDir.Parent -ChildPath "" -AdditionalChildPath @(".config", "docker.config.json"))
-    "Hostname" =    [string](Get-DockerHostname)
-    "Tenant" =      (Get-Content -Path (Join-Path -Path $WorkingDir.Parent -ChildPath ".config" -AdditionalChildPath "docker.config.json") | ConvertFrom-Json).TENANT
-    "Docker" = @{
-        "ProjectName"=  [string]($WorkingDir.BaseName)
-        "PUID" =        [int]568
-        "PGID" =        [int]568
-        "DockerPGID" =  [int](Get-DockerPGID)
-    }
-}
 
 $tenantData = Join-Path -Path $Script:Context.CommonDir -ChildPath "tenants" -AdditionalChildPath "$($Script:Context.Tenant).json"
 $Script:Context += Get-Content -Path $tenantData -Encoding utf8 | ConvertFrom-Json -AsHashTable -Depth 9
-$Script:Context.Admin.userpass = ConvertTo-SecureString -String $Script:Context.Admin.userpass -AsPlainText
-$Script:Context.Smtp.relay.userpass = ConvertTo-SecureString -String $Script:Context.Smtp.relay.userpass -AsPlainText
-$Script:Context.Smtp.provider.userpass = ConvertTo-SecureString -String $Script:Context.Smtp.provider.userpass -AsPlainText
+
 Write-Verbose -Message ($Script:Context | Out-String)
 
 

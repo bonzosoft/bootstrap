@@ -1,18 +1,18 @@
 function Set-DockerContext {
     [CmdletBinding()]
-    [OutputType([ordered])]
+    [OutputType([System.Management.Automation.OrderedHashtable])]
 
     param(
 
     )
 
     begin {
-        [OrderedHashtable]$context = [ordered]@{}
+        [System.Management.Automation.OrderedHashtable]$context = [ordered]@{}
     }
 
     process {
         $workingDir = [IO.DirectoryInfo](Get-Location).Path
-
+        
         $context.ProjectName     =           [string]$WorkingDir.BaseName
         $context.Hostname        =           [string](Get-DockerHostname)
         # WorkingDir
@@ -29,16 +29,18 @@ function Set-DockerContext {
         # CommonDir
         $context.CommonDir       = [IO.DirectoryInfo]($PSScriptRoot)  # ([IO.FileInfo]$PSCommandPath).Directory
         # Docker
-        $hash = [ordered]@{
-            "PUID"     = [int]568
-            "PGID"     = [int]568
-            "HostPGID" = [int](Get-DockerHostPGID)
-        }
-        $context.Docker += $hash
+        #[System.Management.Automation.OrderedHashtable]$hash = [ordered]@{
+        #    "PUID"     = [int]568
+        #    "PGID"     = [int]568
+        #    "HostPGID" = [int](Get-DockerHostPGID)
+        #}
+        #$context.Docker += $hash
         #$context.Docker.PUID     = [int]568
         #$context.Docker.PGID     = [int]568
         #$context.Docker.HostPGID = [int](Get-DockerHostPGID)
-        
+        $context.Docker += [ordered]@{}
+        $context.Docker.PUID     = [int]568
+        $context.Docker.PGID     = [int]568
         $context
         $context | Out-String
         Exit 1

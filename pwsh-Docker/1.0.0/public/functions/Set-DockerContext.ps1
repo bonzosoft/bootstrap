@@ -29,24 +29,20 @@ function Set-DockerContext {
         # CommonDir
         #Write-Information (Get-PSCallStack | Format-Table Command, Location | Out-String)
         $context.CommonDir       = [IO.DirectoryInfo]($MyInvocation.PSScriptRoot)
-        
+        # Tenant
+        $context.TenantsDir      = [IO.DirectoryInfo](Join-Path -Path $context.CommonDir                -ChildPath "" -AdditionalChildPath @("tenants"))       
+        $context.TenantsFile     =      [IO.FileInfo](Join-Path -Path $context.TenantsDir               -ChildPath "" -AdditionalChildPath @("$((Get-Content -Path $context.HostConfigFile | ConvertTo-Json).Tenant).json"))
+        $context.Tenant          = [ordered]@{}
+        $context.Tenant.Name     =           [string]($context.TenantsFile.BaseName)
         # Docker
         $context.Docker          = [ordered]@{}
         $context.Docker.PUID     = [int]568
         $context.Docker.PGID     = [int]568
         $context.Docker.HostPGID = [int](Get-DockerHostPGID)
-
- #       $context
- #       $context | Out-String
- #       Exit 1
-        # Tenant
-        $context.Tenant          = [ordered]@{}
-        $context.Tenant.Name     =           [string](Get-Content -Path $context.HostConfigFile | ConvertFrom-Json).Tenant
-        $context.TenantsDir      = [IO.DirectoryInfo](Join-Path -Path $context.CommonDir                -ChildPath "" -AdditionalChildPath @("tenants"))       
         $context
         exit 1
+
         
-        $context.TenantsFile     =      [IO.FileInfo](Join-Path -Path $context.TenantsDir               -ChildPath "" -AdditionalChildPath @("$tenantName.json"))
         $content                 =        [hashtable](Get-Content -Path $tenantFile | ConvertFrom-Json -Depth 9 -AsHashtable)
         $context.Admin.Name = $content.Admin.Name 
         #$context.Admin.Password         = ConvertTo-SecureString -String $context.Admin.Password -AsPlainText

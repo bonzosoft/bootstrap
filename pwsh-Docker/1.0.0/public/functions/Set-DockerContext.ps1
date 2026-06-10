@@ -34,15 +34,15 @@ function Set-DockerContext {
         $context.Docker.PGID     = [int]568
         $context.Docker.HostPGID = [int](Get-DockerHostPGID)
 
-        $context
-        $context | Out-String
-        Exit 1
+ #       $context
+ #       $context | Out-String
+ #       Exit 1
         # Tenant
         $context.Tenant          = [ordered]@{}
-        $context.Tenant.Name     = (Get-Content -Path $context.HostConfigFile | ConvertFrom-Json).Tenant
+        $context.Tenant.Name     =           [string](Get-Content -Path $context.HostConfigFile | ConvertFrom-Json).Tenant
         $context.TenantsDir      = [IO.DirectoryInfo](Join-Path -Path $context.CommonDir                -ChildPath "" -AdditionalChildPath @("tenants"))       
         $context.TenantsFile     =      [IO.FileInfo](Join-Path -Path $context.TenantsDir               -ChildPath "" -AdditionalChildPath @("$tenantName.json"))
-        $content = [hashtable](Get-Content -Path $tenantFile | ConvertFrom-Json -Depth 9 -AsHashtable)
+        $content                 =        [hashtable](Get-Content -Path $tenantFile | ConvertFrom-Json -Depth 9 -AsHashtable)
         $context.Admin.Name = $content.Admin.Name 
         #$context.Admin.Password         = ConvertTo-SecureString -String $context.Admin.Password -AsPlainText
         #$context.Smtp.Relay.Password    = ConvertTo-SecureString -String $context.Smtp.Relay.Password -AsPlainText

@@ -23,7 +23,7 @@ function Set-DockerContext {
         $context.MainComposeFile =      [IO.FileInfo](Join-Path -Path $context.WorkingDir               -ChildPath "" -AdditionalChildPath @("compose.yaml"))
         # HostConfigFile        
         $context.HostConfigFile  =      [IO.FileInfo](Join-Path -Path $context.WorkingDir.Parent        -ChildPath "" -AdditionalChildPath @(".config", "host", "config.json"))
-        $config = Get-Content -Path $context.HostConfigFile | ConvertFrom-Json -Depth 9 -AshHashTable
+        $config = Get-Content -Path $context.HostConfigFile | ConvertFrom-Json -Depth 9 -AsHashTable
         # StateDir
         $context.StateDir        = [IO.DirectoryInfo](Join-Path -Path $context.WorkingDir.Parent.Parent -ChildPath "" -AdditionalChildPath @("state", $context.ProjectName))
         $context.SecretsDir      = [IO.DirectoryInfo](Join-Path -Path $context.StateDir                 -ChildPath "" -AdditionalChildPath @(".secrets"))

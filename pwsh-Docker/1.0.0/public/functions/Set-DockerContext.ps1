@@ -27,7 +27,8 @@ function Set-DockerContext {
         $context.StateDir        = [IO.DirectoryInfo](Join-Path -Path $context.WorkingDir.Parent.Parent -ChildPath "" -AdditionalChildPath @("state", $context.ProjectName))
         $context.SecretsDir      = [IO.DirectoryInfo](Join-Path -Path $context.StateDir                 -ChildPath "" -AdditionalChildPath @(".secrets"))
         # CommonDir
-        $context.CommonDir       = [IO.DirectoryInfo]($PSScriptRoot)  # ([IO.FileInfo]$PSCommandPath).Directory
+        $context.CommonDir       = [IO.DirectoryInfo]($MyInvocation.MyCommand.Path)  # ([IO.FileInfo]$PSCommandPath).Directory
+        
         # Docker
         $context.Docker          = [ordered]@{}
         $context.Docker.PUID     = [int]568

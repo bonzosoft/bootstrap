@@ -27,8 +27,8 @@ function Set-DockerContext {
         $context.StateDir        = [IO.DirectoryInfo](Join-Path -Path $context.WorkingDir.Parent.Parent -ChildPath "" -AdditionalChildPath @("state", $context.ProjectName))
         $context.SecretsDir      = [IO.DirectoryInfo](Join-Path -Path $context.StateDir                 -ChildPath "" -AdditionalChildPath @(".secrets"))
         # CommonDir
-        $MyInvocation.MyCommand
-        $MyInvocation.MyCommand.Path
+        Write-Information $MyInvocation.MyCommand | Out-String
+        Write-Information $MyInvocation.MyCommand.Path | Out-String
         $context.CommonDir       = [IO.DirectoryInfo]($MyInvocation.MyCommand.Path)  # ([IO.FileInfo]$PSCommandPath).Directory
         
         # Docker

@@ -1,6 +1,6 @@
 function Set-DockerContext {
     [CmdletBinding()]
-    [OutputType([System.Management.Automation.OrderedHashtable])]
+    [OutputType([ordered])]
 
     param(
 

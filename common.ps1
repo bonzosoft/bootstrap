@@ -20,7 +20,9 @@ $VerbosePreference = 'Continue'
 ### LOAD MODULES ###############################################################
 $verboseBackup = $VerbosePreference
 $VerbosePreference = 'SilentlyContinue'
+Write-Information "pasa"
 Import-Module -Name (Join-Path -Path $PSScriptRoot -ChildPath "pwsh-Docker")
+Write-Information "no pasa"
 $VerbosePreference = $verboseBackup
 
 

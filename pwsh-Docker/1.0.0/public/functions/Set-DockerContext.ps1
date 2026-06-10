@@ -40,9 +40,10 @@ function Set-DockerContext {
         # Tenant
         $context.Tenant          = [ordered]@{}
         $context.Tenant.Name     =           [string](Get-Content -Path $context.HostConfigFile | ConvertFrom-Json).Tenant
+        $context.TenantsDir      = [IO.DirectoryInfo](Join-Path -Path $context.CommonDir                -ChildPath "" -AdditionalChildPath @("tenants"))       
         $context
         exit 1
-        $context.TenantsDir      = [IO.DirectoryInfo](Join-Path -Path $context.CommonDir                -ChildPath "" -AdditionalChildPath @("tenants"))       
+        
         $context.TenantsFile     =      [IO.FileInfo](Join-Path -Path $context.TenantsDir               -ChildPath "" -AdditionalChildPath @("$tenantName.json"))
         $content                 =        [hashtable](Get-Content -Path $tenantFile | ConvertFrom-Json -Depth 9 -AsHashtable)
         $context.Admin.Name = $content.Admin.Name 

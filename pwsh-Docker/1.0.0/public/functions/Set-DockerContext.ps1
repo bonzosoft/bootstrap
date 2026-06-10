@@ -27,11 +27,8 @@ function Set-DockerContext {
         $context.StateDir        = [IO.DirectoryInfo](Join-Path -Path $context.WorkingDir.Parent.Parent -ChildPath "" -AdditionalChildPath @("state", $context.ProjectName))
         $context.SecretsDir      = [IO.DirectoryInfo](Join-Path -Path $context.StateDir                 -ChildPath "" -AdditionalChildPath @(".secrets"))
         # CommonDir
-        Write-Information $MyInvocation.PSCommandPath | Out-String
-        Write-Information $MyInvocation.PSScriptRoot | Out-String
-        Write-Information (Get-PSCallStack | Format-Table Command, Location | Out-String)
-        #Write-Information $MyInvocation.MyCommand.Path | Out-String
-        #$context.CommonDir       = [IO.DirectoryInfo]($MyInvocation.MyCommand)
+        #Write-Information (Get-PSCallStack | Format-Table Command, Location | Out-String)
+        $context.CommonDir       = [IO.DirectoryInfo]($MyInvocation.PSScriptRoot)
         
         # Docker
         $context.Docker          = [ordered]@{}

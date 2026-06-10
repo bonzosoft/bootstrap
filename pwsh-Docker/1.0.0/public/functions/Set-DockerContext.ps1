@@ -38,6 +38,9 @@ function Set-DockerContext {
         #$context.Docker.PUID     = [int]568
         #$context.Docker.PGID     = [int]568
         #$context.Docker.HostPGID = [int](Get-DockerHostPGID)
+        
+        $context | Out-String
+        
         # Tenant
         $context.Tenant.Name     = (Get-Content -Path $context.HostConfigFile | ConvertFrom-Json).Tenant
         $context.TenantsDir      = [IO.DirectoryInfo](Join-Path -Path $context.CommonDir                -ChildPath "" -AdditionalChildPath @("tenants"))       
@@ -52,7 +55,7 @@ function Set-DockerContext {
         #if ($context.LfsStorageDir -eq "") {
         #    $context.LfsStorageDir = [IO.DirectoryInfo](Join-Path -Path $context.WorkingDir.Parent.Parent -ChildPath "" -AdditionalChildPath @("storage", $context.ProjectName))
         #}
-        $context | Out-String
+        
         
     }
 

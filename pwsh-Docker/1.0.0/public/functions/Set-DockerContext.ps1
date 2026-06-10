@@ -7,7 +7,7 @@ function Set-DockerContext {
     )
 
     begin {
-        [hashtable]$context = [ordered]@{}
+        [System.Management.Automation.OrderedHashtable]$context = [ordered]@{}
     }
 
     process {

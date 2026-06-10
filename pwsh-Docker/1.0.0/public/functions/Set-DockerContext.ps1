@@ -39,8 +39,9 @@ function Set-DockerContext {
         #$context.Docker.PGID     = [int]568
         #$context.Docker.HostPGID = [int](Get-DockerHostPGID)
         
+        $context
         $context | Out-String
-        
+        Exit 1
         # Tenant
         $context.Tenant.Name     = (Get-Content -Path $context.HostConfigFile | ConvertFrom-Json).Tenant
         $context.TenantsDir      = [IO.DirectoryInfo](Join-Path -Path $context.CommonDir                -ChildPath "" -AdditionalChildPath @("tenants"))       

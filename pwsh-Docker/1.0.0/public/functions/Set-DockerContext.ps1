@@ -30,7 +30,7 @@ function Set-DockerContext {
         # CommonDir
         $context.CommonDir       = [IO.DirectoryInfo]($PSScriptRoot)  # ([IO.FileInfo]$PSCommandPath).Directory
         # Docker
-        [hashtable]$hash = [ordered]@{
+        $hash = [ordered]@{
             "PUID"     = [int]568
             "PGID"     = [int]568
             "HostPGID" = [int](Get-DockerHostPGID)

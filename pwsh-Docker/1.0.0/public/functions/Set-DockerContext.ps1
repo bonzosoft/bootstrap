@@ -1,4 +1,4 @@
-function Get-DockerContext {
+function Set-DockerContext {
     [CmdletBinding()]
     [OutputType([System.Management.Automation.OrderedHashtable])]
 
@@ -28,24 +28,30 @@ function Get-DockerContext {
         $context.SecretsDir      = [IO.DirectoryInfo](Join-Path -Path $context.StateDir                 -ChildPath "" -AdditionalChildPath @(".secrets"))
         # CommonDir
         $context.CommonDir       = [IO.DirectoryInfo]($PSScriptRoot)  # ([IO.FileInfo]$PSCommandPath).Directory
-        $context.Tenant.Name     = (Get-Content -Path $context.HostConfigFile | ConvertFrom-Json).Tenant
-        $context.TenantsDir      = [IO.DirectoryInfo](Join-Path -Path $context.CommonDir                -ChildPath "" -AdditionalChildPath @("tenants"))       
-        $context.TenantsFile     =      [IO.FileInfo](Join-Path -Path $context.TenantsDir               -ChildPath "" -AdditionalChildPath @("$tenantName.json"))
-        $context          +=        [hashtable](Get-Content -Path $tenantFile | ConvertFrom-Json -Depth 9 -AsHashtable)
+        # Docker
         $context.Docker.PUID     = [int]568
         $context.Docker.PGID     = [int]568
         $context.Docker.HostPGID = [int](Get-DockerHostPGID)
-
-        $context.Admin.Password         = ConvertTo-SecureString -String $context.Admin.Password -AsPlainText
-        $context.Smtp.Relay.Password    = ConvertTo-SecureString -String $context.Smtp.Relay.Password -AsPlainText
-        $context.Smtp.Provider.Password = ConvertTo-SecureString -String $context.Smtp.Provider.Password -AsPlainText
+        # Tenant
+        $context.Tenant.Name     = (Get-Content -Path $context.HostConfigFile | ConvertFrom-Json).Tenant
+        $context.TenantsDir      = [IO.DirectoryInfo](Join-Path -Path $context.CommonDir                -ChildPath "" -AdditionalChildPath @("tenants"))       
+        $context.TenantsFile     =      [IO.FileInfo](Join-Path -Path $context.TenantsDir               -ChildPath "" -AdditionalChildPath @("$tenantName.json"))
+        $content = [hashtable](Get-Content -Path $tenantFile | ConvertFrom-Json -Depth 9 -AsHashtable)
+        $context.Admin.Name = $content.Admin.Name 
+        #$context.Admin.Password         = ConvertTo-SecureString -String $context.Admin.Password -AsPlainText
+        #$context.Smtp.Relay.Password    = ConvertTo-SecureString -String $context.Smtp.Relay.Password -AsPlainText
+        #$context.Smtp.Provider.Password = ConvertTo-SecureString -String $context.Smtp.Provider.Password -AsPlainText
 
         # StorageDir
-        if ($context.LfsStorage)
-        $context.StorageDir      = [IO.DirectoryInfo](Join-Path -Path $context.WorkingDir.Parent.Parent -ChildPath "" -AdditionalChildPath @())
+        #if ($context.LfsStorageDir -eq "") {
+        #    $context.LfsStorageDir = [IO.DirectoryInfo](Join-Path -Path $context.WorkingDir.Parent.Parent -ChildPath "" -AdditionalChildPath @("storage", $context.ProjectName))
+        #}
+        $context | Out-String
+        exit 1
     }
 
     end {
-        Write-Ouput $context
+        $Script:Context = $context
+        Write-Ouput $Script:Context
     }
 }

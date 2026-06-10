@@ -8,6 +8,10 @@ function Get-DockerHostPGID {
         [string[]]$dockerGroup = Get-Content "/host/etc/group" | Where-Object {$PSItem -match "^docker:"}
     }
 
+    process {
+        
+    }
+
     end {
         if ($dockerGroup.Count -lt 1) {
             throw "No 'docker' group was found on host. Check your Docker installation."

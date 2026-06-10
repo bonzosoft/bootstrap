@@ -23,6 +23,7 @@ function Set-DockerContext {
         $context.MainComposeFile =      [IO.FileInfo](Join-Path -Path $context.WorkingDir               -ChildPath "" -AdditionalChildPath @("compose.yaml"))
         # HostConfigFile        
         $context.HostConfigFile  =      [IO.FileInfo](Join-Path -Path $context.WorkingDir.Parent        -ChildPath "" -AdditionalChildPath @(".config", "host", "config.json"))
+        $config = Get-Content -Path $context.HostConfigFile | ConvertFrom-Json -Depth 9 -AshHashTable
         # StateDir
         $context.StateDir        = [IO.DirectoryInfo](Join-Path -Path $context.WorkingDir.Parent.Parent -ChildPath "" -AdditionalChildPath @("state", $context.ProjectName))
         $context.SecretsDir      = [IO.DirectoryInfo](Join-Path -Path $context.StateDir                 -ChildPath "" -AdditionalChildPath @(".secrets"))
@@ -30,8 +31,9 @@ function Set-DockerContext {
         #Write-Information (Get-PSCallStack | Format-Table Command, Location | Out-String)
         $context.CommonDir       = [IO.DirectoryInfo]($MyInvocation.PSScriptRoot)
         # Tenant
+
         $context.TenantsDir      = [IO.DirectoryInfo](Join-Path -Path $context.CommonDir                -ChildPath "" -AdditionalChildPath @("tenants"))       
-        $context.TenantsFile     =      [IO.FileInfo](Join-Path -Path $context.TenantsDir               -ChildPath "" -AdditionalChildPath @("$((Get-Content -Path $context.HostConfigFile | ConvertTo-Json).Tenant).json"))
+        $context.TenantsFile     =      [IO.FileInfo](Join-Path -Path $context.TenantsDir               -ChildPath "" -AdditionalChildPath @("$((Get-Content -Path $context.HostConfigFile | ConvertFrom-Json).Tenant).json"))
         $context.Tenant          = [ordered]@{}
         $context.Tenant.Name     =           [string]($context.TenantsFile.BaseName)
         # Docker

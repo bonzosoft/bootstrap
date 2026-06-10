@@ -19,18 +19,19 @@ function Set-DockerContext {
         $context.WorkingDir      = [IO.DirectoryInfo]$workingDir
         $context.ConfigDir       = [IO.DirectoryInfo](Join-Path -Path $context.WorkingDir               -ChildPath "" -AdditionalChildPath @("config"))
         $context.IncludeDir      = [IO.DirectoryInfo](Join-Path -Path $context.WorkingDir               -ChildPath "" -AdditionalChildPath @("include"))
-        $context.MainDotEnvFile  =      [IO.FileInfo](Join-Path -Path $context.WorkingDir               -ChildPath "" -AdditionalChildPath @(".env"))
-        $context.MainComposeFile =      [IO.FileInfo](Join-Path -Path $context.WorkingDir               -ChildPath "" -AdditionalChildPath @("compose.yaml"))
+        $context.MainDotEnvFile  = [IO.DirectoryInfo](Join-Path -Path $context.WorkingDir               -ChildPath "" -AdditionalChildPath @(".env"))
+        $context.MainComposeFile = [IO.DirectoryInfo](Join-Path -Path $context.WorkingDir               -ChildPath "" -AdditionalChildPath @("compose.yaml"))
         # HostConfigFile        
-        $context.HostConfigFile  =      [IO.FileInfo](Join-Path -Path $context.WorkingDir.Parent        -ChildPath "" -AdditionalChildPath @(".config", "host", "config.json"))
+        $context.HostConfigFile  = [IO.DirectoryInfo](Join-Path -Path $context.WorkingDir.Parent        -ChildPath "" -AdditionalChildPath @(".config", "host", "config.json"))
         # StateDir
         $context.StateDir        = [IO.DirectoryInfo](Join-Path -Path $context.WorkingDir.Parent.Parent -ChildPath "" -AdditionalChildPath @("state", $context.ProjectName))
         $context.SecretsDir      = [IO.DirectoryInfo](Join-Path -Path $context.StateDir                 -ChildPath "" -AdditionalChildPath @(".secrets"))
         # CommonDir
         Write-Information $MyInvocation.PSCommandPath | Out-String
+        Write-Information $MyInvocation.PSScriptRoot | Out-String
         Write-Information (Get-PSCallStack | Format-Table Command, Location | Out-String)
         #Write-Information $MyInvocation.MyCommand.Path | Out-String
-        #$context.CommonDir       = [IO.DirectoryInfo]($MyInvocation.MyCommand.Path)  # ([IO.FileInfo]$PSCommandPath).Directory
+        $context.CommonDir       = [IO.DirectoryInfo]($MyInvocation.MyCommand)
         
         # Docker
         $context.Docker          = [ordered]@{}

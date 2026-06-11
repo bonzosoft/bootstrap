@@ -25,12 +25,9 @@ $VerbosePreference = $verboseBackup
 
 
 ### SETUP CONTEXT ##############################################################
-#$Script:Context 
-
 $context = Set-DockerContext
 
-Write-Information $context | Out-String
-#$context
+$context
 
 exit 1
 

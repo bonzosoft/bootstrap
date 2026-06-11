@@ -42,11 +42,12 @@ function Set-DockerContext {
         $context.Docker.PGID     = [int]568
         $context.Docker.HostPGID = [int](Get-DockerHostPGID)
         $context
-        exit 1
+        
 
         
         $content                 =        [hashtable](Get-Content -Path $tenantFile | ConvertFrom-Json -Depth 9 -AsHashtable)
         $context.Admin      = $content.Admin
+        exit 1
         #$context.Admin.Password         = ConvertTo-SecureString -String $context.Admin.Password -AsPlainText
         #$context.Smtp.Relay.Password    = ConvertTo-SecureString -String $context.Smtp.Relay.Password -AsPlainText
         #$context.Smtp.Provider.Password = ConvertTo-SecureString -String $context.Smtp.Provider.Password -AsPlainText

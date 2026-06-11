@@ -29,8 +29,7 @@ function Set-DockerContext {
         $context.StateDir        = [IO.DirectoryInfo](Join-Path -Path $context.WorkingDir.Parent.Parent -ChildPath "" -AdditionalChildPath @("state", $context.ProjectName))
         $context.SecretsDir      = [IO.DirectoryInfo](Join-Path -Path $context.StateDir                 -ChildPath "" -AdditionalChildPath @(".secrets"))
         # CommonDir
-        #Write-Information (Get-PSCallStack | Format-Table Command, Location | Out-String)
-        $context.CommonDir       = [IO.DirectoryInfo]($MyInvocation.PSScriptRoot)
+        $context.CommonDir       = [IO.DirectoryInfo]($MyInvocation.PSScriptRoot) #Write-Information (Get-PSCallStack | Format-Table Command, Location | Out-String)
         # Docker
         $context.Docker          = [ordered]@{}
         $context.Docker.PUID     = [int]568
@@ -48,7 +47,7 @@ function Set-DockerContext {
         $context.LfsStorageDir   = $tenantInfo.LfsStorageDir
         
               
-        $context
+        #$context
         
         exit 1
         #$context.Admin.Password         = ConvertTo-SecureString -String $context.Admin.Password -AsPlainText

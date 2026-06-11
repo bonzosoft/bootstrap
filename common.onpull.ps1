@@ -27,7 +27,9 @@ if (Test-Path -Path $Script:Context.IncludeDir) {
 
 ## SET ENV FILE VARIABLES ######################################################
 Get-Content -Path $Script:Context.MainDotEnvFile -Encoding utf8 | ForEach-Object {
-    Expand-DockerVariable -Content $PSItem
+    $content = Expand-DockerVariable -Content $PSItem
+    Write-Information $content
+    Write-Output $content
 } | Set-Content -Path "$($Script:Context.MainDotEnvFile).tmp" -Encoding utf8
 Move-Item -Path "$($Script:Context.MainDotEnvFile).tmp" -Destination $Script:Context.MainDotEnvFile -Force
 Write-Verbose -Message ($Script:Context | Out-String)

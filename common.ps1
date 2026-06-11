@@ -29,7 +29,7 @@ $VerbosePreference = $verboseBackup
 
 $context = Set-DockerContext
 
-Write-Information ($context | Out-String)
+Write-Information $context | Out-String
 #$context
 
 exit 1

@@ -66,3 +66,5 @@ foreach ($service in $Script:Context.Service.Keys) {
 
 
 Write-Information -Message "Loaded script '$PSCommandPath'."
+
+Exit 1

@@ -51,14 +51,9 @@ function Set-DockerContext {
         $context.Admin.Password         = ConvertTo-SecureString -String $context.Admin.Password -AsPlainText
         $context.Smtp.Relay.Password    = ConvertTo-SecureString -String $context.Smtp.Relay.Password -AsPlainText
         $context.Smtp.Provider.Password = ConvertTo-SecureString -String $context.Smtp.Provider.Password -AsPlainText
-        
-        $context
-        
-        exit 1        
     }
 
     end {
-        Write-Information "pasa por aqui"
         $Script:Context = $context
         Write-Ouput $Script:Context
     }

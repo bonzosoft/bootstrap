@@ -41,8 +41,8 @@ function Set-DockerContext {
         $context.Tenant          =           [string]($context.TenantsFile.BaseName)
         $tenantInfo = Get-Content -Path $context.TenantsFile | ConvertFrom-Json -Depth 9 -AsHashTable
         
-        foreach ($key in $context.Keys) {
-            $context.$key = $context.Key
+        foreach ($key in $conent.Keys) {
+            $context.$key = $content.Key
         }
                 
               

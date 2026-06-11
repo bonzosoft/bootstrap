@@ -64,6 +64,7 @@ function Set-DockerContext {
     }
 
     end {
+        Write-Information "pasa por aqui"
         $Script:Context = $context
         Write-Ouput $Script:Context
     }

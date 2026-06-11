@@ -41,14 +41,14 @@ function Set-DockerContext {
         $context.Docker.PUID     = [int]568
         $context.Docker.PGID     = [int]568
         $context.Docker.HostPGID = [int](Get-DockerHostPGID)
-        $context
+        Write-Information $context | Out-String
         
 
         
         $content                 =        [hashtable](Get-Content -Path $context.TenantsFile | ConvertFrom-Json -Depth 9 -AsHashtable)
-        Write-Information ($content | Out-String)
+        Write-Information "hola1 $($content | Out-String)"
         $context = $content
-        Write-Information ($context | Out-String)
+        Write-Information "hola2 $($context | Out-String)"
         #$context.Admin      = $content.Admin
         exit 1
         #$context.Admin.Password         = ConvertTo-SecureString -String $context.Admin.Password -AsPlainText

@@ -14,7 +14,7 @@ Write-Information -Message "Loading script '$PSCommandPath'."
 ### LOAD COMMON ASSETS #########################################################
 . (Get-Item -Path (Join-Path -Path $PSScriptRoot -ChildPath "common.ps1"))
 
-Write-Information "pasa por aqui"
+
 ## PULL SUBMODULES #############################################################
 if (Test-Path -Path $Script:Context.IncludeDir) {
     Write-Information -Message "Pulling submodules."

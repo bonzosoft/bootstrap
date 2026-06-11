@@ -33,7 +33,7 @@ function Set-DockerContext {
         # Tenant
 
         $context.TenantsDir      = [IO.DirectoryInfo](Join-Path -Path $context.CommonDir                -ChildPath "" -AdditionalChildPath @("tenants"))       
-        $context.TenantsFile     =      [IO.FileInfo](Join-Path -Path $context.TenantsDir               -ChildPath "" -AdditionalChildPath @("$((Get-Content -Path $context.HostConfigFile | ConvertFrom-Json).Tenant).json"))
+        $context.TenantsFile     =      [IO.FileInfo](Join-Path -Path $context.TenantsDir               -ChildPath "" -AdditionalChildPath @($config.Tenant)) #@("$((Get-Content -Path $context.HostConfigFile | ConvertFrom-Json).Tenant).json"))
         $context.Tenant          = [ordered]@{}
         $context.Tenant.Name     =           [string]($context.TenantsFile.BaseName)
         # Docker

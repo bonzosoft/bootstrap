@@ -13,7 +13,6 @@ function Expand-DockerVariable {
     }
 
     process {
-        Write-Information $Content
         if (-not ($Content.Trim() -like "^#")) {
             $Content = $Content.Replace('[[SERVERNAME]]',         $Script:Context.Hostname)
             $Content = $Content.Replace('[[STATEDIR]]',           $Script:Context.StateDir.FullName)
@@ -38,7 +37,6 @@ function Expand-DockerVariable {
     }
 
     end {
-        Write-Information $Content
         Write-Output $Content
     }
 }

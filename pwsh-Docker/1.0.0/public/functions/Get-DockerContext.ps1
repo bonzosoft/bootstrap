@@ -1,4 +1,4 @@
-function Set-DockerContext {
+function Get-DockerContext {
     [CmdletBinding()]
     [OutputType([System.Management.Automation.OrderedHashtable])]
 

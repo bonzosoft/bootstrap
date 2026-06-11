@@ -26,36 +26,15 @@ if (Test-Path -Path $Script:Context.IncludeDir) {
 
 
 ## SET ENV FILE VARIABLES ######################################################
-Get-Content -Path $Script:Context.DotEnvFile -Encoding utf8 | ForEach-Object {
-    $string = $PSItem
-    if (-not ($string.Trim() -like "^#")) {
-        $string = $string.Replace('[[SERVERNAME]]',         $Script:Context.Hostname)
-        $string = $string.Replace('[[DATADIR]]',            $Script:Context.DataDir.FullName)
-        $string = $string.Replace('[[DOMAIN]]',             $Script:Context.Domain)
-        $string = $string.Replace('[[PROJECTNAME]]',        $Script:Context.Docker.ProjectName)
-        $string = $string.Replace('[[PUID]]',               $Script:Context.Docker.PUID)
-        $string = $string.Replace('[[PGID]]',               $Script:Context.Docker.PGID)
-        $string = $string.Replace('[[SOCKETPROXY_PGID]]',   $Script:Context.Docker.DockerPGID)
-        $string = $string.Replace('[[ADMIN_USER]]',         $Script:Context.Admin.username)
-        $string = $string.Replace('[[ADMIN_PASS]]',         (ConvertFrom-SecureString -SecureString $Script:Context.Admin.userpass -AsPlainText))
-        $string = $string.Replace('[[ADMIN_EMAIL]]',        $Script:Context.Admin.email)
-        $string = $string.Replace('[[SMTP_RELAY_HOST]]',    $Script:Context.Smtp.relay.hostname)
-        $string = $string.Replace('[[SMTP_RELAY_PORT]]',    $Script:Context.Smtp.relay.port)
-        $string = $string.Replace('[[SMTP_RELAY_USER]]',    $Script:Context.Smtp.relay.username)
-        $string = $string.Replace('[[SMTP_RELAY_PASS]]',    (ConvertFrom-SecureString -SecureString $Script:Context.Smtp.relay.userpass -AsPlainText))
-        $string = $string.Replace('[[SMTP_PROVIDER_HOST]]', $Script:Context.Smtp.provider.hostname)
-        $string = $string.Replace('[[SMTP_PROVIDER_PORT]]', $Script:Context.Smtp.provider.port)
-        $string = $string.Replace('[[SMTP_PROVIDER_USER]]', $Script:Context.Smtp.provider.username)
-        $string = $string.Replace('[[SMTP_PROVIDER_PASS]]', (ConvertFrom-SecureString -SecureString $Script:Context.Smtp.provider.userpass -AsPlainText))
-    }
-    Write-Output -InputObject $string
-} | Set-Content -Path "$($Script:Context.DotEnvFile).tmp" -Encoding utf8
-Move-Item -Path "$($Script:Context.DotEnvFile).tmp" -Destination $Script:Context.DotEnvFile -Force
+Get-Content -Path $Script:Context.MainDotEnvFile -Encoding utf8 | ForEach-Object {
+    Expand-DockerVariable -Content $PSItem
+} | Set-Content -Path "$($Script:Context.MainDotEnvFile).tmp" -Encoding utf8
+Move-Item -Path "$($Script:Context.MainDotEnvFile).tmp" -Destination $Script:Context.MainDotEnvFile -Force
 Write-Verbose -Message ($Script:Context | Out-String)
 
 
 ## GET SERVICES INFORMATION ####################################################
-$compose = Get-DockerCompose -Path $Script:Context.ComposeFile
+$compose = Get-DockerCompose -Path $Script:Context.MainComposeFile
 $volumes = Get-DockerServiceInfo -InputObject $compose -Service $compose.services.Keys -Verbose
 $Script:Context += @{
     "Service"= $volumes

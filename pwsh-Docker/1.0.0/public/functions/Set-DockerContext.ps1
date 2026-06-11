@@ -36,7 +36,10 @@ function Set-DockerContext {
         $context.TenantsFile     =      [IO.FileInfo](Join-Path -Path $context.TenantsDir               -ChildPath "" -AdditionalChildPath @("$($config.Tenant).json")) #@("$((Get-Content -Path $context.HostConfigFile | ConvertFrom-Json).Tenant).json"))
         $context.Tenant          =           [string]($context.TenantsFile.BaseName)
         $tenantInfo = Get-Content -Path $context.TenantsFile | ConvertFrom-Json -Depth 9 -AsHashtable
-        $context += $tenantInfo
+        $context.Domain          = $tenantInfo.Domain
+        $context.Admin           = $tenantInfo.Admin
+        $context.Smtp            = $tenantInfo.Smtp
+        $context.LfsStorageDir   = $tenantInfo.LfsStorageDir
         # Docker
         $context.Docker          = [ordered]@{}
         $context.Docker.PUID     = [int]568

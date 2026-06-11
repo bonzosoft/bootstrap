@@ -45,7 +45,7 @@ function Set-DockerContext {
         
 
         
-        $content                 =        [hashtable](Get-Content -Path $tenantFile | ConvertFrom-Json -Depth 9 -AsHashtable)
+        $content                 =        [hashtable](Get-Content -Path $context.TenantsFile | ConvertFrom-Json -Depth 9 -AsHashtable)
         $context.Admin      = $content.Admin
         exit 1
         #$context.Admin.Password         = ConvertTo-SecureString -String $context.Admin.Password -AsPlainText

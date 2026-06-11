@@ -45,6 +45,10 @@ function Set-DockerContext {
         foreach ($key in $tenantInfo.Keys) {
             $context.$key = $tenantInfo.$key
         }
+
+        if ($context.LfsStorageDir -eq "") {
+            Write-Error "vacio"
+        }
                 
               
         $context

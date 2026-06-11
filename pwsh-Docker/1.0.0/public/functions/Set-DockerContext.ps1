@@ -55,6 +55,6 @@ function Set-DockerContext {
 
     end {
         $Script:Context = $context
-        Write-Ouput $Script:Context
+        Write-Output $Script:Context
     }
 }

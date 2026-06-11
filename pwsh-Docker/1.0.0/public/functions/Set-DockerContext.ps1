@@ -52,7 +52,7 @@ function Set-DockerContext {
         $content
         Write-Information "hola1"
          $content | Out-String
-        $context = $content
+        $context += $content
         Write-Information "hola2"
         $context | Out-String
         #$context.Admin      = $content.Admin

@@ -4,6 +4,7 @@ function Expand-DockerVariable {
 
     param (
         [Parameter(Mandatory)]
+        [AllowEmptyString()]
         [string]$Content
     )
 

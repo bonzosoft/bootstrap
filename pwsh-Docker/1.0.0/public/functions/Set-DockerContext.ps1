@@ -40,8 +40,9 @@ function Set-DockerContext {
         $context.TenantsFile     =      [IO.FileInfo](Join-Path -Path $context.TenantsDir               -ChildPath "" -AdditionalChildPath @("$($config.Tenant).json")) #@("$((Get-Content -Path $context.HostConfigFile | ConvertFrom-Json).Tenant).json"))
         $context.Tenant          =           [string]($context.TenantsFile.BaseName)
         $tenantInfo = Get-Content -Path $context.TenantsFile | ConvertFrom-Json -Depth 9 -AsHashTable
-        [System.Management.Automation.OrderedHashtable]$context = $context + $tenantInfo
-
+        $context.GetType().FullName
+        $context = $context + $tenantInfo
+        $context.GetType().FullName
         
               
         $context

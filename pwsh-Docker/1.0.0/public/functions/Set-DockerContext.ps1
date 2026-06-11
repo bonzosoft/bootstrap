@@ -42,7 +42,7 @@ function Set-DockerContext {
         $tenantInfo = Get-Content -Path $context.TenantsFile | ConvertFrom-Json -Depth 9 -AsHashTable
         
         foreach ($key in $conent.Keys) {
-            $context.$key = $content.Key
+            $context.$key = $content.$key
         }
                 
               

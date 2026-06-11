@@ -15,8 +15,8 @@ function Set-DockerContext {
     process {
         $workingDir = [IO.DirectoryInfo](Get-Location).Path
         
-        $context.ProjectName     =           [string]$WorkingDir.BaseName
-        $context.Hostname        =           [string](Get-DockerHostname)
+        $context.ProjectName     = [string]$WorkingDir.BaseName
+        $context.Hostname        = [string](Get-DockerHostname)
         # WorkingDir
         $context.WorkingDir      = [IO.DirectoryInfo]$workingDir
         $context.ConfigDir       = [IO.DirectoryInfo](Join-Path -Path $context.WorkingDir               -ChildPath "" -AdditionalChildPath @("config"))
@@ -29,6 +29,8 @@ function Set-DockerContext {
         # StateDir
         $context.StateDir        = [IO.DirectoryInfo](Join-Path -Path $context.WorkingDir.Parent.Parent -ChildPath "" -AdditionalChildPath @("state", $context.ProjectName))
         $context.SecretsDir      = [IO.DirectoryInfo](Join-Path -Path $context.StateDir                 -ChildPath "" -AdditionalChildPath @(".secrets"))
+        # LFStorage
+        $context.LFStorage       = [IO.DirectoryInfo](Join-Path -Path $context.WorkingDir.Parent.Parent -ChildPath "" -AdditionalChildPath @("lfstorage", $context.ProjectName))
         # CommonDir
         $context.CommonDir       = [IO.DirectoryInfo]($MyInvocation.PSScriptRoot) #Write-Information (Get-PSCallStack | Format-Table Command, Location | Out-String)
         # Docker
@@ -41,15 +43,11 @@ function Set-DockerContext {
         $context.TenantsFile     =      [IO.FileInfo](Join-Path -Path $context.TenantsDir               -ChildPath "" -AdditionalChildPath @("$($hostConfig.Tenant).json")) #@("$((Get-Content -Path $context.HostConfigFile | ConvertFrom-Json).Tenant).json"))
         $context.Tenant          =           [string]($context.TenantsFile.BaseName)
         $tenantInfo = Get-Content -Path $context.TenantsFile | ConvertFrom-Json -Depth 9 -AsHashTable
-        
         foreach ($key in $tenantInfo.Keys) {
-            $context.$key = $tenantInfo.$key
+            if (-not ($tenantInfo.$key -eq "")){
+                $context.$key = $tenantInfo.$key
+            }
         }
-
-        if ($context.LfsStorageDir -eq "") {
-            $context.LfsStorageDir = [IO.DirectoryInfo](Join-Path -Path $context.WorkingDir.Parent.Parent -ChildPath "" -AdditionalChildPath @("lfstorage", $context.ProjectName))
-        }
-                
               
         $context
         

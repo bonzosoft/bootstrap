@@ -48,7 +48,8 @@ function Set-DockerContext {
         
 
         
-        $content                 =        [hashtable](Get-Content -Path $context.TenantsFile | ConvertFrom-Json -Depth 9 -AsHashtable)
+        $content = [hashtable](Get-Content -Path $context.TenantsFile | ConvertFrom-Json -Depth 9 -AsHashtable)
+        $content
         Write-Information "hola1"
          $content | Out-String
         $context = $content

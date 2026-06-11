@@ -52,7 +52,7 @@ function Set-DockerContext {
         Write-Information $content | Out-String
         $context = $content
         Write-Information "hola2"
-        Write-Informatio $context | Out-String
+        Write-Information $context | Out-String
         #$context.Admin      = $content.Admin
         exit 1
         #$context.Admin.Password         = ConvertTo-SecureString -String $context.Admin.Password -AsPlainText

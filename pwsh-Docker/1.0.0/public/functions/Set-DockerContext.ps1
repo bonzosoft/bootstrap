@@ -31,16 +31,17 @@ function Set-DockerContext {
         # CommonDir
         $context.CommonDir       = [IO.DirectoryInfo]($MyInvocation.PSScriptRoot) #Write-Information (Get-PSCallStack | Format-Table Command, Location | Out-String)
         # Docker
-        $context.Docker          = [ordered]@{}
-        $context.Docker.PUID     = [int]568
-        $context.Docker.PGID     = [int]568
-        $context.Docker.HostPGID = [int](Get-DockerHostPGID)
+        $context.Docker          =          [ordered]@{}
+        $context.Docker.PUID     =              [int]568
+        $context.Docker.PGID     =              [int]568
+        $context.Docker.HostPGID =              [int](Get-DockerHostPGID)
         # Tenant
         $context.TenantsDir      = [IO.DirectoryInfo](Join-Path -Path $context.CommonDir                -ChildPath "" -AdditionalChildPath @("tenants"))       
         $context.TenantsFile     =      [IO.FileInfo](Join-Path -Path $context.TenantsDir               -ChildPath "" -AdditionalChildPath @("$($config.Tenant).json")) #@("$((Get-Content -Path $context.HostConfigFile | ConvertFrom-Json).Tenant).json"))
         $context.Tenant          =           [string]($context.TenantsFile.BaseName)
         $tenantInfo = Get-Content -Path $context.TenantsFile | ConvertFrom-Json -Depth 9 -AsHashTable
-        [System.Management.Automation.OrderedHashtable]$context += $tenantInfo
+        [System.Management.Automation.OrderedHashtable]$context = $context + $tenantInfo
+
         
               
         $context

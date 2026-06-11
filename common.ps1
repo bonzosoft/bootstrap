@@ -25,18 +25,7 @@ $VerbosePreference = $verboseBackup
 
 
 ### SETUP CONTEXT ##############################################################
-$context = Set-DockerContext
-
-$context
-
-exit 1
-
-
-#$tenantData = Join-Path -Path $Script:Context.CommonDir -ChildPath "tenants" -AdditionalChildPath "$($Script:Context.Tenant).json"
-#$Script:Context += Get-Content -Path $tenantData -Encoding utf8 | ConvertFrom-Json -AsHashTable -Depth 9
-
-Write-Verbose -Message ($Script:Context | Out-String)
+$Script:Context = Set-DockerContext
 
 
 Write-Information -Message "Loaded script '$PSCommandPath'."
-

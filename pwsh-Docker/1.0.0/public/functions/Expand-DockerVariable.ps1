@@ -15,7 +15,8 @@ function Expand-DockerVariable {
         Write-Information $Content
         if (-not ($Content.Trim() -like "^#")) {
             $Content = $Content.Replace('[[SERVERNAME]]',         $Script:Context.Hostname)
-            $Content = $Content.Replace('[[DATADIR]]',            $Script:Context.DataDir.FullName)
+            $Content = $Content.Replace('[[STATEDIR]]',           $Script:Context.StateDir.FullName)
+            $Content = $Content.Replace('[[LFSTORAGEDIR]]',       $Script:Context.LFStorageDir.FullName)
             $Content = $Content.Replace('[[DOMAIN]]',             $Script:Context.Domain)
             $Content = $Content.Replace('[[PROJECTNAME]]',        $Script:Context.ProjectName)
             $Content = $Content.Replace('[[PUID]]',               $Script:Context.Docker.PUID)

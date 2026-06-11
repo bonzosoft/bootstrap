@@ -8,6 +8,7 @@ function Set-DockerContext {
 
     begin {
         [System.Management.Automation.OrderedHashtable]$context = [ordered]@{}
+        [System.Management.Automation.OrderedHashtable]$hostConfig = [ordered]@{}
         [System.Management.Automation.OrderedHashtable]$tenantInfo = [ordered]@{}
     }
 
@@ -24,7 +25,7 @@ function Set-DockerContext {
         $context.MainComposeFile =      [IO.FileInfo](Join-Path -Path $context.WorkingDir               -ChildPath "" -AdditionalChildPath @("compose.yaml"))
         # HostConfigFile        
         $context.HostConfigFile  =      [IO.FileInfo](Join-Path -Path $context.WorkingDir.Parent        -ChildPath "" -AdditionalChildPath @(".config", "host", "config.json"))
-        $config = Get-Content -Path $context.HostConfigFile | ConvertFrom-Json -Depth 9 -AsHashTable
+        $hostConfig = Get-Content -Path $context.HostConfigFile | ConvertFrom-Json -Depth 9 -AsHashTable
         # StateDir
         $context.StateDir        = [IO.DirectoryInfo](Join-Path -Path $context.WorkingDir.Parent.Parent -ChildPath "" -AdditionalChildPath @("state", $context.ProjectName))
         $context.SecretsDir      = [IO.DirectoryInfo](Join-Path -Path $context.StateDir                 -ChildPath "" -AdditionalChildPath @(".secrets"))
@@ -37,12 +38,12 @@ function Set-DockerContext {
         $context.Docker.HostPGID =              [int](Get-DockerHostPGID)
         # Tenant
         $context.TenantsDir      = [IO.DirectoryInfo](Join-Path -Path $context.CommonDir                -ChildPath "" -AdditionalChildPath @("tenants"))       
-        $context.TenantsFile     =      [IO.FileInfo](Join-Path -Path $context.TenantsDir               -ChildPath "" -AdditionalChildPath @("$($config.Tenant).json")) #@("$((Get-Content -Path $context.HostConfigFile | ConvertFrom-Json).Tenant).json"))
+        $context.TenantsFile     =      [IO.FileInfo](Join-Path -Path $context.TenantsDir               -ChildPath "" -AdditionalChildPath @("$($hostConfig.Tenant).json")) #@("$((Get-Content -Path $context.HostConfigFile | ConvertFrom-Json).Tenant).json"))
         $context.Tenant          =           [string]($context.TenantsFile.BaseName)
         $tenantInfo = Get-Content -Path $context.TenantsFile | ConvertFrom-Json -Depth 9 -AsHashTable
         
-        foreach ($key in $conent.Keys) {
-            $context.$key = $content.$key
+        foreach ($key in $tenantInfo.Keys) {
+            $context.$key = $tenantInfo.$key
         }
                 
               

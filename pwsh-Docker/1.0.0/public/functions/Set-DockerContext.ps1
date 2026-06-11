@@ -8,6 +8,7 @@ function Set-DockerContext {
 
     begin {
         [System.Management.Automation.OrderedHashtable]$context = [ordered]@{}
+        [System.Management.Automation.OrderedHashtable]$tenantInfo = [ordered]@{}
     }
 
     process {
@@ -31,31 +32,19 @@ function Set-DockerContext {
         #Write-Information (Get-PSCallStack | Format-Table Command, Location | Out-String)
         $context.CommonDir       = [IO.DirectoryInfo]($MyInvocation.PSScriptRoot)
         # Tenant
-
         $context.TenantsDir      = [IO.DirectoryInfo](Join-Path -Path $context.CommonDir                -ChildPath "" -AdditionalChildPath @("tenants"))       
         $context.TenantsFile     =      [IO.FileInfo](Join-Path -Path $context.TenantsDir               -ChildPath "" -AdditionalChildPath @("$($config.Tenant).json")) #@("$((Get-Content -Path $context.HostConfigFile | ConvertFrom-Json).Tenant).json"))
-        $context.Tenant          = [ordered]@{}
-        $context.Tenant.Name     =           [string]($context.TenantsFile.BaseName)
+        $context.Tenant          =           [string]($context.TenantsFile.BaseName)
+        $tenantInfo = Get-Content -Path $context.TenantsFile | ConvertFrom-Json -Depth 9 -AsHashtable
+        $context += $tenantInfo
         # Docker
         $context.Docker          = [ordered]@{}
         $context.Docker.PUID     = [int]568
         $context.Docker.PGID     = [int]568
         $context.Docker.HostPGID = [int](Get-DockerHostPGID)
-        
-        Write-Information "pasa"
-        
+              
         $context
         
-
-        
-        $content = [hashtable](Get-Content -Path $context.TenantsFile | ConvertFrom-Json -Depth 9 -AsHashtable)
-        $content
-        Write-Information "hola1"
-         $content | Out-String
-        $context += $content
-        Write-Information "hola2"
-        $context | Out-String
-        #$context.Admin      = $content.Admin
         exit 1
         #$context.Admin.Password         = ConvertTo-SecureString -String $context.Admin.Password -AsPlainText
         #$context.Smtp.Relay.Password    = ConvertTo-SecureString -String $context.Smtp.Relay.Password -AsPlainText

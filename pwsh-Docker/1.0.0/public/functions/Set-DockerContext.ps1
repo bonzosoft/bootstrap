@@ -43,7 +43,8 @@ function Set-DockerContext {
         $context.Docker.HostPGID = [int](Get-DockerHostPGID)
         
         Write-Information "pasa"
-        Write-Information $context
+        
+        $context
         
 
         

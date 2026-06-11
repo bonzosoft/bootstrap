@@ -31,20 +31,22 @@ function Set-DockerContext {
         # CommonDir
         #Write-Information (Get-PSCallStack | Format-Table Command, Location | Out-String)
         $context.CommonDir       = [IO.DirectoryInfo]($MyInvocation.PSScriptRoot)
-        # Tenant
-        $context.TenantsDir      = [IO.DirectoryInfo](Join-Path -Path $context.CommonDir                -ChildPath "" -AdditionalChildPath @("tenants"))       
-        $context.TenantsFile     =      [IO.FileInfo](Join-Path -Path $context.TenantsDir               -ChildPath "" -AdditionalChildPath @("$($config.Tenant).json")) #@("$((Get-Content -Path $context.HostConfigFile | ConvertFrom-Json).Tenant).json"))
-        $context.Tenant          =           [string]($context.TenantsFile.BaseName)
-        $tenantInfo = Get-Content -Path $context.TenantsFile | ConvertFrom-Json -Depth 9 -AsHashtable
-        $context.Domain          = $tenantInfo.Domain
-        $context.Admin           = $tenantInfo.Admin
-        $context.Smtp            = $tenantInfo.Smtp
-        $context.LfsStorageDir   = $tenantInfo.LfsStorageDir
         # Docker
         $context.Docker          = [ordered]@{}
         $context.Docker.PUID     = [int]568
         $context.Docker.PGID     = [int]568
         $context.Docker.HostPGID = [int](Get-DockerHostPGID)
+        # Tenant
+        $context.TenantsDir      = [IO.DirectoryInfo](Join-Path -Path $context.CommonDir                -ChildPath "" -AdditionalChildPath @("tenants"))       
+        $context.TenantsFile     =      [IO.FileInfo](Join-Path -Path $context.TenantsDir               -ChildPath "" -AdditionalChildPath @("$($config.Tenant).json")) #@("$((Get-Content -Path $context.HostConfigFile | ConvertFrom-Json).Tenant).json"))
+        $context.Tenant          =           [string]($context.TenantsFile.BaseName)
+        $tenantInfo = Get-Content -Path $context.TenantsFile | ConvertFrom-Json -Depth 9 
+        $tenantInfo
+        $context.Domain          = $tenantInfo.Domain
+        $context.Admin           = $tenantInfo.Admin
+        $context.Smtp            = $tenantInfo.Smtp
+        $context.LfsStorageDir   = $tenantInfo.LfsStorageDir
+        
               
         $context
         

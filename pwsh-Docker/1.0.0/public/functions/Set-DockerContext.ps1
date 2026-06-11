@@ -40,14 +40,10 @@ function Set-DockerContext {
         $context.TenantsFile     =      [IO.FileInfo](Join-Path -Path $context.TenantsDir               -ChildPath "" -AdditionalChildPath @("$($config.Tenant).json")) #@("$((Get-Content -Path $context.HostConfigFile | ConvertFrom-Json).Tenant).json"))
         $context.Tenant          =           [string]($context.TenantsFile.BaseName)
         $tenantInfo = Get-Content -Path $context.TenantsFile | ConvertFrom-Json -Depth 9 -AsHashTable
-        $tenantInfo
-        $context.Domain          = $tenantInfo.Domain
-        $context.Admin           = $tenantInfo.Admin
-        $context.Smtp            = $tenantInfo.Smtp
-        $context.LfsStorageDir   = $tenantInfo.LfsStorageDir
+        $context += $tenantInfor
         
               
-        #$context
+        $context
         
         exit 1
         #$context.Admin.Password         = ConvertTo-SecureString -String $context.Admin.Password -AsPlainText

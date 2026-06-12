@@ -25,12 +25,13 @@ La estructura de directorios recomendada es:
 Ejecutar:
 ````bash
    clear \
+&& BRANCH="pruebas"
 && rm -rf "${PWD}/bootstrap" \
-&& git clone --branch "main" --single-branch https://github.com/bonzosoft/bootstrap.git \
+&& git clone --branch ${BRANCH} --single-branch https://github.com/bonzosoft/bootstrap.git \
 && ln -snf "${PWD}/bootstrap/bootstrap.sh" "${PWD}/install" \
 && chmod +x "${PWD}/install"
 && rm -rf "${PWD}/common" \
-&& git clone --branch "main" --single-branch https://github.com/bonzosoft/common.git \
+&& git clone --branch ${BRANCH} --single-branch https://github.com/bonzosoft/common.git \
 && ln -snf "${PWD}/common/cmd.sh" "${PWD}/cmd" \
 && chmod +x "${PWD}/cmd"
 ````

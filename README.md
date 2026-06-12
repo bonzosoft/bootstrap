@@ -24,10 +24,15 @@ La estructura de directorios recomendada es:
 ### 1.- Descarga de archivos
 Ejecutar:
 ````bash
-   rm -rf ./bootstrap \
+   clear \
+&& rm -rf "${PWD}/bootstrap" \
 && git clone --branch "main" --single-branch https://github.com/bonzosoft/bootstrap.git \
 && ln -snf "${PWD}/bootstrap/bootstrap.sh" "${PWD}/install" \
 && chmod +x "${PWD}/install"
+&& rm -rf "${PWD}/common" \
+&& git clone --branch "main" --single-branch https://github.com/bonzosoft/common.git \
+&& ln -snf "${PWD}/common/cmd.sh" "${PWD}/cmd" \
+&& chmod +x "${PWD}/cmd"
 ````
 
 ### 2.- Ejecución del helper

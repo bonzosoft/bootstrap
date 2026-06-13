@@ -9,7 +9,7 @@ $InformationPreference = 'Continue'
 [IO.DirectoryInfo]$ConfigDir  = Join-Path -Path $WorkingDir -ChildPath @(".config")
 
 Write-Host ""
-Write-Host "Bienvenido al asistente de instalación (v0.1.9). Pulsa una tecla para continuar..."
+Write-Host "Bienvenido al asistente de instalación (v0.1.10). Pulsa una tecla para continuar..."
 Read-Host
 
 $env:GH_CONFIG_DIR=(Join-Path -Path $ConfigDir -ChildPath @("gh"))

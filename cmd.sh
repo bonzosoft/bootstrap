@@ -5,7 +5,7 @@ if [ $# -gt 0 ]; then
     #-v /var/run/docker.sock:/var/run/docker.sock:ro \
     docker run \
         --rm \
-        -i \  
+        -i \
         -v /etc:/host/etc:ro \
         -v /mnt/tank0/apps:/mnt/tank0/apps:rw \
         -w ${PWD} \

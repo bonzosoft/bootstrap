@@ -9,11 +9,11 @@ $InformationPreference = 'Continue'
 [IO.DirectoryInfo]$ConfigDir  = Join-Path -Path $WorkingDir -ChildPath @(".config")
 
 Write-Host ""
-Write-Host "Bienvenido al asistente de instalación (v0.1.6). Pulsa una tecla para continuar..."
+Write-Host "Bienvenido al asistente de instalación (v0.1.7). Pulsa una tecla para continuar..."
 Read-Host
 
 $env:GH_CONFIG_DIR=(Join-Path -Path $ConfigDir -ChildPath @("gh"))
-gh config set prompt disabled
+$null = Invoke-Command -FilePath gh -ArgumentList @(config set prompt disabled) 
 if (-not (gh auth status)) {
     gh auth login --git-protocol "https" --hostname "github.com" --web
     

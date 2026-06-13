@@ -7,7 +7,7 @@ $InformationPreference = 'Continue'
 [IO.DirectoryInfo]$ConfigDir  = Join-Path -Path $WorkingDir -ChildPath @(".config")
 [string]$BranchName = "pruebas"
 
-Write-Host "v0.1.2"
+Write-Host "v0.1.3"
 Write-Host "Bienvenido al asistente de instalación. Pulsa una tecla para continuar..."
 Read-Host
 
@@ -19,6 +19,6 @@ if (Test-Path $RepoDir) {
 }
 git clone --branch $BranchName --single-branch https://github.com/bonzosoft/$($RepoDir.Name).git
 foreach ($item in @("install", "cmd")) {
-    ln -snf (Join-Path -Path $RepoDir -ChildPath @("$item.ps1") ) (Join-Path -Path $WorkingDir -ChildPath @("$item"))
+    ln -snf (Join-Path -Path $RepoDir -ChildPath @("$item.sh") ) (Join-Path -Path $WorkingDir -ChildPath @("$item"))
     chmod +x (Join-Path -Path $WorkingDir -ChildPath @("$item"))
 }

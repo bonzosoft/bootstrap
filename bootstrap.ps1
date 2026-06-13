@@ -8,5 +8,5 @@ $InformationPreference = 'Continue'
 
 
 Write-Host "workingdir: ${WorkingDir}"
-Write-Information "information: $GHConfigDir"
+Write-Host "information: $GHConfigDir"
 Write-Information "information: $HostConfigFile"

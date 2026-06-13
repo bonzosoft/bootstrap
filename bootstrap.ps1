@@ -7,12 +7,18 @@ $InformationPreference = 'Continue'
 [IO.DirectoryInfo]$WorkingDir = (Get-Location).Path
 [IO.DirectoryInfo]$RepoDir    = Join-Path -Path $WorkingDir -ChildPath @("common")
 [IO.DirectoryInfo]$ConfigDir  = Join-Path -Path $WorkingDir -ChildPath @(".config")
-
-Write-Host ""
-Write-Host "Bienvenido al asistente de instalación (v0.1.12). Pulsa una tecla para continuar..."
-Read-Host
-
 $env:GH_CONFIG_DIR=(Join-Path -Path $ConfigDir -ChildPath @("gh"))
+
+Clear-Host
+Write-Host ""
+Write-Host "[Version: 0.1.14]"
+Write-Host ""
+Write-Host "Bienvenido al asistente de instalación. Pulsa una tecla para continuar..."
+Read-Host | Out-Null
+
+Write-Host "El directorio de configuracion es:"
+bash -c 'echo $GH_CONFIG_DIR'
+
 $null = gh config set prompt disabled 2> variable:errorMessage
 if ($LASTEXITCODE) {
     Write-Error $errorMessage

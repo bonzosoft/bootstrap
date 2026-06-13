@@ -1,8 +1,10 @@
 
 # Bootstrap
 
-## Prerrequisitos
+## 1.- Prerrequisitos
+
 La estructura de directorios recomendada es:
+
 ````
 /mnt/tank0/apps
 |- infra/
@@ -12,78 +14,37 @@ La estructura de directorios recomendada es:
 |  |- komodo-periphery/
 |  |- run
 |- state/
-   |- komodo-core/
-      |- app/
-      |- db/
-      |- dbwrapper/
-      |- proxy/
+|  |- komodo-core/
+|     |- app/
+|     |- db/
+|     |- dbwrapper/
+|     |- proxy/
+|- storage/
 ````
 
-## Instalación
+## 2.- Instalación
 
-### 1.- Descarga de archivos
-Ejecutar:
+Para realizar el bootstrap de la instalación del entorno de Docker, ejecutar:
+
 ````bash
-   clear \
-&& BRANCH="pruebas"
-&& rm -rf "${PWD}/bootstrap" \
-&& git clone --branch ${BRANCH} --single-branch https://github.com/bonzosoft/bootstrap.git \
-&& ln -snf "${PWD}/bootstrap/bootstrap.sh" "${PWD}/install" \
-&& chmod +x "${PWD}/install"
-&& rm -rf "${PWD}/common" \
-&& git clone --branch ${BRANCH} --single-branch https://github.com/bonzosoft/common.git \
-&& ln -snf "${PWD}/common/cmd.sh" "${PWD}/cmd" \
-&& chmod +x "${PWD}/cmd"
+wget -qO ${PWD}/bootstrap.ps1 https://raw.githubusercontent.com/bonzosoft/bootstrap/pruebas/bootstrap.ps1 && docker run --rm -it -v /etc:/host/etc:ro -v ${PWD}:${PWD}:rw -w ${PWD} ghcr.io/bonzosoft/pwsh pwsh -NoLogo -NoProfile -File ${PWD}/bootstrap.ps1  && rm ${PWD}/bootstrap.ps1
 ````
 
-### 2.- Ejecución del helper
-Ejecutar:
+## 3.- Configuración
+Para configurar el entorno, ejecutar:
 ````bash
 ./install
 ````
 
-### 3.- Inicio de sesión en Github
-Seleccionar:
-````
-Login
-````
-Y seguir las instrucciones.
+### 4.- Ejecución de pwsh
 
-### 4.- Selección del Realm
-Seleccionar:
-````
-Set Realm
-````
-Y seguir las instrucciones. En AST seleccionar ``Production``.
+Para usar el contenedor de ``pwsh`` se puede ejecutar un comando aleatorio con:
 
-#### 5.- Instalar el programa
-En el servidor principal seleccionar:
 ````
-Komodo Core pull
-````
-En el servidor secundario seleccionar:
-````
-Komodo Periphery pull
+./cmd Write-Host "Hola Mundo."
 ````
 
-
-## Uso avanzado
-
-### Reset
-Para resetear todo:
+o iniciar la consola con:
 ````bash
-rm -rf /mnt/tank0/apps/infra/* && rm -rf /mnt/tank0/apps/state
+./cmd
 ````
-
-### Docker CLI
-Para ejecutar el menú usando Docker CLI:
-````bash
-docker run \
-    -it \
-    -v /etc:/host/etc:ro \
-    -v /mnt/tank0/apps:/mnt/tank0/apps:rw \
-    -w ${PWD} \
-    ghcr.io/bonzosoft/pwsh pwsh
-````
-
-

@@ -19,7 +19,7 @@ if ($LASTEXITCODE) {
     Write-Error $errorMessage
 }
 
-if (-not (gh auth status)) {
+if ((gh auth status 2>&1 variable:errorMessage) -ne 0) {
     gh auth login --git-protocol "https" --hostname "github.com" --web 2> variable:errorMessage
     if ($LASTEXITCODE) {
         Write-Error $errorMessage

@@ -11,7 +11,7 @@ $env:GH_CONFIG_DIR=(Join-Path -Path $ConfigDir -ChildPath @("gh"))
 
 Clear-Host
 Write-Host ""
-Write-Host "[Version: 0.1.16]"
+Write-Host "[Version: 0.1.17]"
 Write-Host ""
 Write-Host "Bienvenido al asistente de instalación. Pulsa una tecla para continuar..."
 Read-Host | Out-Null
@@ -23,15 +23,17 @@ $null = gh config set prompt disabled 2> variable:errorMessage
 if ($LASTEXITCODE) {
     Write-Error $errorMessage
 }
-
+Write-Host "vamos a comprobar"
 $null = gh auth status 2> variable:errorMessage
 if ($LASTEXITCODE) {
+    Write-Host "no logueado"
     gh auth login --git-protocol "https" --hostname "github.com" --web
     if ($LASTEXITCODE) {
         Write-Error $errorMessage
     }
 }
 
+Write-Host "logueado"
 if (Test-Path $RepoDir) {
     Remove-Item -Path $RepoDir -Recurse -Force
 }

@@ -13,16 +13,29 @@ Write-Host "Bienvenido al asistente de instalación (v0.1.8). Pulsa una tecla pa
 Read-Host
 
 $env:GH_CONFIG_DIR=(Join-Path -Path $ConfigDir -ChildPath @("gh"))
-$null = Invoke-Command -FilePath gh -ArgumentList @("config", "set", "prompt", "disabled") 
+#$null = Start-Process -FilePath "gh" -ArgumentList @("config", "set", "prompt", "disabled") -Wait -NoNewWindow -ErrorVariable Variable:errorVariable
+$null = gh config set prompt disabled 2> variable:errorMessage
+if ($LASTEXITCODE) {
+    Write-Error $errorMessage
+}
+
 if (-not (gh auth status)) {
-    gh auth login --git-protocol "https" --hostname "github.com" --web
-    
+    gh auth login --git-protocol "https" --hostname "github.com" --web 2> variable:errorMessage
+    if ($LASTEXITCODE) {
+        Write-Error $errorMessage
+    }
 }
 if (Test-Path $RepoDir) {
     Remove-Item -Path $RepoDir -Recurse -Force
 }
-gh auth setup-git
-git clone --branch $BranchName --single-branch https://github.com/bonzosoft/$($RepoDir.Name).git
+$null = gh auth setup-git 2> variable:errorMessage
+if ($LASTEXITCODE) {
+    Write-Error $errorMessage
+}
+$null = git clone --branch $BranchName --single-branch https://github.com/bonzosoft/$($RepoDir.Name).git 2> variable:errorMessage
+if ($LASTEXITCODE) {
+    Write-Error $errorMessage
+}
 foreach ($item in @("install", "cmd")) {
     ln -snf (Join-Path -Path $RepoDir -ChildPath @("$item.sh") ) (Join-Path -Path $WorkingDir -ChildPath @("$item"))
     chmod +x (Join-Path -Path $WorkingDir -ChildPath @("$item"))

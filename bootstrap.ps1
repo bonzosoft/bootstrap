@@ -7,6 +7,6 @@ $InformationPreference = 'Continue'
 [System.IO.FileInfo]$HostConfigFile = Join-Path -Path $WorkingDir -ChildPath "" -AdditionalChildPath @(".config", "host", "config.json")
 
 
-Write-Host $WorkingDir
-Write-Information $GHConfigDir
-Write-Information $HostConfigFile
+Write-Host "workingdir: ${WorkingDir}"
+Write-Information "information: $GHConfigDir"
+Write-Information "information: $HostConfigFile"

@@ -12,10 +12,12 @@ Write-Host "Bienvenido al asistente de instalación. Pulsa una tecla para contin
 Read-Host
 
 $env:GH_CONFIG_DIR=(Join-Path -Path $ConfigDir -ChildPath @("gh"))
+gh config set prompt disabled
 if (-not (gh auth status)) {
-    gh auth login --git-protocol "https" --hostname "github.com" --web 
+    gh auth login --git-protocol "https" --hostname "github.com" --web
+    gh auth setup-git
 }
-gh auth setup-git
+
 if (Test-Path $RepoDir) {
     Remove-Item -Path $RepoDir -Recurse -Force
 }

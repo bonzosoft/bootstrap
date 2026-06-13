@@ -5,13 +5,13 @@ $InformationPreference = 'Continue'
 [IO.DirectoryInfo]$WorkingDir = (Get-Location).Path
 [IO.DirectoryInfo]$RepoDir    = Join-Path -Path $WorkingDir -ChildPath @("common")
 [IO.DirectoryInfo]$ConfigDir  = Join-Path -Path $WorkingDir -ChildPath @(".config")
-[IO.FileInfo]$HostConfigFile  = Join-Path -Path $ConfigDir  -ChildPath @("host", "config.json")
 [string]$BranchName = "pruebas"
 
 Write-Host "Bienvenido al asistente de instalación. Pulsa una tecla para continuar..."
 Read-Host
 
-gh auth login
+$env:GH_CONFIG_DIR=(Join-Path -Path $ConfigDir -ChildPath @("gh"))
+gh auth login --web --clipboard 
 
 if (Test-Path $RepoDir) {
     Remove-Item -Path $RepoDir -Recurse -Force

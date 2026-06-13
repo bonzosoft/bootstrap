@@ -29,16 +29,16 @@ Export-ModuleMember -Variable *
 
 ### Look for module assets #####################################################
 # Get public function definition files
-[IO.FileInfo[]]$publicFunctions = Get-ChildItem -Path (Join-Path -Path $Self.DirectoryName -ChildPath "public/functions/*.ps1") -ErrorAction SilentlyContinue
+[IO.FileInfo[]]$publicFunctions = Get-ChildItem -Path (Join-Path -Path $Self.DirectoryName -ChildPath "public/functions/*.ps1") -Recurse -ErrorAction SilentlyContinue
 
 # Get private function definition files
-[IO.FileInfo[]]$privateFunctions = Get-ChildItem -Path (Join-Path -Path $Self.DirectoryName -ChildPath "private/functions/*.ps1") -ErrorAction SilentlyContinue
+[IO.FileInfo[]]$privateFunctions = Get-ChildItem -Path (Join-Path -Path $Self.DirectoryName -ChildPath "private/functions/*.ps1") -Recurse -ErrorAction SilentlyContinue
 
 # Get public classes definition files
-[IO.FileInfo[]]$publicClasses = Get-ChildItem -Path (Join-Path -Path $Self.DirectoryName -ChildPath "public/classes/*.ps1") -ErrorAction SilentlyContinue
+[IO.FileInfo[]]$publicClasses = Get-ChildItem -Path (Join-Path -Path $Self.DirectoryName -ChildPath "public/classes/*.ps1") -Recurse -ErrorAction SilentlyContinue
 
 # Get private classes definition files
-[IO.FileInfo[]]$privateClasses = Get-ChildItem -Path (Join-Path -Path $Self.DirectoryName -ChildPath "private/classes/*.ps1") -ErrorAction SilentlyContinue
+[IO.FileInfo[]]$privateClasses = Get-ChildItem -Path (Join-Path -Path $Self.DirectoryName -ChildPath "private/classes/*.ps1") -Recurse -ErrorAction SilentlyContinue
 
 
 ### Load of module assets ######################################################

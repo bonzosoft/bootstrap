@@ -18,17 +18,17 @@ function Get-DockerContext {
         $context.Hostname        = [string](Get-DockerHostname)
         # WorkingDir
         $context.WorkingDir      = [IO.DirectoryInfo]$workingDir
-        $context.ConfigDir       = [IO.DirectoryInfo](Join-Path -Path $context.WorkingDir               -ChildPath "" -AdditionalChildPath @("config"))
-        $context.IncludeDir      = [IO.DirectoryInfo](Join-Path -Path $context.WorkingDir               -ChildPath "" -AdditionalChildPath @("include"))
-        $context.MainDotEnvFile  =      [IO.FileInfo](Join-Path -Path $context.WorkingDir               -ChildPath "" -AdditionalChildPath @(".env"))
-        $context.MainComposeFile =      [IO.FileInfo](Join-Path -Path $context.WorkingDir               -ChildPath "" -AdditionalChildPath @("compose.yaml"))
+        $context.ConfigDir       = [IO.DirectoryInfo](Join-Path -Path $context.WorkingDir -ChildPath @("config"))
+        $context.IncludeDir      = [IO.DirectoryInfo](Join-Path -Path $context.WorkingDir -ChildPath @("include"))
+        $context.MainDotEnvFile  =      [IO.FileInfo](Join-Path -Path $context.WorkingDir -ChildPath @(".env"))
+        $context.MainComposeFile =      [IO.FileInfo](Join-Path -Path $context.WorkingDir -ChildPath @("compose.yaml"))
         # HostConfigFile        
-        $context.HostConfigFile  =      [IO.FileInfo](Join-Path -Path $context.WorkingDir.Parent        -ChildPath "" -AdditionalChildPath @(".config", "host", "config.json"))
+        $context.HostConfigFile  =      [IO.FileInfo](Join-Path -Path $context.WorkingDir -ChildPath @("..", ".config", "host", "config.json"))
         # StateDir
-        $context.StateDir        = [IO.DirectoryInfo](Join-Path -Path $context.WorkingDir.Parent.Parent -ChildPath "" -AdditionalChildPath @("state", $context.ProjectName))
-        $context.SecretsDir      = [IO.DirectoryInfo](Join-Path -Path $context.StateDir                 -ChildPath "" -AdditionalChildPath @(".secrets"))
+        $context.StateDir        = [IO.DirectoryInfo](Join-Path -Path $context.WorkingDir -ChildPath @("..", "..", "state", $context.ProjectName))
+        $context.SecretsDir      = [IO.DirectoryInfo](Join-Path -Path $context.StateDir   -ChildPath @(".secrets"))
         # LFStorage
-        $context.LFStorage       = [IO.DirectoryInfo](Join-Path -Path $context.WorkingDir.Parent.Parent -ChildPath "" -AdditionalChildPath @("lfstorage", $context.ProjectName))
+        $context.LFStorage       = [IO.DirectoryInfo](Join-Path -Path $context.WorkingDir -ChildPath @("..", "..", "lfstorage", $context.ProjectName))
         # CommonDir
         $context.CommonDir       = [IO.DirectoryInfo]($MyInvocation.PSScriptRoot) #Write-Information (Get-PSCallStack | Format-Table Command, Location | Out-String)
         # Docker
@@ -37,8 +37,8 @@ function Get-DockerContext {
         $context.Docker.PGID     =              [int]568
         $context.Docker.HostPGID =              [int](Get-DockerHostPGID)
         # Tenant
-        $context.TenantsDir      = [IO.DirectoryInfo](Join-Path -Path $context.CommonDir                -ChildPath "" -AdditionalChildPath @("tenants"))       
-        $context.TenantsFile     =      [IO.FileInfo](Join-Path -Path $context.TenantsDir               -ChildPath "" -AdditionalChildPath @("$((Get-Content -Path $context.HostConfigFile | ConvertFrom-Json).Tenant).json"))
+        $context.TenantsDir      = [IO.DirectoryInfo](Join-Path -Path $context.CommonDir  -ChildPath @("tenants"))       
+        $context.TenantsFile     =      [IO.FileInfo](Join-Path -Path $context.TenantsDir -ChildPath @("$((Get-Content -Path $context.HostConfigFile | ConvertFrom-Json).Tenant).json"))
         $context.Tenant          =           [string]($context.TenantsFile.BaseName)
         
         $tenantInfo = Get-Content -Path $context.TenantsFile | ConvertFrom-Json -Depth 9 -AsHashTable

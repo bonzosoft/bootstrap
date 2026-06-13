@@ -1,4 +1,4 @@
-#!/usr/bin/env pwsh
+#!/bin/bash
 
 # Script Mode
 #-v /var/run/docker.sock:/var/run/docker.sock:ro \

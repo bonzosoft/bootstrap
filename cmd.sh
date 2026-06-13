@@ -1,4 +1,4 @@
-#!/usr/bin/env pwsh
+#!/bin/bash
 
 if [ $# -gt 0 ]; then
     # Command Mode

@@ -11,7 +11,7 @@ Write-Host "Bienvenido al asistente de instalación. Pulsa una tecla para contin
 Read-Host
 
 $env:GH_CONFIG_DIR=(Join-Path -Path $ConfigDir -ChildPath @("gh"))
-gh auth login --web --clipboard 
+gh auth login --git-protocol "https" --web --clipboard 
 
 if (Test-Path $RepoDir) {
     Remove-Item -Path $RepoDir -Recurse -Force

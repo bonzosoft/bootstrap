@@ -1,8 +1,11 @@
+#!/usr/bin/env pwsh
+
 if [ $# -gt 0 ]; then
-    # Script Mode
+    # Command Mode
     docker run \
         --rm \
         -i \
+        #-v /var/run/docker.sock:/var/run/docker.sock:ro \
         -v /etc:/host/etc:ro \
         -v /mnt/tank0/apps:/mnt/tank0/apps:rw \
         -w ${PWD} \
@@ -12,12 +15,9 @@ else
     docker run \
         --rm \
         -it \
+        #-v /var/run/docker.sock:/var/run/docker.sock:ro \
         -v /etc:/host/etc:ro \
         -v /mnt/tank0/apps:/mnt/tank0/apps:rw \
         -w ${PWD} \
         ghcr.io/bonzosoft/pwsh pwsh -NoLogo -NoProfile
 fi
-
-# añadir la linea
-#-v /var/run/docker.sock:/var/run/docker.sock:ro \
-# si hiciera falta docker

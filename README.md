@@ -1,4 +1,47 @@
 
+# Instalación
+
+## Prerequisitos
+
+Antes de hacer login, hay que instalar la herramienta Github-cli.
+
+### Instalar
+
+* Debian
+````bash
+apt update
+apt install gh
+````
+
+* Alpine
+````bash
+apk update
+apk add github-cli
+````
+
+### Verificar
+
+````bash
+gh --version
+````
+
+### Autentificar
+
+````bash
+gh auth login --device
+````
+
+
+
+
+
+
+
+
+
+
+
+
 
 ## Linea de comandos
 

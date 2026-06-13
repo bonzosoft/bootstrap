@@ -1,10 +1,10 @@
 #!/usr/bin/env pwsh
 
 # Script Mode
+#-v /var/run/docker.sock:/var/run/docker.sock:ro \
 docker run \
     --rm \
     -it \
-    #-v /var/run/docker.sock:/var/run/docker.sock:ro \
     -v /etc:/host/etc:ro \
     -v /mnt/tank0/apps:/mnt/tank0/apps:rw \
     -w ${PWD} \

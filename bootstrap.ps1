@@ -9,18 +9,17 @@ $InformationPreference = 'Continue'
 [IO.DirectoryInfo]$ConfigDir  = Join-Path -Path $WorkingDir -ChildPath @(".config")
 
 Write-Host ""
-Write-Host "Bienvenido al asistente de instalación (v0.1.11). Pulsa una tecla para continuar..."
+Write-Host "Bienvenido al asistente de instalación (v0.1.12). Pulsa una tecla para continuar..."
 Read-Host
 
 $env:GH_CONFIG_DIR=(Join-Path -Path $ConfigDir -ChildPath @("gh"))
-#$null = Start-Process -FilePath "gh" -ArgumentList @("config", "set", "prompt", "disabled") -Wait -NoNewWindow -ErrorVariable Variable:errorVariable
 $null = gh config set prompt disabled 2> variable:errorMessage
 if ($LASTEXITCODE) {
     Write-Error $errorMessage
 }
 
 if ((gh auth status 2>&1 variable:errorMessage) -ne 0) {
-    gh auth login --git-protocol "https" --hostname "github.com" --web 2> variable:errorMessage
+    gh auth login --git-protocol "https" --hostname "github.com" --web
     if ($LASTEXITCODE) {
         Write-Error $errorMessage
     }

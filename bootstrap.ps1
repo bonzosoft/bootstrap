@@ -2,13 +2,14 @@
 
 $InformationPreference = 'Continue'
 
+[string]$BranchName = "pruebas"
+
 [IO.DirectoryInfo]$WorkingDir = (Get-Location).Path
 [IO.DirectoryInfo]$RepoDir    = Join-Path -Path $WorkingDir -ChildPath @("common")
 [IO.DirectoryInfo]$ConfigDir  = Join-Path -Path $WorkingDir -ChildPath @(".config")
-[string]$BranchName = "pruebas"
 
-Write-Host "v0.1.4"
-Write-Host "Bienvenido al asistente de instalación. Pulsa una tecla para continuar..."
+Write-Host ""
+Write-Host "Bienvenido al asistente de instalación (v0.1.5). Pulsa una tecla para continuar..."
 Read-Host
 
 $env:GH_CONFIG_DIR=(Join-Path -Path $ConfigDir -ChildPath @("gh"))

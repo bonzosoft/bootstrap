@@ -7,6 +7,7 @@ $InformationPreference = 'Continue'
 [IO.DirectoryInfo]$ConfigDir  = Join-Path -Path $WorkingDir -ChildPath @(".config")
 [string]$BranchName = "pruebas"
 
+Write-Host "v0.1.0"
 Write-Host "Bienvenido al asistente de instalación. Pulsa una tecla para continuar..."
 Read-Host
 

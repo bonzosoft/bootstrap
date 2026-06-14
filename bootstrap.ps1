@@ -7,6 +7,7 @@ $InformationPreference = 'Continue'
 [IO.DirectoryInfo]$WorkingDir = (Get-Location).Path
 [IO.DirectoryInfo]$RepoDir    = Join-Path -Path $WorkingDir -ChildPath @("common")
 [IO.DirectoryInfo]$ConfigDir  = Join-Path -Path $WorkingDir -ChildPath @(".config")
+
 $env:GH_CONFIG_DIR=(Join-Path -Path $ConfigDir -ChildPath @("gh"))
 
 Clear-Host
@@ -16,36 +17,41 @@ Write-Host ""
 Write-Host "Bienvenido al asistente de instalación. Pulsa una tecla para continuar..."
 Read-Host | Out-Null
 
-Write-Host "El directorio de configuracion es:"
-bash -c 'echo $GH_CONFIG_DIR'
+Write-Information "El directorio de configuracion es:"
+Write-Information (bash -c 'echo $GH_CONFIG_DIR')
 
+# disable user prompt
 $null = gh config set prompt disabled 2> variable:errorMessage
 if ($LASTEXITCODE) {
     Write-Error $errorMessage
 }
-Write-Host "vamos a comprobar"
+
+# check gh session 
 $null = gh auth status 2> variable:errorMessage
 if ($LASTEXITCODE) {
-    Write-Host "no logueado"
     gh auth login --git-protocol "https" --hostname "github.com" --web
     if ($LASTEXITCODE) {
         Write-Error $errorMessage
     }
 }
 
-Write-Host "logueado"
-if (Test-Path $RepoDir) {
-    Remove-Item -Path $RepoDir -Recurse -Force
-}
-
+# propagate auth to git
 $null = gh auth setup-git 2> variable:errorMessage
 if ($LASTEXITCODE) {
     Write-Error $errorMessage
 }
+
+# remove previous version
+if (Test-Path $RepoDir) {
+    Remove-Item -Path $RepoDir -Recurse -Force
+}
+
+# get new version
 $null = git clone --branch $BranchName --single-branch https://github.com/bonzosoft/$($RepoDir.Name).git 2> variable:errorMessage
 if ($LASTEXITCODE) {
     Write-Error $errorMessage
 }
+
 foreach ($item in @("install", "cmd")) {
     ln -snf (Join-Path -Path $RepoDir -ChildPath @("$item.sh") ) (Join-Path -Path $WorkingDir -ChildPath @("$item"))
     chmod +x (Join-Path -Path $WorkingDir -ChildPath @("$item"))

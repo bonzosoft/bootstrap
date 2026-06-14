@@ -54,6 +54,7 @@ foreach ($module in $modules) {
 }
 $VerbosePreference = $verboseBackup
 
+pwsh-Git\Get-Repository -Name "bonzosoft/bentopdf" -branch "pruebas"
 Write-Host "finished"
 
 exit 1

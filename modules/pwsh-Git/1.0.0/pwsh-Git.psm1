@@ -6,18 +6,18 @@ Write-Verbose -Message "Loading module '$($Self.BaseName)'."
 
 ### List of required modules ###################################################
 [string[]]$requiredModules = @(
-    "powershell-yaml"
-    "pwsh-dotenv"
+    # nop
 )
 
 
 ### List of requried binaries ##################################################
 [string[]]$requiredBinaries = @(
+    # nop
 )
 
 
 ### Public variables ###########################################################
-[System.Management.Automation.OrderedHashtable]$Script:Context = [ordered]@{}
+# nop
 
 # export public variables
 Export-ModuleMember -Variable *

@@ -35,8 +35,28 @@ param(
     [switch]$Help
 )
 
+### SCRIPT CONFIGURATION #######################################################
 Set-StrictMode -Version Latest
-$ErrorActionPreference = "Stop"
+$VerbosePreference     = 'Continue'
+$ErrorActionPreference = 'Stop'
+
+
+### LOAD MODULES ###############################################################
+$verboseBackup     = $VerbosePreference
+$modules = @(
+    "pwsh-Docker"
+    "pwsh-Git"
+)
+
+$VerbosePreference = 'SilentlyContinue'
+foreach ($module in $modules) {
+    Import-Module -Name (Join-Path -Path $PSScriptRoot -ChildPath @("modules", $module))
+}
+$VerbosePreference = $verboseBackup
+
+Write-Host "finished"
+
+exit 1
 
 # =========================
 # Constants

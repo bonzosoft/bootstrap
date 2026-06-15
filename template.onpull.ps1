@@ -6,7 +6,7 @@
 param()
 
 ### BEGIN ######################################################################
-Write-Information -Message "Loading script '$PSCommandPath'."
+Write-Information -MessageData "Loading script '$PSCommandPath'."
 . (Get-Item -Path "../*/common.$(Split-Path -Path $PSCommandPath -Leaf)")
 
 
@@ -38,4 +38,4 @@ if (-not (Test-DockerSubmodule)) {
 
 
 ### END ########################################################################
-Write-Information -Message "Loaded script '$PSCommandPath'."
+Write-Information -MessageData "Loaded script '$PSCommandPath'."

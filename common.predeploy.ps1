@@ -8,11 +8,11 @@ if (Get-Variable -Name "__INCLUDED_$singleton" -Scope Global -ErrorAction Silent
 else {
     New-Variable -Name "__INCLUDED_$singleton" -Scope Global -Value $true
 }
-Write-Information -Message "Loading script '$PSCommandPath'."
+Write-Information -MessageData "Loading script '$PSCommandPath'."
 
 
 ### LOAD COMMON ASSETS #########################################################
 . (Get-Item -Path (Join-Path -Path $PSScriptRoot -ChildPath "common.ps1"))
 
 
-Write-Information -Message "Loaded script '$PSCommandPath'."
+Write-Information -MessageData "Loaded script '$PSCommandPath'."

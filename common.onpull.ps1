@@ -8,7 +8,7 @@ if (Get-Variable -Name "__INCLUDED_$singleton" -Scope Global -ErrorAction Silent
 else {
     New-Variable -Name "__INCLUDED_$singleton" -Scope Global -Value $true
 }
-Write-Information -Message "Loading script '$PSCommandPath'."
+Write-Information -MessageData "Loading script '$PSCommandPath'."
 
 
 ### LOAD COMMON ASSETS #########################################################
@@ -17,7 +17,7 @@ Write-Information -Message "Loading script '$PSCommandPath'."
 
 ## PULL SUBMODULES #############################################################
 if (Test-Path -Path $Script:Context.IncludeDir) {
-    Write-Information -Message "Pulling submodules."
+    Write-Information -MessageData "Pulling submodules."
     $null = git submodule update --init --recursive --depth 1 2> variable:errorVariable
     if ($LASTEXITCODE) {
         throw ($errorVariable | Out-String)
@@ -45,7 +45,7 @@ Write-Verbose -Message ($Script:Context | Out-String)
 ## LOAD SUBMODULES SCRIPTS #####################################################
 if (Test-Path -Path $Script:Context.IncludeDir) {
     foreach ($script in (Get-Item -Path (Join-Path -Path $Script:Context.IncludeDir -ChildPath "*" -AdditionalChildPath (Split-Path -Path $MyInvocation.PSCommandPath -Leaf)))) {
-        Write-Information -Message "Loading submodule script '$($script.FullName)'."
+        Write-Information -MessageData "Loading submodule script '$($script.FullName)'."
         . $script.FullName
     }
 }
@@ -54,7 +54,7 @@ if (Test-Path -Path $Script:Context.IncludeDir) {
 ## SET STORAGE PERMISSION ######################################################
 foreach ($service in $Script:Context.Service.Keys) {
     if ($Script:Context.Service.$service.Volume) {
-        Write-Information -Message "Configuring storage for service $($service)"
+        Write-Information -MessageData "Configuring storage for service $($service)"
         Grant-DockerPermission `
             -Path $Script:Context.Service.$service.Volume `
             -PUID $Script:Context.Service.$service.PUID `
@@ -65,4 +65,4 @@ foreach ($service in $Script:Context.Service.Keys) {
 }
 
 
-Write-Information -Message "Loaded script '$PSCommandPath'."
+Write-Information -MessageData "Loaded script '$PSCommandPath'."

@@ -8,7 +8,7 @@ if (Get-Variable -Name "__INCLUDED_$singleton" -Scope Global -ErrorAction Silent
 else {
     New-Variable -Name "__INCLUDED_$singleton" -Scope Global -Value $true
 }
-Write-Information -Message "Loading script '$PSCommandPath'."
+Write-Information -MessageData "Loading script '$PSCommandPath'."
 
 
 ### SCRIPT CONFIGURATION #######################################################
@@ -28,4 +28,4 @@ $VerbosePreference = $verboseBackup
 $Script:Context = Get-DockerContext
 
 
-Write-Information -Message "Loaded script '$PSCommandPath'."
+Write-Information -MessageData "Loaded script '$PSCommandPath'."

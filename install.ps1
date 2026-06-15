@@ -54,6 +54,13 @@ foreach ($module in $modules) {
 }
 $VerbosePreference = $verboseBackup
 
+
+### CONFIGURATION ##############################################################
+# nop
+
+
+### SCRIPT #####################################################################
+
 pwsh-Git\Get-Repository -Name "bonzosoft/bentopdf" -branch "pruebas"
 Write-Host "finished"
 

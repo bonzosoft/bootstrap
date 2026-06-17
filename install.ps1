@@ -60,7 +60,8 @@ $VerbosePreference = $verboseBackup
 [string]$Script:GITHOSTNAME = "github.com"
 [IO.DirectoryInfo]$Script:COMMONDIR = Join-Path -Path $PSScriptRoot -ChildPath "common"
 [IO.FileInfo]$Script:CONFIGFILE = Join-Path -Path $PSScriptRoot -ChildPath ".config/host/config.json"
-$env:GH_CONFIG_DIR = Join-Path -Path $PSScriptRoot -ChildPath ".config/gh"
+$env:GIT_TERMINAL_PROMPT = "0" # Obliga a Git a fallar y devolver un error en vez de pedir usuario
+$env:GH_CONFIG_DIR = Join-Path -Path ${PWD} -ChildPath ".config/gh"
 
 # Asegurar que el directorio de configuración existe
 $configDir = Split-Path $Script:CONFIGFILE -Parent
@@ -146,11 +147,28 @@ function Stop-Compose($Name) {
 # =========================
 # INIT
 # =========================
-Push-Location -Path $PSScriptRoot
-if (Test-Path ".git") { git pull }
-Pop-Location
-
 $Script:Config = Get-Config
+
+# 1. Aseguramos que el directorio de credenciales exista (variable definida en Constants)
+if (-not (Test-Path $env:GH_CONFIG_DIR)) { 
+    New-Item -ItemType Directory -Path $env:GH_CONFIG_DIR | Out-Null 
+}
+
+# 2. Usamos tus funciones para validar y preparar el entorno antes de actualizar el repo base
+if (Test-Path -Path (Join-Path $PSScriptRoot ".git")) {
+    Push-Location -Path $PSScriptRoot
+    
+    # Comprobamos si hay sesión activa con tu función
+    if (Test-GitProvider) {
+        # Integramos las credenciales usando tu función
+        Assert-GitProvider 
+        git pull
+    } else {
+        Write-Log WARN "Not authenticated. Initial repository update skipped."
+    }
+    
+    Pop-Location
+}
 
 # Comprobación segura de la red Docker
 docker network inspect backup > $null 2>&1

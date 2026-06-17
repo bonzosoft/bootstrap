@@ -42,7 +42,7 @@ $ErrorActionPreference = 'Stop'
 
 
 ### LOAD MODULES ###############################################################
-$verboseBackup     = $VerbosePreference
+$verboseBackup = $VerbosePreference
 $modules = @(
     "pwsh-Docker"
     "pwsh-Git"
@@ -50,29 +50,22 @@ $modules = @(
 
 $VerbosePreference = 'SilentlyContinue'
 foreach ($module in $modules) {
-    Import-Module -Name (Join-Path -Path $PSScriptRoot -ChildPath @("modules", $module))
+    Import-Module -Name (Join-Path -Path $PSScriptRoot -ChildPath "modules/$module") -ErrorAction SilentlyContinue
 }
 $VerbosePreference = $verboseBackup
-
-
-### CONFIGURATION ##############################################################
-# nop
-
-
-### SCRIPT #####################################################################
-
-pwsh-Git\Get-Repository -Name "bonzosoft/bentopdf" -branch "pruebas"
-Write-Host "finished"
-
-exit 1
 
 # =========================
 # Constants
 # =========================
 [string]$Script:GITHOSTNAME = "github.com"
-[IO.DirectoryInfo]$Script:COMMONDIR = Join-Path -Path (Get-Location) -ChildPath "" -AdditionalChildPath @("common")
-[IO.FileInfo]$Script:CONFIGFILE = Join-Path -Path (Get-Location) -ChildPath "" -AdditionalChildPath @(".config", "host", "config.json")
-$env:GH_CONFIG_DIR=(Join-Path -Path ${PWD} -ChildPath ".config/gh")
+[IO.DirectoryInfo]$Script:COMMONDIR = Join-Path -Path $PSScriptRoot -ChildPath "common"
+[IO.FileInfo]$Script:CONFIGFILE = Join-Path -Path $PSScriptRoot -ChildPath ".config/host/config.json"
+$env:GH_CONFIG_DIR = Join-Path -Path $PSScriptRoot -ChildPath ".config/gh"
+
+# Asegurar que el directorio de configuración existe
+$configDir = Split-Path $Script:CONFIGFILE -Parent
+if (-not (Test-Path $configDir)) { New-Item -ItemType Directory -Path $configDir | Out-Null }
+
 # =========================
 # Helpers
 # =========================
@@ -110,11 +103,8 @@ function Get-Config {
     }
 
     Write-Log WARN "Generating new config..."
-
-    $config = @{
-        Tenant = "ast"
-    }
-
+    $config = @{ Tenant = "ast" }
+    
     $config | ConvertTo-Json | Set-Content $Script:CONFIGFILE
     return $config
 }
@@ -124,90 +114,11 @@ function Save-Config($config) {
 }
 
 function Set-Tenant {
-    param($Tenant, $Config)
+    param($NewTenant, $Config)
 
-    $Config.Tenant = $Tenant
+    $Config.Tenant = $NewTenant
     Save-Config $Config
-    Write-Log SUCC "Realm set to $Tenant"
-}
-
-# =========================
-# GitHub
-# =========================
-function Test-Repository {
-    gh auth status *> $null
-    return ($LASTEXITCODE -eq 0)
-}
-
-function Connect-Repository {
-    
-    Write-Log INFO "Checking GitHub authentication..."
-    if (-not (Test-Repository)) {
-        Write-Log INFO "Logging into GitHub..."
-        gh auth login --hostname $Script:GITHOSTNAME --git-protocol https --web
-        if ($LASTEXITCODE) {
-            Write-Log ERRO "Login failed"
-            return
-        }
-    }
-    
-    gh auth setup-git
-    Write-Log SUCC "Login OK"
-}
-
-function Disconnect-Repository {
-    if (-not (Test-Repository)) {
-        Write-Log WARN "No active session"
-        return
-    }
-
-    gh auth logout --hostname $Script:GITHOSTNAME
-    Write-Log SUCC "Logged out"
-}
-
-function Get-GithubRepo {
-    param(
-        [Parameter(Mandatory)]
-        [ValidateNotNullOrWhiteSpace()]
-        [string]$Name,
-
-        [Parameter()]
-        [ValidateNotNullOrWhiteSpace()]
-        [string]$Branch="main",
-
-        [Parameter()]
-        [ValidateNotNullOrWhiteSpace()]
-        [string]$Organization="bonzosoft"
-    )
-
-    if (-not (Test-Path "./$Name/.git")) {
-        Write-Log INFO "Cloning $Name"
-        gh repo clone "$Organization/$Name" "./$Name" -- --branch $Branch
-        if ($LASTEXITCODE) {
-            Write-Log ERRO "Clone failed"
-            return
-        }
-    }
-
-    Push-Location "./$Name"
-
-    Write-Log INFO "Syncing $Name ($Branch)"
-    #gh repo sync --branch $Branch --force
-
-    git fetch origin
-    git checkout $Branch
-    git reset --hard origin/$Branch
-    git clean -fd
-
-    # Submódulos
-    git submodule update --init --recursive
-
-    if (Test-Path "./onpull.ps1") {
-        pwsh -File "./onpull.ps1" -InformationAction Continue
-    }
-
-    Pop-Location
-    Write-Log SUCC "$Name ready"
+    Write-Log SUCC "Realm set to $NewTenant"
 }
 
 # =========================
@@ -216,7 +127,7 @@ function Get-GithubRepo {
 function Start-Compose($Name, $Config) {
     Push-Location "./$Name"
 
-    bash "./predeploy"
+    if (Test-Path "./predeploy") { bash "./predeploy" }
 
     $project = if ($Config.TRUENAS) { "ix-$Name" } else { $Name }
     docker compose -p $project up -d
@@ -236,12 +147,14 @@ function Stop-Compose($Name) {
 # INIT
 # =========================
 Push-Location -Path $PSScriptRoot
-git pull
+if (Test-Path ".git") { git pull }
 Pop-Location
 
 $Script:Config = Get-Config
 
-if (-not (docker network inspect backup | Out-Null)) {
+# Comprobación segura de la red Docker
+docker network inspect backup > $null 2>&1
+if ($LASTEXITCODE -ne 0) {
     docker network create backup | Out-Null
 }
 
@@ -267,26 +180,24 @@ switch ($PSCmdlet.ParameterSetName) {
     
             switch (Read-Host "Option") {
                 "1" { 
-                    Connect-Repository
+                    Connect-GitProvider
+                    Pause
                 }
                 "2" {
-                    Write-Host ""
-                    Write-Host "Select realm:"
-                    Write-Host ""
-                    Write-Host "  1. Production"
-                    Write-Host "  2. Development"
-                    Write-Host "  q. Return"
-                    Write-Host ""
+                    Write-Host "`nSelect realm:`n"
+                    Write-Host "  1. Production (ast)"
+                    Write-Host "  2. Development (bonzosoft)"
+                    Write-Host "  q. Return`n"
                     
                     :whileloop do {
                         :switchloop switch (Read-Host "Option") {
                             "1" {
-                                Set-Tenant "ast" $Script:Config
+                                Set-Tenant -NewTenant "ast" -Config $Script:Config
                                 $Script:Config = Get-Config
                                 break whileloop
                             }
                             "2" {
-                                Set-Tenant "bonzosoft" $Script:Config
+                                Set-Tenant -NewTenant "bonzosoft" -Config $Script:Config
                                 $Script:Config = Get-Config
                                 break whileloop
                             }
@@ -300,39 +211,61 @@ switch ($PSCmdlet.ParameterSetName) {
                     } while ($true)
                 }
                 "3" {
-                    if (-not (Test-Repository)) {
+                    if (-not (Test-GitProvider)) {
                         Write-Log ERRO "Login first"
+                        Pause
                         break
                     }
-                    Get-GithubRepo -Name "common" -Branch "main"
-                    ln -snf "${PWD}/common/cmd.sh" "${PwD}/cmd"
-                    chmod +x "${PwD}/cmd"
-                    Get-GithubRepo -Name "komodo-core" -Branch "main"
-                    Read-Host
+                    Import-GitRepository -Namespace $Script:Config.Tenant -Name "common" -Branch "main"
+                    ln -snf "$PSScriptRoot/common/cmd.sh" "$PSScriptRoot/cmd"
+                    chmod +x "$PSScriptRoot/cmd"
+                    
+                    Import-GitRepository -Namespace $Script:Config.Tenant -Name "komodo-core" -Branch "main"
+                    Pause
                 }
                 "4" {
                     [IO.DirectoryInfo]$folder = Join-Path -Path $PSScriptRoot -ChildPath "komodo-core"
                     if (Test-Path -Path $folder) {
+                        # Corregido: Se añadió la acción 'up -d' al comando
                         docker compose `
                           --file (Join-Path -Path $folder -ChildPath "compose.yaml") `
                           --env-file (Join-Path -Path $folder -ChildPath ".env") `
+                          up -d
+                    } else {
+                        Write-Log ERRO "Komodo Core directory not found. Pull it first."
                     }
+                    Pause
                 }
                 "5" {
-                    if (-not (Test-Repository)) {
+                    if (-not (Test-GitProvider)) {
                         Write-Log ERRO "Login first"
+                        Pause
                         break
                     }
-                    Get-GithubRepo -Name "common" -Branch "main"
-                    ln -snf "${PWD}/common/cmd.sh" "${PwD}/cmd"
-                    chmod +x "${PwD}/cmd"
-                    ln -snf "${PWD}/common/console.sh" "${PwD}/console"
-                    chmod +x "${PwD}/console"
-                    Get-GithubRepo -Name "komodo-periphery" -Branch "main"
-                    Read-Host
+                    Import-GitRepository -Namespace $Script:Config.Tenant -Name "common" -Branch "main"
+                    ln -snf "$PSScriptRoot/common/cmd.sh" "$PSScriptRoot/cmd"
+                    chmod +x "$PSScriptRoot/cmd"
+                    ln -snf "$PSScriptRoot/common/console.sh" "$PSScriptRoot/console"
+                    chmod +x "$PSScriptRoot/console"
+
+                    Import-GitRepository -Namespace $Script:Config.Tenant -Name "komodo-periphery" -Branch "main"
+                    Pause
+                }
+                "6" {
+                    [IO.DirectoryInfo]$folder = Join-Path -Path $PSScriptRoot -ChildPath "komodo-periphery"
+                    if (Test-Path -Path $folder) {
+                        docker compose `
+                          --file (Join-Path -Path $folder -ChildPath "compose.yaml") `
+                          --env-file (Join-Path -Path $folder -ChildPath ".env") `
+                          up -d
+                    } else {
+                        Write-Log ERRO "Komodo Periphery directory not found. Pull it first."
+                    }
+                    Pause
                 }
                 "7" {
-                    Disconnect-Repository
+                    Disconnect-GitProvider
+                    Pause
                 }
                 "q" {
                     Clear-Host
@@ -343,19 +276,20 @@ switch ($PSCmdlet.ParameterSetName) {
             Start-Sleep -MilliSeconds 250
         } while ($true)
     }
-    "Realm" {
-        Set-Tenant -Realm $Tenant -Config $Script:Config
+    "Tenant" {
+        # Corregido de "Realm" a "Tenant" y paso correcto de parámetros
+        Set-Tenant -NewTenant $Tenant -Config $Script:Config
         $Script:Config = Get-Config
     }
     "Login" {
-        Connect-Repository  
+        Connect-GitProvider  
     }
     "Logout" {
-        Disconnect-Repository
+        Disconnect-GitProvider
     }
     "Pull" {
-        Get-GithubRepo "common"
-        Get-GithubRepo $Pull
+        Import-GitRepository -Namespace $Script:Config.Tenant -Name "common"
+        Import-GitRepository -Namespace $Script:Config.Tenant -Name $Pull
     }
     "Start" {
         Start-Compose $Start $Script:Config
@@ -367,5 +301,3 @@ switch ($PSCmdlet.ParameterSetName) {
         throw "Unknown parameter set name: $(PSCmdlet.ParameterSetName)"
     }
 }
-
-return

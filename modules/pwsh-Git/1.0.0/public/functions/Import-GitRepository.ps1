@@ -1,4 +1,4 @@
-function Import-Repository {
+function Import-GitRepository {
     [CmdletBinding()]
     [OutputType([void])]
 
@@ -24,7 +24,7 @@ function Import-Repository {
     )
 
     begin {
-        [IO.DirectoryInfo]$repositoryDir = Join-Path -Path (Get-Location) -ChildPath @($Name)
+        [IO.DirectoryInfo]$repositoryDir = Join-Path -Path (Get-Location) -ChildPath $Name
         [string[]]$scripts = @(
             "onclone.ps1"
             "onpull.ps1"
@@ -33,18 +33,22 @@ function Import-Repository {
 
     process {
         if (Test-Path $repositoryDir) {
-            if ($force.IsPresent) {
+            if ($Force.IsPresent) {
                 Remove-Item -Path $repositoryDir -Recurse -Force
             }
             else {
                 Write-Error -Message "Target directory already exists. Use -Force to overwrite it."
+                return # Añadido un return para que no intente clonar si ya existe y no hay -Force
             }
         }
 
-        Write-Information -MessageData "Syncing $Namespace/$Name ($Branch)" -InfomationAction 'Continue'
-        $null = gh repo clone "$Namespace/$Name" $repositoryDir -- --branch $Branch --single-branch 2> variable:errorMessage
-        if ($LASTEXITCODE) {
+        # Corregido: InfomationAction -> InformationAction
+        Write-Information -MessageData "Syncing $Namespace/$Name ($Branch)" -InformationAction 'Continue'
+        
+        $null = git clone --branch "$Branch" --single-branch "https://$GitProvider/$Namespace/$Name.git" "$repositoryDir" 2> variable:errorMessage
+        if ($LASTEXITCODE -ne 0) {
             Write-Error -Message $errorMessage
+            return # Evitamos entrar al directorio si falló la clonación
         }
 
         Push-Location -Path $repositoryDir
@@ -52,13 +56,13 @@ function Import-Repository {
 
         foreach ($script in $scripts) {
             if (Test-Path -Path $script) {
-                pwsh -File $script -InfomationAction 'Continue'
+                # Corregido: InfomationAction -> InformationAction
+                pwsh -File $script -InformationAction 'Continue'
             }
         }
         Pop-Location
     }
 
     end {
-
     }
 }

@@ -28,12 +28,12 @@ $VerbosePreference = $verboseBackup
 [IO.DirectoryInfo]$ConfigDir  = Join-Path -Path $WorkingDir -ChildPath @(".config")
 
 $env:GH_CONFIG_DIR=(Join-Path -Path $ConfigDir -ChildPath @("gh"))
-
+$env:GIT_TERMINAL_PROMPT = "0" # Obliga a Git a fallar y devolver un error en vez de pedir usuario
 
 ### SCRIPT #####################################################################
 Clear-Host
 Write-Host ""
-Write-Host "[Version: 0.1.18]"
+Write-Host "[Version: 0.1.19]"
 Write-Host ""
 Write-Host "Bienvenido al asistente de instalación. Pulsa una tecla para continuar..."
 Read-Host | Out-Null

@@ -33,7 +33,7 @@ $env:GH_CONFIG_DIR=(Join-Path -Path $ConfigDir -ChildPath @("gh"))
 ### SCRIPT #####################################################################
 Clear-Host
 Write-Host ""
-Write-Host "[Version: 0.1.17]"
+Write-Host "[Version: 0.1.18]"
 Write-Host ""
 Write-Host "Bienvenido al asistente de instalación. Pulsa una tecla para continuar..."
 Read-Host | Out-Null
@@ -50,7 +50,7 @@ if ($LASTEXITCODE) {
 # check gh session 
 $null = gh auth status 2> variable:errorMessage
 if ($LASTEXITCODE) {
-    gh auth login --git-protocol "https" --hostname "github.com" --web 2> variable:errorMessage
+    gh auth login --git-protocol "https" --hostname "github.com" --web #2> variable:errorMessage
     if ($LASTEXITCODE) {
         Write-Error -Message $errorMessage
     }

@@ -1,7 +1,26 @@
 #!/usr/bin/env pwsh
 
-$InformationPreference = 'Continue'
 
+### SCRIPT CONFIGURATION #######################################################
+Set-StrictMode -Version Latest
+$VerbosePreference     = 'Continue'
+$ErrorActionPreference = 'Stop'
+
+
+### LOAD MODULES ###############################################################
+$verboseBackup     = $VerbosePreference
+$modules = @(
+    # nop
+)
+
+$VerbosePreference = 'SilentlyContinue'
+foreach ($module in $modules) {
+    Import-Module -Name (Join-Path -Path $PSScriptRoot -ChildPath @("modules", $module))
+}
+$VerbosePreference = $verboseBackup
+
+
+### CONFIGURATION ##############################################################
 [string]$BranchName = "pruebas"
 
 [IO.DirectoryInfo]$WorkingDir = (Get-Location).Path
@@ -10,6 +29,8 @@ $InformationPreference = 'Continue'
 
 $env:GH_CONFIG_DIR=(Join-Path -Path $ConfigDir -ChildPath @("gh"))
 
+
+### SCRIPT #####################################################################
 Clear-Host
 Write-Host ""
 Write-Host "[Version: 0.1.17]"
@@ -17,28 +38,28 @@ Write-Host ""
 Write-Host "Bienvenido al asistente de instalación. Pulsa una tecla para continuar..."
 Read-Host | Out-Null
 
-Write-Information "El directorio de configuracion es:"
-Write-Information (bash -c 'echo $GH_CONFIG_DIR')
+Write-Information "El directorio de configuracion es:" -InformationAction 'Continue'
+Write-Information (bash -c 'echo $GH_CONFIG_DIR') -InformationAction 'Continue'
 
 # disable user prompt
 $null = gh config set prompt disabled 2> variable:errorMessage
 if ($LASTEXITCODE) {
-    Write-Error $errorMessage
+    Write-Error -Message $errorMessage
 }
 
 # check gh session 
 $null = gh auth status 2> variable:errorMessage
 if ($LASTEXITCODE) {
-    gh auth login --git-protocol "https" --hostname "github.com" --web
+    gh auth login --git-protocol "https" --hostname "github.com" --web 2> variable:errorMessage
     if ($LASTEXITCODE) {
-        Write-Error $errorMessage
+        Write-Error -Message $errorMessage
     }
 }
 
 # propagate auth to git
 $null = gh auth setup-git 2> variable:errorMessage
 if ($LASTEXITCODE) {
-    Write-Error $errorMessage
+    Write-Error -Message $errorMessage
 }
 
 # remove previous version
@@ -49,7 +70,7 @@ if (Test-Path $RepoDir) {
 # get new version
 $null = git clone --branch $BranchName --single-branch https://github.com/bonzosoft/$($RepoDir.Name).git 2> variable:errorMessage
 if ($LASTEXITCODE) {
-    Write-Error $errorMessage
+    Write-Error -Message $errorMessage
 }
 
 foreach ($item in @("install", "cmd")) {

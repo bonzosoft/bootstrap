@@ -43,23 +43,19 @@ Write-Host ""
 Write-Host "############################################"
 Write-Host "###           BOOTSTRAP SCRIPT           ###"
 Write-Host "###   --------------------------------   ###"
-Write-Host "###         [Version:   0. 1.21]         ###"
+Write-Host "###         [Version:   0. 1.22]         ###"
 Write-Host "############################################"
 Write-Host ""
 
-# assert config dir
-if (-not (Test-Path -Path $configDir)) { 
-    New-Item -Path $configDir -ItemType 'Directory' | Out-Null
-}
-
 # disable user prompt
-$null = gh config set prompt disabled 2> variable:errorMessage
-if ($LASTEXITCODE) {
-    Write-Error -Message $errorMessage
-}
+#$null = gh config set prompt disabled 2> variable:errorMessage
+#if ($LASTEXITCODE) {
+#    Write-Error -Message $errorMessage
+#}
 
 # check gh session 
-$null = gh auth status 2> variable:errorMessage
+Write-Information -MessageData "Checking ${GitProvider} session." -InformationAction 'Continue'
+$null = gh auth status *> $null
 if ($LASTEXITCODE) {
     gh auth login --git-protocol $GitProtocol --hostname $GitProvider --web 2> variable:errorMessage
     if ($LASTEXITCODE) {
@@ -68,23 +64,27 @@ if ($LASTEXITCODE) {
 }
 
 # propagate auth to git
+Write-Information -MessageData "Configuring ${GitProvider} session for Git." -InformationAction 'Continue'
 $null = gh auth setup-git 2> variable:errorMessage
 if ($LASTEXITCODE) {
     Write-Error -Message $errorMessage
 }
 
 # remove previous version
-if (Test-Path $RepoDir) {
+if (Test-Path -Path $RepoDir) {
+    Write-Information -MessageData "Removing previous version." -InformationAction 'Continue'
     Remove-Item -Path $RepoDir -Recurse -Force | Out-Null
 }
 
 # get new version
+Write-Information -MessageData "Cloning repository ${OrganizationName}/${RepositoryName}." -InformationAction 'Continue'
 $null = git clone --branch $BranchName --single-branch "${GitProtocol}://${GitProvider}/${OrganizationName}/${RepositoryName}.git" 2> variable:errorMessage
 if ($LASTEXITCODE) {
     Write-Error -Message $errorMessage
 }
 
 foreach ($item in @("install", "cmd")) {
+    Write-Information -MessageData "Adding link '${item}'." -InformationAction 'Continue'
     ln -snf (Join-Path -Path $RepoDir -ChildPath @($item + ".sh") ) (Join-Path -Path $WorkingDir -ChildPath @($item))
     chmod +x (Join-Path -Path $WorkingDir -ChildPath @($item))
 }

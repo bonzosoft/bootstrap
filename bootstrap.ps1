@@ -43,15 +43,15 @@ Write-Host ""
 Write-Host "############################################"
 Write-Host "###           BOOTSTRAP SCRIPT           ###"
 Write-Host "###   --------------------------------   ###"
-Write-Host "###         [Version:   0. 1.22]         ###"
+Write-Host "###         [Version:   0. 1.23]         ###"
 Write-Host "############################################"
 Write-Host ""
 
 # disable user prompt
-#$null = gh config set prompt disabled 2> variable:errorMessage
-#if ($LASTEXITCODE) {
-#    Write-Error -Message $errorMessage
-#}
+$null = gh config set prompt disabled 2> variable:errorMessage
+if ($LASTEXITCODE) {
+    Write-Error -Message $errorMessage
+}
 
 # check gh session 
 Write-Information -MessageData "Checking ${GitProvider} session." -InformationAction 'Continue'

@@ -23,6 +23,7 @@ $VerbosePreference = $verboseBackup
 
 
 ### CONFIGURATION ##############################################################
+[string]$GitProtocol      = "https"
 [string]$GitProvider      = "github.com"
 [string]$OrganizationName = "bonzosoft"
 [string]$RepositoryName   = "common"
@@ -35,17 +36,16 @@ $VerbosePreference = $verboseBackup
 $env:GH_CONFIG_DIR=(Join-Path -Path $ConfigDir -ChildPath @("gh"))
 $env:GIT_TERMINAL_PROMPT = 0
 
-function Write-Header {
-    Clear-Host
-    Write-Host ""
-    Write-Host "############################################"
-    Write-Host "###           BOOTSTRAP SCRIPT           ###"
-    Write-Host "###   --------------------------------   ###"
-    Write-Host "###         [Version:   0. 1.20]         ###"
-    Write-Host "############################################"
-    Write-Host ""
-}
 
+### SCRIPT #####################################################################
+Clear-Host
+Write-Host ""
+Write-Host "############################################"
+Write-Host "###           BOOTSTRAP SCRIPT           ###"
+Write-Host "###   --------------------------------   ###"
+Write-Host "###         [Version:   0. 1.21]         ###"
+Write-Host "############################################"
+Write-Host ""
 
 # assert config dir
 if (-not (Test-Path -Path $configDir)) { 
@@ -61,7 +61,7 @@ if ($LASTEXITCODE) {
 # check gh session 
 $null = gh auth status 2> variable:errorMessage
 if ($LASTEXITCODE) {
-    gh auth login --git-protocol "https" --hostname $GitProvider --web
+    gh auth login --git-protocol $GitProtocol --hostname $GitProvider --web 2> variable:errorMessage
     if ($LASTEXITCODE) {
         Write-Error -Message $errorMessage
     }
@@ -75,16 +75,16 @@ if ($LASTEXITCODE) {
 
 # remove previous version
 if (Test-Path $RepoDir) {
-    Remove-Item -Path $RepoDir -Recurse -Force
+    Remove-Item -Path $RepoDir -Recurse -Force | Out-Null
 }
 
 # get new version
-$null = git clone --branch $BranchName --single-branch https://$GitProvider/$OrganizationName/$RepositoryName.git 2> variable:errorMessage
+$null = git clone --branch $BranchName --single-branch "${GitProtocol}://${GitProvider}/${OrganizationName}/${RepositoryName}.git" 2> variable:errorMessage
 if ($LASTEXITCODE) {
     Write-Error -Message $errorMessage
 }
 
 foreach ($item in @("install", "cmd")) {
-    ln -snf (Join-Path -Path $RepoDir -ChildPath @("$item.sh") ) (Join-Path -Path $WorkingDir -ChildPath @("$item"))
-    chmod +x (Join-Path -Path $WorkingDir -ChildPath @("$item"))
+    ln -snf (Join-Path -Path $RepoDir -ChildPath @($item + ".sh") ) (Join-Path -Path $WorkingDir -ChildPath @($item))
+    chmod +x (Join-Path -Path $WorkingDir -ChildPath @($item))
 }

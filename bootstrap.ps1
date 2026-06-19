@@ -23,10 +23,13 @@ $VerbosePreference = $verboseBackup
 
 
 ### CONFIGURATION ##############################################################
-[string]$BranchName = "pruebas"
+[string]$GitProvider      = "github.com"
+[string]$OrganizationName = "bonzosoft"
+[string]$RepositoryName   = "common"
+[string]$BranchName       = "pruebas"
 
 [IO.DirectoryInfo]$WorkingDir = $PWD.Path
-[IO.DirectoryInfo]$RepoDir    = Join-Path -Path $WorkingDir -ChildPath @("common")
+[IO.DirectoryInfo]$RepoDir    = Join-Path -Path $WorkingDir -ChildPath @($RepositoryName)
 [IO.DirectoryInfo]$ConfigDir  = Join-Path -Path $WorkingDir -ChildPath @(".config")
 
 $env:GH_CONFIG_DIR=(Join-Path -Path $ConfigDir -ChildPath @("gh"))
@@ -58,7 +61,7 @@ if ($LASTEXITCODE) {
 # check gh session 
 $null = gh auth status 2> variable:errorMessage
 if ($LASTEXITCODE) {
-    gh auth login --git-protocol "https" --hostname "github.com" --web
+    gh auth login --git-protocol "https" --hostname $GitProvider --web
     if ($LASTEXITCODE) {
         Write-Error -Message $errorMessage
     }
@@ -76,7 +79,7 @@ if (Test-Path $RepoDir) {
 }
 
 # get new version
-$null = git clone --branch $BranchName --single-branch https://github.com/bonzosoft/$($RepoDir.Name).git 2> variable:errorMessage
+$null = git clone --branch $BranchName --single-branch https://$GitProvider/$OrganizationName/$RepositoryName.git 2> variable:errorMessage
 if ($LASTEXITCODE) {
     Write-Error -Message $errorMessage
 }

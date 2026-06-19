@@ -43,7 +43,7 @@ Write-Host ""
 Write-Host "############################################"
 Write-Host "###           BOOTSTRAP SCRIPT           ###"
 Write-Host "###   --------------------------------   ###"
-Write-Host "###         [Version:   0. 1.23]         ###"
+Write-Host "###         [Version:   0. 1.24]         ###"
 Write-Host "############################################"
 Write-Host ""
 
@@ -57,10 +57,7 @@ if ($LASTEXITCODE) {
 Write-Information -MessageData "Checking ${GitProvider} session." -InformationAction 'Continue'
 $null = gh auth status *> $null
 if ($LASTEXITCODE) {
-    gh auth login --git-protocol $GitProtocol --hostname $GitProvider --web 2> variable:errorMessage
-    if ($LASTEXITCODE) {
-        Write-Error -Message $errorMessage
-    }
+    gh auth login --git-protocol $GitProtocol --hostname $GitProvider --web
 }
 
 # propagate auth to git

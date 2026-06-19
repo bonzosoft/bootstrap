@@ -41,7 +41,7 @@ function Write-Header {
     Write-Host "############################################"
     Write-Host "###           BOOTSTRAP SCRIPT           ###"
     Write-Host "###   --------------------------------   ###"
-    Write-Host "###         [Version:   0. 1.19]         ###"
+    Write-Host "###         [Version:   0. 1.20]         ###"
     Write-Host "############################################"
     Write-Host ""
 }

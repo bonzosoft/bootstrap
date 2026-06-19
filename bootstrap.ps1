@@ -3,19 +3,21 @@
 
 ### SCRIPT CONFIGURATION #######################################################
 Set-StrictMode -Version Latest
-$VerbosePreference     = 'Continue'
 $ErrorActionPreference = 'Stop'
+$VerbosePreference     = 'Continue'
+$InformationPreference = 'Continue'
 
 
 ### LOAD MODULES ###############################################################
-$verboseBackup     = $VerbosePreference
+$verboseBackup = $VerbosePreference
 $modules = @(
     # nop
+
 )
 
 $VerbosePreference = 'SilentlyContinue'
 foreach ($module in $modules) {
-    Import-Module -Name (Join-Path -Path $PSScriptRoot -ChildPath @("modules", $module))
+    Import-Module -Name (Join-Path -Path $PSScriptRoot -ChildPath $module)
 }
 $VerbosePreference = $verboseBackup
 
@@ -23,23 +25,29 @@ $VerbosePreference = $verboseBackup
 ### CONFIGURATION ##############################################################
 [string]$BranchName = "pruebas"
 
-[IO.DirectoryInfo]$WorkingDir = (Get-Location).Path
+[IO.DirectoryInfo]$WorkingDir = $PWD.Path
 [IO.DirectoryInfo]$RepoDir    = Join-Path -Path $WorkingDir -ChildPath @("common")
 [IO.DirectoryInfo]$ConfigDir  = Join-Path -Path $WorkingDir -ChildPath @(".config")
 
 $env:GH_CONFIG_DIR=(Join-Path -Path $ConfigDir -ChildPath @("gh"))
-$env:GIT_TERMINAL_PROMPT = "0" # Obliga a Git a fallar y devolver un error en vez de pedir usuario
+$env:GIT_TERMINAL_PROMPT = 0
 
-### SCRIPT #####################################################################
-Clear-Host
-Write-Host ""
-Write-Host "[Version: 0.1.19]"
-Write-Host ""
-Write-Host "Bienvenido al asistente de instalación. Pulsa una tecla para continuar..."
-Read-Host | Out-Null
+function Write-Header {
+    Clear-Host
+    Write-Host ""
+    Write-Host "############################################"
+    Write-Host "###           BOOTSTRAP SCRIPT           ###"
+    Write-Host "###   --------------------------------   ###"
+    Write-Host "###         [Version:   0. 1.19]         ###"
+    Write-Host "############################################"
+    Write-Host ""
+}
 
-Write-Information "El directorio de configuracion es:" -InformationAction 'Continue'
-Write-Information (bash -c 'echo $GH_CONFIG_DIR') -InformationAction 'Continue'
+
+# assert config dir
+if (-not (Test-Path -Path $configDir)) { 
+    New-Item -Path $configDir -ItemType 'Directory' | Out-Null
+}
 
 # disable user prompt
 $null = gh config set prompt disabled 2> variable:errorMessage
@@ -50,7 +58,7 @@ if ($LASTEXITCODE) {
 # check gh session 
 $null = gh auth status 2> variable:errorMessage
 if ($LASTEXITCODE) {
-    gh auth login --git-protocol "https" --hostname "github.com" --web #2> variable:errorMessage
+    gh auth login --git-protocol "https" --hostname "github.com" --web
     if ($LASTEXITCODE) {
         Write-Error -Message $errorMessage
     }

@@ -24,7 +24,7 @@ $VerbosePreference = $verboseBackup
 
 ### CONFIGURATION ##############################################################
 [string]$GitProvider = "github.com"
-[string]$GitOrganization = "bonzosoft"
+[string]$GitNamespace = "bonzosoft"
 [string]$commonGitRepository = "common"
 [string]$commonGitBranch = "pruebas"
 [string]$coreGitRepository = "komodo-core"
@@ -148,17 +148,17 @@ function Write-MainMenu {
                     throw "Must be logged in to proceed."
                     break
                 }
-                Import-GitRepository -Provider $GitProvider -Namespace $GitOrganization -Name $commonGitRepository -Branch $commonGitBranch
+                Import-GitRepository -Provider $GitProvider -Namespace $GitNamespace -Name $commonGitRepository -Branch $commonGitBranch
             }
             "5" {
                 if (-not (Test-GitProviderSession -Provider $GitProvider)) {
                     throw "Must be logged in to proceed."
                     break
                 }
-                Import-GitRepository -Provider $GitProvider -Namespace $GitOrganization -Name $coreGitRepository -Branch $coreGitBranch
+                Import-GitRepository -Provider $GitProvider -Namespace $GitNamespace -Name $coreGitRepository -Branch $coreGitBranch
             }
             "6" {
-                [IO.DirectoryInfo]$folder = Join-Path -Path $PSScriptRoot -ChildPath "komodo-core"
+                [IO.DirectoryInfo]$folder = Join-Path -Path $PSScriptRoot -ChildPath "coreGitRepository"
                 if (Test-Path -Path $folder) {
                     # Corregido: Se añadió la acción 'up -d' al comando
                     docker compose `
@@ -174,10 +174,10 @@ function Write-MainMenu {
                     throw "Must be logged in to proceed."
                     break
                 }
-                Import-GitRepository -Provider $GitProvider -Namespace $GitOrganization -Name $peripheryGitRepository -Branch $peripheryGitBranch
+                Import-GitRepository -Provider $GitProvider -Namespace $GitNamespace -Name $peripheryGitRepository -Branch $peripheryGitBranch
             }
             "7" {
-                [IO.DirectoryInfo]$folder = Join-Path -Path $PSScriptRoot -ChildPath "komodo-periphery"
+                [IO.DirectoryInfo]$folder = Join-Path -Path $PSScriptRoot -ChildPath "coreGitRepository"
                 if (Test-Path -Path $folder) {
                     docker compose `
                       --file (Join-Path -Path $folder -ChildPath "compose.yaml") `

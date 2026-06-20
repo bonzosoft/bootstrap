@@ -13,7 +13,7 @@ function Import-GitRepository {
 
         [Parameter(Mandatory)]
         [ValidateNotNullOrWhiteSpace()]
-        [string]$Name,
+        [string]$Repository,
 
         [Parameter()]
         [ValidateNotNullOrWhiteSpace()]
@@ -24,7 +24,7 @@ function Import-GitRepository {
     )
 
     begin {
-        [IO.DirectoryInfo]$repositoryDir = Join-Path -Path (Get-Location) -ChildPath $Name
+        [IO.DirectoryInfo]$repositoryDir = Join-Path -Path ${PWD} -ChildPath $Repository
         [string[]]$scripts = @(
             "onclone.ps1"
             "onpull.ps1"
@@ -42,22 +42,23 @@ function Import-GitRepository {
             }
         }
 
-        # Corregido: InfomationAction -> InformationAction
-        Write-Information -MessageData "Syncing $Namespace/$Name ($Branch)" -InformationAction 'Continue'
+        Write-Information -MessageData "Syncing $Namespace/$Repository ($Branch)" -InformationAction 'Continue'
         
-        $null = git clone --branch "$Branch" --single-branch "https://$GitProvider/$Namespace/$Name.git" "$repositoryDir" 2> variable:errorMessage
+        $null = git clone --branch "$Branch" --single-branch "https://$GitProvider/$Namespace/$Repository.git" "$($repositoryDir.FullName)" 2> variable:errorMessage
         if ($LASTEXITCODE -ne 0) {
-            Write-Error -Message $errorMessage
-            return # Evitamos entrar al directorio si falló la clonación
+            throw -Message $errorMessage
         }
 
         Push-Location -Path $repositoryDir
-        git submodule update --init --recursive
+        $null = git submodule update --init --recursive 2> variable:errorMessage
+        if ($LASTEXITCODE -ne 0) {
+            throw -Message $errorMessage
+        }
 
         foreach ($script in $scripts) {
             if (Test-Path -Path $script) {
-                # Corregido: InfomationAction -> InformationAction
-                pwsh -File $script -InformationAction 'Continue'
+                & $script
+                #pwsh -File $script -InformationAction 'Continue'
             }
         }
         Pop-Location

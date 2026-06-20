@@ -23,8 +23,8 @@ $VerbosePreference = $verboseBackup
 
 
 ### CONFIGURATION ##############################################################
-[string]$GitProvider = "github.com"
-[string]$GitNamespace = "bonzosoft"
+[string]$gitProvider = "github.com"
+[string]$gitNamespace = "bonzosoft"
 [string]$commonGitRepository = "common"
 [string]$commonGitBranch = "pruebas"
 [string]$coreGitRepository = "komodo-core"
@@ -33,8 +33,9 @@ $VerbosePreference = $verboseBackup
 [string]$peripheryGitBranch = "main"
 
 [IO.DirectoryInfo]$WorkingDir = $PWD.Path
-[IO.DirectoryInfo]$RepoDir    = Join-Path -Path $WorkingDir -ChildPath @("common")
-[IO.DirectoryInfo]$ConfigDir  = Join-Path -Path $WorkingDir -ChildPath @(".config")
+#[IO.DirectoryInfo]$repositoryDir    = Join-Path -Path $WorkingDir -ChildPath @("common")
+[IO.DirectoryInfo]$configDir  = Join-Path -Path $WorkingDir -ChildPath @(".config")
+[IO.FileInfo]$configFile = Join-Path -Path $configDir -ChildPath @("host", "config.json")
 
 $env:GH_CONFIG_DIR=(Join-Path -Path $ConfigDir -ChildPath @("gh"))
 $env:GIT_TERMINAL_PROMPT = 0
@@ -66,34 +67,6 @@ function Write-MainMenu {
     Write-Host ""
 }
 
-
-# =========================
-# Config
-# =========================
-function Get-Config {
-    if (Test-Path $Script:CONFIGFILE) {
-        return Get-Content $Script:CONFIGFILE | ConvertFrom-Json
-    }
-
-    Write-Log WARN "Generating new config..."
-    $config = @{ Tenant = "ast" }
-    
-    $config | ConvertTo-Json | Set-Content $Script:CONFIGFILE
-    return $config
-}
-
-function Save-Config($config) {
-    $config | ConvertTo-Json | Set-Content $Script:CONFIGFILE
-}
-
-function Set-Tenant {
-    param($NewTenant, $Config)
-
-    $Config.Tenant = $NewTenant
-    Save-Config $Config
-    Write-Log SUCC "Realm set to $NewTenant"
-}
-
 # =========================
 # Docker
 # =========================
@@ -119,7 +92,7 @@ function Stop-Compose($Name) {
 # =========================
 # INIT
 # =========================
-$Script:Config = Get-Config
+$config = Get-Config -Path $configFile
 
 ### SCRIPT #####################################################################
 
@@ -143,15 +116,15 @@ $Script:Config = Get-Config
         switch (Read-Host -Prompt "Option") {
             "1" { 
                 Write-Information -MessageData "Checking authentication."
-                if (-not (Test-GitProviderSession -Provider $GitProvier)) {
+                if (-not (Test-GitProviderSession -Provider $gitProvider)) {
                     Write-Information -MessageData "Starting login procedure."
-                    Start-GitProviderSession -Provider $GitProvider
+                    Start-GitProviderSession -Provider $gitProvider
                 }
                 else {
                     Write-Information -MessageData "Session data is correct."
                 }
-                Write-Information -MessageData "Sending ${GitProvider} session to Git."
-                Assert-GitProviderSession -Provider $GitProvider
+                Write-Information -MessageData "Sending $gitProvider session to Git."
+                Assert-GitProviderSession -Provider $gitProvider
                 Write-Information -MessageData "Login succeeded."
             }
             "2" {
@@ -166,12 +139,14 @@ $Script:Config = Get-Config
                 do {
                     switch (Read-Host "Option") {
                         "1" {
-                            Set-Tenant -NewTenant "AST" -Config $Script:Config
-                            $Script:Config = Get-Config
+                            $config.Tenant = "AST"
+                            Save-Config -Path $configFile -Data $Config
+                            $config = Get-Config -Path $configFile
                         }
                         "2" {
-                            Set-Tenant -NewTenant "BonzoSoft" -Config $Script:Config
-                            $Script:Config = Get-Config
+                            $config.Tenant = "BonzoSoft"
+                            Save-Config -Path $configFile -Data $Config
+                            $config = Get-Config -Path $configFile
                         }
                         "q" {
                             # nop
@@ -199,18 +174,18 @@ $Script:Config = Get-Config
                 }
             }
             "4" {
-                if (-not (Test-GitProviderSession -Provider $GitProvider)) {
+                if (-not (Test-GitProviderSession -Provider $gitProvider)) {
                     throw "Must be logged in to proceed."
                     break
                 }
-                Import-GitRepository -Provider $GitProvider -Namespace $GitNamespace -Name $commonGitRepository -Branch $commonGitBranch
+                Import-GitRepository -Provider $gitProvider -Namespace $GitNamespace -Name $commonGitRepository -Branch $commonGitBranch
             }
             "5" {
-                if (-not (Test-GitProviderSession -Provider $GitProvider)) {
+                if (-not (Test-GitProviderSession -Provider $gitProvider)) {
                     throw "Must be logged in to proceed."
                     break
                 }
-                Import-GitRepository -Provider $GitProvider -Namespace $GitNamespace -Name $coreGitRepository -Branch $coreGitBranch
+                Import-GitRepository -Provider $gitProvider -Namespace $GitNamespace -Name $coreGitRepository -Branch $coreGitBranch
             }
             "6" {
                 [IO.DirectoryInfo]$folder = Join-Path -Path $PSScriptRoot -ChildPath "coreGitRepository"
@@ -225,11 +200,11 @@ $Script:Config = Get-Config
                 }
             }
             "7" {
-                if (-not (Test-GitProviderSession -Provider $GitProvider)) {
+                if (-not (Test-GitProviderSession -Provider $gitProvider)) {
                     throw "Must be logged in to proceed."
                     break
                 }
-                Import-GitRepository -Provider $GitProvider -Namespace $GitNamespace -Name $peripheryGitRepository -Branch $peripheryGitBranch
+                Import-GitRepository -Provider $gitProvider -Namespace $GitNamespace -Name $peripheryGitRepository -Branch $peripheryGitBranch
             }
             "7" {
                 [IO.DirectoryInfo]$folder = Join-Path -Path $PSScriptRoot -ChildPath "coreGitRepository"
@@ -243,7 +218,7 @@ $Script:Config = Get-Config
                 }
             }
             "8" {
-                Stop-GitProviderSession -Provider $GitProvider
+                Stop-GitProviderSession -Provider $gitProvider
             }
             "9" {
                 Clear-Host

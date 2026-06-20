@@ -66,6 +66,61 @@ function Write-MainMenu {
     Write-Host ""
 }
 
+
+# =========================
+# Config
+# =========================
+function Get-Config {
+    if (Test-Path $Script:CONFIGFILE) {
+        return Get-Content $Script:CONFIGFILE | ConvertFrom-Json
+    }
+
+    Write-Log WARN "Generating new config..."
+    $config = @{ Tenant = "ast" }
+    
+    $config | ConvertTo-Json | Set-Content $Script:CONFIGFILE
+    return $config
+}
+
+function Save-Config($config) {
+    $config | ConvertTo-Json | Set-Content $Script:CONFIGFILE
+}
+
+function Set-Tenant {
+    param($NewTenant, $Config)
+
+    $Config.Tenant = $NewTenant
+    Save-Config $Config
+    Write-Log SUCC "Realm set to $NewTenant"
+}
+
+# =========================
+# Docker
+# =========================
+function Start-Compose($Name, $Config) {
+    Push-Location "./$Name"
+
+    if (Test-Path "./predeploy") { bash "./predeploy" }
+
+    $project = if ($Config.TRUENAS) { "ix-$Name" } else { $Name }
+    docker compose -p $project up -d
+
+    Pop-Location
+    Write-Log SUCC "$Name started"
+}
+
+function Stop-Compose($Name) {
+    Push-Location "./$Name"
+    docker compose down
+    Pop-Location
+    Write-Log SUCC "$Name stopped"
+}
+
+# =========================
+# INIT
+# =========================
+$Script:Config = Get-Config
+
 ### SCRIPT #####################################################################
 
 & { # TUI
@@ -195,130 +250,7 @@ function Write-MainMenu {
                 exit
             }
         }
-    
         Start-Sleep -MilliSeconds 250
     } while ($true)
-    
-}
 
-
-
-
-
-
-# assert config dir
-if (-not (Test-Path -Path $configDir)) { 
-    New-Item -Path $configDir -ItemType 'Directory' | Out-Null
-}
-
-# disable user prompt
-$null = gh config set prompt disabled 2> variable:errorMessage
-if ($LASTEXITCODE) {
-    Write-Error -Message $errorMessage
-}
-
-
-
-
-
-
-
-
-
-
-
-
-
-# =========================
-# Config
-# =========================
-function Get-Config {
-    if (Test-Path $Script:CONFIGFILE) {
-        return Get-Content $Script:CONFIGFILE | ConvertFrom-Json
-    }
-
-    Write-Log WARN "Generating new config..."
-    $config = @{ Tenant = "ast" }
-    
-    $config | ConvertTo-Json | Set-Content $Script:CONFIGFILE
-    return $config
-}
-
-function Save-Config($config) {
-    $config | ConvertTo-Json | Set-Content $Script:CONFIGFILE
-}
-
-function Set-Tenant {
-    param($NewTenant, $Config)
-
-    $Config.Tenant = $NewTenant
-    Save-Config $Config
-    Write-Log SUCC "Realm set to $NewTenant"
-}
-
-# =========================
-# Docker
-# =========================
-function Start-Compose($Name, $Config) {
-    Push-Location "./$Name"
-
-    if (Test-Path "./predeploy") { bash "./predeploy" }
-
-    $project = if ($Config.TRUENAS) { "ix-$Name" } else { $Name }
-    docker compose -p $project up -d
-
-    Pop-Location
-    Write-Log SUCC "$Name started"
-}
-
-function Stop-Compose($Name) {
-    Push-Location "./$Name"
-    docker compose down
-    Pop-Location
-    Write-Log SUCC "$Name stopped"
-}
-
-# =========================
-# INIT
-# =========================
-$Script:Config = Get-Config
-
-
-switch ($PSCmdlet.ParameterSetName) {
-    "TUI" {
-        do {
-            Clear-Host
-            Write-Host ""
-            Write-Host "########################################"
-            Write-Host "###            MAIN MENU             ###"
-            Write-Host "########################################"
-
-    
-            
-        } while ($true)
-    }
-    "Tenant" {
-        # Corregido de "Realm" a "Tenant" y paso correcto de parámetros
-        Set-Tenant -NewTenant $Tenant -Config $Script:Config
-        $Script:Config = Get-Config
-    }
-    "Login" {
-        Connect-GitProvider  
-    }
-    "Logout" {
-        Disconnect-GitProvider
-    }
-    "Pull" {
-        Import-GitRepository -Namespace $Script:Config.Tenant -Name "common"
-        Import-GitRepository -Namespace $Script:Config.Tenant -Name $Pull
-    }
-    "Start" {
-        Start-Compose $Start $Script:Config
-    }
-    "Stop" {
-        Stop-Compose $Stop
-    }
-    default {
-        throw "Unknown parameter set name: $(PSCmdlet.ParameterSetName)"
-    }
 }

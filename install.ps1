@@ -33,7 +33,6 @@ $VerbosePreference = $verboseBackup
 [string]$peripheryGitBranch = "main"
 
 [IO.DirectoryInfo]$WorkingDir = $PWD.Path
-#[IO.DirectoryInfo]$repositoryDir    = Join-Path -Path $WorkingDir -ChildPath @("common")
 [IO.DirectoryInfo]$configDir  = Join-Path -Path $WorkingDir -ChildPath @(".config")
 [IO.FileInfo]$configFile = Join-Path -Path $configDir -ChildPath @("host", "config.json")
 

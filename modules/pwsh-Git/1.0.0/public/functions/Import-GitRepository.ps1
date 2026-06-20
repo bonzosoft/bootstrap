@@ -5,7 +5,7 @@ function Import-GitRepository {
     param(
         [Parameter()]
         [ValidateSet("github.com")]
-        [string]$GitProvider = "github.com",
+        [string]$Provider = "github.com",
 
         [Parameter(Mandatory)]
         [ValidateNotNullOrWhiteSpace()]

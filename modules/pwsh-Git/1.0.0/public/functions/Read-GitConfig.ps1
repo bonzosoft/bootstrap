@@ -19,7 +19,7 @@ function Read-GitConfig {
             $config = Get-Content -Path $Path | ConvertFrom-Json -Depth 9 -AsHashtable
         }
         else {
-            New-Item -Path $Path.Parent -ItemType 'Directory' -Force
+            New-Item -Path $Path.DirectoryName -ItemType 'Directory' -Force
             $config | ConvertTo-Json | Set-Content -Path $Path
         }
     }

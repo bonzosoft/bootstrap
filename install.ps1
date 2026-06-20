@@ -92,7 +92,7 @@ function Stop-Compose($Name) {
 # =========================
 # INIT
 # =========================
-$config = Get-Config -Path $configFile
+$config = Read-GitConfig -Path $configFile
 
 ### SCRIPT #####################################################################
 
@@ -140,13 +140,13 @@ $config = Get-Config -Path $configFile
                     switch (Read-Host "Option") {
                         "1" {
                             $config.Tenant = "AST"
-                            Save-Config -Path $configFile -Data $Config
-                            $config = Get-Config -Path $configFile
+                            Write-GitConfig -Path $configFile -Data $Config
+                            $config = Read-GitConfig -Path $configFile
                         }
                         "2" {
                             $config.Tenant = "BonzoSoft"
-                            Save-Config -Path $configFile -Data $Config
-                            $config = Get-Config -Path $configFile
+                            Write-GitConfig -Path $configFile -Data $Config
+                            $config = Read-GitConfig -Path $configFile
                         }
                         "q" {
                             # nop

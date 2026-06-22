@@ -176,6 +176,7 @@ function Stop-Compose($Name) {
             "4" {
                 if (-not (Test-GitProviderSession -Provider $gitProvider)) {
                     Write-Error -Message "Must be logged in to proceed."
+                    Start-Sleep -Milliseconds 2000
                     continue
                 }
                 Import-GitRepository -Provider $gitProvider -Namespace $GitNamespace -Repository $commonGitRepository -Branch $commonGitBranch -Force
@@ -183,6 +184,7 @@ function Stop-Compose($Name) {
             "5" {
                 if (-not (Test-GitProviderSession -Provider $gitProvider)) {
                     Write-Error -Message "Must be logged in to proceed."
+                    Start-Sleep -Milliseconds 2000
                     continue
                 }
                 Import-GitRepository -Provider $gitProvider -Namespace $GitNamespace -Repository $coreGitRepository -Branch $coreGitBranch -Force
@@ -202,6 +204,7 @@ function Stop-Compose($Name) {
             "7" {
                 if (-not (Test-GitProviderSession -Provider $gitProvider)) {
                     Write-Error -Message "Must be logged in to proceed."
+                    Start-Sleep -Milliseconds 2000
                     continue
                 }
                 Import-GitRepository -Provider $gitProvider -Namespace $GitNamespace -Repository $peripheryGitRepository -Branch $peripheryGitBranch -Force

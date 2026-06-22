@@ -225,6 +225,9 @@ function Stop-Compose($Name) {
                 exit 0
             }
         }
-        Start-Sleep -MilliSeconds 2500
+        Start-Sleep -MilliSeconds 750
+        Write-Information -MessageData "Press any key to continue..."
+        Read-Host | Out-Null
+        Start-Sleep -Milliseconds 250
     } while ($true)
 #}

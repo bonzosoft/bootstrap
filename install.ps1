@@ -16,7 +16,6 @@ $modules = @(
 )
 $VerbosePreference = 'SilentlyContinue'
 foreach ($module in $modules) {
-    Write-Host "module: $module"
     Import-Module -Name (Join-Path -Path $PSScriptRoot -ChildPath @("modules", $module))
 }
 $VerbosePreference = $verboseBackup

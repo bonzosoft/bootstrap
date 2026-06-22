@@ -113,9 +113,6 @@ function Stop-Compose($Name) {
         continue
     }
 
-    Clear-Host
-    Write-Header -Config $config
-    
     do {
         Clear-Host
         Write-Header -Config $config

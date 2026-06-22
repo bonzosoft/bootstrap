@@ -22,6 +22,12 @@ $VerbosePreference = $verboseBackup
 
 
 ### CONFIGURATION ##############################################################
+[IO.DirectoryInfo]$configDir  = Join-Path -Path $PWD -ChildPath @(".config")
+[IO.FileInfo]$configFile = Join-Path -Path $configDir -ChildPath @("host", "config.json")
+
+$env:GH_CONFIG_DIR=(Join-Path -Path $configDir -ChildPath @("gh"))
+$env:GIT_TERMINAL_PROMPT = 0
+
 [string]$gitProvider = "github.com"
 [string]$gitNamespace = "bonzosoft"
 [string]$commonGitRepository = "common"
@@ -30,12 +36,6 @@ $VerbosePreference = $verboseBackup
 [string]$coreGitBranch = "main"
 [string]$peripheryGitRepository = "komodo-periphery"
 [string]$peripheryGitBranch = "main"
-
-[IO.DirectoryInfo]$configDir  = Join-Path -Path $PWD -ChildPath @(".config")
-[IO.FileInfo]$configFile = Join-Path -Path $configDir -ChildPath @("host", "config.json")
-
-$env:GH_CONFIG_DIR=(Join-Path -Path $configDir -ChildPath @("gh"))
-$env:GIT_TERMINAL_PROMPT = 0
 
 
 function Write-Header($Config) {

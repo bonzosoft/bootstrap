@@ -91,7 +91,8 @@ function Stop-Compose($Name) {
 # =========================
 # INIT
 # =========================
-$config = Read-GitConfig -Path $configFile
+[string]$errroMessage = ""
+[hashtable]$config = Read-GitConfig -Path $configFile
 
 ### SCRIPT #####################################################################
 

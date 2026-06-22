@@ -35,7 +35,7 @@ $VerbosePreference = $verboseBackup
 [IO.DirectoryInfo]$configDir  = Join-Path -Path $PWD -ChildPath @(".config")
 [IO.FileInfo]$configFile = Join-Path -Path $configDir -ChildPath @("host", "config.json")
 
-$env:GH_CONFIG_DIR=(Join-Path -Path $ConfigDir -ChildPath @("gh"))
+$env:GH_CONFIG_DIR=(Join-Path -Path $configDir -ChildPath @("gh"))
 $env:GIT_TERMINAL_PROMPT = 0
 
 function Write-Header($Config) {

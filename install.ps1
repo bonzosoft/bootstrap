@@ -14,13 +14,13 @@ $modules = @(
     "pwsh-Docker"
     "pwsh-Git"
 )
-Write-host "pasa"
 $VerbosePreference = 'SilentlyContinue'
 foreach ($module in $modules) {
+    Write-Host "module: $module"
     Import-Module -Name (Join-Path -Path $PSScriptRoot -ChildPath @("modules", $module))
 }
 $VerbosePreference = $verboseBackup
-Write-host "no pasa"
+
 
 ### CONFIGURATION ##############################################################
 [string]$gitProvider = "github.com"
@@ -32,13 +32,13 @@ Write-host "no pasa"
 [string]$peripheryGitRepository = "komodo-periphery"
 [string]$peripheryGitBranch = "main"
 
-Write-Host "pwd: $PWD"
 [IO.DirectoryInfo]$configDir  = Join-Path -Path $PWD -ChildPath @(".config")
 [IO.FileInfo]$configFile = Join-Path -Path $configDir -ChildPath @("host", "config.json")
 
 $env:GH_CONFIG_DIR=(Join-Path -Path $configDir -ChildPath @("gh"))
 $env:GIT_TERMINAL_PROMPT = 0
-Write-Host "pasa"
+
+
 function Write-Header($Config) {
     Clear-Host
     Write-Host ""

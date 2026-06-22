@@ -226,6 +226,7 @@ function Stop-Compose($Name) {
             }
         }
         Start-Sleep -MilliSeconds 750
+        Write-Information -MessageData ""
         Write-Information -MessageData "Press any key to continue..."
         Read-Host | Out-Null
         Start-Sleep -Milliseconds 250

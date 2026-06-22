@@ -115,8 +115,6 @@ function Stop-Compose($Name) {
 
     Clear-Host
     Write-Header -Config $config
-    Write-Host "Press any key to continue..."
-    Read-Host | Out-Null
     
     do {
         Clear-Host

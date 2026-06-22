@@ -58,8 +58,7 @@ function Import-GitRepository {
         foreach ($script in $scripts) {
             [IO.FileInfo]$scriptPath = (Join-Path -Path $PWD -ChildPath $script)
             if (Test-Path -Path $scriptPath) {
-                & $scriptPath.FullName
-                #pwsh -File $script -InformationAction 'Continue'
+                pwsh -File $scriptPath.FullName -InformationAction 'Continue'
             }
         }
         Pop-Location

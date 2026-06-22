@@ -44,7 +44,7 @@ function Write-Header($Config) {
     Write-Host "############################################"
     Write-Host "###            INSTALL SCRIPT            ###"
     Write-Host "###   --------------------------------   ###"
-    Write-Host "###         [Version:     0.1.5]         ###"
+    Write-Host "###         [Version:     0.1.6]         ###"
     Write-Host "############################################"
     Write-Host "Tenant: $($Config.Tenant)"
     Write-Host ""

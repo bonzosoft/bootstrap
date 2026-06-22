@@ -178,14 +178,14 @@ function Stop-Compose($Name) {
                     throw "Must be logged in to proceed."
                     break
                 }
-                Import-GitRepository -Provider $gitProvider -Namespace $GitNamespace -Name $commonGitRepository -Branch $commonGitBranch
+                Import-GitRepository -Provider $gitProvider -Namespace $GitNamespace -Repository $commonGitRepository -Branch $commonGitBranch
             }
             "5" {
                 if (-not (Test-GitProviderSession -Provider $gitProvider)) {
                     throw "Must be logged in to proceed."
                     break
                 }
-                Import-GitRepository -Provider $gitProvider -Namespace $GitNamespace -Name $coreGitRepository -Branch $coreGitBranch
+                Import-GitRepository -Provider $gitProvider -Namespace $GitNamespace -Repository$coreGitRepository -Branch $coreGitBranch
             }
             "6" {
                 [IO.DirectoryInfo]$folder = Join-Path -Path $PSScriptRoot -ChildPath "coreGitRepository"
@@ -204,7 +204,7 @@ function Stop-Compose($Name) {
                     throw "Must be logged in to proceed."
                     break
                 }
-                Import-GitRepository -Provider $gitProvider -Namespace $GitNamespace -Name $peripheryGitRepository -Branch $peripheryGitBranch
+                Import-GitRepository -Provider $gitProvider -Namespace $GitNamespace -Repository$peripheryGitRepository -Branch $peripheryGitBranch
             }
             "7" {
                 [IO.DirectoryInfo]$folder = Join-Path -Path $PSScriptRoot -ChildPath "coreGitRepository"

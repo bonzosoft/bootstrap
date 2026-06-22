@@ -22,7 +22,7 @@ function Expand-DockerVariable {
             $Content = $Content.Replace('[[PUID]]',               $Script:Context.Docker.PUID)
             $Content = $Content.Replace('[[PGID]]',               $Script:Context.Docker.PGID)
             $Content = $Content.Replace('[[SOCKETPROXY_PGID]]',   $Script:Context.Docker.DockerPGID)
-            $Content = $Content.Replace('[[ADMIN_USER]]',         $Script:Context.Admin.User)
+            $Content = $Content.Replace('[[ADMIN_USER]]',         $Script:Context.Admin.Name)
             $Content = $Content.Replace('[[ADMIN_PASS]]',         (ConvertFrom-SecureString -SecureString $Script:Context.Admin.Password -AsPlainText))
             $Content = $Content.Replace('[[ADMIN_EMAIL]]',        $Script:Context.Admin.Email)
             $Content = $Content.Replace('[[SMTP_RELAY_HOST]]',    $Script:Context.Smtp.Relay.Host)
@@ -31,7 +31,7 @@ function Expand-DockerVariable {
             $Content = $Content.Replace('[[SMTP_RELAY_PASS]]',    (ConvertFrom-SecureString -SecureString $Script:Context.Smtp.Relay.Password -AsPlainText))
             $Content = $Content.Replace('[[SMTP_PROVIDER_HOST]]', $Script:Context.Smtp.Provider.Host)
             $Content = $Content.Replace('[[SMTP_PROVIDER_PORT]]', $Script:Context.Smtp.Provider.Port)
-            $Content = $Content.Replace('[[SMTP_PROVIDER_USER]]', $Script:Context.Smtp.Provider.User)
+            $Content = $Content.Replace('[[SMTP_PROVIDER_USER]]', $Script:Context.Smtp.Provider.Name)
             $Content = $Content.Replace('[[SMTP_PROVIDER_PASS]]', (ConvertFrom-SecureString -SecureString $Script:Context.Smtp.Provider.Password -AsPlainText))            
         }
     }

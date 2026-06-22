@@ -105,7 +105,7 @@ function Stop-Compose($Name) {
 
 ### SCRIPT #####################################################################
 
-& { # TUI
+#& { # TUI
     trap { 
         # traps any throw during the text UI
         Write-Error -Message "Trapped: $PSItem"
@@ -230,5 +230,4 @@ function Stop-Compose($Name) {
         }
         Start-Sleep -MilliSeconds 250
     } while ($true)
-
-}
+#}

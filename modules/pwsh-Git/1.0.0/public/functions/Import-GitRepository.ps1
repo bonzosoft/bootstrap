@@ -46,13 +46,13 @@ function Import-GitRepository {
         
         $null = git clone --branch "$Branch" --single-branch "https://$Provider/$Namespace/$Repository.git" "$($repositoryDir.FullName)" 2> variable:errorMessage
         if ($LASTEXITCODE -ne 0) {
-            throw -Message $errorMessage
+            throw $errorMessage
         }
 
         Push-Location -Path $repositoryDir
         $null = git submodule update --init --recursive 2> variable:errorMessage
         if ($LASTEXITCODE -ne 0) {
-            throw -Message $errorMessage
+            throw $errorMessage
         }
 
         foreach ($script in $scripts) {

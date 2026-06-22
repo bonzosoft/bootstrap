@@ -14,13 +14,13 @@ $modules = @(
     "pwsh-Docker"
     "pwsh-Git"
 )
-
+Write-host "pasa"
 $VerbosePreference = 'SilentlyContinue'
 foreach ($module in $modules) {
     Import-Module -Name (Join-Path -Path $PSScriptRoot -ChildPath @("modules", $module))
 }
 $VerbosePreference = $verboseBackup
-
+Write-host "no pasa"
 
 ### CONFIGURATION ##############################################################
 [string]$gitProvider = "github.com"

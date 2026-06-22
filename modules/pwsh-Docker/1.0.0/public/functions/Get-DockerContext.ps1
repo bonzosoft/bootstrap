@@ -38,7 +38,7 @@ function Get-DockerContext {
         $context.Docker.HostPGID =              [int](Get-DockerHostPGID)
         # Tenant
         $context.TenantsDir      = [IO.DirectoryInfo](Join-Path -Path $context.CommonDir  -ChildPath @("tenants"))       
-        $context.TenantsFile     =      [IO.FileInfo](Join-Path -Path $context.TenantsDir -ChildPath @("$((Get-Content -Path $context.HostConfigFile | ConvertFrom-Json).Tenant).json"))
+        $context.TenantsFile     =      [IO.FileInfo](Join-Path -Path $context.TenantsDir -ChildPath @("$(((Get-Content -Path $context.HostConfigFile | ConvertFrom-Json).Tenant).ToLower()).json"))
         $context.Tenant          =           [string]($context.TenantsFile.BaseName)
         
         $tenantInfo = Get-Content -Path $context.TenantsFile | ConvertFrom-Json -Depth 9 -AsHashTable

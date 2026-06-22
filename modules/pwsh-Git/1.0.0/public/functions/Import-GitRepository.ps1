@@ -56,8 +56,9 @@ function Import-GitRepository {
         }
 
         foreach ($script in $scripts) {
-            if (Test-Path -Path $script) {
-                & $script
+            [IO.FileInfo]$scriptPath = (Join-Path -Path $PWD -ChildPath $script)
+            if (Test-Path -Path $scriptPath) {
+                & $scriptPath.FullName
                 #pwsh -File $script -InformationAction 'Continue'
             }
         }

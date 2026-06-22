@@ -9,7 +9,7 @@ function Write-GitConfig {
 
         [Parameter(Mandatory)]
         [ValidateNotNullOrEmpty()]
-        [IO.FileInfo]$Data
+        [hashtable]$Data
     )
 
     begin {

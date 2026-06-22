@@ -18,7 +18,13 @@ function Test-GitProviderSession {
             return $false
         }
         else {
-            return $true
+            (printf "protocol=https\nhost=github.com\n\n" | git credential fill) *> $null
+            if ($LASTEXTICODE) {
+                return $false
+            }
+            else {
+                return $true
+            }
         }
     }
 

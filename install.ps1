@@ -32,8 +32,7 @@ $VerbosePreference = $verboseBackup
 [string]$peripheryGitRepository = "komodo-periphery"
 [string]$peripheryGitBranch = "main"
 
-[IO.DirectoryInfo]$WorkingDir = $PWD.Path
-[IO.DirectoryInfo]$configDir  = Join-Path -Path $WorkingDir -ChildPath @(".config")
+[IO.DirectoryInfo]$configDir  = Join-Path -Path $PWD -ChildPath @(".config")
 [IO.FileInfo]$configFile = Join-Path -Path $configDir -ChildPath @("host", "config.json")
 
 $env:GH_CONFIG_DIR=(Join-Path -Path $ConfigDir -ChildPath @("gh"))

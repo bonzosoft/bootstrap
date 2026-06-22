@@ -24,7 +24,8 @@ Export-ModuleMember -Variable *
 
 
 ### Private variables ##########################################################
-# nop
+$env:GH_CONFIG_DIR=(Join-Path -Path $ConfigDir -ChildPath @("gh"))
+$env:GIT_TERMINAL_PROMPT = 0
 
 
 ### Look for module assets #####################################################

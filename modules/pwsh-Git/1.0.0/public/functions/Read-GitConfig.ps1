@@ -10,7 +10,7 @@ function Read-GitConfig {
 
     begin {
         [hashtable]$config = @{
-            Tenant = "AST"
+            Tenant = ""
         }
     }
 

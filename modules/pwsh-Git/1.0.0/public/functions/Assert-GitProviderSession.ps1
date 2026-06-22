@@ -5,7 +5,7 @@ function Assert-GitProviderSession {
     param (
         [Parameter()]
         [ValidateSet("github.com")]
-        [string]$GitProvider = "github.com"
+        [string]$Provider = "github.com"
     )
 
     begin {
@@ -13,7 +13,7 @@ function Assert-GitProviderSession {
     }
 
     process {
-        $null = gh auth setup-git --hostname $GitProvider 2> variable:errorMessage
+        $null = gh auth setup-git --hostname $Provider 2> variable:errorMessage
         if ($LASTEXITCODE) {
             throw $errorMessage
         }

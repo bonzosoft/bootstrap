@@ -44,7 +44,7 @@ function Import-GitRepository {
 
         Write-Information -MessageData "Syncing $Namespace/$Repository ($Branch)" -InformationAction 'Continue'
         
-        $null = git clone --branch "$Branch" --single-branch "https://$GitProvider/$Namespace/$Repository.git" "$($repositoryDir.FullName)" 2> variable:errorMessage
+        $null = git clone --branch "$Branch" --single-branch "https://$Provider/$Namespace/$Repository.git" "$($repositoryDir.FullName)" 2> variable:errorMessage
         if ($LASTEXITCODE -ne 0) {
             throw -Message $errorMessage
         }

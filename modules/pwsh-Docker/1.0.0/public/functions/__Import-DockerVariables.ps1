@@ -5,7 +5,7 @@ function Import-DockerVariables {
     param(
         [Parameter()]
         [ValidateNotNullOrEmpty()]
-        [IO.FileInfo]$Path = $Script:Context.DotEnvFile,
+        [IO.FileInfo]$Path = $Script:Context.MainDotEnvFile,
 
         [Parameter()]
         [ValidateNotNullOrEmpty()]

@@ -179,6 +179,12 @@ function Stop-Compose($Name) {
                     continue
                 }
                 Import-GitRepository -Provider $gitProvider -Namespace $GitNamespace -Repository $commonGitRepository -Branch $commonGitBranch -Force
+                
+                foreach ($item in @("install", "cmd")) {
+                    Write-Information -MessageData "Adding link '${item}'." -InformationAction 'Continue'
+                    ln -snf (Join-Path -Path $RepoDir -ChildPath @($item + ".sh") ) (Join-Path -Path $WorkingDir -ChildPath @($item))
+                    chmod +x (Join-Path -Path $WorkingDir -ChildPath @($item))
+                }
             }
             "5" {
                 if (-not (Test-GitProviderSession -Provider $gitProvider)) {

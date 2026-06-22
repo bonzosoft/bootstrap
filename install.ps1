@@ -39,7 +39,7 @@ $VerbosePreference = $verboseBackup
 $env:GH_CONFIG_DIR=(Join-Path -Path $ConfigDir -ChildPath @("gh"))
 $env:GIT_TERMINAL_PROMPT = 0
 
-function Write-Header {
+function Write-Header($Config) {
     Clear-Host
     Write-Host ""
     Write-Host "############################################"
@@ -47,11 +47,11 @@ function Write-Header {
     Write-Host "###   --------------------------------   ###"
     Write-Host "###         [Version:     0.1.5]         ###"
     Write-Host "############################################"
+    Write-Host "Tenant: $($Config.Tenant)"
     Write-Host ""
 }
 
-function Write-MainMenu($Config) {
-    Write-Host "Tenant: $($Config.Tenant)"
+function Write-MainMenu {
     Write-Host ""
     Write-Host "  1. Login"
     Write-Host "  2. Set Tenant"
@@ -105,14 +105,14 @@ function Stop-Compose($Name) {
     }
 
     Clear-Host
-    Write-Header
+    Write-Header -Config $config
     Write-Host "Press any key to continue..."
     Read-Host | Out-Null
     
     do {
         Clear-Host
-        Write-Header
-        Write-MainMenu -Config $config
+        Write-Header -Config $config
+        Write-MainMenu
         switch (Read-Host -Prompt "Option") {
             "1" { 
                 Write-Information -MessageData "Checking authentication."
@@ -129,7 +129,7 @@ function Stop-Compose($Name) {
             }
             "2" {
                 Clear-Host
-                Write-Header
+                Write-Header -Config $config
                 Write-Host ""
                 Write-Host "Select tenant:"
                 Write-Host ""

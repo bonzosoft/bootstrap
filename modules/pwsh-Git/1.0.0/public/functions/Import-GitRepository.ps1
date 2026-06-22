@@ -32,6 +32,10 @@ function Import-GitRepository {
     }
 
     process {
+        if (-not (Test-GitProviderSession -Provider $Provider)) {
+            Write-Information -MessageData "Session not available."
+        }
+
         if (Test-Path $repositoryDir) {
             if ($Force.IsPresent) {
                 Remove-Item -Path $repositoryDir -Recurse -Force

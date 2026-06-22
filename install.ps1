@@ -208,7 +208,7 @@ function Stop-Compose($Name) {
                 }
                 Import-GitRepository -Provider $gitProvider -Namespace $GitNamespace -Repository$peripheryGitRepository -Branch $peripheryGitBranch
             }
-            "7" {
+            "8" {
                 [IO.DirectoryInfo]$folder = Join-Path -Path $PSScriptRoot -ChildPath "coreGitRepository"
                 if (Test-Path -Path $folder) {
                     docker compose `
@@ -219,12 +219,12 @@ function Stop-Compose($Name) {
                     Write-Log ERRO "Komodo Periphery directory not found. Pull it first."
                 }
             }
-            "8" {
+            "9" {
                 Stop-GitProviderSession -Provider $gitProvider
             }
-            "9" {
+            "q" {
                 Clear-Host
-                exit
+                exit 0
             }
         }
         Start-Sleep -MilliSeconds 250

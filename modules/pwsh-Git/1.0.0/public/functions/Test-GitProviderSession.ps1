@@ -19,7 +19,7 @@ function Test-GitProviderSession {
             return $false
         }
         else {
-            (printf "protocol=https\nhost=github.com\n\n" | git credential fill) *> $null
+            printf "protocol=https\nhost=github.com\n\n" | git credential fill *> $null
             if ($LASTEXTICODE) {
                 Write-Host "No Git session."
                 return $false

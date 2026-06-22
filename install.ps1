@@ -51,7 +51,9 @@ function Write-Header($Config) {
     Write-Host ""
 }
 
-function Write-MainMenu {
+function Write-MainMenu() {
+    Write-Host ""
+    Write-Host "Select option:"
     Write-Host ""
     Write-Host "  1. Login"
     Write-Host "  2. Set Tenant"
@@ -63,6 +65,16 @@ function Write-MainMenu {
     Write-Host "  8. Start Komodo Periphery"
     Write-Host "  9. Logout"
     Write-Host "  q. Exit"
+    Write-Host ""
+}
+
+function Write-TenantMenu() {
+    Write-Host ""
+    Write-Host "Select tenant:"
+    Write-Host ""
+    Write-Host "  1. AST"
+    Write-Host "  2. BonzoSoft"
+    Write-Host "  q. Return"
     Write-Host ""
 }
 
@@ -130,13 +142,7 @@ function Stop-Compose($Name) {
             "2" {
                 Clear-Host
                 Write-Header -Config $config
-                Write-Host ""
-                Write-Host "Select tenant:"
-                Write-Host ""
-                Write-Host "  1. AST"
-                Write-Host "  2. BonzoSoft"
-                Write-Host "  q. Return"
-                Write-Host ""
+                Write-TenantMenu
                 
                 do {
                     switch (Read-Host "Option") {

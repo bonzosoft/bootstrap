@@ -165,7 +165,7 @@ function Stop-Compose($Name) {
                 if ($LASTEXITCODE) {
                     $null = docker network create backup 2> variable:errorMessage
                     if ($LASTEXITCODE) {
-                        throw $errroMessage
+                        Write-Error -Message $errroMessage
                         break
                     }
                     else {
@@ -175,14 +175,14 @@ function Stop-Compose($Name) {
             }
             "4" {
                 if (-not (Test-GitProviderSession -Provider $gitProvider)) {
-                    Write-Warning -MessageData "Must be logged in to proceed."
+                    Write-Error -Message "Must be logged in to proceed."
                     break
                 }
                 Import-GitRepository -Provider $gitProvider -Namespace $GitNamespace -Repository $commonGitRepository -Branch $commonGitBranch -Force
             }
             "5" {
                 if (-not (Test-GitProviderSession -Provider $gitProvider)) {
-                    Write-Warning -MessageData "Must be logged in to proceed."
+                    Write-Error -Message "Must be logged in to proceed."
                     break
                 }
                 Import-GitRepository -Provider $gitProvider -Namespace $GitNamespace -Repository $coreGitRepository -Branch $coreGitBranch -Force
@@ -201,7 +201,7 @@ function Stop-Compose($Name) {
             }
             "7" {
                 if (-not (Test-GitProviderSession -Provider $gitProvider)) {
-                    Write-Warning -MessageData "Must be logged in to proceed."
+                    Write-Error -Message "Must be logged in to proceed."
                     break
                 }
                 Import-GitRepository -Provider $gitProvider -Namespace $GitNamespace -Repository $peripheryGitRepository -Branch $peripheryGitBranch -Force

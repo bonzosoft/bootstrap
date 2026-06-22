@@ -120,12 +120,12 @@ function Stop-Compose($Name) {
         switch (Read-Host -Prompt "Option") {
             "1" { 
                 Write-Information -MessageData "Checking authentication."
-                if (-not (Test-GitProviderSession -Provider $gitProvider)) {
+                if (-not (Test-GitProviderSession -Provider $gitProvider -GH)) {
                     Write-Information -MessageData "Starting login procedure."
                     Start-GitProviderSession -Provider $gitProvider
                 }
                 else {
-                    Write-Information -MessageData "Session data is correct."
+                    Write-Information -MessageData "Providear credentials are correct."
                 }
                 Write-Information -MessageData "Sending $gitProvider session to Git."
                 Assert-GitProviderSession -Provider $gitProvider

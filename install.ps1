@@ -50,8 +50,8 @@ function Write-Header {
     Write-Host ""
 }
 
-function Write-MainMenu {
-    Write-Host "Tenant: $($Script:Config.Tenant)"
+function Write-MainMenu($Config) {
+    Write-Host "Tenant: $($Config.Tenant)"
     Write-Host ""
     Write-Host "  1. Login"
     Write-Host "  2. Set Tenant"
@@ -111,7 +111,7 @@ $config = Read-GitConfig -Path $configFile
     do {
         Clear-Host
         Write-Header
-        Write-MainMenu
+        Write-MainMenu -Config $config
         switch (Read-Host -Prompt "Option") {
             "1" { 
                 Write-Information -MessageData "Checking authentication."

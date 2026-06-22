@@ -168,13 +168,9 @@ function Stop-Compose($Name) {
             "3" {
                 # Comprobación de la red Docker
                 docker network inspect backup *> $null
-                Write-Host "pasa"
                 if ($LASTEXITCODE) {
-                    Write-Host "entra"
                     $null = docker network create backup 2> variable:errorMessage
-                    Write-host "pasa2"
                     if ($LASTEXITCODE) {
-                        Write-Host "entra2"
                         throw $errroMessage
                         break
                     }
@@ -188,14 +184,14 @@ function Stop-Compose($Name) {
                     throw "Must be logged in to proceed."
                     break
                 }
-                Import-GitRepository -Provider $gitProvider -Namespace $GitNamespace -Repository $commonGitRepository -Branch $commonGitBranch
+                Import-GitRepository -Provider $gitProvider -Namespace $GitNamespace -Repository $commonGitRepository -Branch $commonGitBranch -Force
             }
             "5" {
                 if (-not (Test-GitProviderSession -Provider $gitProvider)) {
                     throw "Must be logged in to proceed."
                     break
                 }
-                Import-GitRepository -Provider $gitProvider -Namespace $GitNamespace -Repository $coreGitRepository -Branch $coreGitBranch
+                Import-GitRepository -Provider $gitProvider -Namespace $GitNamespace -Repository $coreGitRepository -Branch $coreGitBranch -Force
             }
             "6" {
                 [IO.DirectoryInfo]$folder = Join-Path -Path $PSScriptRoot -ChildPath "coreGitRepository"
@@ -214,7 +210,7 @@ function Stop-Compose($Name) {
                     throw "Must be logged in to proceed."
                     break
                 }
-                Import-GitRepository -Provider $gitProvider -Namespace $GitNamespace -Repository $peripheryGitRepository -Branch $peripheryGitBranch
+                Import-GitRepository -Provider $gitProvider -Namespace $GitNamespace -Repository $peripheryGitRepository -Branch $peripheryGitBranch -Force
             }
             "8" {
                 [IO.DirectoryInfo]$folder = Join-Path -Path $PSScriptRoot -ChildPath "coreGitRepository"

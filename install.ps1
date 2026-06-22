@@ -45,7 +45,7 @@ function Write-Header {
     Write-Host "############################################"
     Write-Host "###            INSTALL SCRIPT            ###"
     Write-Host "###   --------------------------------   ###"
-    Write-Host "###         [Version:     0.1.4]         ###"
+    Write-Host "###         [Version:     0.1.5]         ###"
     Write-Host "############################################"
     Write-Host ""
 }
@@ -128,6 +128,8 @@ function Stop-Compose($Name) {
                 Write-Information -MessageData "Login succeeded."
             }
             "2" {
+                Clear-Host
+                Write-Header
                 Write-Host ""
                 Write-Host "Select tenant:"
                 Write-Host ""

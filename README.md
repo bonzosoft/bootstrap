@@ -27,7 +27,7 @@ La estructura de directorios recomendada es:
 Para realizar el bootstrap de la instalación del entorno de Docker, ejecutar:
 
 ````bash
-export $branch="main" && wget -qO ${PWD}/bootstrap.ps1 https://raw.githubusercontent.com/bonzosoft/bootstrap/$branch/bootstrap.ps1 && docker run --rm -it -v ${PWD}:${PWD}:rw -w ${PWD} ghcr.io/bonzosoft/pwsh pwsh -NoLogo -NoProfile -File ${PWD}/bootstrap.ps1 && rm ${PWD}/bootstrap.ps1
+export BRANCH="main" && wget -qO ${PWD}/bootstrap.ps1 https://raw.githubusercontent.com/bonzosoft/bootstrap/$BRANCH/bootstrap.ps1 && docker run --rm -it -v ${PWD}:${PWD}:rw -w ${PWD} ghcr.io/bonzosoft/pwsh pwsh -NoLogo -NoProfile -File ${PWD}/bootstrap.ps1 && rm ${PWD}/bootstrap.ps1
 ````
 
 ## 3.- Configuración

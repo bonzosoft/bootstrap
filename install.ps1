@@ -96,7 +96,9 @@ function Stop-Compose($Name) {
 
 
 ### SCRIPT #####################################################################
-$config = @{}
+$config = @{
+    "Tenant"= ""
+}
 Write-GitConfig -Path $configFile -Data $config
 
 #& { # TUI
@@ -177,8 +179,8 @@ trap {
                     continue
                 }
 
-                if (-not (Test-Path -Path $configFile)) {
-                    Write-Error -Message "Missing config."
+                if (-not $config.Tenant) {
+                    Write-Error -Message "Missing tenant config."
                     continue  
                 }
 
@@ -195,8 +197,8 @@ trap {
                     Write-Error -Message "Must be logged in to proceed."
                     continue
                 }
-                if (-not (Test-Path -Path $configFile)) {
-                    Write-Error -Message "Missing config."
+                if (-not $config.Tenant) {
+                    Write-Error -Message "Missing tenant config."
                     continue  
                 }
                 Import-GitRepository -Provider $gitProvider -Namespace $GitNamespace -Repository $coreGitRepository -Branch $coreGitBranch -Force
@@ -218,8 +220,8 @@ trap {
                     Write-Error -Message "Must be logged in to proceed."
                     continue
                 }
-                if (-not (Test-Path -Path $configFile)) {
-                    Write-Error -Message "Missing config."
+                if (-not $config.Tenant) {
+                    Write-Error -Message "Missing tenant config."
                     continue  
                 }
                 Import-GitRepository -Provider $gitProvider -Namespace $GitNamespace -Repository $peripheryGitRepository -Branch $peripheryGitBranch -Force

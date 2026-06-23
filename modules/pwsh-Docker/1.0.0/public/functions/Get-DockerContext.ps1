@@ -49,6 +49,7 @@ function Get-DockerContext {
         
         $tenantInfo = Get-Content -Path $context.TenantsFile | ConvertFrom-Json -Depth 9 -AsHashTable
         foreach ($key in $tenantInfo.Keys) {
+            Write-Information "writing: $($tenantInfo.$key)"
             $context.$key = $tenantInfo.$key
         }
         # To be replaced by sops

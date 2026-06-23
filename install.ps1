@@ -96,6 +96,8 @@ function Stop-Compose($Name) {
 
 
 ### SCRIPT #####################################################################
+$config = @{}
+Write-GitConfig -Path $configFile -Data $config
 
 #& { # TUI
 trap {

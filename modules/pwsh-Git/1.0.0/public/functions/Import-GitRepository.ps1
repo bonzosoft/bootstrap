@@ -19,6 +19,10 @@ function Import-GitRepository {
         [ValidateNotNullOrWhiteSpace()]
         [string]$Branch = "main",
 
+        [Parameter(Mandatory)]
+        [ValidateNotNullOrWhiteSpace()]
+        [string]$Tenant,
+
         [Parameter()]
         [switch]$Force
     )

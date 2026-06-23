@@ -42,7 +42,7 @@ function Get-DockerContext {
             throw "Tenant name is mandatory."
         }
         $context.TenantsDir      = [IO.DirectoryInfo](Join-Path -Path $context.CommonDir  -ChildPath @("tenants"))
-        $context.TenantsFile     =      [IO.FileInfo](Join-Path -Path $context.TenantsDir -ChildPath @("$($tenant.ToLower()).json"))
+        $context.TenantsFile     =      [IO.FileInfo](Join-Path -Path $context.TenantsDir -ChildPath @("$($context.Tenant.ToLower()).json"))
         if (-not (Test-Path $context.TenantsFile)) {
             throw "Unknown tenant name."
         }

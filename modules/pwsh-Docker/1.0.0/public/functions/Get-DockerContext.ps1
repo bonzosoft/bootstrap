@@ -37,13 +37,16 @@ function Get-DockerContext {
         $context.Docker.PGID     =              [int]568
         $context.Docker.HostPGID =              [int](Get-DockerHostPGID)
         # Tenant
-        $context.TenantsDir      = [IO.DirectoryInfo](Join-Path -Path $context.CommonDir  -ChildPath @("tenants"))
-        $tenant = (Get-Content -Path $context.HostConfigFile | ConvertFrom-Json).Tenant
+       
+        $context.Tenant  = (Get-Content -Path $context.HostConfigFile | ConvertFrom-Json).Tenant
         if (-not $tenant) {
             throw "Tenant name is mandatory."
         }
+        $context.TenantsDir      = [IO.DirectoryInfo](Join-Path -Path $context.CommonDir  -ChildPath @("tenants"))
         $context.TenantsFile     =      [IO.FileInfo](Join-Path -Path $context.TenantsDir -ChildPath @("$($tenant.ToLower()).json"))
-        $context.Tenant          =           [string]($context.TenantsFile.BaseName)
+        if (-not (Test-Path $context.TenantsFile)) {
+            throw "Unknown tenant name."
+        }
         
         $tenantInfo = Get-Content -Path $context.TenantsFile | ConvertFrom-Json -Depth 9 -AsHashTable
         foreach ($key in $tenantInfo.Keys) {

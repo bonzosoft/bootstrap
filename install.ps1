@@ -75,9 +75,6 @@ function Write-TenantMenu() {
     Write-Host ""
 }
 
-# =========================
-# Docker
-# =========================
 function Start-Compose($Name, $Config) {
     Push-Location "./$Name"
 
@@ -97,11 +94,6 @@ function Stop-Compose($Name) {
     Write-Log SUCC "$Name stopped"
 }
 
-# =========================
-# INIT
-# =========================
-[string]$errroMessage = ""
-[hashtable]$config = Read-GitConfig -Path $configFile
 
 ### SCRIPT #####################################################################
 
@@ -182,6 +174,12 @@ trap {
                     Write-Error -Message "Must be logged in to proceed."
                     continue
                 }
+
+                if (-not (Test-Path -Path $configFile)) {
+                    Write-Error -Message "Missing config."
+                    continue  
+                }
+
                 Import-GitRepository -Provider $gitProvider -Namespace $GitNamespace -Repository $commonGitRepository -Branch $commonGitBranch -Force
                 
                 foreach ($item in @("install", "cmd")) {
@@ -194,6 +192,10 @@ trap {
                 if (-not (Test-GitProviderSession -Provider $gitProvider)) {
                     Write-Error -Message "Must be logged in to proceed."
                     continue
+                }
+                if (-not (Test-Path -Path $configFile)) {
+                    Write-Error -Message "Missing config."
+                    continue  
                 }
                 Import-GitRepository -Provider $gitProvider -Namespace $GitNamespace -Repository $coreGitRepository -Branch $coreGitBranch -Force
             }
@@ -213,6 +215,10 @@ trap {
                 if (-not (Test-GitProviderSession -Provider $gitProvider)) {
                     Write-Error -Message "Must be logged in to proceed."
                     continue
+                }
+                if (-not (Test-Path -Path $configFile)) {
+                    Write-Error -Message "Missing config."
+                    continue  
                 }
                 Import-GitRepository -Provider $gitProvider -Namespace $GitNamespace -Repository $peripheryGitRepository -Branch $peripheryGitBranch -Force
             }

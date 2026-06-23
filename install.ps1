@@ -185,8 +185,8 @@ trap {
                 
                 foreach ($item in @("install", "cmd")) {
                     Write-Information -MessageData "Adding link '${item}'." -InformationAction 'Continue'
-                    ln -snf (Join-Path -Path $RepoDir -ChildPath @($item + ".sh") ) (Join-Path -Path $WorkingDir -ChildPath @($item))
-                    chmod +x (Join-Path -Path $WorkingDir -ChildPath @($item))
+                    ln -snf (Join-Path -Path ${PWD} -ChildPath @($commonGitRepository, $item + ".sh") ) (Join-Path -Path ${PWD} -ChildPath @($item))
+                    chmod +x (Join-Path -Path ${PWD} -ChildPath @($item))
                 }
             }
             "5" {

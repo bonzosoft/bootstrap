@@ -23,12 +23,12 @@ function Get-DockerContext {
         $context.MainDotEnvFile  =      [IO.FileInfo](Join-Path -Path $context.WorkingDir -ChildPath @(".env"))
         $context.MainComposeFile =      [IO.FileInfo](Join-Path -Path $context.WorkingDir -ChildPath @("compose.yaml"))
         # HostConfigFile        
-        $context.HostConfigFile  =      [IO.FileInfo](Join-Path -Path $context.WorkingDir -ChildPath @("..", ".config", "host", "config.json"))
+        $context.HostConfigFile  =      [IO.FileInfo](Join-Path -Path $context.WorkingDir.Parent -ChildPath @(".config", "host", "config.json"))
         # StateDir
-        $context.StateDir        = [IO.DirectoryInfo](Join-Path -Path $context.WorkingDir -ChildPath @("..", "..", "state", $context.ProjectName))
+        $context.StateDir        = [IO.DirectoryInfo](Join-Path -Path $context.WorkingDir.Parent.Parent -ChildPath @("state", $context.ProjectName))
         $context.SecretsDir      = [IO.DirectoryInfo](Join-Path -Path $context.StateDir   -ChildPath @(".secrets"))
         # LFStorage
-        $context.LFStorage       = [IO.DirectoryInfo](Join-Path -Path $context.WorkingDir -ChildPath @("..", "..", "lfstorage", $context.ProjectName))
+        $context.LFStorageDir    = [IO.DirectoryInfo](Join-Path -Path $context.WorkingDir.Parent.Parent -ChildPath @("lfstorage", $context.ProjectName))
         # CommonDir
         $context.CommonDir       = [IO.DirectoryInfo]($MyInvocation.PSScriptRoot) #Write-Information (Get-PSCallStack | Format-Table Command, Location | Out-String)
         # Docker
@@ -49,8 +49,9 @@ function Get-DockerContext {
         
         $tenantInfo = Get-Content -Path $context.TenantsFile | ConvertFrom-Json -Depth 9 -AsHashTable
         foreach ($key in $tenantInfo.Keys) {
-            Write-Information "writing: $($tenantInfo.$key)"
-            $context.$key = $tenantInfo.$key
+            if ( $tenantInfo.$key -ne "") {
+                $context.$key = $tenantInfo.$key
+            }
         }
         # To be replaced by sops
         $context.Admin.Password         = ConvertTo-SecureString -String $context.Admin.Password -AsPlainText

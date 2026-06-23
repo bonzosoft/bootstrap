@@ -12,7 +12,7 @@ function Get-DockerContext {
     }
 
     process {
-        $workingDir = [IO.DirectoryInfo](Get-Location).Path
+        $workingDir = [IO.DirectoryInfo]${PWD}.Path
         
         $context.ProjectName     = [string]$WorkingDir.BaseName
         $context.Hostname        = [string](Get-DockerHostname)

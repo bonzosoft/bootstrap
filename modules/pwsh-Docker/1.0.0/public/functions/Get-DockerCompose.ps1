@@ -5,7 +5,7 @@ function Get-DockerCompose {
     param (
         [Parameter()]
         [ValidateNotNullOrEmpty()]
-        [IO.FileInfo]$Path = $Script:Context.ComposeFile
+        [IO.FileInfo]$Path = $Script:Context.MainComposeFile
     )
 
     begin {

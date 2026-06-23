@@ -27,7 +27,7 @@ $VerbosePreference = $verboseBackup
 [string]$GitProvider      = "github.com"
 [string]$OrganizationName = "bonzosoft"
 [string]$RepositoryName   = "common"
-[string]$BranchName       = "pruebas"
+[string]$BranchName       = "main"
 
 [IO.DirectoryInfo]$WorkingDir = $PWD.Path
 [IO.DirectoryInfo]$RepoDir    = Join-Path -Path $WorkingDir -ChildPath @($RepositoryName)

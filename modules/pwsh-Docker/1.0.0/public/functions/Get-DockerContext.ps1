@@ -49,9 +49,6 @@ function Get-DockerContext {
         
         $tenantInfo = Get-Content -Path $context.TenantsFile | ConvertFrom-Json -Depth 9 -AsHashTable
         foreach ($key in $tenantInfo.Keys) {
-            if ($tenantInfo.$key -eq ""){
-                throw "Tenant configuration is mandatory."
-            }
             $context.$key = $tenantInfo.$key
         }
         # To be replaced by sops

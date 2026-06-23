@@ -44,14 +44,14 @@ function Write-Header($Config) {
     Write-Host "############################################"
     Write-Host "###            INSTALL SCRIPT            ###"
     Write-Host "###   --------------------------------   ###"
-    Write-Host "###         [Version:     0.1.6]         ###"
+    Write-Host "###         [Version:     0.1.7]         ###"
     Write-Host "############################################"
     Write-Host "Tenant: $($Config.Tenant)"
     Write-Host ""
 }
 
 function Write-MainMenu() {
-    Write-Host "Select option:"
+    Write-Host "Select an option:"
     Write-Host ""
     Write-Host "  1. Login"
     Write-Host "  2. Set Tenant"
@@ -67,7 +67,7 @@ function Write-MainMenu() {
 }
 
 function Write-TenantMenu() {
-    Write-Host "Select tenant:"
+    Write-Host "Select a tenant:"
     Write-Host ""
     Write-Host "  1. AST"
     Write-Host "  2. BonzoSoft"

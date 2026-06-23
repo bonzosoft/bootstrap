@@ -107,8 +107,15 @@ function Stop-Compose($Name) {
 
 #& { # TUI
     trap { 
-        # traps any throw during the text UI
-        Write-Error -Message "Trapped: $PSItem"
+        $err = $PSItem
+
+        Write-Error "Trapped: $($err.Exception.Message)"
+    
+        # Stack trace con archivo y línea
+        if ($err.ScriptStackTrace) {
+            Write-Error "StackTrace:`n$($err.ScriptStackTrace)"
+        }
+    
         Read-Host | Out-Null
         continue
     }

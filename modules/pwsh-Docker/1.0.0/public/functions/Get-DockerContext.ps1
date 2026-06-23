@@ -37,9 +37,8 @@ function Get-DockerContext {
         $context.Docker.PGID     =              [int]568
         $context.Docker.HostPGID =              [int](Get-DockerHostPGID)
         # Tenant
-       
         $context.Tenant  = (Get-Content -Path $context.HostConfigFile | ConvertFrom-Json).Tenant
-        if (-not $tenant) {
+        if (-not $context.Tenant) {
             throw "Tenant name is mandatory."
         }
         $context.TenantsDir      = [IO.DirectoryInfo](Join-Path -Path $context.CommonDir  -ChildPath @("tenants"))

@@ -31,7 +31,7 @@ $env:GIT_TERMINAL_PROMPT = 0
 [string]$gitProvider = "github.com"
 [string]$gitNamespace = "bonzosoft"
 [string]$commonGitRepository = "common"
-[string]$commonGitBranch = "pruebas"
+[string]$commonGitBranch = "main"
 [string]$coreGitRepository = "komodo-core"
 [string]$coreGitBranch = "main"
 [string]$peripheryGitRepository = "komodo-periphery"
@@ -106,19 +106,16 @@ function Stop-Compose($Name) {
 ### SCRIPT #####################################################################
 
 #& { # TUI
-    trap { 
-        $err = $PSItem
+trap {
+    $err = $PSItem
 
-        Write-Error "Trapped: $($err.Exception.Message)"
-    
-        # Stack trace con archivo y línea
-        if ($err.ScriptStackTrace) {
-            Write-Error "StackTrace:`n$($err.ScriptStackTrace)"
-        }
-    
-        Read-Host | Out-Null
-        continue
-    }
+    Write-Error "Message: $($err.Exception.Message)"
+
+    Get-Error -InputObject $err | Format-List * -Force
+
+    Read-Host | Out-Null
+    continue
+}
 
     do {
         Clear-Host

@@ -35,7 +35,7 @@ function Get-DockerContext {
         $context.Docker          =          [ordered]@{}
         $context.Docker.PUID     =              [int]568
         $context.Docker.PGID     =              [int]568
-        $context.Docker.HostPGID =              [int](Get-DockerHostPGID)
+        $context.Docker.HostPGID =              [int]$context.Docker.HostPGID
         # Tenant
         $context.Tenant  = (Get-Content -Path $context.HostConfigFile | ConvertFrom-Json).Tenant
         if (-not $context.Tenant) {

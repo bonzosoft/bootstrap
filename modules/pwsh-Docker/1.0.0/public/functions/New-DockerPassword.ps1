@@ -32,7 +32,7 @@ function New-DockerPassword {
         [byte[]]$seed = @()
         [string]$plainString = $null
         [string]$hashedString = $null
-        [string]$validChars = "0123456789abcdefghijklmnopqrstuvwxyzABCDEFGHIJKLMNOPQRSTUVWXYZ_+-@#~"
+        [string]$validChars = "0123456789abcdefghijklmnopqrstuvwxyzABCDEFGHIJKLMNOPQRSTUVWXYZ_-~"
     }
 
     process {

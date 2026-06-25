@@ -17,6 +17,12 @@ Write-Information -MessageData "Loading script '$PSCommandPath'."
 
 ## PULL SUBMODULES #############################################################
 if (Test-Path -Path $Script:Context.IncludeDir) {
+    [IO.DirectoryInfo]$configDir  = Join-Path -Path $PWD -ChildPath @(".config")
+    [IO.FileInfo]$configFile = Join-Path -Path $configDir -ChildPath @("host", "config.json")
+
+    $env:GH_CONFIG_DIR=(Join-Path -Path $configDir -ChildPath @("gh"))
+    $env:GIT_TERMINAL_PROMPT = 0
+    Assert-GitProviderSession -Provider $gitProvider
     Write-Information -MessageData "Pulling submodules."
     $null = git submodule update --init --recursive --depth 1 2> variable:errorVariable
     if ($LASTEXITCODE) {

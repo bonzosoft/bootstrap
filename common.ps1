@@ -18,9 +18,15 @@ $ErrorActionPreference = 'Stop'
 
 
 ### LOAD MODULES ###############################################################
+$modules = @(
+    "pwsh-Docker"
+    "pwsh-Git"
+)
 $verboseBackup     = $VerbosePreference
 $VerbosePreference = 'SilentlyContinue'
-Import-Module -Name (Join-Path -Path $PSScriptRoot -ChildPath @("modules", "pwsh-Docker"))
+foreach ($module in $modules) {
+    Import-Module -Name (Join-Path -Path $PSScriptRoot -ChildPath @("modules", $module))
+}
 $VerbosePreference = $verboseBackup
 
 

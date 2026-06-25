@@ -22,6 +22,16 @@ if (Test-Path -Path $Script:Context.IncludeDir) {
 
     $env:GH_CONFIG_DIR=(Join-Path -Path $configDir -ChildPath @("gh"))
     $env:GIT_TERMINAL_PROMPT = 0
+
+    [string]$gitProvider = "github.com"
+    [string]$gitNamespace = "bonzosoft"
+    [string]$commonGitRepository = "common"
+    [string]$commonGitBranch = "main"
+    [string]$coreGitRepository = "komodo-core"
+    [string]$coreGitBranch = "main"
+    [string]$peripheryGitRepository = "komodo-periphery"
+    [string]$peripheryGitBranch = "main"
+
     Assert-GitProviderSession -Provider $gitProvider
     Write-Information -MessageData "Pulling submodules."
     $null = git submodule update --init --recursive --depth 1 2> variable:errorVariable

@@ -1,5 +1,6 @@
 {
     "Domain": "ast-ingenieria.com",
+    "MothershipIP": "192.168.1.46",
     "Admin": {
         "Name": "alex",
         "Password": "changeme",

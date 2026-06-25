@@ -41,7 +41,11 @@ function Get-DockerServiceInfo {
                         continue
                     }
                 }
-                if ((-not $Force) -and (-not $volumePath.StartsWith($Script:Context.DataDir))) {
+                if ( (-not $Force) `
+                    -and (-not $volumePath.StartsWith($Script:Context.DataDir.FullName)) `
+                    -and (-not $volumePath.StartsWith($Script:Context.StateDir.FullName)) `
+                    -and (-not $volumePath.StartsWith($Script:Context.LFStorageDir.FullName)) `
+                    ) {
                     Write-Information "Skipping system volume."
                     continue
                 }

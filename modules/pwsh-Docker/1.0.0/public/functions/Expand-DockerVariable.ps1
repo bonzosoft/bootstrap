@@ -22,7 +22,7 @@ function Expand-DockerVariable {
             $Content = $Content.Replace('[[PROJECTNAME]]',        $Script:Context.ProjectName)
             $Content = $Content.Replace('[[PUID]]',               $Script:Context.Docker.PUID)
             $Content = $Content.Replace('[[PGID]]',               $Script:Context.Docker.PGID)
-            $Content = $Content.Replace('[[SOCKETPROXY_PGID]]',   $Script:Context.Docker.DockerPGID)
+            $Content = $Content.Replace('[[SOCKETPROXY_PGID]]',   $Script:Context.Docker.HostPGID)
             $Content = $Content.Replace('[[ADMIN_USER]]',         $Script:Context.Admin.Name)
             $Content = $Content.Replace('[[ADMIN_PASS]]',         (ConvertFrom-SecureString -SecureString $Script:Context.Admin.Password -AsPlainText))
             $Content = $Content.Replace('[[ADMIN_EMAIL]]',        $Script:Context.Admin.Email)

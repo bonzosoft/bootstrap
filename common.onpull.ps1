@@ -57,12 +57,12 @@ process {
     
     
     ## LOAD SUBMODULES SCRIPTS #####################################################
-    if (Test-Path -Path $Script:Context.IncludeDir) {
-        foreach ($script in (Get-Item -Path (Join-Path -Path $Script:Context.IncludeDir -ChildPath "*" -AdditionalChildPath (Split-Path -Path $MyInvocation.PSCommandPath -Leaf)))) {
-            Write-Information -MessageData "Loading submodule script '$($script.FullName)'."
-            . $script.FullName
-        }
-    }
+    #if (Test-Path -Path $Script:Context.IncludeDir) {
+    #    foreach ($script in (Get-Item -Path (Join-Path -Path $Script:Context.IncludeDir -ChildPath "*" -AdditionalChildPath (Split-Path -Path $MyInvocation.PSCommandPath -Leaf)))) {
+    #        Write-Information -MessageData "Loading submodule script '$($script.FullName)'."
+    #        . $script.FullName
+    #    }
+    #}
     
     
     ## SET STORAGE PERMISSION ######################################################

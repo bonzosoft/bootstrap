@@ -3,7 +3,9 @@ function Get-DockerContext {
     [OutputType([System.Management.Automation.OrderedHashtable])]
 
     param(
-
+        [Parameter(Mandatory)]
+        [ValidateNotNullOrEmpty()]
+        [IO.FIleInfo]$Path
     )
 
     begin {
@@ -23,7 +25,8 @@ function Get-DockerContext {
         $context.MainDotEnvFile  =      [IO.FileInfo](Join-Path -Path $context.WorkingDir -ChildPath @(".env"))
         $context.MainComposeFile =      [IO.FileInfo](Join-Path -Path $context.WorkingDir -ChildPath @("compose.yaml"))
         # HostConfigFile        
-        $context.HostConfigFile  =      [IO.FileInfo](Join-Path -Path $context.WorkingDir.Parent -ChildPath @(".config", "host", "config.json"))
+        #$context.HostConfigFile  =      [IO.FileInfo](Join-Path -Path $context.WorkingDir.Parent -ChildPath @(".config", "host", "config.json"))
+        $context.HostConfigFile  =      [IO.FileInfo]$Path
         # StateDir
         $context.StateDir        = [IO.DirectoryInfo](Join-Path -Path $context.WorkingDir.Parent.Parent -ChildPath @("state", $context.ProjectName))
         $context.SecretsDir      = [IO.DirectoryInfo](Join-Path -Path $context.StateDir   -ChildPath @(".secrets"))

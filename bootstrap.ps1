@@ -33,7 +33,7 @@ Remove-Variable -Name verboseBackup
 [string[]]$errorMessage      = @()
 [string]$gitProtocol         = "https"
 [string]$gitProvider         = "github.com"
-[string]$gitOrganization     = "bonzosoft"
+[string]$gitNamespace        = "bonzosoft"
 [string]$commonRepository    = "common"
 [string]$commonBranch        = "main"
 #[string]$coreRepository      = "komodo-core"
@@ -42,7 +42,10 @@ Remove-Variable -Name verboseBackup
 #[string]$peripheryBranch     = "main"
 
 [IO.DirectoryInfo]$gitConfigDir = Join-Path -Path $PWD -ChildPath @(".config", "git")
-[IO.FileInfo]$dockerConfigFile  = Join-Path -Path $PWD -ChildPath @(".config", "docker.json")
+#[IO.FileInfo]$dockerConfigFile  = Join-Path -Path $PWD -ChildPath @(".config", "docker.json")
+[IO.DirectoryInfo]$commonDir    = Join-Path -Path $PWD -ChildPath @($commonRepository)
+#[IO.DirectoryInfo]$coreDir      = Join-Path -Path $PWD -ChildPath @($coreRepository)
+#[IO.DirectoryInfo]$peripheryDir = Join-Path -Path $PWD -ChildPath @($peripheryRepository)
 
 $env:GH_CONFIG_DIR = $gitConfigDir
 $env:GIT_TERMINAL_PROMPT = 0
@@ -50,50 +53,46 @@ $env:GIT_TERMINAL_PROMPT = 0
 
 # ==============================================================================
 # SCRIPT
-# ==============================================================================Clear-Host
+# ==============================================================================
+Clear-Host
 Write-Host ""
 Write-Host "############################################"
 Write-Host "###           BOOTSTRAP SCRIPT           ###"
 Write-Host "###   --------------------------------   ###"
-Write-Host "###         [Version:   0. 1.26]         ###"
+Write-Host "###         [Version:   0. 1.27]         ###"
 Write-Host "############################################"
 Write-Host ""
 
-# disable user prompt
-#$null = gh config set prompt disabled 2> variable:errorMessage
-#if ($LASTEXITCODE) {
-#    Write-Error -Message $errorMessage
-#}
-
-# check gh session 
-Write-Information -MessageData "Checking ${GitProvider} session." -InformationAction 'Continue'
+# check session for Github CLI 
+Write-Information -MessageData "Checking session for ${gitProvider}."
 $null = gh auth status *> $null
 if ($LASTEXITCODE) {
-    gh auth login --git-protocol $GitProtocol --hostname $GitProvider --web
+    gh auth login --git-protocol $gitProtocol --hostname $gitProvider --web
 }
 
-# propagate auth to git
-Write-Information -MessageData "Configuring ${GitProvider} session for Git." -InformationAction 'Continue'
+# propagate session to git
+Write-Information -MessageData "Asserting session for Git."
 $null = gh auth setup-git 2> variable:errorMessage
 if ($LASTEXITCODE) {
     Write-Error -Message $errorMessage
 }
 
 # remove previous version
-if (Test-Path -Path $RepoDir) {
-    Write-Information -MessageData "Removing previous version." -InformationAction 'Continue'
-    Remove-Item -Path $RepoDir -Recurse -Force | Out-Null
+if (Test-Path -Path $commonDir) {
+    Write-Information -MessageData "Removing previous version."
+    Remove-Item -Path $commonDir -Recurse -Force | Out-Null
 }
 
 # get new version
-Write-Information -MessageData "Cloning repository ${OrganizationName}/${RepositoryName}." -InformationAction 'Continue'
-$null = git clone --branch $BranchName --single-branch "${GitProtocol}://${GitProvider}/${OrganizationName}/${RepositoryName}.git" 2> variable:errorMessage
+Write-Information -MessageData "Cloning repository ${gitNamespace}/${commonRepository}."
+$null = git clone --branch $commonBranch --single-branch "${gitProtocol}://${gitProvider}/${gitNamespace}/${commonRepository}.git" 2> variable:errorMessage
 if ($LASTEXITCODE) {
     Write-Error -Message $errorMessage
 }
 
+# create links
 foreach ($item in @("install", "cmd")) {
-    Write-Information -MessageData "Adding link '${item}'." -InformationAction 'Continue'
-    ln -snf (Join-Path -Path $RepoDir -ChildPath @($item + ".sh") ) (Join-Path -Path $PWD -ChildPath @($item))
+    Write-Information -MessageData "Adding link '${item}'."
+    ln -snf (Join-Path -Path $commonDir -ChildPath @("${item}.sh")) (Join-Path -Path $PWD -ChildPath @($item))
     chmod +x (Join-Path -Path $PWD -ChildPath @($item))
 }

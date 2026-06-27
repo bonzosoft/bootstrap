@@ -49,7 +49,7 @@ function Get-DockerServiceInfo {
                     Write-Information "Skipping system volume."
                     continue
                 }
-                Write-Information "Adding volume path: '$volumePath'."
+                Write-Information "Adding path: '$volumePath'."
                 if (Test-Path -Path $volumePath) {
                     $volumesList += Get-Item -Path $volumePath
                 }

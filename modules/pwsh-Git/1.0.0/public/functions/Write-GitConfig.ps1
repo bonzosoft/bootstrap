@@ -9,7 +9,7 @@ function Write-GitConfig {
 
         [Parameter(Mandatory)]
         [ValidateNotNullOrEmpty()]
-        [hashtable]$Data
+        [hashtable]$Value
     )
 
     begin {
@@ -17,7 +17,7 @@ function Write-GitConfig {
     }
 
     process {
-        $Data | ConvertTo-Json | Set-Content -Path $Path
+        Set-Content -Path $Path -Value ($Value | ConvertTo-Json)
     }
 
     end {

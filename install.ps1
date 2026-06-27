@@ -1,44 +1,57 @@
 #!/usr/bin/env pwsh
 
 
-### SCRIPT CONFIGURATION #######################################################
+# ==============================================================================
+# GENERAL CONFIGURATION
+# ==============================================================================
 Set-StrictMode -Version Latest
-$ErrorActionPreference = 'Continue'
-$VerbosePreference     = 'Continue'
+$ErrorActionPreference = 'Stop'
 $InformationPreference = 'Continue'
+$VerbosePreference     = 'Continue'
 
 
-### LOAD MODULES ###############################################################
-$verboseBackup = $VerbosePreference
-$modules = @(
+# ==============================================================================
+# MODULES
+# ==============================================================================
+[string[]]$modules = @(
     "pwsh-Docker"
     "pwsh-Git"
 )
+
+New-Variable -Name verboseBackup -Value ([string]$VerbosePreference) 
 $VerbosePreference = 'SilentlyContinue'
 foreach ($module in $modules) {
-    Import-Module -Name (Join-Path -Path $PSScriptRoot -ChildPath @("modules", $module))
+    Import-Module -Name (Join-Path -Path $PSScriptRoot -ChildPath $module)
 }
 $VerbosePreference = $verboseBackup
+Remove-Variable -Name verboseBackup
 
 
-### CONFIGURATION ##############################################################
-[IO.DirectoryInfo]$configDir  = Join-Path -Path $PWD -ChildPath @(".config")
-[IO.FileInfo]$configFile = Join-Path -Path $configDir -ChildPath @("host", "config.json")
+# ==============================================================================
+# CONSTANTS
+# ==============================================================================
+[string[]]$errorMessage      = @()
+[string]$gitProtocol         = "https"
+[string]$gitProvider         = "github.com"
+[string]$gitOrganization     = "bonzosoft"
+[string]$commonRepository    = "common"
+[string]$commonBranch        = "main"
+[string]$coreRepository      = "komodo-core"
+[string]$coreBranch          = "main"
+[string]$peripheryRepository = "komodo-periphery"
+[string]$peripheryBranch     = "main"
 
-$env:GH_CONFIG_DIR=(Join-Path -Path $configDir -ChildPath @("gh"))
+[IO.DirectoryInfo]$gitConfigDir = Join-Path -Path $PWD -ChildPath @(".config", "git")
+[IO.FileInfo]$dockerConfigFile  = Join-Path -Path $PWD -ChildPath @(".config", "docker.json")
+
+$env:GH_CONFIG_DIR = $gitConfigDir
 $env:GIT_TERMINAL_PROMPT = 0
 
-[string]$gitProvider = "github.com"
-[string]$gitNamespace = "bonzosoft"
-[string]$commonGitRepository = "common"
-[string]$commonGitBranch = "main"
-[string]$coreGitRepository = "komodo-core"
-[string]$coreGitBranch = "main"
-[string]$peripheryGitRepository = "komodo-periphery"
-[string]$peripheryGitBranch = "main"
 
-
-function Write-Header($Config) {
+# ==============================================================================
+# FUNCTIONS
+# ==============================================================================
+function Write-Header($Configuration) {
     Clear-Host
     Write-Host ""
     Write-Host "############################################"
@@ -62,15 +75,17 @@ function Write-MainMenu() {
     Write-Host "  7. Pull Komodo Periphery"
     Write-Host "  8. Start Komodo Periphery"
     Write-Host "  9. Logout"
+    Write-Host ""
     Write-Host "  q. Exit"
     Write-Host ""
 }
 
 function Write-TenantMenu() {
-    Write-Host "Select a tenant:"
+    Write-Host "Select an option:"
     Write-Host ""
     Write-Host "  1. AST"
     Write-Host "  2. BonzoSoft"
+    Write-Host ""
     Write-Host "  q. Return"
     Write-Host ""
 }
@@ -95,94 +110,118 @@ function Stop-Compose($Name) {
 }
 
 
-### SCRIPT #####################################################################
-$config = Read-GitConfig -Path $configFile
-
-#& { # TUI
+# ==============================================================================
+# SCRIPT
+# ==============================================================================
 trap {
-    $err = $PSItem
+    [object]$errorObject = $PSItem
 
-    Write-Error "Message: $($err.Exception.Message)"
-
-    Get-Error -InputObject $err | Format-List * -Force
+    Write-Error "Message: $($errorObject.Exception.Message)"
+    Get-Error -InputObject $errorObject | Format-List * -Force
 
     Read-Host | Out-Null
-    continue
 }
 
-    do {
-        Clear-Host
-        Write-Header -Config $config
-        Write-MainMenu
-        switch (Read-Host -Prompt "Option") {
-            "1" { 
-                Write-Information -MessageData "Checking authentication."
-                if (-not (Test-GitProviderSession -Provider $gitProvider -GH)) {
-                    Write-Information -MessageData "Starting login procedure."
-                    Start-GitProviderSession -Provider $gitProvider
-                }
-                else {
-                    Write-Information -MessageData "Providear credentials are correct."
-                }
+[hashtable]$configHashtable = [ordered]@{}
+[string]$repository = ""
+[string]$branch = ""
+
+do {
+    Clear-Host
+    $configHashtable = Read-GitConfig -Path $dockerConfigFile
+    Write-Header -Configuration $configHashtable
+    Write-MainMenu
+    switch (Read-Host -Prompt "Option") {
+        "1" { 
+            Write-Information -MessageData "Checking authentication."
+
+            if (-not (Test-GitProviderSession -Provider $gitProvider -GithubCLI)) {
+                Write-Information -MessageData "Starting login procedure."
+                Start-GitProviderSession -Provider $gitProvider -Protocol $gitProtocol
+            }
+            else {
+                Write-Information -MessageData "Github CLI credentials are correct."
+            }
+
+            if (-not (Test-GitProviderSession -Provider $gitProvider -Git)) {
                 Write-Information -MessageData "Sending $gitProvider session to Git."
                 Assert-GitProviderSession -Provider $gitProvider
-                Write-Information -MessageData "Login succeeded."
             }
-            "2" {
-                Clear-Host
-                Write-Header -Config $config
-                Write-TenantMenu
-                
-                do {
-                    switch (Read-Host "Option") {
-                        "1" {
-                            $config.Tenant = "AST"
-                            Write-GitConfig -Path $configFile -Data $Config
-                            $config = Read-GitConfig -Path $configFile
-                        }
-                        "2" {
-                            $config.Tenant = "BonzoSoft"
-                            Write-GitConfig -Path $configFile -Data $Config
-                            $config = Read-GitConfig -Path $configFile
-                        }
-                        "q" {
-                            # nop
-                        }
-                        default {
-                            Write-Information -MessageData "Unknown option '$PSItem'."
-                            continue whileloop
-                        }
+            else {
+                Write-Information -MessageData "Git credentials are correct."       
+            }
+            
+            Write-Information -MessageData "Login succeeded."
+        }
+        "2" {
+            Clear-Host
+            Write-Header -Config $configHashtable
+            Write-TenantMenu
+            
+            do {
+                switch (Read-Host "Option") {
+                    "1" {
+                        $configHashtable.Tenant = "AST"
+                        Write-GitConfig -Path $dockerConfigFile -Value $configHashtable
+                        $configHashtable = Read-GitConfig -Path $dockerConfigFile
                     }
-                    break
-                } while ($true)
-            }
-            "3" {
-                # Comprobación de la red Docker
-                docker network inspect backup *> $null
-                if ($LASTEXITCODE) {
-                    $null = docker network create backup 2> variable:errorMessage
-                    if ($LASTEXITCODE) {
-                        Write-Error -Message $errroMessage
+                    "2" {
+                        $configHashtable.Tenant = "BonzoSoft"
+                        Write-GitConfig -Path $dockerConfigFile -Value $configHashtable
+                        $configHashtable = Read-GitConfig -Path $dockerConfigFile
+                    }
+                    "q" {
                         break
                     }
-                    else {
-                        Write-Information -MessageData "Network creation succeeded."
+                    default {
+                        continue
                     }
                 }
+            } while ($true)
+        }
+        "3" {
+            $null = docker network inspect backup 2> $null
+            if ($LASTEXITCODE) {
+                $null = docker network create backup 2> variable:errorMessage
+                if ($LASTEXITCODE) {
+                    Write-Error -Message $errroMessage
+                }
+                else {
+                    Write-Information -MessageData "Network creation succeeded."
+                }
             }
-            "4" {
-                if (-not (Test-GitProviderSession -Provider $gitProvider)) {
-                    Write-Error -Message "Must be logged in to proceed."
-                    continue
-                }
+        }
+        {$PSItem -in @("4", "5", "7")} {
+            if (-not (Test-GitProviderSession -Provider $gitProvider -GithubCLI -Git)) {
+                Write-Error -Message "Please log in to continue."
+                continue
+            }
 
-                if (-not $config.Tenant) {
-                    Write-Error -Message "Missing tenant config."
-                    continue  
-                }
+            if (-not $configHashtable.Tenant) {
+                Write-Error -Message "Missing tenant config."
+                continue
+            }
 
-                Import-GitRepository -Provider $gitProvider -Namespace $GitNamespace -Repository $commonGitRepository -Branch $commonGitBranch -Force
-                
+            switch ($PSItem) {
+                "4" {
+                    $repository = $commonRepository
+                    $branch = $commonBranch
+                }
+                "5" {
+                    $repository = $coreRepository
+                    $branch = $coreBranch
+                }
+                "7" {
+                    $repository = $peripheryRepository
+                    $branch = $peripheryBranch
+                }
+                default {
+                    throw "Unexpected option."
+                }
+            }
+            Import-GitRepository -Provider $gitProvider -Protocol $gitProtocol -Namespace $gitOrganization -Repository $repository -Branch $branch -Force
+
+            if ($PSItem -eq "4") {
                 foreach ($item in @("install", "cmd")) {
                     Write-Information -MessageData "Adding link '${item}'." -InformationAction 'Continue'
                     Write-Information -MessageData $(Join-Path -Path ${PWD} -ChildPath @($commonGitRepository, "$item.sh"))
@@ -190,63 +229,42 @@ trap {
                     chmod +x (Join-Path -Path ${PWD} -ChildPath @($item))
                 }
             }
-            "5" {
-                if (-not (Test-GitProviderSession -Provider $gitProvider)) {
-                    Write-Error -Message "Must be logged in to proceed."
-                    continue
-                }
-                if (-not $config.Tenant) {
-                    Write-Error -Message "Missing tenant config."
-                    continue  
-                }
-                Import-GitRepository -Provider $gitProvider -Namespace $GitNamespace -Repository $coreGitRepository -Branch $coreGitBranch -Force
-            }
-            "6" {
-                [IO.DirectoryInfo]$folder = Join-Path -Path $PSScriptRoot -ChildPath "coreGitRepository"
-                if (Test-Path -Path $folder) {
-                    # Corregido: Se añadió la acción 'up -d' al comando
-                    docker compose `
-                      --file (Join-Path -Path $folder -ChildPath "compose.yaml") `
-                      --env-file (Join-Path -Path $folder -ChildPath ".env") `
-                      up -d
-                } else {
-                    Write-Log ERRO "Komodo Core directory not found. Pull it first."
-                }
-            }
-            "7" {
-                if (-not (Test-GitProviderSession -Provider $gitProvider)) {
-                    Write-Error -Message "Must be logged in to proceed."
-                    continue
-                }
-                if (-not $config.Tenant) {
-                    Write-Error -Message "Missing tenant config."
-                    continue  
-                }
-                Import-GitRepository -Provider $gitProvider -Namespace $GitNamespace -Repository $peripheryGitRepository -Branch $peripheryGitBranch -Force
-            }
-            "8" {
-                [IO.DirectoryInfo]$folder = Join-Path -Path $PSScriptRoot -ChildPath "coreGitRepository"
-                if (Test-Path -Path $folder) {
-                    docker compose `
-                      --file (Join-Path -Path $folder -ChildPath "compose.yaml") `
-                      --env-file (Join-Path -Path $folder -ChildPath ".env") `
-                      up -d
-                } else {
-                    Write-Log ERRO "Komodo Periphery directory not found. Pull it first."
-                }
-            }
-            "9" {
-                Stop-GitProviderSession -Provider $gitProvider
-            }
-            "q" {
-                Clear-Host
-                exit 0
-            }
         }
-        Start-Sleep -MilliSeconds 750
-        Write-Information -MessageData ""
-        Write-Information -MessageData "Press any key to continue..."
-        Read-Host | Out-Null
-        Start-Sleep -Milliseconds 250
-    } while ($true)
-#}
+
+        {$PSItem -in @("6", "8")} {
+            switch ($PSItem) {
+                "6" {
+                    $repository = $coreRepository
+                    $branch = $coreBranch
+                }
+                "8" {
+                    $repository = $peripheryRepository
+                    $branch = $peripheryBranch
+                }
+                default {
+                    throw "Unexpected option."
+                }
+            }
+
+            Push-Location -Path $repository
+                docker compose up -d 2> variable:errorMessage
+                if ($LASTEXITCODE) {
+                    Write-Error -Message $errroMessage
+                }
+            Pop-Location
+        }
+        "9" {
+            Stop-GitProviderSession -Provider $gitProvider
+        }
+        "q" {
+            Clear-Host
+            exit 0
+        }
+        default {
+            continue
+        }
+    }
+    Write-Information -MessageData ""
+    Write-Information -MessageData "Press any key to continue..."
+    Read-Host | Out-Null
+} while ($true)

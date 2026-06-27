@@ -20,7 +20,6 @@ if (Test-Path -Path $Script:Context.IncludeDir) {
     [IO.DirectoryInfo]$configDir  = Join-Path -Path "/mnt/tank0" -ChildPath @("apps", "infra", ".config")
     [IO.FileInfo]$configFile = Join-Path -Path $configDir -ChildPath @("host", "config.json")
 
-    Write-Host "$(cat $configFile)"
     $env:GH_CONFIG_DIR=(Join-Path -Path $configDir -ChildPath @("gh"))
     $env:GIT_TERMINAL_PROMPT = 0
 

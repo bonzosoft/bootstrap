@@ -8,11 +8,23 @@ function Stop-GitProviderSession {
         [string]$Provider = "github.com"
     )
 
+    begin {
+        [string[]]$errorMessage = @()
+    }
+
     process {
-        if (-not (Test-GitProvider)) {
-            Write-Warning -Message "No active session"
-            return
+        if (Test-GitProviderSession -Provider $Provider -GithubCLI) {
+            $null = gh auth logout --hostname $Provider 2> variable:errorMessage
+            if ($LASTEXITCODE) {
+                return $errorMessage
+            }
         }
-        gh auth logout --hostname $Provider
+        else {
+            Write-Warning -Message "No active session found."
+        }
+    }
+
+    end {
+
     }
 }

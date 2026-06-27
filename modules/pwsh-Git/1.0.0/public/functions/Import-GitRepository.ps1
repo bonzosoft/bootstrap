@@ -7,6 +7,10 @@ function Import-GitRepository {
         [ValidateSet("github.com")]
         [string]$Provider = "github.com",
 
+        [Parameter()]
+        [ValidateSet("https", "ssl")]
+        [string]$Protocol = "https",
+
         [Parameter(Mandatory)]
         [ValidateNotNullOrWhiteSpace()]
         [string]$Namespace,
@@ -24,46 +28,58 @@ function Import-GitRepository {
     )
 
     begin {
-        [IO.DirectoryInfo]$repositoryDir = Join-Path -Path ${PWD} -ChildPath $Repository
+        [string[]]$errorMessage = @()
+        [IO.DirectoryInfo]$repositoryDir = Join-Path -Path $PWD -ChildPath $Repository
         [string[]]$scripts = @(
             "onclone.ps1"
             "onpull.ps1"
         )
+        [IO.FileInfo]$scriptPath = $null
     }
 
     process {
+        Write-Information -MessageData "Syncing ${Namespace}/${Repository} ($Branch)"
+
         if (Test-Path $repositoryDir) {
             if ($Force.IsPresent) {
                 Remove-Item -Path $repositoryDir -Recurse -Force
             }
             else {
-                Write-Error -Message "Target directory already exists. Use -Force to overwrite it."
-                return # Añadido un return para que no intente clonar si ya existe y no hay -Force
+                throw "Target directory already exists. Use -Force to overwrite it."
             }
         }
-
-        Write-Information -MessageData "Syncing ${Namespace}/${Repository} ($Branch)" -InformationAction 'Continue'
         
-        $null = git clone --branch $Branch --single-branch "https://${Provider}/${Namespace}/${Repository}.git" $repositoryDir.FullName 2> variable:errorMessage
-        if ($LASTEXITCODE -ne 0) {
-            throw $errorMessage
+        switch ($Protocol) {
+            "https" {
+                $null = git clone --branch $Branch --single-branch "https://${Provider}/${Namespace}/${Repository}.git" $repositoryDir.FullName 2> variable:errorMessage
+                if ($LASTEXITCODE) {
+                    throw $errorMessage
+                }
+            }
+            default {
+                throw "Protocol not implemented yet."
+            }
         }
 
         Push-Location -Path $repositoryDir
-        $null = git submodule update --init --recursive 2> variable:errorMessage
-        if ($LASTEXITCODE -ne 0) {
-            throw $errorMessage
-        }
-
-        foreach ($script in $scripts) {
-            [IO.FileInfo]$scriptPath = (Join-Path -Path $PWD -ChildPath $script)
-            if (Test-Path -Path $scriptPath) {
-                pwsh -File $scriptPath.FullName -InformationAction 'Continue'
+            $null = git submodule update --init --recursive 2> variable:errorMessage
+            if ($LASTEXITCODE) {
+                throw $errorMessage
             }
-        }
+
+            foreach ($script in $scripts) {
+                $scriptPath = Join-Path -Path $PWD -ChildPath $script
+                if (Test-Path -Path $scriptPath) {
+                    pwsh -File $scriptPath.FullName -InformationAction 'Continue'
+                }
+                else {
+                    Write-Warning -Message "Script '$scriptPath' not found."
+                }
+            }
         Pop-Location
     }
 
     end {
+        
     }
 }

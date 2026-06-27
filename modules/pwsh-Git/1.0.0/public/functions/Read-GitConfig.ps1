@@ -9,7 +9,7 @@ function Read-GitConfig {
     )
 
     begin {
-        [hashtable]$config = @{
+        [hashtable]$config = [ordered]@{
             Tenant = ""
         }
     }
@@ -20,7 +20,7 @@ function Read-GitConfig {
         }
         else {
             New-Item -Path $Path.DirectoryName -ItemType 'Directory' -Force
-            $config | ConvertTo-Json | Set-Content -Path $Path
+            Write-GitConfig -Path $Path -Value $config
         }
     }
     

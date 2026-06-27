@@ -5,7 +5,11 @@ function Start-GitProviderSession {
     param (
         [Parameter()]
         [ValidateSet("github.com")]
-        [string]$Provider = "github.com"
+        [string]$Provider = "github.com",
+
+        [Parameter()]
+        [ValidateSet("https", "ssh")]
+        [string]$Protocol = "https"
     )
 
     begin {
@@ -13,8 +17,8 @@ function Start-GitProviderSession {
     }
 
     process {
-        gh auth login --hostname $Provider --git-protocol https --web 2> variable:errorMessage
-        if ($LASTEXITCODE -ne 0) {
+        gh auth login --hostname $Provider --git-protocol $Protocol --web 2> variable:errorMessage
+        if ($LASTEXITCODE) {
             throw $errorMessage
         }
 

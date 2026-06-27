@@ -8,30 +8,32 @@ function Test-GitProviderSession {
         [string]$Provider = "github.com",
 
         [Parameter()]
-        [switch]$GH,
+        [switch]$GithubCLI,
 
         [Parameter()]
         [switch]$Git
     )
 
     begin {
-        if ((-not $GH.IsPresent) -and (-not $Git.IsPresent)) {
-            $GH = $true
-            $Git = $true
+        [bool]$switchGithubCLI = $GitHubCLI.IsPresent
+        [bool]$switchGit       = $Git.IsPresent
+
+        if ((-not $switchGithubCLI) -and (-not $switchGit)) {
+            $switchGithubCLI = $true
+            $switchGit       = $true
         }
-        
     }
 
     process {
-        if ($GH) {
-            gh auth status --hostname $Provider *> $null
+        if ($switchGithubCLI) {
+            $null = gh auth status --hostname $Provider 2> $null
             if ($LASTEXITCODE) {
                 return $false
             }
         }
         
-        if ($Git) {
-            printf "protocol=https\nhost=github.com\n\n" | git credential fill *> $null
+        if ($switchGit) {
+            $null = printf "protocol=https\nhost=github.com\n\n" | git credential fill 2> $null
             if ($LASTEXITCODE) {
                 return $false
             }

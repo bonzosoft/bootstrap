@@ -33,7 +33,7 @@ Remove-Variable -Name verboseBackup
 [string[]]$errorMessage      = @()
 [string]$gitProtocol         = "https"
 [string]$gitProvider         = "github.com"
-[string]$gitOrganization     = "bonzosoft"
+[string]$gitNamespace        = "bonzosoft"
 [string]$commonRepository    = "common"
 [string]$commonBranch        = "main"
 [string]$coreRepository      = "komodo-core"
@@ -43,6 +43,9 @@ Remove-Variable -Name verboseBackup
 
 [IO.DirectoryInfo]$gitConfigDir = Join-Path -Path $PWD -ChildPath @(".config", "git")
 [IO.FileInfo]$dockerConfigFile  = Join-Path -Path $PWD -ChildPath @(".config", "docker.json")
+[IO.DirectoryInfo]$commonDir    = Join-Path -Path $PWD -ChildPath @($commonRepository)
+[IO.DirectoryInfo]$coreDir      = Join-Path -Path $PWD -ChildPath @($coreRepository)
+[IO.DirectoryInfo]$peripheryDir = Join-Path -Path $PWD -ChildPath @($peripheryRepository)
 
 $env:GH_CONFIG_DIR = $gitConfigDir
 $env:GIT_TERMINAL_PROMPT = 0
@@ -57,7 +60,7 @@ function Write-Header($Configuration) {
     Write-Host "############################################"
     Write-Host "###            INSTALL SCRIPT            ###"
     Write-Host "###   --------------------------------   ###"
-    Write-Host "###         [Version:     0.1.7]         ###"
+    Write-Host "###         [Version:     0.1.8]         ###"
     Write-Host "############################################"
     Write-Host "Tenant: $($Config.Tenant)"
     Write-Host ""
@@ -90,7 +93,7 @@ function Write-TenantMenu() {
     Write-Host ""
 }
 
-function Start-Compose($Name, $Config) {
+function Start-Compose($Name, $Configuration) {
     Push-Location "./$Name"
 
     if (Test-Path "./predeploy") { bash "./predeploy" }
@@ -125,6 +128,7 @@ trap {
 [hashtable]$configHashtable = [ordered]@{}
 [string]$repository = ""
 [string]$branch = ""
+[IO.DirectoryInfo]$repoDir = $null
 
 do {
     Clear-Host
@@ -219,14 +223,13 @@ do {
                     throw "Unexpected option."
                 }
             }
-            Import-GitRepository -Provider $gitProvider -Protocol $gitProtocol -Namespace $gitOrganization -Repository $repository -Branch $branch -Force
+            Import-GitRepository -Provider $gitProvider -Protocol $gitProtocol -Namespace $gitNamespace -Repository $repository -Branch $branch -Force
 
             if ($PSItem -eq "4") {
                 foreach ($item in @("install", "cmd")) {
-                    Write-Information -MessageData "Adding link '${item}'." -InformationAction 'Continue'
-                    Write-Information -MessageData $(Join-Path -Path ${PWD} -ChildPath @($commonGitRepository, "$item.sh"))
-                    ln -snf (Join-Path -Path ${PWD} -ChildPath @($commonGitRepository, "$item.sh")) (Join-Path -Path ${PWD} -ChildPath @($item))
-                    chmod +x (Join-Path -Path ${PWD} -ChildPath @($item))
+                    Write-Information -MessageData "Adding link '${item}'."
+                    ln -snf (Join-Path -Path $commonDir -ChildPath @("${item}.sh")) (Join-Path -Path $PWD -ChildPath @($item))
+                    chmod +x (Join-Path -Path $PWD -ChildPath @($item))
                 }
             }
         }
@@ -236,17 +239,19 @@ do {
                 "6" {
                     $repository = $coreRepository
                     $branch = $coreBranch
+                    $repoDir = $coreDir
                 }
                 "8" {
                     $repository = $peripheryRepository
                     $branch = $peripheryBranch
+                    $repoDir = $peripheryDir
                 }
                 default {
                     throw "Unexpected option."
                 }
             }
 
-            Push-Location -Path $repository
+            Push-Location -Path $repoDir
                 docker compose up -d 2> variable:errorMessage
                 if ($LASTEXITCODE) {
                     Write-Error -Message $errroMessage

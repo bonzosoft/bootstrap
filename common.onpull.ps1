@@ -44,7 +44,7 @@ process {
     ForEach-Object { Expand-DockerVariable -Content $PSItem } | 
     Set-Content -Path "$($Script:Context.MainDotEnvFile).tmp" -Encoding utf8
     Move-Item -Path "$($Script:Context.MainDotEnvFile).tmp" -Destination $Script:Context.MainDotEnvFile -Force
-    Write-Verbose -Message ($Script:Context | Out-String)
+    #Write-Verbose -Message ($Script:Context | Out-String)
     
     
     ## GET SERVICES INFORMATION ####################################################

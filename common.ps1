@@ -51,8 +51,8 @@ begin {
     [string]$scriptVersion          = "00.01.16"
     [string[]]$errorMessage         = @()
     [IO.DirectoryInfo]$workingDir   = $PWD.Path
-    [IO.DirectoryInfo]$gitConfigDir = Join-Path -Path $workingDir -ChildPath @(".config", "git")
-    [IO.FileInfo]$dockerConfigFile  = Join-Path -Path $workingDir -ChildPath @(".config", "docker.json")
+    [IO.DirectoryInfo]$gitConfigDir = Join-Path -Path $PSScriptRoot -ChildPath @(".config", "github-cli")
+    [IO.FileInfo]$dockerConfigFile  = Join-Path -Path $PSScriptRoot -ChildPath @(".config", "docker.json")
     [string]$gitProtocol            = "https"
     [string]$gitProvider            = "github.com"
     [string]$gitNamespace           = "bonzosoft"

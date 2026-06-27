@@ -1,44 +1,56 @@
 #!/usr/bin/env pwsh
 
 
-### SCRIPT CONFIGURATION #######################################################
+# ==============================================================================
+# GENERAL CONFIGURATION
+# ==============================================================================
 Set-StrictMode -Version Latest
 $ErrorActionPreference = 'Stop'
-$VerbosePreference     = 'Continue'
 $InformationPreference = 'Continue'
+$VerbosePreference     = 'Continue'
 
 
-### LOAD MODULES ###############################################################
-$verboseBackup = $VerbosePreference
-$modules = @(
+# ==============================================================================
+# MODULES
+# ==============================================================================
+[string[]]$modules = @(
     # nop
-
+    # nop
 )
 
+New-Variable -Name verboseBackup -Value ([string]$VerbosePreference) 
 $VerbosePreference = 'SilentlyContinue'
 foreach ($module in $modules) {
     Import-Module -Name (Join-Path -Path $PSScriptRoot -ChildPath $module)
 }
 $VerbosePreference = $verboseBackup
+Remove-Variable -Name verboseBackup
 
 
-### CONFIGURATION ##############################################################
-[string]$GitProtocol      = "https"
-[string]$GitProvider      = "github.com"
-[string]$OrganizationName = "bonzosoft"
-[string]$RepositoryName   = "common"
-[string]$BranchName       = "main"
+# ==============================================================================
+# CONSTANTS
+# ==============================================================================
+[string[]]$errorMessage      = @()
+[string]$gitProtocol         = "https"
+[string]$gitProvider         = "github.com"
+[string]$gitOrganization     = "bonzosoft"
+[string]$commonRepository    = "common"
+[string]$commonBranch        = "main"
+#[string]$coreRepository      = "komodo-core"
+#[string]$coreBranch          = "main"
+#[string]$peripheryRepository = "komodo-periphery"
+#[string]$peripheryBranch     = "main"
 
-[IO.DirectoryInfo]$WorkingDir = $PWD.Path
-[IO.DirectoryInfo]$RepoDir    = Join-Path -Path $WorkingDir -ChildPath @($RepositoryName)
-[IO.DirectoryInfo]$ConfigDir  = Join-Path -Path $WorkingDir -ChildPath @(".config")
+[IO.DirectoryInfo]$gitConfigDir = Join-Path -Path $PWD -ChildPath @(".config", "git")
+[IO.FileInfo]$dockerConfigFile  = Join-Path -Path $PWD -ChildPath @(".config", "docker.json")
 
-$env:GH_CONFIG_DIR=(Join-Path -Path $ConfigDir -ChildPath @("gh"))
+$env:GH_CONFIG_DIR = $gitConfigDir
 $env:GIT_TERMINAL_PROMPT = 0
 
 
-### SCRIPT #####################################################################
-Clear-Host
+# ==============================================================================
+# SCRIPT
+# ==============================================================================Clear-Host
 Write-Host ""
 Write-Host "############################################"
 Write-Host "###           BOOTSTRAP SCRIPT           ###"
@@ -82,6 +94,6 @@ if ($LASTEXITCODE) {
 
 foreach ($item in @("install", "cmd")) {
     Write-Information -MessageData "Adding link '${item}'." -InformationAction 'Continue'
-    ln -snf (Join-Path -Path $RepoDir -ChildPath @($item + ".sh") ) (Join-Path -Path $WorkingDir -ChildPath @($item))
-    chmod +x (Join-Path -Path $WorkingDir -ChildPath @($item))
+    ln -snf (Join-Path -Path $RepoDir -ChildPath @($item + ".sh") ) (Join-Path -Path $PWD -ChildPath @($item))
+    chmod +x (Join-Path -Path $PWD -ChildPath @($item))
 }

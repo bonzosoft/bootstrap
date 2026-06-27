@@ -60,7 +60,7 @@ function Write-Header($Configuration) {
     Write-Host "############################################"
     Write-Host "###            INSTALL SCRIPT            ###"
     Write-Host "###   --------------------------------   ###"
-    Write-Host "###         [Version:  00.01.09]         ###"
+    Write-Host "###         [Version:  00.01.10]         ###"
     Write-Host "############################################"
     Write-Host "Tenant: $($Config.Tenant)"
     Write-Host ""
@@ -100,7 +100,7 @@ function Write-TenantMenu() {
 trap {
     [object]$errorObject = $PSItem
 
-    Write-Error "Message: $($errorObject.Exception.Message)"
+    #Write-Error "Message: $($errorObject.Exception.Message)"
     Get-Error -InputObject $errorObject | Format-List * -Force
 
     Read-Host | Out-Null

@@ -6,6 +6,7 @@
 param()
 
 begin {
+    <#
     # ==========================================================================
     # GENERAL CONFIGURATION
     # ==========================================================================
@@ -55,6 +56,12 @@ begin {
 
     $env:GH_CONFIG_DIR = $gitConfigDir
     $env:GIT_TERMINAL_PROMPT = 0
+    #>
+
+    # ==========================================================================
+    # LOAD COMMON ASSETS
+    # ==========================================================================
+    . (Get-Item -Path (Join-Path -Path $PSScriptRoot -ChildPath "common.ps1"))
 
 
     # ==========================================================================
@@ -114,6 +121,8 @@ process {
     [string]$branch = ""
     [IO.DirectoryInfo]$repoDir = $null
     
+    New-Variable -Name errorActionBackup -Value ([string]$ErrorActionPreference) 
+    $ErrorActionPreference = 'Continue'
     do {
         Clear-Host
         $configHashtable = Read-GitConfig -Path $dockerConfigFile
@@ -264,6 +273,8 @@ process {
         Write-Information -MessageData "Press any key to continue..."
         Read-Host | Out-Null
     } while ($true)
+    $ErrorActionPreference = $errorActionBackup
+    Remove-Variable -Name errorActionBackup
 }
 
 end {

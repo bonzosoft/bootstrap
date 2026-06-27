@@ -60,7 +60,7 @@ function Write-Header($Configuration) {
     Write-Host "############################################"
     Write-Host "###            INSTALL SCRIPT            ###"
     Write-Host "###   --------------------------------   ###"
-    Write-Host "###         [Version:  00.01.12]         ###"
+    Write-Host "###         [Version:  00.01.14]         ###"
     Write-Host "############################################"
     Write-Host "Tenant: $($Configuration.Tenant)"
     Write-Host ""
@@ -139,23 +139,27 @@ do {
             Write-Header -Config $configHashtable
             Write-TenantMenu
             
-            do {
+            :tenantDoWhile do {
                 switch (Read-Host "Option") {
                     "1" {
                         $configHashtable.Tenant = "AST"
                         Write-GitConfig -Path $dockerConfigFile -Value $configHashtable
                         $configHashtable = Read-GitConfig -Path $dockerConfigFile
+
+                        break tenantDoWhile
                     }
                     "2" {
                         $configHashtable.Tenant = "BonzoSoft"
                         Write-GitConfig -Path $dockerConfigFile -Value $configHashtable
                         $configHashtable = Read-GitConfig -Path $dockerConfigFile
+
+                        break tenantDoWhile
                     }
                     "q" {
-                        break
+                        break tenantDoWhile
                     }
                     default {
-                        continue
+                        continue tenantDoWhile
                     }
                 }
             } while ($true)

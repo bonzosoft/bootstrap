@@ -60,7 +60,7 @@ function Write-Header($Configuration) {
     Write-Host "############################################"
     Write-Host "###            INSTALL SCRIPT            ###"
     Write-Host "###   --------------------------------   ###"
-    Write-Host "###         [Version:  00.01.14]         ###"
+    Write-Host "###         [Version:  00.01.15]         ###"
     Write-Host "############################################"
     Write-Host "Tenant: $($Configuration.Tenant)"
     Write-Host ""
@@ -174,6 +174,9 @@ do {
                 else {
                     Write-Information -MessageData "Network creation succeeded."
                 }
+            }
+            else {
+                Write-Information -MessageData "Network already exists."
             }
         }
         {$PSItem -in @("4", "5", "7")} {

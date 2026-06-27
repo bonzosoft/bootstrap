@@ -11,6 +11,31 @@ $VerbosePreference     = 'Continue'
 
 
 # ==============================================================================
+# CONSTANTS
+# ==============================================================================
+[string]$scriptVersion          = "00.01.29"
+[string[]]$errorMessage         = @()
+[IO.DirectoryInfo]$workingDir   = $PWD.Path
+[IO.DirectoryInfo]$gitConfigDir = Join-Path -Path $workingDir -ChildPath @(".config", "git")
+#[IO.FileInfo]$dockerConfigFile  = Join-Path -Path $workingDir -ChildPath @(".config", "docker.json")
+[string]$gitProtocol            = "https"
+[string]$gitProvider            = "github.com"
+[string]$gitNamespace           = "bonzosoft"
+[string]$commonRepository       = "common"
+[string]$commonBranch           = "main"
+[IO.DirectoryInfo]$commonDir    = Join-Path -Path $workingDir -ChildPath @($commonRepository)
+#[string]$coreRepository         = "komodo-core"
+#[string]$coreBranch             = "main"
+#[IO.DirectoryInfo]$coreDir      = Join-Path -Path $workingDir -ChildPath @($coreRepository)
+#[string]$peripheryRepository    = "komodo-periphery"
+#[string]$peripheryBranch        = "main"
+#[IO.DirectoryInfo]$peripheryDir = Join-Path -Path $workingDir -ChildPath @($peripheryRepository)
+
+$env:GH_CONFIG_DIR = $gitConfigDir
+$env:GIT_TERMINAL_PROMPT = 0
+
+
+# ==============================================================================
 # MODULES
 # ==============================================================================
 [string[]]$modules = @(
@@ -28,40 +53,24 @@ Remove-Variable -Name verboseBackup
 
 
 # ==============================================================================
-# CONSTANTS
+# FUNCTIONS
 # ==============================================================================
-[string[]]$errorMessage      = @()
-[string]$gitProtocol         = "https"
-[string]$gitProvider         = "github.com"
-[string]$gitNamespace        = "bonzosoft"
-[string]$commonRepository    = "common"
-[string]$commonBranch        = "main"
-#[string]$coreRepository      = "komodo-core"
-#[string]$coreBranch          = "main"
-#[string]$peripheryRepository = "komodo-periphery"
-#[string]$peripheryBranch     = "main"
-
-[IO.DirectoryInfo]$gitConfigDir = Join-Path -Path $PWD -ChildPath @(".config", "git")
-#[IO.FileInfo]$dockerConfigFile  = Join-Path -Path $PWD -ChildPath @(".config", "docker.json")
-[IO.DirectoryInfo]$commonDir    = Join-Path -Path $PWD -ChildPath @($commonRepository)
-#[IO.DirectoryInfo]$coreDir      = Join-Path -Path $PWD -ChildPath @($coreRepository)
-#[IO.DirectoryInfo]$peripheryDir = Join-Path -Path $PWD -ChildPath @($peripheryRepository)
-
-$env:GH_CONFIG_DIR = $gitConfigDir
-$env:GIT_TERMINAL_PROMPT = 0
-
+function Write-Header($Configuration) {
+    Clear-Host
+    Write-Host ""
+    Write-Host "############################################"
+    Write-Host "###            INSTALL SCRIPT            ###"
+    Write-Host "###   --------------------------------   ###"
+    Write-Host "###         [Version:  ${scriptVersion}]         ###"
+    Write-Host "############################################"
+    Write-Host ""
+}
 
 # ==============================================================================
 # SCRIPT
 # ==============================================================================
 Clear-Host
-Write-Host ""
-Write-Host "############################################"
-Write-Host "###           BOOTSTRAP SCRIPT           ###"
-Write-Host "###   --------------------------------   ###"
-Write-Host "###         [Version:  00.01.28]         ###"
-Write-Host "############################################"
-Write-Host ""
+Write-Header
 
 # check session for Github CLI 
 Write-Information -MessageData "Checking session for ${gitProvider}."
@@ -93,8 +102,8 @@ if ($LASTEXITCODE) {
 # create links
 foreach ($item in @("install", "cmd")) {
     Write-Information -MessageData "Adding link '${item}'."
-    ln -snf (Join-Path -Path $commonDir -ChildPath @("${item}.sh")) (Join-Path -Path $PWD -ChildPath @($item))
-    chmod +x (Join-Path -Path $PWD -ChildPath @($item))
+    ln -snf (Join-Path -Path $commonDir -ChildPath @("${item}.sh")) (Join-Path -Path $workingDir -ChildPath @($item))
+    chmod +x (Join-Path -Path $workingDir -ChildPath @($item))
 }
 
 Write-Information -MessageData ""

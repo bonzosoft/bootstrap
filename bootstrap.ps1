@@ -55,7 +55,7 @@ Write-Host ""
 Write-Host "############################################"
 Write-Host "###           BOOTSTRAP SCRIPT           ###"
 Write-Host "###   --------------------------------   ###"
-Write-Host "###         [Version:   0. 1.25]         ###"
+Write-Host "###         [Version:   0. 1.26]         ###"
 Write-Host "############################################"
 Write-Host ""
 

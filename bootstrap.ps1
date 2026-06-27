@@ -21,7 +21,7 @@ $VerbosePreference     = 'Continue'
 New-Variable -Name verboseBackup -Value ([string]$VerbosePreference) 
 $VerbosePreference = 'SilentlyContinue'
 foreach ($module in $modules) {
-    Import-Module -Name (Join-Path -Path $PSScriptRoot -ChildPath $module)
+    Import-Module -Name (Join-Path -Path $PSScriptRoot -ChildPath @("modules", $module))
 }
 $VerbosePreference = $verboseBackup
 Remove-Variable -Name verboseBackup

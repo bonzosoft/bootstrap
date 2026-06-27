@@ -55,12 +55,12 @@ Write-Host ""
 Write-Host "############################################"
 Write-Host "###           BOOTSTRAP SCRIPT           ###"
 Write-Host "###   --------------------------------   ###"
-Write-Host "###         [Version:   0. 1.24]         ###"
+Write-Host "###         [Version:   0. 1.25]         ###"
 Write-Host "############################################"
 Write-Host ""
 
 # disable user prompt
-$null = gh config set prompt disabled 2> variable:errorMessage
+#$null = gh config set prompt disabled 2> variable:errorMessage
 if ($LASTEXITCODE) {
     Write-Error -Message $errorMessage
 }

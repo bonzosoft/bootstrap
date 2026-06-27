@@ -59,7 +59,7 @@ Write-Host ""
 Write-Host "############################################"
 Write-Host "###           BOOTSTRAP SCRIPT           ###"
 Write-Host "###   --------------------------------   ###"
-Write-Host "###         [Version:   0. 1.27]         ###"
+Write-Host "###         [Version:  00.01.28]         ###"
 Write-Host "############################################"
 Write-Host ""
 
@@ -96,3 +96,7 @@ foreach ($item in @("install", "cmd")) {
     ln -snf (Join-Path -Path $commonDir -ChildPath @("${item}.sh")) (Join-Path -Path $PWD -ChildPath @($item))
     chmod +x (Join-Path -Path $PWD -ChildPath @($item))
 }
+
+Write-Information -MessageData ""
+Write-Information -MessageData "Press any key to continue..."
+Read-Host | Out-Null

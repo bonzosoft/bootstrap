@@ -17,11 +17,41 @@ Write-Information -MessageData "Loading script '$PSCommandPath'."
 
 ## PULL SUBMODULES #############################################################
 if (Test-Path -Path $Script:Context.IncludeDir) {
+
+
+    [string[]]$errorMessage         = @()
+    [IO.DirectoryInfo]$gitConfigDir = Join-Path -Path $PWD -ChildPath @(".config", "git")
+    [IO.FileInfo]$dockerConfigFile  = Join-Path -Path $PWD -ChildPath @(".config", "docker.json")
+    [string]$gitProtocol            = "https"
+    [string]$gitProvider            = "github.com"
+    [string]$gitNamespace           = "bonzosoft"
+    [string]$commonRepository       = "common"
+    [string]$commonBranch           = "main"
+    [IO.DirectoryInfo]$commonDir    = Join-Path -Path $PWD -ChildPath @($commonRepository)
+    [string]$coreRepository         = "komodo-core"
+    [string]$coreBranch             = "main"
+    [IO.DirectoryInfo]$coreDir      = Join-Path -Path $PWD -ChildPath @($coreRepository)
+    [string]$peripheryRepository    = "komodo-periphery"
+    [string]$peripheryBranch        = "main"
+    [IO.DirectoryInfo]$peripheryDir = Join-Path -Path $PWD -ChildPath @($peripheryRepository)
+    
+    [IO.DirectoryInfo]$gitConfigDir = Join-Path -Path $PWD -ChildPath @(".config", "git")
+    [IO.FileInfo]$dockerConfigFile  = Join-Path -Path $PWD -ChildPath @(".config", "docker.json")
+    [IO.DirectoryInfo]$commonDir    = Join-Path -Path $PWD -ChildPath @($commonRepository)
+    [IO.DirectoryInfo]$coreDir      = Join-Path -Path $PWD -ChildPath @($coreRepository)
+    [IO.DirectoryInfo]$peripheryDir = Join-Path -Path $PWD -ChildPath @($peripheryRepository)
+    
+    $env:GH_CONFIG_DIR = $gitConfigDir
+    $env:GIT_TERMINAL_PROMPT = 0
+
+
+
     [IO.DirectoryInfo]$configDir  = Join-Path -Path "/mnt/tank0" -ChildPath @("apps", "infra", ".config")
     [IO.FileInfo]$configFile = Join-Path -Path $configDir -ChildPath @("host", "config.json")
 
     $env:GH_CONFIG_DIR=(Join-Path -Path $configDir -ChildPath @("gh"))
     $env:GIT_TERMINAL_PROMPT = 0
+
 
     [string]$gitProvider = "github.com"
     [string]$gitNamespace = "bonzosoft"

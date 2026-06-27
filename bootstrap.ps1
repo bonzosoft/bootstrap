@@ -61,9 +61,9 @@ Write-Host ""
 
 # disable user prompt
 #$null = gh config set prompt disabled 2> variable:errorMessage
-if ($LASTEXITCODE) {
-    Write-Error -Message $errorMessage
-}
+#if ($LASTEXITCODE) {
+#    Write-Error -Message $errorMessage
+#}
 
 # check gh session 
 Write-Information -MessageData "Checking ${GitProvider} session." -InformationAction 'Continue'

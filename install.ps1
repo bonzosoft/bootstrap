@@ -60,7 +60,7 @@ function Write-Header($Configuration) {
     Write-Host "############################################"
     Write-Host "###            INSTALL SCRIPT            ###"
     Write-Host "###   --------------------------------   ###"
-    Write-Host "###         [Version:     0.1.8]         ###"
+    Write-Host "###         [Version:  00.01.09]         ###"
     Write-Host "############################################"
     Write-Host "Tenant: $($Config.Tenant)"
     Write-Host ""
@@ -91,25 +91,6 @@ function Write-TenantMenu() {
     Write-Host ""
     Write-Host "  q. Return"
     Write-Host ""
-}
-
-function Start-Compose($Name, $Configuration) {
-    Push-Location "./$Name"
-
-    if (Test-Path "./predeploy") { bash "./predeploy" }
-
-    $project = if ($Config.TRUENAS) { "ix-$Name" } else { $Name }
-    docker compose -p $project up -d
-
-    Pop-Location
-    Write-Log SUCC "$Name started"
-}
-
-function Stop-Compose($Name) {
-    Push-Location "./$Name"
-    docker compose down
-    Pop-Location
-    Write-Log SUCC "$Name stopped"
 }
 
 
@@ -254,7 +235,7 @@ do {
             Push-Location -Path $repoDir
                 docker compose up -d 2> variable:errorMessage
                 if ($LASTEXITCODE) {
-                    Write-Error -Message $errroMessage
+                    Write-Error -Message $errorMessage
                 }
             Pop-Location
         }

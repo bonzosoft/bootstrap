@@ -20,7 +20,7 @@ function Get-DockerContext {
         $context.Hostname        = [string](Get-DockerHostname)
         # WorkingDir
         $context.WorkingDir      = [IO.DirectoryInfo]$workingDir
-        $context.ConfigDir       = [IO.DirectoryInfo](Join-Path -Path $context.WorkingDir -ChildPath @("config"))
+        #$context.ConfigDir       = [IO.DirectoryInfo](Join-Path -Path $context.WorkingDir -ChildPath @("config"))
         $context.IncludeDir      = [IO.DirectoryInfo](Join-Path -Path $context.WorkingDir -ChildPath @("include"))
         $context.MainDotEnvFile  =      [IO.FileInfo](Join-Path -Path $context.WorkingDir -ChildPath @(".env"))
         $context.MainComposeFile =      [IO.FileInfo](Join-Path -Path $context.WorkingDir -ChildPath @("compose.yaml"))

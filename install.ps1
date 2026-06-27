@@ -5,7 +5,7 @@
 # GENERAL CONFIGURATION
 # ==============================================================================
 Set-StrictMode -Version Latest
-$ErrorActionPreference = 'Stop'
+$ErrorActionPreference = 'Continue'
 $InformationPreference = 'Continue'
 $VerbosePreference     = 'Continue'
 
@@ -60,7 +60,7 @@ function Write-Header($Configuration) {
     Write-Host "############################################"
     Write-Host "###            INSTALL SCRIPT            ###"
     Write-Host "###   --------------------------------   ###"
-    Write-Host "###         [Version:  00.01.11]         ###"
+    Write-Host "###         [Version:  00.01.12]         ###"
     Write-Host "############################################"
     Write-Host "Tenant: $($Configuration.Tenant)"
     Write-Host ""

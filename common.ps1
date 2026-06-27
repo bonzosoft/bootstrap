@@ -44,7 +44,7 @@ begin {
     $VerbosePreference = $verboseBackup
     Remove-Variable -Name verboseBackup
 
-    
+
     # ==========================================================================
     # CONSTANTS
     # ==========================================================================
@@ -73,7 +73,7 @@ begin {
     # ==========================================================================
     # CONTEXT
     # ==========================================================================
-    $Script:Context = Get-DockerContext
+    $Script:Context = Get-DockerContext -Path $dockerConfigFile
 }
 
 process {

@@ -4,21 +4,20 @@
 [OutputType([void])]
 
 param(
-
+    
 )
 
 begin {
     # ==========================================================================
     # SINGLETON
     # ==========================================================================
-    [IO.FileInfo]$currentScriptFile = $PSCommandPath
-    New-Variable -Name "singleton" -Scope Global -Value ("__INCLUDED_$($currentScriptFile.Name.Replace(".","_").ToUpper())__")
+    New-Variable -Name "singleton" -Scope Global -Value ("__INCLUDED_$(([IO.FileInfo]$PSCommandPath).Name.Replace(".","_").ToUpper())__")
     if (Get-Variable -Name $singleton -Scope Global -ErrorAction SilentlyContinue) {
-        Write-Information -MessageData "Script '$($currentScriptFile.FullName)' already loaded. Skipping."
+        Write-Information -MessageData "Script '$PSCommandPath' already loaded. Skipping."
         return
     }
     else {
-        Write-Information -MessageData "Loading script '$($currentScriptFile.FullName)'."
+        Write-Information -MessageData "Loading script '$PSCommandPath'."
         New-Variable -Name $singleton -Scope Global -Value $true
     }
     Remove-Variable -Name $singleton
@@ -28,9 +27,9 @@ process {
     # ==========================================================================
     # LOAD COMMON ASSETS
     # ==========================================================================
-    . (Join-Path -Path $currentScriptFile.Directory -ChildPath @("common.ps1"))
-
+    . (Join-Path -Path ([IO.FileInfo]$PSCommandPath).Directory -ChildPath @("common.ps1"))
     
+
     # ==========================================================================
     # PULL SUBMODULES
     # ==========================================================================
@@ -85,5 +84,5 @@ process {
 }
 
 end {
-    Write-Information -MessageData "Completed script '$($currentScriptFile.FullName)'."
+    Write-Information -MessageData "Completed script '$PSCommandPath'."
 }

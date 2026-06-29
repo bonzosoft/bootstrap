@@ -11,14 +11,13 @@ begin {
     # ==========================================================================
     # SINGLETON
     # ==========================================================================
-    [IO.FileInfo]$currentScriptFile = $PSCommandPath
-    New-Variable -Name "singleton" -Scope Global -Value ("__INCLUDED_$($currentScriptFile.Name.Replace(".","_").ToUpper())__")
+    New-Variable -Name "singleton" -Scope Global -Value ("__INCLUDED_$(([IO.FileInfo]$PSCommandPath).Name.Replace(".","_").ToUpper())__")
     if (Get-Variable -Name $singleton -Scope Global -ErrorAction SilentlyContinue) {
-        Write-Information -MessageData "Script '$($currentScriptFile.FullName)' already loaded. Skipping."
+        Write-Information -MessageData "Script '$PSCommandPath' already loaded. Skipping."
         return
     }
     else {
-        Write-Information -MessageData "Loading script '$($currentScriptFile.FullName)'."
+        Write-Information -MessageData "Loading script '$PSCommandPath'."
         New-Variable -Name $singleton -Scope Global -Value $true
     }
     Remove-Variable -Name $singleton
@@ -37,7 +36,6 @@ process {
     # ==========================================================================
     # MODULES
     # ==========================================================================
-
     [string[]]$modules = @(
         "pwsh-Docker"
         "pwsh-Git"
@@ -46,7 +44,7 @@ process {
     $VerbosePreference = 'SilentlyContinue'
     foreach ($module in $modules) {
         Write-Information -MessageData "Loading module '$module'."
-        Import-Module -Name (Join-Path -Path $currentScriptFile.Directory -ChildPath @("modules", $module))
+        Import-Module -Name (Join-Path -Path ([IO.FileInfo]$PSCommandPath).Directory -ChildPath @("modules", $module))
     }
     $VerbosePreference = $backupVerbosePreference
     Remove-Variable -Name "backupVerbosePreference"
@@ -61,8 +59,8 @@ process {
     [string[]]$Script:errorMessage = @()
     # paths
     [IO.DirectoryInfo]$Script:currentDirectory = $PWD.Path
-    [IO.DirectoryInfo]$Script:gitConfigDirectory = Join-Path -Path $currentScriptFile.Directory.Parent -ChildPath @(".config", "github-cli")
-    [IO.FileInfo]$Script:dockerConfigFile = Join-Path -Path $currentScriptFile.Directory.Parent -ChildPath @(".config", "docker.json")
+    [IO.DirectoryInfo]$Script:gitConfigDirectory = Join-Path -Path $([IO.FileInfo]$PSCommandPath).Directory.Parent -ChildPath @(".config", "github-cli")
+    [IO.FileInfo]$Script:dockerConfigFile = Join-Path -Path $([IO.FileInfo]$PSCommandPath).Directory.Parent -ChildPath @(".config", "docker.json")
     # git: general
     [string]$Script:gitProtocol = "https"
     [string]$Script:gitProvider = "github.com"
@@ -80,7 +78,7 @@ process {
     [string]$Script:peripheryBranch = "main"
     [IO.DirectoryInfo]$Script:peripheryDir = Join-Path -Path $currentDirectory -ChildPath @($peripheryRepository)
     # context
-    [hashtable]$Script:Context                   = Get-DockerContext -Path $dockerConfigFile
+    [hashtable]$Script:Context = Get-DockerContext -Path $dockerConfigFile
 
 
     # ==========================================================================
@@ -91,5 +89,5 @@ process {
 }
 
 end {
-    Write-Information -MessageData "Completed script '$($currentScriptFile.FullName)'."
+    Write-Information -MessageData "Completed script '$PSCommandPath'."
 }

@@ -84,7 +84,13 @@ docker run \
 
 
 
+# Repositorio Mirror de Google
 
+ [Mirror](mirror.gcr.io/library/)
+
+ ````
+mirror.gcr.io/library/postgres:17
+ ````
 
 
 

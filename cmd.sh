@@ -2,7 +2,6 @@
 
 if [ $# -gt 0 ]; then
     # Command Mode
-    #-v /var/run/docker.sock:/var/run/docker.sock:ro \
     docker run \
         --rm \
         -i \
@@ -12,7 +11,6 @@ if [ $# -gt 0 ]; then
         ghcr.io/bonzosoft/pwsh pwsh -NoLogo -NoProfile -Command "$@" -InformationAction Continue
 else
     # Interactive Mode
-    #-v /var/run/docker.sock:/var/run/docker.sock:ro \
     docker run \
         --rm \
         -it \
@@ -21,3 +19,4 @@ else
         -w ${PWD} \
         ghcr.io/bonzosoft/pwsh pwsh -NoLogo -NoProfile
 fi
+#-v /var/run/docker.sock:/var/run/docker.sock:ro \

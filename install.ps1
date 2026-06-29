@@ -6,68 +6,22 @@
 param()
 
 begin {
-    <#
-    # ==========================================================================
-    # GENERAL CONFIGURATION
-    # ==========================================================================
-    Set-StrictMode -Version Latest
-    $ErrorActionPreference = 'Continue'
-    $InformationPreference = 'Continue'
-    $VerbosePreference     = 'Continue'
-
-
-    # ==========================================================================
-    # MODULES
-    # ==========================================================================
-    [string[]]$modules = @(
-        "pwsh-Docker"
-        "pwsh-Git"
-    )
-
-    New-Variable -Name verboseBackup -Value ([string]$VerbosePreference) 
-    $VerbosePreference = 'SilentlyContinue'
-    foreach ($module in $modules) {
-        Import-Module -Name (Join-Path -Path $PSScriptRoot -ChildPath @("modules", $module))
-    }
-    $VerbosePreference = $verboseBackup
-    Remove-Variable -Name verboseBackup
-
-
-    # ==========================================================================
-    # CONSTANTS
-    # ==========================================================================
-    [string]$scriptVersion          = "00.01.16"
-    [string[]]$errorMessage         = @()
-    [IO.DirectoryInfo]$workingDir   = $PWD.Path
-    [IO.DirectoryInfo]$gitConfigDir = Join-Path -Path $workingDir -ChildPath @(".config", "git")
-    [IO.FileInfo]$dockerConfigFile  = Join-Path -Path $workingDir -ChildPath @(".config", "docker.json")
-    [string]$gitProtocol            = "https"
-    [string]$gitProvider            = "github.com"
-    [string]$gitNamespace           = "bonzosoft"
-    [string]$commonRepository       = "common"
-    [string]$commonBranch           = "main"
-    [IO.DirectoryInfo]$commonDir    = Join-Path -Path $workingDir -ChildPath @($commonRepository)
-    [string]$coreRepository         = "komodo-core"
-    [string]$coreBranch             = "main"
-    [IO.DirectoryInfo]$coreDir      = Join-Path -Path $workingDir -ChildPath @($coreRepository)
-    [string]$peripheryRepository    = "komodo-periphery"
-    [string]$peripheryBranch        = "main"
-    [IO.DirectoryInfo]$peripheryDir = Join-Path -Path $workingDir -ChildPath @($peripheryRepository)
-
-    $env:GH_CONFIG_DIR = $gitConfigDir
-    $env:GIT_TERMINAL_PROMPT = 0
-    #>
-
     # ==========================================================================
     # LOAD COMMON ASSETS
     # ==========================================================================
-    . (Get-Item -Path (Join-Path -Path $PSScriptRoot -ChildPath "common.ps1"))
+    . (Join-Path -Path ([IO.FileInfo]$PSCommandPath).Directory -ChildPath @("common.ps1"))
 
 
+    # ==========================================================================
+    # OVERRIDES
+    # ==========================================================================
+    [string]$Script:scriptVersion = "00.01.16"
+
+    
     # ==========================================================================
     # FUNCTIONS
     # ==========================================================================
-    function Write-Header($Configuration) {
+    function Write-Header($Context) {
         Clear-Host
         Write-Host ""
         Write-Host "############################################"
@@ -75,7 +29,7 @@ begin {
         Write-Host "###   --------------------------------   ###"
         Write-Host "###         [Version:  ${scriptVersion}]         ###"
         Write-Host "############################################"
-        Write-Host "Tenant: $($Configuration.Tenant)"
+        Write-Host "Tenant: $($Context.Tenant)"
         Write-Host ""
     }
 

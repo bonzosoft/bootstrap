@@ -51,6 +51,13 @@ process {
 
 
     # ==========================================================================
+    # ENVIRONMENT VARIABLES
+    # ==========================================================================
+    $Env:GIT_TERMINAL_PROMPT = 0
+    $Env:GH_CONFIG_DIR = Join-Path -Path $([IO.FileInfo]$PSCommandPath).Directory.Parent -ChildPath @(".config", "github-cli")
+
+
+    # ==========================================================================
     # VARIABLES
     # ==========================================================================
     Write-Information -MessageData "Configuring environment."
@@ -79,14 +86,6 @@ process {
     [IO.DirectoryInfo]$Script:peripheryDir = Join-Path -Path $currentDirectory -ChildPath @($peripheryRepository)
     # context
     [hashtable]$Script:context = Get-DockerContext -Path $dockerConfigFile
-
-
-    # ==========================================================================
-    # ENVIRONMENT VARIABLES
-    # ==========================================================================
-    $Env:GIT_TERMINAL_PROMPT = 0
-    $Env:GH_CONFIG_DIR = Join-Path -Path $([IO.FileInfo]$PSCommandPath).Directory.Parent -ChildPath @(".config", "github-cli")
-    #$Env:GH_CONFIG_DIR = $gitConfigDirectory
 }
 
 end {

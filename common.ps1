@@ -9,14 +9,18 @@ begin {
     # ==========================================================================
     # SINGLETON
     # ==========================================================================
-    $singleton = ([IO.FileInfo]$PSCommandPath).BaseName.Replace(".","_").ToUpper()
+    [IO.FileInfo]$currentScriptInfo = $PSCommandPath
+    New-Variable -Name singleton -Value ("__INCLUDED_${currentScriptInfo.Name.Replace(".","_").ToUpper()}")
+    Write-Host "singleton: $singleton"
     if (Get-Variable -Name "__INCLUDED_$singleton" -Scope Global -ErrorAction SilentlyContinue) {
+        Write-Warning -Message "Script '$PSCommandPath' already loaded. Skipping."
         return
     }
     else {
+        Write-Information -MessageData "Loading script '$PSCommandPath'."
         New-Variable -Name "__INCLUDED_$singleton" -Scope Global -Value $true
     }
-    Write-Information -MessageData "Loading script '$PSCommandPath'."
+    Remove-Variable -Name singleton
 
 
     # ==========================================================================

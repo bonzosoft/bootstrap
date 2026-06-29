@@ -10,16 +10,16 @@ begin {
     # SINGLETON
     # ==========================================================================
     [IO.FileInfo]$currentScriptInfo = $PSCommandPath
-    New-Variable -Name "singleton" -Value ("__INCLUDED_$($currentScriptInfo.Name.Replace(".","_").ToUpper())__")
-    if (Get-Variable -Name "singleton" -Scope Global -ErrorAction SilentlyContinue) {
+    New-Variable -Name "singleton" -Scope Global -Value ("__INCLUDED_$($currentScriptInfo.Name.Replace(".","_").ToUpper())__")
+    if (Get-Variable -Name $singleton -Scope Global -ErrorAction SilentlyContinue) {
         Write-Information -MessageData "Script '$($currentScriptInfo.FullName)' already loaded. Skipping."
         return
     }
     else {
         Write-Information -MessageData "Loading script '$($currentScriptInfo.FullName)'."
-        New-Variable -Name "singleton" -Scope Global -Value $true
+        New-Variable -Name $singleton -Scope Global -Value $true
     }
-    Remove-Variable -Name "singleton"
+    Remove-Variable -Name $singleton
 
 
     # ==========================================================================

@@ -1,0 +1,24 @@
+{
+    "Domain": "985337789.xyz",
+    "MothershipIP": "192.168.1.10",
+    "Admin": {
+        "Name": "alex",
+        "Password": "changeme",
+        "Email": "alex@985337789.xyz"
+    },
+    "Smtp": {
+        "Relay": {
+            "Host": "smtp.985337789.xyz",
+            "Port": 587,
+            "Name": "alex@985337789.xyz",
+            "Password": ""
+        },
+        "Provider": {
+            "Host": "smtp.gmail.com",
+            "Port": 465,
+            "Name": "",
+            "Password": ""
+        }
+    },
+    "LFStorageDir": ""
+}

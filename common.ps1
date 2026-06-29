@@ -37,6 +37,7 @@ process {
     # ==========================================================================
     # MODULES
     # ==========================================================================
+
     [string[]]$modules = @(
         "pwsh-Docker"
         "pwsh-Git"
@@ -44,6 +45,7 @@ process {
     New-Variable -Name "backupVerbosePreference" -Value $VerbosePreference
     $VerbosePreference = 'SilentlyContinue'
     foreach ($module in $modules) {
+        Write-Information -MessageData "Loading module '$module'."
         Import-Module -Name (Join-Path -Path $currentScriptFile.Directory -ChildPath @("modules", $module))
     }
     $VerbosePreference = $backupVerbosePreference

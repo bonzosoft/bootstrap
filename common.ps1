@@ -55,6 +55,7 @@ process {
     # ==========================================================================
     # VARIABLES
     # ==========================================================================
+    Write-Information -MessageData "Configuring environment."
     # text user interface
     [string]$Script:scriptVersion = "00.01.16"
     [string[]]$Script:errorMessage = @()

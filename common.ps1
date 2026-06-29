@@ -91,5 +91,5 @@ process {
 }
 
 end {
-    Write-Information -MessageData "Loaded script '$($currentScriptFile.FullName)'."
+    Write-Information -MessageData "Completed script '$($currentScriptFile.FullName)'."
 }

@@ -28,9 +28,9 @@ process {
     # ==========================================================================
     # LOAD COMMON ASSETS
     # ==========================================================================
-    . (Join-Path -Path $currentScriptFile.DirectoryName -ChildPath @("common.ps1"))
+    . (Join-Path -Path $currentScriptFile.Directory -ChildPath @("common.ps1"))
 }
 
 end {
-    Write-Information -MessageData "Loaded script '$($currentScriptFile.FullName)'."
+    Write-Information -MessageData "Completed script '$($currentScriptFile.FullName)'."
 }

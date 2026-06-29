@@ -9,22 +9,24 @@ begin {
     # ==========================================================================
     # SINGLETON
     # ==========================================================================
-    New-Variable -Name singleton -Value ([IO.FileInfo]$PSCommandPath).BaseName.Replace(".","_").ToUpper()
-    if (Get-Variable -Name "__INCLUDED_$singleton" -Scope Global -ErrorAction SilentlyContinue) {
-        Write-Warning -Message "Script '$PSCommandPath' already loaded. Skipping."
+    [IO.FileInfo]$currentScriptInfo = $PSCommandPath
+    New-Variable -Name "singleton" -Value ("__INCLUDED_$($currentScriptInfo.Name.Replace(".","_").ToUpper())__")
+    if (Get-Variable -Name "singleton" -Scope Global -ErrorAction SilentlyContinue) {
+        Write-Information -MessageData "Script '$($currentScriptInfo.FullName)' already loaded. Skipping."
         return
     }
     else {
-        Write-Information -MessageData "Loading script '$PSCommandPath'."
-        New-Variable -Name "__INCLUDED_$singleton" -Scope Global -Value $true
+        Write-Information -MessageData "Loading script '$($currentScriptInfo.FullName)'."
+        New-Variable -Name "singleton" -Scope Global -Value $true
     }
-    Remove-Variable -Name singleton
+    Remove-Variable -Name "singleton"
 
 
     # ==========================================================================
     # LOAD COMMON ASSETS
     # ==========================================================================
-    . (Get-Item -Path (Join-Path -Path $PSScriptRoot -ChildPath "common.ps1"))
+    . (Join-Path -Path $currentScriptInfo.DirectoryName -ChildPath @("common.ps1"))
+    #. (Get-Item -Path (Join-Path -Path $PSScriptRoot -ChildPath "common.ps1"))
 }
 
 process {

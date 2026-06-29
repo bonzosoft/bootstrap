@@ -10,7 +10,7 @@ begin {
     # SINGLETON
     # ==========================================================================
     [IO.FileInfo]$currentScriptInfo = $PSCommandPath
-    New-Variable -Name singleton -Value ("__INCLUDED_$($currentScriptInfo.Name.Replace(".","_").ToUpper())")
+    New-Variable -Name singleton -Value ("__INCLUDED_$($currentScriptInfo.Name.Replace(".","_").ToUpper())__")
     Write-Host "singleton: $singleton"
     if (Get-Variable -Name "__INCLUDED_$singleton" -Scope Global -ErrorAction SilentlyContinue) {
         Write-Warning -Message "Script '$PSCommandPath' already loaded. Skipping."

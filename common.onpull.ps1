@@ -3,7 +3,9 @@
 [CmdletBinding()]
 [OutputType([void])]
 
-param()
+param(
+    
+)
 
 begin {
     # ==========================================================================
@@ -26,7 +28,6 @@ begin {
     # LOAD COMMON ASSETS
     # ==========================================================================
     . (Join-Path -Path $currentScriptInfo.DirectoryName -ChildPath @("common.ps1"))
-    #. (Get-Item -Path (Join-Path -Path $PSScriptRoot -ChildPath "common.ps1"))
 }
 
 process {
@@ -84,5 +85,5 @@ process {
 }
 
 end {
-    Write-Information -MessageData "Loaded script '$PSCommandPath'."
+    Write-Information -MessageData "Loaded script '$($currentScriptInfo.FullName)'."
 }

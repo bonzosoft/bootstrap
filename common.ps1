@@ -3,7 +3,9 @@
 [CmdletBinding()]
 [OutputType([void])]
 
-param()
+param(
+
+)
 
 begin {
     # ==========================================================================
@@ -39,13 +41,13 @@ begin {
         "pwsh-Git"
     )
 
-    New-Variable -Name verboseBackup -Value ([string]$VerbosePreference) 
-    $VerbosePreference = 'SilentlyContinue'
+    #New-Variable -Name "backupVerbosePreference" -Value $VerbosePreference
+    #$VerbosePreference = 'SilentlyContinue'
     foreach ($module in $modules) {
-        Import-Module -Name (Join-Path -Path $PSScriptRoot -ChildPath @("modules", $module))
+        Import-Module -Name (Join-Path -Path $PSScriptRoot -ChildPath @("modules", $module)) -Verbose:$false
     }
-    $VerbosePreference = $verboseBackup
-    Remove-Variable -Name verboseBackup
+    #$VerbosePreference = $backupVerbosePreference
+    #Remove-Variable -Name "backupVerbosePreference"
 
 
     # ==========================================================================
@@ -84,5 +86,5 @@ process {
 }
 
 end {
-    Write-Information -MessageData "Loaded script '$PSCommandPath'."
+    Write-Information -MessageData "Loaded script '$($currentScriptInfo.FullName)'."
 }

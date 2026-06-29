@@ -3,7 +3,9 @@
 [CmdletBinding()]
 [OutputType([void])]
 
-param()
+param(
+
+)
 
 begin {
     # ==========================================================================
@@ -12,7 +14,7 @@ begin {
     Set-StrictMode -Version Latest
     $ErrorActionPreference = 'Stop'
     $InformationPreference = 'Continue'
-    $VerbosePreference     = 'Continue'
+    $VerbosePreference = 'Continue'
     
 
     # ==========================================================================
@@ -22,39 +24,52 @@ begin {
         # nop
         # nop
     )
-
-    New-Variable -Name verboseBackup -Value ([string]$VerbosePreference) 
+    New-Variable -Name "backupVerbosePreference" -Value $VerbosePreference
     $VerbosePreference = 'SilentlyContinue'
     foreach ($module in $modules) {
-        Import-Module -Name (Join-Path -Path $PSScriptRoot -ChildPath @("modules", $module))
+        Write-Information -MessageData "Loading module '$module'."
+        Import-Module -Name (Join-Path -Path ([IO.FileInfo]$PSCommandPath).Directory -ChildPath @("modules", $module))
     }
-    $VerbosePreference = $verboseBackup
-    Remove-Variable -Name verboseBackup
+    $VerbosePreference = $backupVerbosePreference
+    Remove-Variable -Name "backupVerbosePreference"
 
 
     # ==========================================================================
-    # CONSTANTS
+    # ENVIRONMENT VARIABLES
     # ==========================================================================
-    [string]$scriptVersion          = "00.01.29"
-    [string[]]$errorMessage         = @()
-    [IO.DirectoryInfo]$workingDir   = $PWD.Path
-    [IO.DirectoryInfo]$gitConfigDir = Join-Path -Path $workingDir -ChildPath @(".config", "git")
-    #[IO.FileInfo]$dockerConfigFile  = Join-Path -Path $workingDir -ChildPath @(".config", "docker.json")
-    [string]$gitProtocol            = "https"
-    [string]$gitProvider            = "github.com"
-    [string]$gitNamespace           = "bonzosoft"
-    [string]$commonRepository       = "common"
-    [string]$commonBranch           = "main"
-    [IO.DirectoryInfo]$commonDir    = Join-Path -Path $workingDir -ChildPath @($commonRepository)
-    #[string]$coreRepository         = "komodo-core"
-    #[string]$coreBranch             = "main"
-    #[IO.DirectoryInfo]$coreDir      = Join-Path -Path $workingDir -ChildPath @($coreRepository)
-    #[string]$peripheryRepository    = "komodo-periphery"
-    #[string]$peripheryBranch        = "main"
-    #[IO.DirectoryInfo]$peripheryDir = Join-Path -Path $workingDir -ChildPath @($peripheryRepository)
+    $Env:GH_CONFIG_DIR = Join-Path -Path $([IO.FileInfo]$PSCommandPath).Directory.Parent -ChildPath @(".config", "github-cli")
+    $Env:GH_PROMPT_DISABLED = 1
+    $Env:GIT_TERMINAL_PROMPT = 0
 
-    $env:GH_CONFIG_DIR = $gitConfigDir
-    $env:GIT_TERMINAL_PROMPT = 0
+    # ==========================================================================
+    # VARIABLES
+    # ==========================================================================
+    Write-Information -MessageData "Configuring environment."
+    # text user interface
+    [string]$Script:scriptVersion = "00.01.30"
+    [string[]]$Script:errorMessage = @()
+    # paths
+    [IO.DirectoryInfo]$Script:currentDirectory = $PWD.Path
+    [IO.FileInfo]$Script:dockerConfigFile = Join-Path -Path $([IO.FileInfo]$PSCommandPath).Directory.Parent -ChildPath @(".config", "docker.json")
+    # git: general
+    [string]$Script:gitProtocol = "https"
+    [string]$Script:gitProvider = "github.com"
+    [string]$Script:gitNamespace = "bonzosoft"
+    # git: common
+    [string]$Script:commonRepository = "common"
+    [string]$Script:commonBranch = "main"
+    [IO.DirectoryInfo]$Script:commonDir = Join-Path -Path $currentDirectory -ChildPath @($commonRepository)
+    # git: core
+    #[string]$Script:coreRepository = "komodo-core"
+    #[string]$Script:coreBranch = "main"
+    #[IO.DirectoryInfo]$Script:coreDir = Join-Path -Path $currentDirectory -ChildPath @($coreRepository)
+    # git: periphery
+    #[string]$Script:peripheryRepository = "komodo-periphery"
+    #[string]$Script:peripheryBranch = "main"
+    #[IO.DirectoryInfo]$Script:peripheryDir = Join-Path -Path $currentDirectory -ChildPath @($peripheryRepository)
+    # context
+    #[hashtable]$Script:context = Get-DockerContext -Path $dockerConfigFile
+
 
     # ==========================================================================
     # FUNCTIONS

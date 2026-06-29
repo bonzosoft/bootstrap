@@ -66,7 +66,6 @@ process {
     [string[]]$Script:errorMessage = @()
     # paths
     [IO.DirectoryInfo]$Script:currentDirectory = $PWD.Path
-    #[IO.DirectoryInfo]$Script:gitConfigDirectory = Join-Path -Path $([IO.FileInfo]$PSCommandPath).Directory.Parent -ChildPath @(".config", "github-cli")
     [IO.FileInfo]$Script:dockerConfigFile = Join-Path -Path $([IO.FileInfo]$PSCommandPath).Directory.Parent -ChildPath @(".config", "docker.json")
     # git: general
     [string]$Script:gitProtocol = "https"

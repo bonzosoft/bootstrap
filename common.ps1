@@ -53,9 +53,9 @@ process {
     # ==========================================================================
     # ENVIRONMENT VARIABLES
     # ==========================================================================
-    $Env:GIT_TERMINAL_PROMPT = 0
     $Env:GH_CONFIG_DIR = Join-Path -Path $([IO.FileInfo]$PSCommandPath).Directory.Parent -ChildPath @(".config", "github-cli")
-
+    $Env:GH_PROMPT_DISABLED = 1
+    $Env:GIT_TERMINAL_PROMPT = 0
 
     # ==========================================================================
     # VARIABLES

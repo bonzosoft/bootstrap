@@ -11,26 +11,27 @@ begin {
     # ==========================================================================
     # SINGLETON
     # ==========================================================================
-    [IO.FileInfo]$currentScriptInfo = $PSCommandPath
-    New-Variable -Name "singleton" -Scope Global -Value ("__INCLUDED_$($currentScriptInfo.Name.Replace(".","_").ToUpper())__")
+    [IO.FileInfo]$currentScriptFile = $PSCommandPath
+    New-Variable -Name "singleton" -Scope Global -Value ("__INCLUDED_$($currentScriptFile.Name.Replace(".","_").ToUpper())__")
     if (Get-Variable -Name $singleton -Scope Global -ErrorAction SilentlyContinue) {
-        Write-Information -MessageData "Script '$($currentScriptInfo.FullName)' already loaded. Skipping."
+        Write-Information -MessageData "Script '$($currentScriptFile.FullName)' already loaded. Skipping."
         return
     }
     else {
-        Write-Information -MessageData "Loading script '$($currentScriptInfo.FullName)'."
+        Write-Information -MessageData "Loading script '$($currentScriptFile.FullName)'."
         New-Variable -Name $singleton -Scope Global -Value $true
     }
     Remove-Variable -Name $singleton
+}
 
-
+process {
     # ==========================================================================
     # GENERAL CONFIGURATION
     # ==========================================================================
     Set-StrictMode -Version Latest
     $ErrorActionPreference = 'Stop'
     $InformationPreference = 'Continue'
-    $VerbosePreference     = 'Continue'
+    $VerbosePreference = 'Continue'
 
 
     # ==========================================================================
@@ -40,51 +41,52 @@ begin {
         "pwsh-Docker"
         "pwsh-Git"
     )
-
-    #New-Variable -Name "backupVerbosePreference" -Value $VerbosePreference
-    #$VerbosePreference = 'SilentlyContinue'
+    New-Variable -Name "backupVerbosePreference" -Value $VerbosePreference
+    $VerbosePreference = 'SilentlyContinue'
     foreach ($module in $modules) {
-        Import-Module -Name (Join-Path -Path $PSScriptRoot -ChildPath @("modules", $module)) -Verbose:$false
+        Import-Module -Name (Join-Path -Path $currentScriptFile.Directory -ChildPath @("modules", $module))
     }
-    #$VerbosePreference = $backupVerbosePreference
-    #Remove-Variable -Name "backupVerbosePreference"
+    $VerbosePreference = $backupVerbosePreference
+    Remove-Variable -Name "backupVerbosePreference"
 
 
     # ==========================================================================
-    # CONSTANTS
+    # VARIABLES
     # ==========================================================================
-    [string]$scriptVersion          = "00.01.16"
-    [string[]]$errorMessage         = @()
-    [IO.DirectoryInfo]$workingDir   = $PWD.Path
-    [IO.DirectoryInfo]$gitConfigDir = Join-Path -Path $PSScriptRoot -ChildPath @("..", ".config", "github-cli")
-    [IO.FileInfo]$dockerConfigFile  = Join-Path -Path $PSScriptRoot -ChildPath @("..", ".config", "docker.json")
-    [string]$gitProtocol            = "https"
-    [string]$gitProvider            = "github.com"
-    [string]$gitNamespace           = "bonzosoft"
-    [string]$commonRepository       = "common"
-    [string]$commonBranch           = "main"
-    [IO.DirectoryInfo]$commonDir    = Join-Path -Path $workingDir -ChildPath @($commonRepository)
-    [string]$coreRepository         = "komodo-core"
-    [string]$coreBranch             = "main"
-    [IO.DirectoryInfo]$coreDir      = Join-Path -Path $workingDir -ChildPath @($coreRepository)
-    [string]$peripheryRepository    = "komodo-periphery"
-    [string]$peripheryBranch        = "main"
-    [IO.DirectoryInfo]$peripheryDir = Join-Path -Path $workingDir -ChildPath @($peripheryRepository)
-
-    $env:GH_CONFIG_DIR = $gitConfigDir
-    $env:GIT_TERMINAL_PROMPT = 0
+    # text user interface
+    [string]$Script:scriptVersion = "00.01.16"
+    [string[]]$Script:errorMessage = @()
+    # paths
+    [IO.DirectoryInfo]$Script:currentDirectory = $PWD.Path
+    [IO.DirectoryInfo]$Script:gitConfigDirectory = Join-Path -Path $currentScriptFile.Directory.Parent -ChildPath @(".config", "github-cli")
+    [IO.FileInfo]$Script:dockerConfigFile = Join-Path -Path $currentScriptFile.Directory.Parent -ChildPath @(".config", "docker.json")
+    # git: general
+    [string]$Script:gitProtocol = "https"
+    [string]$Script:gitProvider = "github.com"
+    [string]$Script:gitNamespace = "bonzosoft"
+    # git: common
+    [string]$Script:commonRepository = "common"
+    [string]$Script:commonBranch = "main"
+    [IO.DirectoryInfo]$Script:commonDir = Join-Path -Path $currentDirectory -ChildPath @($commonRepository)
+    # git: core
+    [string]$Script:coreRepository = "komodo-core"
+    [string]$Script:coreBranch = "main"
+    [IO.DirectoryInfo]$Script:coreDir = Join-Path -Path $currentDirectory -ChildPath @($coreRepository)
+    # git: periphery
+    [string]$Script:peripheryRepository = "komodo-periphery"
+    [string]$Script:peripheryBranch = "main"
+    [IO.DirectoryInfo]$Script:peripheryDir = Join-Path -Path $currentDirectory -ChildPath @($peripheryRepository)
+    # context
+    [hashtable]$Script:Context                   = Get-DockerContext -Path $dockerConfigFile
 
 
     # ==========================================================================
-    # CONTEXT
+    # ENVIRONMENT VARIABLES
     # ==========================================================================
-    $Script:Context = Get-DockerContext -Path $dockerConfigFile
-}
-
-process {
-
+    $Env:GIT_TERMINAL_PROMPT = 0
+    $Env:GH_CONFIG_DIR = $gitConfigDirectory
 }
 
 end {
-    Write-Information -MessageData "Loaded script '$($currentScriptInfo.FullName)'."
+    Write-Information -MessageData "Loaded script '$($currentScriptFile.FullName)'."
 }

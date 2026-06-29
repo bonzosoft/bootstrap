@@ -20,7 +20,7 @@ begin {
         Write-Information -MessageData "Loading script '$PSCommandPath'."
         New-Variable -Name $singleton -Scope Global -Value $true
     }
-    Remove-Variable -Name $singleton
+    Remove-Variable -Name "singleton"
 }
 
 process {

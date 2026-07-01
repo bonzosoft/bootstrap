@@ -6,33 +6,27 @@
 param()
 
 begin {
-    [string]$scriptVersion = "0.1.33"
-    Write-Information -MessageData "Version: $scriptVersion" -InformationAction 'Continue'
+    [string]$Script:scriptVersion="0.1.34"
 
-    [IO.FileInfo]$Script:currentScriptFile = $PSCommandPath
-    [IO.FileInfo]$Script:parentScriptFile = $MyInvocation.PSCommandPath
-    
-    # Script =======================================================================
-    Write-Information -MessageData "Loading script '$PSCommandPath'." -InformationAction 'Continue'
-    
 
-    # Script settings ==============================================================
-    Write-Information -MessageData "Configuring Powershell environment." -InformationAction 'Continue'
-    
+    # Command line setup =======================================================
     Set-StrictMode -Version 'Latest'
     $ErrorActionPreference = 'Stop'
     $InformationPreference = 'Continue'
-    $VerbosePreference = 'SilentlyContinue'
+
+
+    # Script start =============================================================
+    Write-Information -MessageData "Loading script '$PSCommandPath'."
 
 
     # Script settings ==============================================================
     Write-Information -MessageData "Configuring environment."
-    
+        
     [string[]]$Script:errorMessage = @()
     # paths
-    [IO.DirectoryInfo]$Script:appsDir = ([IO.FileInfo]$PSCommandPath).Directory.Parent.Parent
-    [IO.DirectoryInfo]$Script:configDir = Join-Path -Path $appsDir -ChildPath @(".config")
-    [IO.FileInfo]$Script:configFile = Join-Path -Path $configDir -ChildPath @("docker.json")
+    [IO.DirectoryInfo]$Script:RootDir = ([IO.FileInfo]$PSCommandPath).Directory # /mnt/tank0/apps
+    [IO.DirectoryInfo]$Script:Deploy = Join-Path -Path $appsDir -ChildPath @(".config")
+    [IO.FileInfo]$Script:configFile = Join-Path -Path $configDir -ChildPath @("deploy.json")
     # git: general
     [string]$Script:gitProtocol = "https"
     [string]$Script:gitProvider = "github.com"
@@ -54,7 +48,7 @@ begin {
         Write-Host "############################################"
         Write-Host "###            INSTALL SCRIPT            ###"
         Write-Host "###   --------------------------------   ###"
-        Write-Host "###         [Version:$(" "*(10-$scriptVersion.Length))$scriptVersion]         ###"
+        Write-Host "###        [Version:$(" "*(12-$scriptVersion.Length))$scriptVersion]        ###"
         Write-Host "############################################"
         Write-Host ""
     }

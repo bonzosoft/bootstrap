@@ -3,54 +3,33 @@
 [CmdletBinding()]
 [OutputType([void])]
 
-param(
-
-)
+param()
 
 begin {
-    # ==========================================================================
-    # GENERAL CONFIGURATION
-    # ==========================================================================
-    Set-StrictMode -Version Latest
-    $ErrorActionPreference = 'Stop'
-    $InformationPreference = 'Continue'
-    $VerbosePreference = 'Continue'
+    [string]$scriptVersion = "0.1.30"
+    
+    # Script =======================================================================
+    #Write-Information -MessageData "Loading script '$PSCommandPath'."
     
 
-    # ==========================================================================
-    # MODULES
-    # ==========================================================================
-    [string[]]$modules = @(
-        # nop
-        # nop
-    )
-    New-Variable -Name "backupVerbosePreference" -Value $VerbosePreference
+    # Script settings ==============================================================
+    Write-Information -MessageData "Configuring Powershell environment."
+    
+    Set-StrictMode -Version 'Latest'
+    $ErrorActionPreference = 'Stop'
+    $InformationPreference = 'Continue'
     $VerbosePreference = 'SilentlyContinue'
-    foreach ($module in $modules) {
-        Write-Information -MessageData "Loading module '$module'."
-        Import-Module -Name (Join-Path -Path ([IO.FileInfo]$PSCommandPath).Directory -ChildPath @("modules", $module))
-    }
-    $VerbosePreference = $backupVerbosePreference
-    Remove-Variable -Name "backupVerbosePreference"
 
 
-    # ==========================================================================
-    # ENVIRONMENT VARIABLES
-    # ==========================================================================
-    $Env:GH_CONFIG_DIR = Join-Path -Path $([IO.FileInfo]$PSCommandPath).Directory.Parent -ChildPath @(".config", "github-cli")
-    $Env:GH_PROMPT_DISABLED = 1
-    $Env:GIT_TERMINAL_PROMPT = 0
-
-    # ==========================================================================
-    # VARIABLES
-    # ==========================================================================
+    # Script settings ==============================================================
     Write-Information -MessageData "Configuring environment."
-    # text user interface
-    [string]$Script:scriptVersion = "00.01.30"
+    
     [string[]]$Script:errorMessage = @()
     # paths
-    [IO.DirectoryInfo]$Script:currentDirectory = $PWD.Path
-    [IO.FileInfo]$Script:dockerConfigFile = Join-Path -Path $([IO.FileInfo]$PSCommandPath).Directory.Parent -ChildPath @(".config", "docker.json")
+    #[IO.DirectoryInfo]$Script:appsDir = ([IO.FileInfo]$PSCommandPath.Path).Directory.Parent.Parent
+    [IO.DirectoryInfo]$Script:appsDir = ([IO.FileInfo]$PWD.Path).Directory.Parent.Parent
+    [IO.DirectoryInfo]$Script:configDir = Join-Path -Path $appsDir -ChildPath @(".config")
+    [IO.FileInfo]$Script:configFile = Join-Path -Path $configDir -ChildPath @("docker.json")
     # git: general
     [string]$Script:gitProtocol = "https"
     [string]$Script:gitProvider = "github.com"
@@ -58,32 +37,25 @@ begin {
     # git: common
     [string]$Script:commonRepository = "common"
     [string]$Script:commonBranch = "main"
-    [IO.DirectoryInfo]$Script:commonDir = Join-Path -Path $currentDirectory -ChildPath @($commonRepository)
-    # git: core
-    #[string]$Script:coreRepository = "komodo-core"
-    #[string]$Script:coreBranch = "main"
-    #[IO.DirectoryInfo]$Script:coreDir = Join-Path -Path $currentDirectory -ChildPath @($coreRepository)
-    # git: periphery
-    #[string]$Script:peripheryRepository = "komodo-periphery"
-    #[string]$Script:peripheryBranch = "main"
-    #[IO.DirectoryInfo]$Script:peripheryDir = Join-Path -Path $currentDirectory -ChildPath @($peripheryRepository)
-    # context
-    #[hashtable]$Script:context = Get-DockerContext -Path $dockerConfigFile
+    [IO.DirectoryInfo]$Script:commonDir = Join-Path -Path $infraDir -ChildPath @($commonRepository)
+    
+    $Env:GH_CONFIG_DIR = Join-Path -Path $configDir -ChildPath @("github-cli")
+    $Env:GH_PROMPT_DISABLED = 1
+    $Env:GIT_TERMINAL_PROMPT = 0
 
 
-    # ==========================================================================
-    # FUNCTIONS
-    # ==========================================================================
+    #Region functions
     function Write-Header($Configuration) {
         Clear-Host
         Write-Host ""
         Write-Host "############################################"
         Write-Host "###            INSTALL SCRIPT            ###"
         Write-Host "###   --------------------------------   ###"
-        Write-Host "###         [Version:  ${scriptVersion}]         ###"
+        Write-Host "###         [Version:$(" "*(10-$scriptVersion.Length))$scriptVersion]         ###"
         Write-Host "############################################"
         Write-Host ""
     }
+    #EndRegion
 }
 
 process {

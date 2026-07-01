@@ -27,7 +27,6 @@ begin {
     [string[]]$Script:errorMessage = @()
     # paths
     [IO.DirectoryInfo]$Script:appsDir = ([IO.FileInfo]$PSCommandPath).Directory.Parent.Parent
-    #[IO.DirectoryInfo]$Script:appsDir = ([IO.DirectoryInfo]$PWD.Path).Parent.Parent
     [IO.DirectoryInfo]$Script:configDir = Join-Path -Path $appsDir -ChildPath @(".config")
     [IO.FileInfo]$Script:configFile = Join-Path -Path $configDir -ChildPath @("docker.json")
     # git: general

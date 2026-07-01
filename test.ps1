@@ -5,5 +5,11 @@
 
 param()
 
-Write-Host "hola mundo"
-Write-Host "adios mundo"
+begin {
+    Write-Host "hola mundo"
+}
+
+end {
+    Write-Host "adios mundo"
+}
+

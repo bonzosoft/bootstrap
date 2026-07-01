@@ -7,6 +7,7 @@ param()
 
 begin {
     [string]$scriptVersion = "0.1.33"
+    Write-Information -MessageData "Version: $scriptVersion"
     
     # Script =======================================================================
     Write-Information -MessageData "Loading script '$PSCommandPath'."

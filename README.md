@@ -33,7 +33,13 @@ export BRANCH="main" && wget -qO ${PWD}/bootstrap/bootstrap.ps1 https://raw.gith
 ````bash
 docker run --rm -it -v ${PWD}:${PWD}:rw -w ${PWD} ghcr.io/bonzosoft/pwsh pwsh -NoLogo -Command '& {$branch = "main"; Invoke-RestMethod -Uri "https://raw.githubusercontent.com/bonzosoft/bootstrap/$branch/bootstrap.ps1" -OutFile $tmp/bootstrap.ps1; & ./bootstrap.ps1, Remove-Item -Path ./bootstrap.ps1}'
 ````
-Invoke-restMethod -Uri -
+
+````bash
+docker run --rm -it -v ${PWD}:${PWD}:rw -w ${PWD} ghcr.io/bonzosoft/pwsh pwsh -NoLogo -Command '& {$branch = "main"; & (Invoke-RestMethod -Uri "https://raw.githubusercontent.com/bonzosoft/bootstrap/$branch/bootstrap.ps1")}'
+````
+
+
+
 ## 3.- Configuración
 Para configurar el entorno, ejecutar:
 ````bash

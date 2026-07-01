@@ -7,14 +7,17 @@ param()
 
 begin {
     [string]$scriptVersion = "0.1.33"
-    Write-Information -MessageData "Version: $scriptVersion"
+    Write-Information -MessageData "Version: $scriptVersion" -InformationAction 'Continue'
+
+    [IO.FileInfo]$Script:currentScriptFile = $PSCommandPath
+    [IO.FileInfo]$Script:parentScriptFile = $MyInvocation.PSCommandPath
     
     # Script =======================================================================
-    Write-Information -MessageData "Loading script '$PSCommandPath'."
+    Write-Information -MessageData "Loading script '$PSCommandPath'." -InformationAction 'Continue'
     
 
     # Script settings ==============================================================
-    Write-Information -MessageData "Configuring Powershell environment."
+    Write-Information -MessageData "Configuring Powershell environment." -InformationAction 'Continue'
     
     Set-StrictMode -Version 'Latest'
     $ErrorActionPreference = 'Stop'

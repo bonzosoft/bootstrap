@@ -6,3 +6,4 @@
 param()
 
 Write-Host "hola mundo"
+Write-Host "adios mundo"

@@ -35,7 +35,7 @@ docker run --rm -it -v ${PWD}:${PWD}:rw -w ${PWD} ghcr.io/bonzosoft/pwsh pwsh -N
 ````
 
 ````bash
-docker run --rm -it -v ${PWD}:${PWD}:rw -w ${PWD} ghcr.io/bonzosoft/pwsh pwsh -NoLogo -Command '& {$branch = "main"; & (Invoke-RestMethod -Uri "https://raw.githubusercontent.com/bonzosoft/bootstrap/$branch/bootstrap.ps1")}'
+docker run --rm -it -v ${PWD}:${PWD}:rw -w ${PWD} ghcr.io/bonzosoft/pwsh pwsh -NoLogo -Command 'Invoke-Expression (Invoke-RestMethod -Uri "https://raw.githubusercontent.com/bonzosoft/bootstrap/main/test.ps1")'
 ````
 
 

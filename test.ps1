@@ -6,7 +6,7 @@
 param()
 
 begin {
-    Write-Host "hola mundo"
+    Write-Host "hola mundo v2"
 }
 
 end {

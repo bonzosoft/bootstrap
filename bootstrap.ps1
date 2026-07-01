@@ -6,7 +6,7 @@
 param()
 
 begin {
-    [string]$scriptVersion = "0.1.30"
+    [string]$scriptVersion = "0.1.31"
     
     # Script =======================================================================
     #Write-Information -MessageData "Loading script '$PSCommandPath'."
@@ -27,7 +27,7 @@ begin {
     [string[]]$Script:errorMessage = @()
     # paths
     #[IO.DirectoryInfo]$Script:appsDir = ([IO.FileInfo]$PSCommandPath.Path).Directory.Parent.Parent
-    [IO.DirectoryInfo]$Script:appsDir = ([IO.FileInfo]$PWD.Path).Directory.Parent.Parent
+    [IO.DirectoryInfo]$Script:appsDir = ([IO.DirectoryInfo]$PWD.Path).Parent.Parent
     [IO.DirectoryInfo]$Script:configDir = Join-Path -Path $appsDir -ChildPath @(".config")
     [IO.FileInfo]$Script:configFile = Join-Path -Path $configDir -ChildPath @("docker.json")
     # git: general

@@ -24,7 +24,16 @@ begin {
         
     [string[]]$Script:errorMessage = @()
     # paths
-    [IO.DirectoryInfo]$Script:RootDir = ([IO.FileInfo]$PSCommandPath).Directory # /mnt/tank0/apps
+    $workingDir = ([IO.FileInfo]$PSCommandPath).Directory
+    $context.RootDir          = [IO.DirectoryInfo]$workingDir.Parent
+    $context.CommonConfigDir  = [IO.DirectoryInfo](Join-Path -Path $context.RootDir -ChildPath @(".config"))
+    $context.GHConfigDir      = [IO.DirectoryInfo](Join-Path -Path $context.CommonConfigDir -ChildPath @("gh-cli"))
+    $context.CommonConfigFile = [IO.FileInfo](Join-Path -Path $context.CommonConfigDir - ChildPath @("deploy.json"))
+    # environment variables
+    $Env:GH_CONFIG_DIR = $context.GHConfigDir
+    $Env:GH_PROMPT_DISABLED = 1
+    $Env:GIT_TERMINAL_PROMPT = 0
+    [IO.DirectoryInfo]$Script:StacksDir = ([IO.FileInfo]$PSCommandPath).Directory # /mnt/tank0/apps/stacks
     [IO.DirectoryInfo]$Script:Deploy = Join-Path -Path $appsDir -ChildPath @(".config")
     [IO.FileInfo]$Script:configFile = Join-Path -Path $configDir -ChildPath @("deploy.json")
     # git: general
@@ -34,7 +43,7 @@ begin {
     # git: common
     [string]$Script:commonRepository = "common"
     [string]$Script:commonBranch = "main"
-    [IO.DirectoryInfo]$Script:commonDir = Join-Path -Path $infraDir -ChildPath @($commonRepository)
+    [IO.DirectoryInfo]$Script:commonDir = Join-Path -Path $PWD -ChildPath @($commonRepository)
     
     $Env:GH_CONFIG_DIR = Join-Path -Path $configDir -ChildPath @("github-cli")
     $Env:GH_PROMPT_DISABLED = 1

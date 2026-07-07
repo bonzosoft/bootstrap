@@ -6,7 +6,7 @@
 param()
 
 begin {
-    [string]$Script:scriptVersion="0.1.34"
+    [string]$Script:scriptVersion="0.1.35"
 
 
     # Command line setup =======================================================

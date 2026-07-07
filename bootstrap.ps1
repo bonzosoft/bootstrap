@@ -66,6 +66,9 @@ process {
     # ==========================================================================
     Clear-Host
     Write-Header
+
+    Write-Host $Env:GH_CONFIG_DIR
+    Write-Host $context.DeployConfigDir
     
     # check session for Github CLI 
     Write-Information -MessageData "Checking session for ${gitProvider}."
@@ -73,7 +76,7 @@ process {
     if ($LASTEXITCODE) {
         gh auth login --git-protocol $gitProtocol --hostname $gitProvider --web
     }
-    
+
     # propagate session to git
     Write-Information -MessageData "Asserting session for Git."
     $null = gh auth setup-git 2> variable:errorMessage

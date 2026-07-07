@@ -24,18 +24,13 @@ begin {
         
     [string[]]$Script:errorMessage = @()
     # paths
-    $workingDir = ([IO.FileInfo]$PSCommandPath).Directory
-    $context.RootDir          = [IO.DirectoryInfo]$workingDir.Parent
-    $context.CommonConfigDir  = [IO.DirectoryInfo](Join-Path -Path $context.RootDir -ChildPath @(".config"))
-    $context.GHConfigDir      = [IO.DirectoryInfo](Join-Path -Path $context.CommonConfigDir -ChildPath @("gh-cli"))
-    $context.CommonConfigFile = [IO.FileInfo](Join-Path -Path $context.CommonConfigDir - ChildPath @("deploy.json"))
+    $context.RootDir          = [IO.DirectoryInfo]([IO.FileInfo]$PSCommandPath).Directory
+    $context.DeployConfigDir  = [IO.DirectoryInfo](Join-Path -Path $context.RootDir -ChildPath @(".config"))
+    $context.DeployConfigFile = [IO.FileInfo](Join-Path -Path $context.DeployConfigDir - ChildPath @("deploy.json"))
     # environment variables
-    $Env:GH_CONFIG_DIR = $context.GHConfigDir
+    $Env:GH_CONFIG_DIR = $context.DeployConfigDir
     $Env:GH_PROMPT_DISABLED = 1
     $Env:GIT_TERMINAL_PROMPT = 0
-    [IO.DirectoryInfo]$Script:StacksDir = ([IO.FileInfo]$PSCommandPath).Directory # /mnt/tank0/apps/stacks
-    [IO.DirectoryInfo]$Script:Deploy = Join-Path -Path $appsDir -ChildPath @(".config")
-    [IO.FileInfo]$Script:configFile = Join-Path -Path $configDir -ChildPath @("deploy.json")
     # git: general
     [string]$Script:gitProtocol = "https"
     [string]$Script:gitProvider = "github.com"
@@ -45,11 +40,6 @@ begin {
     [string]$Script:commonBranch = "main"
     [IO.DirectoryInfo]$Script:commonDir = Join-Path -Path $PWD -ChildPath @($commonRepository)
     
-    $Env:GH_CONFIG_DIR = Join-Path -Path $configDir -ChildPath @("github-cli")
-    $Env:GH_PROMPT_DISABLED = 1
-    $Env:GIT_TERMINAL_PROMPT = 0
-
-
     #Region functions
     function Write-Header($Configuration) {
         Clear-Host

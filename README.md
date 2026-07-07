@@ -31,7 +31,7 @@ docker run --rm -it -v ${PWD}:${PWD}:rw -w ${PWD} ghcr.io/bonzosoft/pwsh pwsh -N
 ````
 
 ````bash
-docker run --rm -it -v ${PWD}:${PWD}:rw -w ${PWD} ghcr.io/bonzosoft/pwsh pwsh -NoLogo -Command '& {$branch = "main"; Remove-Item -Path ./bootstrap -Recurse; git clone https://github.com/bonzosoft/bootstrap; & ./bootstrap/bootstrap.ps1}'
+docker run --rm -it -v ${PWD}:${PWD}:rw -w ${PWD} ghcr.io/bonzosoft/pwsh pwsh -NoLogo -Command '& {$branch = "main"; if (Test-Path -Path ./bootstrap){Remove-Item -Path ./bootstrap -Recurse -Force}; git clone -b $branch https://github.com/bonzosoft/bootstrap; & ./bootstrap/bootstrap.ps1}'
 ````
 
 ## 3.- Configuración

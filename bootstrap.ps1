@@ -21,10 +21,10 @@ begin {
 
     # Script settings ==============================================================
     Write-Information -MessageData "Configuring environment."
-        
+
     [string[]]$Script:errorMessage = @()
     # paths
-    [hashtable]$context = [ordered]@{}
+    [hashtable]$context       = [ordered]@{}
     $context.RootDir          = [IO.DirectoryInfo]([IO.FileInfo]$PSCommandPath).Directory
     $context.DeployConfigDir  = [IO.DirectoryInfo](Join-Path -Path $context.RootDir -ChildPath @(".config"))
     $context.DeployConfigFile = [IO.FileInfo](Join-Path -Path $context.DeployConfigDir -ChildPath @("deploy.json"))
@@ -97,11 +97,15 @@ process {
     # create links
     foreach ($item in @("install", "cmd")) {
         Write-Information -MessageData "Adding link '${item}'."
-        $null = ln -snf (Join-Path -Path $commonDir -ChildPath @("${item}.sh")) (Join-Path -Path $workingDir -ChildPath @($item)) 2> variable:errorMessage
+        $source = Join-Path -Path $context.CommonDir -ChildPath @("${item}.sh")
+        $target = Join-Path -Path $context.RootDir.Parent -ChildPath @($item)
+        # create link
+        $null = ln -snf $source $target  2> variable:errorMessage
         if ($LASTEXITCODE) {
             Write-Error -Message $errorMessage
         }
-        $null = chmod +x (Join-Path -Path $workingDir -ChildPath @($item)) 2> variable:errorMessage
+        # add +x to link
+        $null = chmod +x $target 2> variable:errorMessage
         if ($LASTEXITCODE) {
             Write-Error -Message $errorMessage
         }

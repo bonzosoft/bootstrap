@@ -25,7 +25,7 @@ begin {
     [string[]]$Script:errorMessage = @()
     # paths
     [hashtable]$context       = [ordered]@{}
-    $context.RootDir          = [IO.DirectoryInfo]([IO.FileInfo]$PSCommandPath).Directory
+    $context.RootDir          = [IO.DirectoryInfo]([IO.FileInfo]$PSCommandPath).Directory.Parent
     $context.DeployConfigDir  = [IO.DirectoryInfo](Join-Path -Path $context.RootDir -ChildPath @(".config"))
     $context.DeployConfigFile = [IO.FileInfo](Join-Path -Path $context.DeployConfigDir -ChildPath @("deploy.json"))
     # environment variables

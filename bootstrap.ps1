@@ -27,7 +27,7 @@ begin {
     [hashtable]$context = [ordered]@{}
     $context.RootDir          = [IO.DirectoryInfo]([IO.FileInfo]$PSCommandPath).Directory
     $context.DeployConfigDir  = [IO.DirectoryInfo](Join-Path -Path $context.RootDir -ChildPath @(".config"))
-    $context.DeployConfigFile = [IO.FileInfo](Join-Path -Path $context.DeployConfigDir - ChildPath @("deploy.json"))
+    $context.DeployConfigFile = [IO.FileInfo](Join-Path -Path $context.DeployConfigDir -ChildPath @("deploy.json"))
     # environment variables
     $Env:GH_CONFIG_DIR = $context.DeployConfigDir
     $Env:GH_PROMPT_DISABLED = 1

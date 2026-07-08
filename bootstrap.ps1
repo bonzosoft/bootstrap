@@ -25,13 +25,10 @@ begin {
     [string[]]$Script:errorMessage = @()
     # paths
     [hashtable]$context       = [ordered]@{}
-    $context.RootDir          = [IO.DirectoryInfo]([IO.FileInfo]$PSCommandPath).Directory.Parent
-    $context.DeployConfigDir  = [IO.DirectoryInfo](Join-Path -Path $context.RootDir -ChildPath @(".config"))
-    $context.DeployConfigFile = [IO.FileInfo](Join-Path -Path $context.DeployConfigDir -ChildPath @("deploy.json"))
-    # environment variables
-    $Env:GH_CONFIG_DIR = $context.DeployConfigDir
-    $Env:GH_PROMPT_DISABLED = 1
-    $Env:GIT_TERMINAL_PROMPT = 0
+    $context.BaseDir          = [IO.DirectoryInfo]([IO.FileInfo]$PSCommandPath).Directory.Parent
+    $context.CommonDir        = [IO.DirectoryInfo](Join-Path -Path $context.BaseDir -ChildPath @("common"))
+    $context.ConfigDir        = [IO.DirectoryInfo](Join-Path -Path $context.BaseDir -ChildPath @(".config"))
+    $context.ConfigFile       = [IO.FileInfo](Join-Path -Path $context.ConfigDir -ChildPath @("deploy.json"))
     # git: general
     [string]$Script:gitProtocol = "https"
     [string]$Script:gitProvider = "github.com"
@@ -39,8 +36,12 @@ begin {
     # git: common
     [string]$Script:commonRepository = "common"
     [string]$Script:commonBranch = "main"
-    [IO.DirectoryInfo]$Script:commonDir = Join-Path -Path $PWD -ChildPath @($commonRepository)
-    
+    [IO.DirectoryInfo]$Script:commonDir = Join-Path -Path $context.StackDir.Parent -ChildPath @($commonRepository)
+    # environment variables
+    $Env:GH_CONFIG_DIR = $context.ConfigDir
+    $Env:GH_PROMPT_DISABLED = 1
+    $Env:GIT_TERMINAL_PROMPT = 0
+
     #Region functions
     function Write-Header($Configuration) {
         Clear-Host

@@ -36,7 +36,7 @@ begin {
     # git: common
     [string]$Script:commonRepository = "common"
     [string]$Script:commonBranch = "main"
-    [IO.DirectoryInfo]$Script:commonDir = Join-Path -Path $context.StackDir.Parent -ChildPath @($commonRepository)
+    [IO.DirectoryInfo]$Script:commonDir = Join-Path -Path $context.BaseDir -ChildPath @($commonRepository)
     # environment variables
     $Env:GH_CONFIG_DIR = $context.ConfigDir
     $Env:GH_PROMPT_DISABLED = 1

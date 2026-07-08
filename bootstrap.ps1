@@ -47,7 +47,7 @@ begin {
         Clear-Host
         Write-Host ""
         Write-Host "############################################"
-        Write-Host "###            INSTALL SCRIPT            ###"
+        Write-Host "###           BOOTSTRAP SCRIPT           ###"
         Write-Host "###   --------------------------------   ###"
         Write-Host "###        [Version:$(" "*(12-$scriptVersion.Length))$scriptVersion]        ###"
         Write-Host "############################################"

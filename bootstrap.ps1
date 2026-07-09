@@ -19,25 +19,30 @@ begin {
     Write-Information -MessageData "Loading script '$PSCommandPath'."
 
 
-    # Script settings ==============================================================
+    # Script settings ==========================================================
     Write-Information -MessageData "Configuring environment."
 
     [string]$Script:errorMessage = @()
+    [IO.DirectoryInfo]$baseDir = ([IO.FileInfo]$PSCommandPath).Directory
+    [IO.DirectoryInfo]$ghConfigDir = Join-Path -Path $baseDir -ChildPath @(".config", "gh")
+    [IO.FileInfo]$gitConfigFile = Join-Path -Path $basedir -ChildPath @(".config", "git", ".gitconfig")
     # git: general
     [string]$Script:gitProtocol = "https"
     [string]$Script:gitProvider = "github.com"
     [string]$Script:gitNamespace = "bonzosoft"
     # git: common
-    [string]$Script:commonRepository = "common"
-    [string]$Script:commonBranch = "main"
-    [IO.DirectoryInfo]$Script:commonDir = Join-Path -Path ([IO.FileInfo]$PSCommandPath).Directory.Parent -ChildPath @($commonRepository)
+    [string]$Script:gitCommonRepository = "common"
+    [string]$Script:gitCommonBranch = "main"
+    [IO.DirectoryInfo]$Script:commonRepositoryDir = Join-Path -Path $baseDir -ChildPath @($gitCommonRepository)
     # environment variables
     $Env:GH_PROMPT_DISABLED = 1
     $Env:GIT_TERMINAL_PROMPT = 0
-    #export GH_TOKEN=...
-    git config --global credential.helper '!gh auth git-credential'
+    #$Env:GH_TOKEN =
+    $Env:GH_CONFIG_DIR = $ghConfigDir
+    $Env:GIT_CONFIG_GLOBAL = $gitConfigFile
+    
 
-    #Region functions
+    #Region functions ==========================================================
     function Write-Header($Configuration) {
         Clear-Host
         Write-Host ""
@@ -72,7 +77,8 @@ process {
 
     # propagate session to git
     Write-Information -MessageData "Asserting session for Git."
-    #$null = gh auth setup-git 2> variable:errorMessage
+    $null = gh auth setup-git 2> variable:errorMessage
+    #$null = git config --global credential.helper '!gh auth git-credential' 2> variable:errorMessage
     if ($LASTEXITCODE) {
         Write-Error -Message $errorMessage
     }

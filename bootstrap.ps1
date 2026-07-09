@@ -84,7 +84,7 @@ process {
     }
     
     # get new version
-    Write-Information -MessageData "Cloning repository ${gitNamespace}/${commonRepository}."
+    Write-Information -MessageData "Cloning repository ${gitNamespace}/${commonRepository} to $commonDir."
     $null = git clone --branch $commonBranch --single-branch "${gitProtocol}://${gitProvider}/${gitNamespace}/${commonRepository}.git" 2> variable:errorMessage
     if ($LASTEXITCODE) {
         Write-Error -Message $errorMessage

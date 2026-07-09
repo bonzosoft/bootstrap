@@ -23,12 +23,6 @@ begin {
     Write-Information -MessageData "Configuring environment."
 
     [string[]]$Script:errorMessage = @()
-    # paths
-    [hashtable]$context       = [ordered]@{}
-    $context.BaseDir          = [IO.DirectoryInfo]([IO.FileInfo]$PSCommandPath).Directory.Parent
-    $context.CommonDir        = [IO.DirectoryInfo](Join-Path -Path $context.BaseDir -ChildPath @("common"))
-    $context.ConfigDir        = [IO.DirectoryInfo](Join-Path -Path $context.BaseDir -ChildPath @(".config"))
-    $context.ConfigFile       = [IO.FileInfo](Join-Path -Path $context.ConfigDir -ChildPath @("deploy.json"))
     # git: general
     [string]$Script:gitProtocol = "https"
     [string]$Script:gitProvider = "github.com"
@@ -36,9 +30,8 @@ begin {
     # git: common
     [string]$Script:commonRepository = "common"
     [string]$Script:commonBranch = "main"
-    [IO.DirectoryInfo]$Script:commonDir = Join-Path -Path $context.BaseDir -ChildPath @($commonRepository)
+    [IO.DirectoryInfo]$Script:commonDir = Join-Path -Path ([IO.DirectoryInfo]$PSCommandPath).Directory -ChildPath @($commonRepository)
     # environment variables
-    $Env:GH_CONFIG_DIR = $context.ConfigDir
     $Env:GH_PROMPT_DISABLED = 1
     $Env:GIT_TERMINAL_PROMPT = 0
 
@@ -67,9 +60,6 @@ process {
     # ==========================================================================
     Clear-Host
     Write-Header
-
-    Write-Host $Env:GH_CONFIG_DIR
-    Write-Host $context.DeployConfigDir
     
     # check session for Github CLI 
     Write-Information -MessageData "Checking session for ${gitProvider}."
@@ -98,11 +88,22 @@ process {
         Write-Error -Message $errorMessage
     }
     
+    Push-Localtion -Path (Join-Path -Path $PWD -ChildPath @($commonRepository))
+    . (Join-Path -Path $PWD -ChildPath @($commonRepository, "./common.ps1"))
+    Pop-Location
+
+
+    [IO.DirectoryInfo]$ghDefaultDir = Join-Path -Path $HOME -ChildPath @(".config", "gh")
+    foreach ($file in @("hosts.yml", "config.yml")) {
+        Move-Item -Path (Join-Path -Path $ghDefaultDir -ChildPath @($file)) -Destination (Join-Path -Path $context.GHConfigDir) -Force
+        Remove-item -Path -$ghDefaultDir -Recurse -Force
+    }
+        
     # create links
     foreach ($item in @("install", "cmd")) {
         Write-Information -MessageData "Adding link '${item}'."
         $source = Join-Path -Path $context.CommonDir -ChildPath @("${item}.sh")
-        $target = Join-Path -Path $context.RootDir.Parent -ChildPath @($item)
+        $target = Join-Path -Path $context.BaseDir.Parent -ChildPath @($item)
         # create link
         $null = ln -snf $source $target  2> variable:errorMessage
         if ($LASTEXITCODE) {

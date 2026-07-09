@@ -34,6 +34,8 @@ begin {
     # environment variables
     $Env:GH_PROMPT_DISABLED = 1
     $Env:GIT_TERMINAL_PROMPT = 0
+    #export GH_TOKEN=...
+    git config --global credential.helper '!gh auth git-credential'
 
     #Region functions
     function Write-Header($Configuration) {
@@ -70,7 +72,7 @@ process {
 
     # propagate session to git
     Write-Information -MessageData "Asserting session for Git."
-    $null = gh auth setup-git 2> variable:errorMessage
+    #$null = gh auth setup-git 2> variable:errorMessage
     if ($LASTEXITCODE) {
         Write-Error -Message $errorMessage
     }

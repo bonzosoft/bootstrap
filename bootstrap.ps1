@@ -23,7 +23,7 @@ begin {
     Write-Information -MessageData "Configuring environment."
 
     [string]$Script:errorMessage = @()
-    [IO.DirectoryInfo]$baseDir = ([IO.FileInfo]$PSCommandPath).Directory
+    [IO.DirectoryInfo]$baseDir = ([IO.FileInfo]$PSCommandPath).Directory.Parent
     [IO.DirectoryInfo]$ghConfigDir = Join-Path -Path $baseDir -ChildPath @(".config", "gh")
     [IO.FileInfo]$gitConfigFile = Join-Path -Path $basedir -ChildPath @(".config", "git", ".gitconfig")
     # git: general

@@ -94,13 +94,13 @@ process {
     }
     
     # get new version
-    Write-Information -MessageData "Cloning repository ${gitNamespace}/${commonRepository} to $commonDir."
-    $null = git clone --branch $commonBranch --single-branch "${gitProtocol}://${gitProvider}/${gitNamespace}/${commonRepository}.git" 2> variable:errorMessage
+    Write-Information -MessageData "Cloning repository ${gitNamespace}/${gitCommonRepository} to $commonDir."
+    $null = git clone --branch $gitCommonBranch --single-branch "${gitProtocol}://${gitProvider}/${gitNamespace}/${gitCommonRepository}.git" 2> variable:errorMessage
     if ($LASTEXITCODE) {
         Write-Error -Message $errorMessage
     }
     
-    Push-Location -Path (Join-Path -Path $PWD -ChildPath @($commonRepository))
+    Push-Location -Path (Join-Path -Path $PWD -ChildPath @($gitCommonRepository))
     . (Join-Path -Path $commonDir -ChildPath @("common.ps1"))
     Pop-Location
 

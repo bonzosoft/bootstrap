@@ -22,7 +22,7 @@ begin {
     # Script settings ==============================================================
     Write-Information -MessageData "Configuring environment."
 
-    [string[]]$Script:errorMessage = @()
+    [string]$Script:errorMessage = @()
     # git: general
     [string]$Script:gitProtocol = "https"
     [string]$Script:gitProvider = "github.com"

@@ -26,6 +26,10 @@ begin {
     [IO.DirectoryInfo]$baseDir = ([IO.FileInfo]$PSCommandPath).Directory.Parent
     [IO.DirectoryInfo]$ghConfigDir = Join-Path -Path $baseDir -ChildPath @(".config", "gh")
     [IO.FileInfo]$gitConfigFile = Join-Path -Path $basedir -ChildPath @(".config", "git", ".gitconfig")
+    if (-not (Test-Path -Path $gitConfigFile)) {
+        New-Item -Path $gitConfigFile -ItemType File -Force
+    }
+    
     # git: general
     [string]$Script:gitProtocol = "https"
     [string]$Script:gitProvider = "github.com"

@@ -91,7 +91,7 @@ process {
     }
     
     Push-Location -Path (Join-Path -Path $PWD -ChildPath @($commonRepository))
-    . (Join-Path -Path $PWD -ChildPath @($commonRepository, "./common.ps1"))
+    . (Join-Path -Path $commonDir -ChildPath @("common.ps1"))
     Pop-Location
 
 

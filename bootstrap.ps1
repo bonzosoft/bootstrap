@@ -88,7 +88,7 @@ process {
         Write-Error -Message $errorMessage
     }
     
-    Push-Localtion -Path (Join-Path -Path $PWD -ChildPath @($commonRepository))
+    Push-Location -Path (Join-Path -Path $PWD -ChildPath @($commonRepository))
     . (Join-Path -Path $PWD -ChildPath @($commonRepository, "./common.ps1"))
     Pop-Location
 

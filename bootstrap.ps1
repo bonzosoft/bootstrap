@@ -30,7 +30,7 @@ begin {
     # git: common
     [string]$Script:commonRepository = "common"
     [string]$Script:commonBranch = "main"
-    [IO.DirectoryInfo]$Script:commonDir = Join-Path -Path ([IO.DirectoryInfo]$PSCommandPath.Path).Directory -ChildPath @($commonRepository)
+    [IO.DirectoryInfo]$Script:commonDir = Join-Path -Path ([IO.DirectoryInfo]$PSCommandPath.Path).Parent -ChildPath @($commonRepository)
     # environment variables
     $Env:GH_PROMPT_DISABLED = 1
     $Env:GIT_TERMINAL_PROMPT = 0

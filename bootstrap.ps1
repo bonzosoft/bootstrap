@@ -93,13 +93,13 @@ process {
     }
     
     # remove previous version
-    if (Test-Path -Path $commonDir) {
+    if (Test-Path -Path $gitCommonDir) {
         Write-Information -MessageData "Removing previous version."
-        Remove-Item -Path $commonDir -Recurse -Force | Out-Null
+        Remove-Item -Path $gitCommonDir -Recurse -Force | Out-Null
     }
     
     # get new version
-    Write-Information -MessageData "Cloning repository ${gitNamespace}/${gitCommonRepository} to $commonDir."
+    Write-Information -MessageData "Cloning repository ${gitNamespace}/${gitCommonRepository} to $gitCommonDir."
     $null = git clone --branch $gitCommonBranch --single-branch "${gitProtocol}://${gitProvider}/${gitNamespace}/${gitCommonRepository}.git" 2> variable:errorMessage
     if ($LASTEXITCODE) {
         Write-Error -Message $errorMessage
@@ -109,8 +109,8 @@ process {
     foreach ($item in @("install", "cmd")) {
         Write-Information -MessageData "Adding link '${item}'."
         
-        $source = Join-Path -Path $context.CommonDir -ChildPath @("${item}.sh")
-        $target = Join-Path -Path $context.BaseDir.Parent -ChildPath @($item)
+        $source = Join-Path -Path $gitCommonDir -ChildPath @("${item}.sh")
+        $target = Join-Path -Path $gitBaseDir -ChildPath @($item)
         # create link
         $null = ln -snf $source $target  2> variable:errorMessage
         if ($LASTEXITCODE) {

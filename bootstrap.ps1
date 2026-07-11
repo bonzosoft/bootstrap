@@ -126,6 +126,13 @@ process {
 
 end {
     Write-Information -MessageData ""
-    Write-Information -MessageData "Press any key to continue..."
-    Read-Host | Out-Null
+    Write-Information -MessageData "Press 'y' to continue with the install or any key to finish..."
+    switch (Read-Host | Out-Null) {
+        "y" {
+            & ./install
+        }
+        default {
+            exit 0
+        }
+    }
 }

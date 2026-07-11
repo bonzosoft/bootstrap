@@ -126,14 +126,6 @@ process {
 
 end {
     Write-Information -MessageData ""
-    Write-Information -MessageData ""
-    switch (Read-Host -Prompt "Press 'y' to continue with the install or any other key to finish") {
-        "y" {
-            write-Host $PWD
-            pwsh -File (Join-Path -Path $gitCommonRepository -ChildPath @("./install.ps1"))
-        }
-        default {
-            exit 0
-        }
-    }
+    Write-Information -MessageData "Press any key to continue..."
+    Read-Host | Out-Null
 }

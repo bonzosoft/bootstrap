@@ -130,7 +130,7 @@ end {
     switch (Read-Host -Prompt "Press 'y' to continue with the install or any other key to finish") {
         "y" {
             write-Host $PWD
-            & ./install
+            pwsh -File "./install.ps1"
         }
         default {
             exit 0

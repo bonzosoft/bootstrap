@@ -31,7 +31,7 @@ docker run --rm -it -v ${PWD}:${PWD}:rw -w ${PWD} ghcr.io/bonzosoft/pwsh pwsh -N
 ````
 
 ````bash
-DIR="/mnt/tank0/apps/stack" && mkdir -p $DIR && pushd $DIR > /dev/null && docker run --rm -it -v ${PWD}:${PWD}:rw -w ${PWD} ghcr.io/bonzosoft/pwsh pwsh -NoLogo -Command '& {$repository = "bootstrap"; $branch = "main"; if (Test-Path -Path ./$repository){Remove-Item -Path ./$repository -Recurse -Force}; git clone -b $branch https://github.com/bonzosoft/$repository; & ./$repository/$repository.ps1}'
+DIR="/mnt/tank0/apps/stack" && mkdir -p $DIR && pushd $DIR > /dev/null && docker run --rm -it -v ${PWD}:${PWD}:rw -w ${PWD} ghcr.io/bonzosoft/pwsh pwsh -NoLogo -Command '& {$repository = "bootstrap"; $branch = "main"; if (Test-Path -Path ./$repository){Remove-Item -Path ./$repository -Recurse -Force}; git clone -b $branch https://github.com/bonzosoft/$repository; & ./$repository/$repository.ps1}' && popd > /dev/null
 ````
 
 ## 3.- Configuración

@@ -126,8 +126,8 @@ process {
 
 end {
     Write-Information -MessageData ""
-    Write-Information -MessageData "Press 'y' to continue with the install or any other key to finish..."
-    switch (Read-Host) {
+    Write-Information -MessageData ""
+    switch (Read-Host -Prompt "Press 'y' to continue with the install or any other key to finish") {
         "y" {
             write-Host $PWD
             & ./install

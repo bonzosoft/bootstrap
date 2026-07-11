@@ -23,10 +23,14 @@ begin {
     Write-Information -MessageData "Configuring environment."
 
     [string]$Script:errorMessage = @()
-    [IO.DirectoryInfo]$baseDir = ([IO.FileInfo]$PSCommandPath).Directory.Parent
-    [IO.DirectoryInfo]$ghConfigDir = Join-Path -Path $baseDir -ChildPath @(".config", "gh")
-    [IO.FileInfo]$gitConfigFile = Join-Path -Path $basedir -ChildPath @(".config", "git", "config")
-    
+    # git: paths
+    [IO.DirectoryInfo]$gitBaseDir = ([IO.FileInfo]$PSCommandPath).Directory.Parent
+    [IO.DirectoryInfo]$ghConfigDir = Join-Path -Path $gitBaseDir -ChildPath @(".config", "gh")
+    $Env:GH_CONFIG_DIR = $ghConfigDir
+    $Env:GH_PROMPT_DISABLED = 1
+    [IO.FileInfo]$gitConfigFile = Join-Path -Path $gitBaseDir -ChildPath @(".config", "git", "config")
+    $Env:GIT_CONFIG_GLOBAL = $gitConfigFile
+    $Env:GIT_TERMINAL_PROMPT = 0
     # git: general
     [string]$Script:gitProtocol = "https"
     [string]$Script:gitProvider = "github.com"
@@ -34,14 +38,16 @@ begin {
     # git: common
     [string]$Script:gitCommonRepository = "common"
     [string]$Script:gitCommonBranch = "main"
-    [IO.DirectoryInfo]$Script:commonDir = Join-Path -Path $baseDir -ChildPath @($gitCommonRepository)
-    # environment variables
-    $Env:GH_PROMPT_DISABLED = 1
-    $Env:GIT_TERMINAL_PROMPT = 0
-    #$Env:GH_TOKEN =
-    $Env:GH_CONFIG_DIR = $ghConfigDir
-    $Env:GIT_CONFIG_GLOBAL = $gitConfigFile
-    
+    [IO.DirectoryInfo]$Script:gitCommonDir = Join-Path -Path $gitBaseDir -ChildPath @($gitCommonRepository)
+    ## git: komodo core
+    #[string]$Script:gitCoreRepository = "komodo-core"
+    #[string]$Script:gitCoreBranch = "main"
+    #[IO.DirectoryInfo]$Script:gitCoreDir = Join-Path -Path $gitBaseDir -ChildPath @($gitCoreRepository)
+    ## git: komodo periphery
+    #[string]$Script:gitPeripheryRepository = "komodo-periphery"
+    #[string]$Script:gitPeripheryBranch = "main"
+    #[IO.DirectoryInfo]$Script:gitPeripheryDir = Join-Path -Path $gitBaseDir -ChildPath @($gitPeripheryRepository)
+
 
     #Region functions ==========================================================
     function Write-Header($Configuration) {

@@ -6,7 +6,7 @@
 param()
 
 begin {
-    [string]$Script:scriptVersion="0.1.35"
+    [string]$Script:scriptVersion="0.1.36"
 
 
     # Command line setup =======================================================
@@ -25,10 +25,7 @@ begin {
     [string]$Script:errorMessage = @()
     [IO.DirectoryInfo]$baseDir = ([IO.FileInfo]$PSCommandPath).Directory.Parent
     [IO.DirectoryInfo]$ghConfigDir = Join-Path -Path $baseDir -ChildPath @(".config", "gh")
-    [IO.FileInfo]$gitConfigFile = Join-Path -Path $basedir -ChildPath @(".config", "git", ".gitconfig")
-    if (-not (Test-Path -Path $gitConfigFile)) {
-        New-Item -Path $gitConfigFile -ItemType File -Force
-    }
+    [IO.FileInfo]$gitConfigFile = Join-Path -Path $basedir -ChildPath @(".config", "git", "config")
     
     # git: general
     [string]$Script:gitProtocol = "https"
@@ -81,8 +78,10 @@ process {
 
     # propagate session to git
     Write-Information -MessageData "Asserting session for Git."
-    $null = gh auth setup-git 2> variable:errorMessage
-    #$null = git config --global credential.helper '!gh auth git-credential' 2> variable:errorMessage
+    if (-not (Test-Path -Path $gitConfigFile)) {
+        New-Item -Path $gitConfigFile -ItemType File -Force | Out-Null
+    }
+    $null = gh auth setup-git 2> variable:errorMessage #$null = git config --global credential.helper '!gh auth git-credential' 2> variable:errorMessage
     if ($LASTEXITCODE) {
         Write-Error -Message $errorMessage
     }
@@ -99,21 +98,11 @@ process {
     if ($LASTEXITCODE) {
         Write-Error -Message $errorMessage
     }
-    
-    Push-Location -Path (Join-Path -Path $PWD -ChildPath @($gitCommonRepository))
-    . (Join-Path -Path $commonDir -ChildPath @("common.ps1"))
-    Pop-Location
-
-
-    [IO.DirectoryInfo]$ghDefaultDir = Join-Path -Path $HOME -ChildPath @(".config", "gh")
-    foreach ($file in @("hosts.yml", "config.yml")) {
-        Move-Item -Path (Join-Path -Path $ghDefaultDir -ChildPath @($file)) -Destination (Join-Path -Path $context.GHConfigDir) -Force
-        Remove-item -Path -$ghDefaultDir -Recurse -Force
-    }
-        
+            
     # create links
     foreach ($item in @("install", "cmd")) {
         Write-Information -MessageData "Adding link '${item}'."
+        
         $source = Join-Path -Path $context.CommonDir -ChildPath @("${item}.sh")
         $target = Join-Path -Path $context.BaseDir.Parent -ChildPath @($item)
         # create link

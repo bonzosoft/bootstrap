@@ -3,32 +3,13 @@
 
 ## 1.- Prerrequisitos
 
-La estructura de directorios recomendada es:
-
-````
-/mnt/tank0/apps
-|- infra/
-|  |- bootstrap/
-|  |- common/
-|  |- komodo-core/
-|  |- komodo-periphery/
-|  |- run
-|- state/
-|  |- komodo-core/
-|     |- app/
-|     |- db/
-|     |- dbwrapper/
-|     |- proxy/
-|- storage/
-````
+Ninguno.
+El script creara el arbol de directorios preconfigurado.
+El script descargará todo el contenido necesrio del repositorio configurado.
 
 ## 2.- Instalación
 
 Para realizar el bootstrap de la instalación del entorno de Docker, ejecutar:
-
-````bash
-docker run --rm -it -v ${PWD}:${PWD}:rw -w ${PWD} ghcr.io/bonzosoft/pwsh pwsh -NoLogo -Command '& {$branch = "main"; Invoke-RestMethod -Uri "https://raw.githubusercontent.com/bonzosoft/bootstrap/$branch/bootstrap.ps1" -OutFile ./bootstrap.ps1; & ./bootstrap.ps1; Remove-Item -Path ./bootstrap.ps1}'
-````
 
 ````bash
 DIR="/mnt/tank0/apps/stack" && mkdir -p $DIR && cd $DIR && docker run --rm -it -v ${PWD}:${PWD}:rw -w ${PWD} ghcr.io/bonzosoft/pwsh pwsh -NoLogo -Command '& {$repository = "bootstrap"; $branch = "main"; if (Test-Path -Path ./$repository){Remove-Item -Path ./$repository -Recurse -Force}; git clone -b $branch https://github.com/bonzosoft/$repository; & ./$repository/$repository.ps1}'
@@ -42,13 +23,15 @@ Para configurar el entorno, ejecutar:
 
 ### 4.- Ejecución de pwsh
 
-Para usar el contenedor de ``pwsh`` se puede ejecutar un comando aleatorio con:
+Para usar el contenedor de ``pwsh`` se puede:
+
+ 1.- Ejecutar un comando arbitrario con:
 
 ````
 ./cmd Write-Host "Hola Mundo."
 ````
 
-o iniciar la consola con:
+ 2.- Iniciar la consola con:
 ````bash
 ./cmd
 ````

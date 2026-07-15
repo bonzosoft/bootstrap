@@ -21,17 +21,17 @@ Para configurar el entorno, ejecutar:
 ./install
 ````
 
-### 4. Ejecución de pwsh
+## 4. Ejecución de pwsh
 
 Para usar el contenedor de ``pwsh`` se puede:
 
-#### 1. Ejecutar un comando arbitrario con:
+### 1. Ejecutar un comando arbitrario con:
 
 ````
 ./cmd Write-Host "Hola Mundo."
 ````
 
-#### 2. Iniciar la consola con:
+### 2. Iniciar la consola con:
 ````bash
 ./cmd
 ````

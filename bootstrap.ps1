@@ -99,6 +99,7 @@ begin {
     if ($LASTEXITCODE -ne 0) {
         throw ($errStream -join [Environment]::NewLine)
     }
+    Write-host ($configData | Out-string)
 
     Write-Host "escribiendo a archivo"
     $configData | ConvertTo-Json -Depth 9 | Set-Content -Path $configFile

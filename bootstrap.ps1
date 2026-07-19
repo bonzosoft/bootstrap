@@ -49,6 +49,15 @@ begin {
     }
     else {
         New-Item -Path $configFile -ItemType File -Force | Out-Null
+        [hashtable]$template = @{}
+        $template.Vault = @{
+            "Session" = ""
+        }
+        $template.Git = @{
+            "Token"= ""
+        }
+        $template | ConvertTo-Json -Depth 9 | Set-Content -Path $configFile
+        
         $vaultLogin = $true
     }
 
@@ -71,7 +80,6 @@ begin {
             throw ($errStream -join [Environment]::NewLine)
         }
 
-        $configData.Vault = @{}
         $configData.Vault.Session = (ConvertFrom-SecureString -SecureString $vaultCredential.Password -AsPlainText) | 
         bw unlock --raw 2> Variable:errStream
         if ($LASTEXITCODE -ne 0) {
@@ -86,7 +94,6 @@ begin {
 
     Write-host "mostrando token"
     Write-host $configData
-    $configData.Git = @{}
     $configData.Git.Token = bw get password "TOKEN_GITHUB_READONLY_ALL" --session $configData.Vault.Session 2> variable:errStream
     if ($LASTEXITCODE -ne 0) {
         throw ($errStream -join [Environment]::NewLine)

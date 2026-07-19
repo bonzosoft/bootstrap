@@ -48,7 +48,7 @@ begin {
         }
     }
     else {
-        New-Item -Path $configFile -ItemType File -Force
+        New-Item -Path $configFile -ItemType File -Force | Outl-Null
         $vaultLogin = $true
     }
 

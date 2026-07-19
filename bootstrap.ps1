@@ -90,19 +90,13 @@ begin {
         $configData
     }
 
-    Write-Host "escribiendo a archivo"
     $configData | ConvertTo-Json -Depth 9 | Set-Content -Path $configFile
 
-    Write-host "mostrando token"
-    Write-host ($configData | Out-string)
-    $string = bw get password "TOKEN_GITHUB_READONLY_ALL" --session $configData.Vault.Session 2> variable:errStream
-    Write-Host "string: $string"
+    $configData.Git.Token = bw get notes TOKEN_GITHUB_READONLY_ALL --session $configData.Vault.Session 2> variable:errStream
     if ($LASTEXITCODE -ne 0) {
         throw ($errStream -join [Environment]::NewLine)
     }
-    Write-host ($configData | Out-string)
 
-    Write-Host "escribiendo a archivo"
     $configData | ConvertTo-Json -Depth 9 | Set-Content -Path $configFile
 
     foreach ($key in $temp.Keys) {

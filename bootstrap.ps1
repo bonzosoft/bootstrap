@@ -57,7 +57,7 @@ begin {
         }
         while (-not $vaultUri.IsAbsoluteUri)
         
-        $stdStream = bw config server $Uri 2> Variable:errStream
+        $stdStream = bw config server $vaultUri 2> Variable:errStream
         if ($LASTEXITCODE -ne 0) {
             throw ($errStream -join [Environment]::NewLine)
         }

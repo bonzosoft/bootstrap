@@ -51,14 +51,13 @@ begin {
     }
     else {
         New-Item -Path $configFile -ItemType File -Force | Out-Null
-        [hashtable]$template = @{}
-        $template.Vault = @{
+        $configData.Vault = @{
             "Session" = ""
         }
-        $template.Git = @{
+        $configData.Git = @{
             "Token"= ""
         }
-        $template | ConvertTo-Json -Depth 9 | Set-Content -Path $configFile
+        $configData | ConvertTo-Json -Depth 9 | Set-Content -Path $configFile
         
         $vaultLogin = $true
     }

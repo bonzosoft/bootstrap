@@ -69,17 +69,25 @@ begin {
             throw ($errStream -join [Environment]::NewLine)
         }
 
+        $configData.Vault = @{}
         $configData.Vault.Session = (ConvertFrom-SecureString -SecureString $Credential.Password -AsPlainText) | 
         bw unlock --raw 2> Variable:errStream
         if ($LASTEXITCODE -ne 0) {
             throw ($errStream -join [Environment]::NewLine)
         }
+
+        $configData
     }
 
+    Write-Host "escribiendo a archivo"
     $configData | ConvertTo-Json -Depth 9 | Set-Content -Path $configFile
 
+    Write-host "mostrando token"
+    Write-host $configData
+    $configData.Git = @{}
     $configData.Git.Token = bw get password "TOKEN_GITHUB_READONLY_ALL" --session $configData.Vault.Session 2> variable:errStream
 
+    Write-Host "escribiendo a archivo"
     $configData | ConvertTo-Json -Depth 9 | Set-Content -Path $configFile
 
 

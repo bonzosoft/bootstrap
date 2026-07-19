@@ -70,7 +70,7 @@ begin {
         }
 
         $configData.Vault = @{}
-        $configData.Vault.Session = (ConvertFrom-SecureString -SecureString $Credential.Password -AsPlainText) | 
+        $configData.Vault.Session = (ConvertFrom-SecureString -SecureString $vaultCredential.Password -AsPlainText) | 
         bw unlock --raw 2> Variable:errStream
         if ($LASTEXITCODE -ne 0) {
             throw ($errStream -join [Environment]::NewLine)

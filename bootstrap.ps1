@@ -48,14 +48,16 @@ begin {
         }
     }
     else {
+        New-Item -Path $configFile -ItemType File
         $vaultLogin = $true
     }
 
     if ($vaultLogin) {
-        do {
-            $vaultUri = Read-Host "Inset Vault Uri"
-        }
-        while (-not $vaultUri.IsAbsoluteUri)
+        #do {
+        #    $vaultUri = Read-Host "Inset Vault Uri"
+        #}
+        #while (-not $vaultUri.IsAbsoluteUri)
+        $vaultUri = "https://pass.985337789.xyz"
         
         $stdStream = bw config server $vaultUri 2> Variable:errStream
         if ($LASTEXITCODE -ne 0) {

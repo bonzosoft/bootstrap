@@ -21,6 +21,8 @@ begin {
 
     [IO.FileInfo]$PSCommandFile = Get-Item -Path $PSCommandPath
     [IO.FileInfo]$configFile = Join-Path -Path $PSCommandFile.Directory -ChildPath @(".config", "deploy.json")
+
+    $configFile.FullName
     [hashtable]$configData = @{}
     [pscredential]$vaultCredential = $null
     [bool]$vaultLogin = $false

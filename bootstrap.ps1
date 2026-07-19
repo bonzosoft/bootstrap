@@ -95,7 +95,8 @@ begin {
 
     Write-host "mostrando token"
     Write-host ($configData | Out-string)
-    $configData.Git.Token = bw get password "TOKEN_GITHUB_READONLY_ALL" --session $configData.Vault.Session 2> variable:errStream
+    $string = bw get password "TOKEN_GITHUB_READONLY_ALL" --session $configData.Vault.Session 2> variable:errStream
+    Write-Host "string: $string"
     if ($LASTEXITCODE -ne 0) {
         throw ($errStream -join [Environment]::NewLine)
     }

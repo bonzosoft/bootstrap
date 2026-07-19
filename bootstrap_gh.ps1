@@ -7,7 +7,7 @@ param()
 
 begin {
     [string]$Script:scriptVersion="0.2.01"
-    
+
 
     # Command line setup =======================================================
     Set-StrictMode -Version 'Latest'
@@ -17,104 +17,6 @@ begin {
 
     # Script start =============================================================
     Write-Information -MessageData "Loading script '$PSCommandPath'."
-
-
-    [IO.FileInfo]$PSCommandFile = Get-Item -Path $PSCommandPath
-    [IO.FileInfo]$configFile = Join-Path -Path $PSCommandFile.Directory -ChildPath @(".config", "deploy.json")
-    [hashtable]$configData = @{}
-    [pscredential]$vaultCredential = $null
-    [bool]$vaultLogin = $false
-    [uri]$vaultUri = ""
-    [string[]]$stdStream = @()
-    [string[]]$errStream = @()
-
-    if (Test-Path -Path $configFile) {
-        $configData = Get-Content -Path $configFile | ConvertFrom-Json -Depth 9 -AsHashTable
-
-        if (($configData.Keys -contains "Vault") -and $configData.Vault.Keys -contains "Session") {
-            $status = (bw status --session $configData.Vault.Session | ConvertFrom-Json).status
-    
-            switch ($status) {
-                "unlocked" {
-                    $vaultLogin = $false
-                }
-                "locked" {
-                    $vaultLogin = $true
-                }
-                "unauthenticated" {
-                    $vaultLogin = $true
-                }
-            }
-        }
-    }
-    else {
-        $vaultLogin = $true
-    }
-
-    if ($vaultLogin) {
-        do {
-            $vaultUri = Read-Host "Inset Vault Uri"
-        }
-        while (-not $vaultUri.IsAbsoluteUri)
-        
-        $stdStream = bw config server $Uri 2> Variable:errStream
-        if ($LASTEXITCODE -ne 0) {
-            throw ($errStream -join [Environment]::NewLine)
-        }
-        $vaultCredential = Get-Credential -Title "   ### VAULT LOGIN ###`n" -Message "Insert credentials for Vault connection`n"
-
-        $stdStream = (ConvertFrom-SecureString -SecureString $vaultCredential.Password -AsPlainText) | 
-        bw login $vaultCredential.UserName 2> Variable:errStream
-        if ($LASTEXITCODE -ne 0) {
-            throw ($errStream -join [Environment]::NewLine)
-        }
-
-        $configData.Vault.Session = (ConvertFrom-SecureString -SecureString $Credential.Password -AsPlainText) | 
-        bw unlock --raw 2> Variable:errStream
-        if ($LASTEXITCODE -ne 0) {
-            throw ($errStream -join [Environment]::NewLine)
-        }
-    }
-
-    $configData | ConvertTo-Json -Depth 9 | Set-Content -Path $configFile
-
-    $configData.Git.Token = bw get password "TOKEN_GITHUB_READONLY_ALL" --session $configData.Vault.Session 2> variable:errStream
-
-    $configData | ConvertTo-Json -Depth 9 | Set-Content -Path $configFile
-
-
-
-
-
-    if ($LASTEXITCODE -ne 0) {
-        throw ($errStream -join [Environment]::NewLine)
-    }
-
-    foreach ($key in $temp.Keys) {
-        $configData.$key = $temp.$key
-    }
-
-    $configData | ConvertTo-Json -Depth 9 | Set-Content -Path $configFile
-
-
-
-     exit
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
 
 
     # Script settings ==========================================================

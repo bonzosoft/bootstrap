@@ -99,13 +99,14 @@ begin {
 
     $configData | ConvertTo-Json -Depth 9 | Set-Content -Path $configFile
 
+    $tmp = (bw get notes DEPLOY-AST --session $configData.Vault.Session 2> variable:errStream) | ConvertFrom-Json -Depth 9 -AsHashtable
     foreach ($key in $temp.Keys) {
         $configData.$key = $temp.$key
     }
 
     $configData | ConvertTo-Json -Depth 9 | Set-Content -Path $configFile
 
-
+    Write-Host $configData | Out-String
 
      exit
 

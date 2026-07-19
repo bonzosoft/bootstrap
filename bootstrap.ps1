@@ -107,7 +107,7 @@ begin {
     $configData | ConvertTo-Json -Depth 9 | Set-Content -Path $configFile
 
     Write-Host ($configData | Out-String)
-)
+
      exit
 
 

@@ -26,6 +26,7 @@ begin {
     [hashtable]$configData = @{}
     [pscredential]$vaultCredential = $null
     [bool]$vaultLogin = $false
+    [IO.DirectoryInfo]$vaultPath = $null
     [uri]$vaultUri = ""
     [string[]]$stdStream = @()
     [string[]]$errStream = @()
@@ -67,6 +68,7 @@ begin {
         #    $vaultUri = Read-Host "Inset Vault Uri"
         #}
         #while (-not $vaultUri.IsAbsoluteUri)
+        $vaultPath = $configFile.Directory
         $vaultUri = "https://pass.985337789.xyz"
         
         $stdStream = bw config server $vaultUri 2> Variable:errStream
@@ -86,8 +88,6 @@ begin {
         if ($LASTEXITCODE -ne 0) {
             throw ($errStream -join [Environment]::NewLine)
         }
-
-        $configData
     }
 
     $configData | ConvertTo-Json -Depth 9 | Set-Content -Path $configFile
@@ -100,9 +100,6 @@ begin {
     $configData | ConvertTo-Json -Depth 9 | Set-Content -Path $configFile
 
     $configData.Tenant = (bw get notes DEPLOY-AST --session $configData.Vault.Session 2> variable:errStream) | ConvertFrom-Json -Depth 9 -AsHashtable
-    #foreach ($key in $temp.Keys) {
-    #    $configData.$key = $temp.$key
-    #}
 
     $configData | ConvertTo-Json -Depth 9 | Set-Content -Path $configFile
 

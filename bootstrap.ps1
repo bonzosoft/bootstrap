@@ -8,8 +8,6 @@ param()
 begin {
     $ErrorActionPreference = 'Stop'
 
-    [IO.DirectoryInfo]$baseDir = Join-Path -Path "/" -ChildPath @("mnt", "tank0", "apps", "stack")
-
     # git
     [string]$gitDomain = "github.com"
     [string]$gitOrganization = "bonzosoft"
@@ -27,15 +25,10 @@ begin {
 }
 
 process {
-    if (-not (Test-Path -Path $baseDir)) {
-        New-Item -Path $baseDir -ItemType 'Directory' -Force
-    }
-    Set-Location -Path $baseDir
-
     if (Test-Path -Path $gitDirectory) {
         Push-Location -Path $gitDirectory | Out-Null
         try{
-            git fecth origin
+            git fetch origin
             if ($LASTEXITCODE -ne 0) {
                 throw
             }

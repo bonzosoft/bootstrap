@@ -25,13 +25,17 @@ begin {
     [string]$infProjectId = "9b3eaa39-1cba-4239-b272-9cd10c997eed"
     [pscredential]$infCredential = $null
     [string]$infSession = ""
+
+    Get-Timestamp {
+        Write-Output -InputObject ("[$(Get-Date -Format "dddd MM/dd/yyyy HH:mm K")] - ")
+    }
 }
 
 process {
     if (Test-Path -Path $gitDirectory) {
         Push-Location -Path $gitDirectory | Out-Null
         try{
-            Write-Information -MessageData "Updating existing repository."
+            Write-Information -MessageData "$(Get-TimeStamp)Updating existing repository."
             git fetch origin 2> Variable:errStream
             if ($LASTEXITCODE -ne 0) {
                 Write-Error -Message $errStream
@@ -52,7 +56,7 @@ process {
     else {
         $infCredential = Get-Credential -Title "INFISICAL login" -Message "Insert credential for Secrets Vault"
 
-        Write-Information -MessageData "Logging into Vault."
+        Write-Information -MessageData "$(Get-TimeStamp)Logging into Vault."
         $infSession = infisical login `
             --domain $domain `
             --email $infCredential.UserName `
@@ -64,7 +68,7 @@ process {
         if ($LASTEXITCODE -ne 0) {
             Write-Error -Message $errStream
         }
-        Write-Information -MessageData "Reading Git token from Vault."
+        Write-Information -MessageData "$(Get-TimeStamp)Reading Git token from Vault."
         $gitToken = infsical secrets get PWSH_CONTENTS_READONLY_ALL `
             --session $infSession `
             --domain $infDomain `
@@ -74,7 +78,7 @@ process {
             if ($LASTEXITCODE -ne 0) {
             Write-Error -Message $errStream
         }
-        Write-Information -MessageData "Cloning repository '${gitRepositoryName}'."
+        Write-Information -MessageData "$(Get-TimeStamp)Cloning repository '${gitRepositoryName}'."
         git clone `
             --branch $gitRepositoryBranch `
             --single-branch
@@ -95,12 +99,12 @@ process {
         $source = Join-Path -Path $gitDirectory -ChildPath @("${item}.sh")
         $target = Join-Path -Path ${PWD} -ChildPath @($item)
 
-        Write-Information -MessageData "Creating link for '${item}'."
+        Write-Information -MessageData "$(Get-TimeStamp)Creating link for '${item}'."
         $null = ln -snf $source $target  2> variable:errorMessage
         if ($LASTEXITCODE -ne 0) {
             Write-Error -Message $errorMessage
         }
-        Write-Information -MessageData "Setting '${item}' as executable."
+        Write-Information -MessageData "$(Get-TimeStamp)Setting '${item}' as executable."
         $null = chmod +x $target 2> variable:errorMessage
         if ($LASTEXITCODE -ne 0) {
             Write-Error -Message $errorMessage

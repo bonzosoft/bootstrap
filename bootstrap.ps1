@@ -25,7 +25,7 @@ begin {
     [string]$infisicalProjectId = "9b3eaa39-1cba-4239-b272-9cd10c997eed"
     [pscredential]$infisicalCredential = $null
     [IO.FileInfo]$infisicalTokenFile = Join-Path -Path ${PWD} -ChildPath (".config". "infisical")
-    [string]$infisicalToken = Get-Content -Path $infisicalTokenFile
+    [string]$infisicalToken = Get-Content -Path $infisicalTokenFile -ErrorAction 'SilentlyContinue'
 
     function Get-Timestamp {
         Write-Output -InputObject ("[$(Get-Date -Format "yyyy/MM/dd HH:mm:ss:fff K")]`t")

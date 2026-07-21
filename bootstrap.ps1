@@ -7,7 +7,7 @@ param()
 
 begin {
     $ErrorActionPreference = 'Stop'
-    $InformationPreference = 'Continue'
+    $infisicalormationPreference = 'Continue'
 
     #[string[]]$stdStream = @()
     [string[]]$errStream = @()
@@ -20,11 +20,12 @@ begin {
     [IO.DirectoryInfo]$gitDirectory = Join-Path -Path ${PWD} -ChildPath @("$gitRepositoryName")
 
     # infisical
-    [string]$infDomain = "https://eu.infisical.com"
-    [string]$infOrganizationId = "dd2d983e-3db8-40ea-bec4-f69a13b8566a"
-    [string]$infProjectId = "9b3eaa39-1cba-4239-b272-9cd10c997eed"
-    [pscredential]$infCredential = $null
-    [string]$infSession = ""
+    [string]$infisicalDomain = "https://eu.infisical.com"
+    [string]$infisicalOrganizationId = "dd2d983e-3db8-40ea-bec4-f69a13b8566a"
+    [string]$infisicalProjectId = "9b3eaa39-1cba-4239-b272-9cd10c997eed"
+    [pscredential]$infisicalCredential = $null
+    [IO.FileInfo]$infisicalTokenFile = Join-Path -Path ${PWD} -ChildPath (".config". "infisical")
+    [string]$infisicalToken = Get-Content -Path $infisicalTokenFile
 
     function Get-Timestamp {
         Write-Output -InputObject ("[$(Get-Date -Format "yyyy/MM/dd HH:mm:ss:fff K")]`t")
@@ -54,35 +55,40 @@ process {
         }
     }
     else {
-        $infCredential = Get-Credential -Title "INFISICAL login" -Message "Insert credential for Secrets Vault"
 
         Write-Information -MessageData "$(Get-TimeStamp)Configuring Vault."
         $Env:INFISICAL_DISABLE_UPDATE_CHECK = $True.ToString()
-        infisical vault set file 2> Variable:errStream
-        if ($LASTEXITCODE -ne 0) {
-            Write-Error -Message ($errStream -join [Environment]::NewLine)
-        }
+        $Env:INFISICAL_TOKEN = $infisicalToken
+        #$Env:INFISICAL_DOMAIN = $infisicalDomain
 
-        Write-Information -MessageData "$(Get-TimeStamp)Logging into Vault."
-        $infSession = infisical login `
-            --domain $infDomain `
-            --email $infCredential.UserName `
-            --password ($infCredential.Password | ConvertFrom-SecureString -AsPlainText) `
-            --organization-id $infOrganizationId `
-            --telemetry $False.ToString() `
-            --plain `
-            --silent `
-            2> Variable:errStream
-        if ($LASTEXITCODE -ne 0) {
-            Write-Error -Message ($errStream -join [Environment]::NewLine)
+        #infisical vault set file 2> Variable:errStream
+        #if ($LASTEXITCODE -ne 0) {
+        #    Write-Error -Message ($errStream -join [Environment]::NewLine)
+        #}
+
+        if ((infisical login status) -ne 0) {
+            $infisicalCredential = Get-Credential -Title "INFISICAL login" -Message "Insert credential for Secrets Vault"
+
+            Write-Information -MessageData "$(Get-TimeStamp)Logging into Vault."
+            $infisicalToken = infisical login `
+                --domain $infisicalDomain `
+                --email $infisicalCredential.UserName `
+                --password ($infisicalCredential.Password | ConvertFrom-SecureString -AsPlainText) `
+                --organization-id $infisicalOrganizationId `
+                --telemetry $False.ToString() `
+                --plain `
+                --silent `
+                2> Variable:errStream
+            if ($LASTEXITCODE -ne 0) {
+                Write-Error -Message ($errStream -join [Environment]::NewLine)
+            }
+            $infisicalToken | Set-Content -Path $infisicalTokenFile
         }
-        $infSession | Set-Content -Path ./infSession
-        
+       
         Write-Information -MessageData "$(Get-TimeStamp)Reading Git token from Vault."
-        #$Env:INFISICAL_TOKEN = $infSession
         $gitToken = infisical secrets get PWSH_CONTENTS_READONLY_ALL `
-            --domain $infDomain `
-            --projectId $infProjectId `
+            --domain $infisicalDomain `
+            --projectId $infisicalProjectId `
             --plain `
             2> Variable:errStream
             if ($LASTEXITCODE -ne 0) {

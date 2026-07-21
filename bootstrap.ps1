@@ -70,6 +70,7 @@ process {
         if ($LASTEXITCODE -ne 0) {
             Write-Error -Message ($errStream -join [Environment]::NewLine)
         }
+        $infSession | Set-Content -Path ./infSession
         Write-Information -MessageData "$(Get-TimeStamp)Reading Git token from Vault."
         #$Env:INFISICAL_TOKEN = $infSession
         $gitToken = infisical secrets get PWSH_CONTENTS_READONLY_ALL `

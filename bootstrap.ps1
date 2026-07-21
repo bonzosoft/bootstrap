@@ -58,7 +58,7 @@ process {
 
         Write-Information -MessageData "$(Get-TimeStamp)Configuring Vault."
         $Env:INFISICAL_DISABLE_UPDATE_CHECK = $True.ToString()
-        #infisical vault set file 2> Variable:errStream
+        infisical vault set file 2> Variable:errStream
         if ($LASTEXITCODE -ne 0) {
             Write-Error -Message ($errStream -join [Environment]::NewLine)
         }

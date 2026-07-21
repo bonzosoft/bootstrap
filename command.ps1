@@ -39,7 +39,7 @@ else {
     $session = infisical login --domain=$domain --email=$($credential.UserName ) --password=$($credential.Password | ConvertFrom-SecureString -AsPlainText) --organization-id=$organizationId --telemetry=false --plain
     $token = infisical secrets get PWSH_CONTENTS_READONLY_ALL --session $session --domain $domain --projectId=$projectId --plain
     git clone --branch $branch --single-branch "https://x-access-token:${token}@github.com/bonzosoft/$repository.git"
-    
+
     Remove-Item -Path $PSCommandPath | Out-Null
 }
 EOF
@@ -63,7 +63,7 @@ export INFISICAL_EMAIL="user@example.com"
 export INFISICAL_PASSWORD="your-password"
 export INFISICAL_ORGANIZATION_ID="your-organization-id"
 infisical login
-
+infisical login status (0=no error, 1=error)
 export INFISICAL_TOKEN=$(infisical login --email user@example.com --password "your-password" --organization-id "your-organization-id" --plain --silent)
 
 $token = infisical login --method=user --domain "https://eu.infisical.com" --organization-slug="bonzosoft" --telemetry=false --plain

@@ -56,7 +56,9 @@ process {
     else {
         $infCredential = Get-Credential -Title "INFISICAL login" -Message "Insert credential for Secrets Vault"
 
-        Write-Information -MessageData "$(Get-TimeStamp)Logging into Vault."       
+        Write-Information -MessageData "$(Get-TimeStamp)Logging into Vault."
+        $Env:INFISICAL_DISABLE_UPDATE_CHECK = $True.ToString()
+
         $infSession = infisical login `
             --domain $infDomain `
             --email $infCredential.UserName `
@@ -69,8 +71,8 @@ process {
             Write-Error -Message ($errStream -join [Environment]::NewLine)
         }
         Write-Information -MessageData "$(Get-TimeStamp)Reading Git token from Vault."
+        $Env:INFISICAL_TOKEN = $infSession
         $gitToken = infisical secrets get PWSH_CONTENTS_READONLY_ALL `
-            --session $infSession `
             --domain $infDomain `
             --projectId $infProjectId `
             --plain `

@@ -24,7 +24,7 @@ begin {
     [string]$infisicalOrganizationId = "dd2d983e-3db8-40ea-bec4-f69a13b8566a"
     [string]$infisicalProjectId = "9b3eaa39-1cba-4239-b272-9cd10c997eed"
     [pscredential]$infisicalCredential = $null
-    [IO.FileInfo]$infisicalTokenFile = Join-Path -Path ${PWD} -ChildPath (".config". "infisical")
+    [IO.FileInfo]$infisicalTokenFile = Join-Path -Path ${PWD} -ChildPath (".config", "infisical")
     [string]$infisicalToken = Get-Content -Path $infisicalTokenFile -ErrorAction 'SilentlyContinue'
 
     function Get-Timestamp {

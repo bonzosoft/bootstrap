@@ -81,6 +81,6 @@ process {
 }
 
 end {
-    Write-Host "terminado"
+    Read-Host -Prompt "Press any key to continue..."
     #Remove-Item -Path $PSCommandPath -Force | Out-Null
 }

@@ -81,5 +81,6 @@ process {
 }
 
 end {
+    Write-Host "terminado"
     #Remove-Item -Path $PSCommandPath -Force | Out-Null
 }

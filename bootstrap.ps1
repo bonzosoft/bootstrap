@@ -69,7 +69,7 @@ process {
             Write-Error -Message ($errStream -join [Environment]::NewLine)
         }
         Write-Information -MessageData "$(Get-TimeStamp)Reading Git token from Vault."
-        $gitToken = infsical secrets get PWSH_CONTENTS_READONLY_ALL `
+        $gitToken = infisical secrets get PWSH_CONTENTS_READONLY_ALL `
             --session $infSession `
             --domain $infDomain `
             --projectId $infProjectId `

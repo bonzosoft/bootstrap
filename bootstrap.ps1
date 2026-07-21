@@ -71,7 +71,7 @@ process {
             Write-Error -Message ($errStream -join [Environment]::NewLine)
         }
         Write-Information -MessageData "$(Get-TimeStamp)Reading Git token from Vault."
-        $Env:INFISICAL_TOKEN = $infSession
+        #$Env:INFISICAL_TOKEN = $infSession
         $gitToken = infisical secrets get PWSH_CONTENTS_READONLY_ALL `
             --domain $infDomain `
             --projectId $infProjectId `
@@ -83,7 +83,7 @@ process {
         Write-Information -MessageData "$(Get-TimeStamp)Cloning repository '${gitRepositoryName}'."
         git clone `
             --branch $gitRepositoryBranch `
-            --single-branch
+            --single-branch `
             "https://x-access-token:${gitToken}@${gitDomain}/${gitOrganization}/${gitRepositoryName}.git" `
             2> Variable:errStream
         # mas seguro, pero require gestion del token

@@ -56,11 +56,8 @@ process {
     else {
         $infCredential = Get-Credential -Title "INFISICAL login" -Message "Insert credential for Secrets Vault"
 
-        Write-Host $infCredential.UserName
-        Write-Host $infCredential.Password
-        Write-Information -MessageData "$(Get-TimeStamp)Logging into Vault."
-        
-        $infSession = infisical login --domain=$($domain) --email=$($infCredential.UserName) --password=$($infCredential.Password | ConvertFrom-SecureString -AsPlainText) --organization-id=$($infOrganizationId) --telemetry=$($False.ToString()) --plain 2> Variable:errStream
+        Write-Information -MessageData "$(Get-TimeStamp)Logging into Vault."       
+        $infSession = infisical login --domain $domain --email=$($infCredential.UserName) --password=$($infCredential.Password | ConvertFrom-SecureString -AsPlainText) --organization-id=$($infOrganizationId) --telemetry=$($False.ToString()) --plain 2> Variable:errStream
         #$infSession = infisical login `
         #    --domain $domain `
         #    --email $($infCredential.UserName) `

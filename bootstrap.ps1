@@ -10,6 +10,7 @@ begin {
 
     [IO.DirectoryInfo]$baseDir = Join-Path -Path "/" -ChildPath @("mnt", "tank0", "apps", "stack")
 
+    # git
     [string]$gitDomain = "github.com"
     [string]$gitOrganization = "bonzosoft"
     [string]$gitRepositoryName = "common"
@@ -17,6 +18,7 @@ begin {
     [string]$gitToken = ""
     [IO.DirectoryInfo]$gitDirectory = Join-Path -Path ${PWD} -ChildPath @("$gitRepositoryName")
 
+    # infisical
     [string]$infDomain = "https://eu.infisical.com"
     [string]$infOrganizationId = "dd2d983e-3db8-40ea-bec4-f69a13b8566a"
     [string]$infProjectId = "9b3eaa39-1cba-4239-b272-9cd10c997eed"
@@ -74,6 +76,11 @@ process {
             --branch $gitRepositoryBranch `
             --single-branch
             "https://x-access-token:${gitToken}@${gitDomain}/${gitOrganization}/${gitRepositoryName}.git"
+        # mas seguro, pero require gestion del token
+        #git -c http.extraHeader="Authorization: Bearer ${gitToken}" clone `
+        #    --branch $gitRepositoryBranch `
+        #    --single-branch `
+        #    "https://${gitDomain}/${gitOrganization}/${gitRepositoryName}.git"
         if ($LASTEXITCODE -ne 0) {
             throw
         }

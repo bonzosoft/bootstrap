@@ -26,7 +26,7 @@ begin {
     [pscredential]$infCredential = $null
     [string]$infSession = ""
 
-    Get-Timestamp {
+    function Get-Timestamp {
         Write-Output -InputObject ("[$(Get-Date -Format "dddd MM/dd/yyyy HH:mm K")] - ")
     }
 }

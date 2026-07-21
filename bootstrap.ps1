@@ -32,15 +32,15 @@ process {
         Push-Location -Path $gitDirectory | Out-Null
         try{
             Write-Information -MessageData "Updating existing repository."
-            git fetch origin 2> Variable:$errStream
+            git fetch origin 2> Variable:errStream
             if ($LASTEXITCODE -ne 0) {
                 Write-Error -Message $errStream
             }
-            git checkout $gitRepositoryBranch 2> Variable:$errStream
+            git checkout $gitRepositoryBranch 2> Variable:errStream
             if ($LASTEXITCODE -ne 0) {
                 Write-Error -Message $errStream
             }
-            git reset --hard origin/$gitRepositoryBranch 2> Variable:$errStream
+            git reset --hard origin/$gitRepositoryBranch 2> Variable:errStream
             if ($LASTEXITCODE -ne 0) {
                 Write-Error -Message $errStream
             }
@@ -60,7 +60,7 @@ process {
             --organization-id $infOrganizationId `
             --telemetry $False.ToString() `
             --plain `
-            2> Variable:$errStream
+            2> Variable:errStream
         if ($LASTEXITCODE -ne 0) {
             Write-Error -Message $errStream
         }
@@ -70,7 +70,7 @@ process {
             --domain $infDomain `
             --projectId $infProjectId `
             --plain `
-            2> Variable:$errStream
+            2> Variable:errStream
             if ($LASTEXITCODE -ne 0) {
             Write-Error -Message $errStream
         }
@@ -79,13 +79,13 @@ process {
             --branch $gitRepositoryBranch `
             --single-branch
             "https://x-access-token:${gitToken}@${gitDomain}/${gitOrganization}/${gitRepositoryName}.git" `
-            2> Variable:$errStream
+            2> Variable:errStream
         # mas seguro, pero require gestion del token
         #git -c http.extraHeader="Authorization: Bearer ${gitToken}" clone `
         #    --branch $gitRepositoryBranch `
         #    --single-branch `
         #    "https://${gitDomain}/${gitOrganization}/${gitRepositoryName}.git" `
-        #    2> Variable:$errStream
+        #    2> Variable:errStream
         if ($LASTEXITCODE -ne 0) {
             Write-Error -Message $errStream
         }

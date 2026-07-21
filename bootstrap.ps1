@@ -7,7 +7,7 @@ param()
 
 begin {
     $ErrorActionPreference = 'Stop'
-    $infisicalormationPreference = 'Continue'
+    $InformationPreference = 'Continue'
 
     #[string[]]$stdStream = @()
     [string[]]$errStream = @()
@@ -33,6 +33,8 @@ begin {
 }
 
 process {
+    Clear-Host
+
     if (Test-Path -Path $gitDirectory) {
         Push-Location -Path $gitDirectory | Out-Null
         try{
@@ -55,7 +57,6 @@ process {
         }
     }
     else {
-
         Write-Information -MessageData "$(Get-TimeStamp)Configuring Vault."
         $Env:INFISICAL_DISABLE_UPDATE_CHECK = $True.ToString()
         $Env:INFISICAL_TOKEN = $infisicalToken
@@ -100,17 +101,12 @@ process {
         }
         
         Write-Information -MessageData "$(Get-TimeStamp)Cloning repository '${gitRepositoryName}'."
+        # mas seguro, pero require gestion del token --branch $gitRepositoryBranch --single-branch "https://${gitDomain}/${gitOrganization}/${gitRepositoryName}.git" 2> Variable:errStream
         git clone `
             --branch $gitRepositoryBranch `
             --single-branch `
             "https://x-access-token:${gitToken}@${gitDomain}/${gitOrganization}/${gitRepositoryName}.git" `
             2> Variable:errStream
-        # mas seguro, pero require gestion del token
-        #git -c http.extraHeader="Authorization: Bearer ${gitToken}" clone `
-        #    --branch $gitRepositoryBranch `
-        #    --single-branch `
-        #    "https://${gitDomain}/${gitOrganization}/${gitRepositoryName}.git" `
-        #    2> Variable:errStream
         if ($LASTEXITCODE -ne 0) {
             Write-Error -Message ($errStream -join [Environment]::NewLine)
         }

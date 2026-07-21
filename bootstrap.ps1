@@ -81,5 +81,5 @@ process {
 }
 
 end {
-    Remove-Item -Path $PSCommandPath -Force | Out-Null
+    #Remove-Item -Path $PSCommandPath -Force | Out-Null
 }

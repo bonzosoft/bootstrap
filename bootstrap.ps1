@@ -38,15 +38,15 @@ process {
             Write-Information -MessageData "$(Get-TimeStamp)Updating existing repository."
             git fetch origin 2> Variable:errStream
             if ($LASTEXITCODE -ne 0) {
-                Write-Error -Message $errStream
+                Write-Error -Message ($errStream -join [Environment]::NewLine)
             }
             git checkout $gitRepositoryBranch 2> Variable:errStream
             if ($LASTEXITCODE -ne 0) {
-                Write-Error -Message $errStream
+                Write-Error -Message ($errStream -join [Environment]::NewLine)
             }
             git reset --hard origin/$gitRepositoryBranch 2> Variable:errStream
             if ($LASTEXITCODE -ne 0) {
-                Write-Error -Message $errStream
+                Write-Error -Message ($errStream -join [Environment]::NewLine)
             }
         }
         finally {
@@ -66,7 +66,7 @@ process {
             --plain `
             2> Variable:errStream
         if ($LASTEXITCODE -ne 0) {
-            Write-Error -Message $errStream
+            Write-Error -Message ($errStream -join [Environment]::NewLine)
         }
         Write-Information -MessageData "$(Get-TimeStamp)Reading Git token from Vault."
         $gitToken = infsical secrets get PWSH_CONTENTS_READONLY_ALL `
@@ -76,7 +76,7 @@ process {
             --plain `
             2> Variable:errStream
             if ($LASTEXITCODE -ne 0) {
-            Write-Error -Message $errStream
+            Write-Error -Message ($errStream -join [Environment]::NewLine)
         }
         Write-Information -MessageData "$(Get-TimeStamp)Cloning repository '${gitRepositoryName}'."
         git clone `
@@ -91,7 +91,7 @@ process {
         #    "https://${gitDomain}/${gitOrganization}/${gitRepositoryName}.git" `
         #    2> Variable:errStream
         if ($LASTEXITCODE -ne 0) {
-            Write-Error -Message $errStream
+            Write-Error -Message ($errStream -join [Environment]::NewLine)
         }
     }
 

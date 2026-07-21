@@ -12,10 +12,6 @@ El script descargará todo el contenido necesrio del repositorio configurado.
 Para realizar el bootstrap de la instalación del entorno de Docker, ejecutar:
 
 ````bash
-docker run --rm -it -v ${PWD}:${PWD}:rw -w ${PWD} ghcr.io/bonzosoft/pwsh pwsh -NoLogo -Command '& {$repository = "bootstrap"; $branch = "bw"; if (Test-Path -Path ./$repository){Remove-Item -Path ./$repository -Recurse -Force}; git clone -b $branch https://github.com/bonzosoft/$repository; & ./$repository/$repository.ps1}'
-````
-
-````bash
 docker run --rm -it -v ${PWD}:${PWD}:rw -w ${PWD} ghcr.io/bonzosoft/pwsh pwsh -NoLogo -Command '& {$repository = "bootstrap"; $branch = "bw"; if (Test-Path -Path ./$repository){Remove-Item -Path ./$repository -Recurse -Force}; git clone --branch $branch https://github.com/bonzosoft/$repository; & ./$repository/$repository.ps1}'
 ````
 

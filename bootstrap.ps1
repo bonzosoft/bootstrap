@@ -71,6 +71,7 @@ process {
             --organization-id $infOrganizationId `
             --telemetry $False.ToString() `
             --plain `
+            --silent `
             2> Variable:errStream
         if ($LASTEXITCODE -ne 0) {
             Write-Error -Message ($errStream -join [Environment]::NewLine)

@@ -84,7 +84,7 @@ process {
             }
 
             if (-not (Test-Path -Path $infisicalTokenFile.Directory)) {
-                New-Item -Path $infisicalTokenFile.Directory -ItemType 'Directory' -Force
+                New-Item -Path $infisicalTokenFile.Directory -ItemType 'Directory' -Force | Out-Null
             }
             $infisicalToken | Set-Content -Path $infisicalTokenFile
         }

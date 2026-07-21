@@ -82,6 +82,10 @@ process {
             if ($LASTEXITCODE -ne 0) {
                 Write-Error -Message ($errStream -join [Environment]::NewLine)
             }
+
+            if (-not (Test-Path -Path $infisicalTokenFile.Directory)) {
+                New-Item -Path $infisicalTokenFile.Directory -ItemType 'Directory' -Force
+            }
             $infisicalToken | Set-Content -Path $infisicalTokenFile
         }
        

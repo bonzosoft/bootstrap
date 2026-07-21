@@ -6,23 +6,30 @@
 param()
 
 begin {
-   $ErrorActionPreference = 'Stop'
+    $ErrorActionPreference = 'Stop'
 
-   [string]$gitDomain = "github.com"
-   [string]$gitOrganization = "bonzosoft"
-   [string]$gitRepositoryName = "common"
-   [string]$gitRepositoryBranch = "bw"
-   [string]$gitToken = ""
-   [IO.DirectoryInfo]$gitDirectory = Join-Path -Path ${PWD} -ChildPath @("$gitRepositoryName")
+    [IO.DirectoryInfo]$baseDir = Join-Path -Path "/" -ChildPath @("mnt", "tank0", "apps", "stack")
 
-   [string]$infDomain = "https://eu.infisical.com"
-   [string]$infOrganizationId = "dd2d983e-3db8-40ea-bec4-f69a13b8566a"
-   [string]$infProjectId = "9b3eaa39-1cba-4239-b272-9cd10c997eed"
-   [pscredential]$infCredential = $null
-   [string]$infSession = ""
+    [string]$gitDomain = "github.com"
+    [string]$gitOrganization = "bonzosoft"
+    [string]$gitRepositoryName = "common"
+    [string]$gitRepositoryBranch = "bw"
+    [string]$gitToken = ""
+    [IO.DirectoryInfo]$gitDirectory = Join-Path -Path ${PWD} -ChildPath @("$gitRepositoryName")
+
+    [string]$infDomain = "https://eu.infisical.com"
+    [string]$infOrganizationId = "dd2d983e-3db8-40ea-bec4-f69a13b8566a"
+    [string]$infProjectId = "9b3eaa39-1cba-4239-b272-9cd10c997eed"
+    [pscredential]$infCredential = $null
+    [string]$infSession = ""
 }
 
 process {
+    if (-not (Test-Path -Path $baseDir)) {
+        New-Item -Path $baseDir -ItemType 'Directory' -Force
+    }
+    Set-Location -Path $baseDir
+
     if (Test-Path -Path $gitDirectory) {
         Push-Location -Path $gitDirectory | Out-Null
         try{

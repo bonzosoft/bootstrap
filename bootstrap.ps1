@@ -27,7 +27,7 @@ begin {
     [string]$infSession = ""
 
     function Get-Timestamp {
-        Write-Output -InputObject ("[$(Get-Date -Format "dddd MM/dd/yyyy HH:mm K")] - ")
+        Write-Output -InputObject ("[$(Get-Date -Format "yyyy/MM/dd HH:mm K")] - ")
     }
 }
 

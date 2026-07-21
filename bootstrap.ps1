@@ -56,6 +56,8 @@ process {
     else {
         $infCredential = Get-Credential -Title "INFISICAL login" -Message "Insert credential for Secrets Vault"
 
+        Write-Host $infCredential.UserName
+        Write-Host $infCredential.Password
         Write-Information -MessageData "$(Get-TimeStamp)Logging into Vault."
         $infSession = infisical login `
             --domain $domain `

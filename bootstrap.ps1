@@ -57,15 +57,14 @@ process {
         $infCredential = Get-Credential -Title "INFISICAL login" -Message "Insert credential for Secrets Vault"
 
         Write-Information -MessageData "$(Get-TimeStamp)Logging into Vault."       
-        $infSession = infisical login --domain $domain --email=$($infCredential.UserName) --password=$($infCredential.Password | ConvertFrom-SecureString -AsPlainText) --organization-id=$($infOrganizationId) --telemetry=$($False.ToString()) --plain 2> Variable:errStream
-        #$infSession = infisical login `
-        #    --domain $domain `
-        #    --email $($infCredential.UserName) `
-        #    --password $($infCredential.Password | ConvertFrom-SecureString -AsPlainText) `
-        #    --organization-id $infOrganizationId `
-        #    --telemetry $False.ToString() `
-        #    --plain `
-        #    2> Variable:errStream
+        $infSession = infisical login `
+            --domain $infDomain `
+            --email $infCredential.UserName `
+            --password ($infCredential.Password | ConvertFrom-SecureString -AsPlainText) `
+            --organization-id $infOrganizationId `
+            --telemetry $False.ToString() `
+            --plain `
+            2> Variable:errStream
         if ($LASTEXITCODE -ne 0) {
             Write-Error -Message ($errStream -join [Environment]::NewLine)
         }

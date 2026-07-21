@@ -56,9 +56,14 @@ process {
     else {
         $infCredential = Get-Credential -Title "INFISICAL login" -Message "Insert credential for Secrets Vault"
 
-        Write-Information -MessageData "$(Get-TimeStamp)Logging into Vault."
+        Write-Information -MessageData "$(Get-TimeStamp)Configuring Vault."
         $Env:INFISICAL_DISABLE_UPDATE_CHECK = $True.ToString()
+        infisical vault file 2> Variable:errStream
+        if ($LASTEXITCODE -ne 0) {
+            Write-Error -Message ($errStream -join [Environment]::NewLine)
+        }
 
+        Write-Information -MessageData "$(Get-TimeStamp)Logging into Vault."
         $infSession = infisical login `
             --domain $infDomain `
             --email $infCredential.UserName `
@@ -70,7 +75,8 @@ process {
         if ($LASTEXITCODE -ne 0) {
             Write-Error -Message ($errStream -join [Environment]::NewLine)
         }
-        $infSession | Set-Content -Path ./infSession
+        #$infSession | Set-Content -Path ./infSession
+        
         Write-Information -MessageData "$(Get-TimeStamp)Reading Git token from Vault."
         #$Env:INFISICAL_TOKEN = $infSession
         $gitToken = infisical secrets get PWSH_CONTENTS_READONLY_ALL `
@@ -81,6 +87,7 @@ process {
             if ($LASTEXITCODE -ne 0) {
             Write-Error -Message ($errStream -join [Environment]::NewLine)
         }
+        
         Write-Information -MessageData "$(Get-TimeStamp)Cloning repository '${gitRepositoryName}'."
         git clone `
             --branch $gitRepositoryBranch `

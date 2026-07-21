@@ -8,6 +8,8 @@ param()
 begin {
     $ErrorActionPreference = 'Stop'
 
+    #[string[]]$stdStream = @()
+    [string[]]$errStream = @()
     # git
     [string]$gitDomain = "github.com"
     [string]$gitOrganization = "bonzosoft"
@@ -28,17 +30,17 @@ process {
     if (Test-Path -Path $gitDirectory) {
         Push-Location -Path $gitDirectory | Out-Null
         try{
-            git fetch origin
+            git fetch origin 2> Variable:$errStream
             if ($LASTEXITCODE -ne 0) {
-                throw
+                Write-Error -Message $errStream
             }
-            git checkout $gitRepositoryBranch
+            git checkout $gitRepositoryBranch 2> Variable:$errStream
             if ($LASTEXITCODE -ne 0) {
-                throw
+                Write-Error -Message $errStream
             }
-            git reset --hard origin/$gitRepositoryBranch
+            git reset --hard origin/$gitRepositoryBranch 2> Variable:$errStream
             if ($LASTEXITCODE -ne 0) {
-                throw
+                Write-Error -Message $errStream
             }
         }
         finally {
@@ -53,29 +55,48 @@ process {
             --password ($infCredential.Password | ConvertFrom-SecureString -AsPlainText) `
             --organization-id $infOrganizationId `
             --telemetry $False.ToString() `
-            --plain
+            --plain `
+            2> Variable:$errStream
         if ($LASTEXITCODE -ne 0) {
-            throw
+            Write-Error -Message $errStream
         }
         $gitToken = infsical secrets get PWSH_CONTENTS_READONLY_ALL `
             --session $infSession `
             --domain $infDomain `
             --projectId $infProjectId `
-            --plain
-        if ($LASTEXITCODE -ne 0) {
-            throw
+            --plain `
+            2> Variable:$errStream
+            if ($LASTEXITCODE -ne 0) {
+            Write-Error -Message $errStream
         }
         git clone `
             --branch $gitRepositoryBranch `
             --single-branch
-            "https://x-access-token:${gitToken}@${gitDomain}/${gitOrganization}/${gitRepositoryName}.git"
+            "https://x-access-token:${gitToken}@${gitDomain}/${gitOrganization}/${gitRepositoryName}.git" `
+            2> Variable:$errStream
         # mas seguro, pero require gestion del token
         #git -c http.extraHeader="Authorization: Bearer ${gitToken}" clone `
         #    --branch $gitRepositoryBranch `
         #    --single-branch `
-        #    "https://${gitDomain}/${gitOrganization}/${gitRepositoryName}.git"
+        #    "https://${gitDomain}/${gitOrganization}/${gitRepositoryName}.git" `
+        #    2> Variable:$errStream
         if ($LASTEXITCODE -ne 0) {
-            throw
+            Write-Error -Message $errStream
+        }
+    }
+
+    foreach ($item in @("install", "cmd")) {
+        Write-Information -MessageData "Adding link '${item}'."
+        
+        $source = Join-Path -Path $gitDirectory -ChildPath @("${item}.sh")
+        $target = Join-Path -Path ${PWD} -ChildPath @($item)
+        $null = ln -snf $source $target  2> variable:errorMessage
+        if ($LASTEXITCODE -ne 0) {
+            Write-Error -Message $errorMessage
+        }
+        $null = chmod +x $target 2> variable:errorMessage
+        if ($LASTEXITCODE -ne 0) {
+            Write-Error -Message $errorMessage
         }
     }
 }

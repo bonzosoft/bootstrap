@@ -33,8 +33,6 @@ begin {
 }
 
 process {
-    Clear-Host
-
     if (Test-Path -Path $gitDirectory) {
         Push-Location -Path $gitDirectory | Out-Null
         try{

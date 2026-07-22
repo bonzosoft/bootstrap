@@ -58,26 +58,25 @@ process {
         Write-Information -MessageData "$(Get-TimeStamp)Configuring Vault."
         $Env:INFISICAL_DISABLE_UPDATE_CHECK = $True.ToString()
         $Env:INFISICAL_TOKEN = $infisicalToken
-        #$Env:INFISICAL_DOMAIN = $infisicalDomain
-
-        #infisical vault set file 2> Variable:errStream
-        #if ($LASTEXITCODE -ne 0) {
-        #    Write-Error -Message ($errStream -join [Environment]::NewLine)
-        #}
 
         if ((infisical login status) -ne 0) {
             $infisicalCredential = Get-Credential -Title "INFISICAL login" -Message "Insert credential for Secrets Vault"
 
             Write-Information -MessageData "$(Get-TimeStamp)Logging into Vault."
-            $infisicalToken = infisical login `
-                --domain $infisicalDomain `
-                --email $infisicalCredential.UserName `
-                --password ($infisicalCredential.Password | ConvertFrom-SecureString -AsPlainText) `
-                --organization-id $infisicalOrganizationId `
-                --telemetry $False.ToString() `
-                --plain `
-                --silent `
-                2> Variable:errStream
+            $params = @(
+                "--domain",
+                $infisicalDomain,
+                "--email",
+                $infisicalCredential.UserName,
+                "--password",
+                ($infisicalCredential.Password | ConvertFrom-SecureString -AsPlainText),
+                "--organization-id",
+                $infisicalOrganizationId,
+                "--telemetry=false",
+                "--plain",
+                "--silent"
+            )
+            $infisicalToken = infisical login $params 2> Variable:errStream
             if ($LASTEXITCODE -ne 0) {
                 Write-Error -Message ($errStream -join [Environment]::NewLine)
             }
@@ -89,22 +88,27 @@ process {
         }
        
         Write-Information -MessageData "$(Get-TimeStamp)Reading Git token from Vault."
-        $gitToken = infisical secrets get PWSH_CONTENTS_READONLY_ALL `
-            --domain $infisicalDomain `
-            --projectId $infisicalProjectId `
-            --plain `
-            2> Variable:errStream
+        $params = @(
+            "--domain",
+            $infisicalDomain,
+            "--projectId",
+            $infisicalProjectId,
+            "--plain"
+        )
+        $gitToken = infisical secrets get "PWSH_CONTENTS_READONLY_ALL" 2> Variable:errStream
             if ($LASTEXITCODE -ne 0) {
             Write-Error -Message ($errStream -join [Environment]::NewLine)
         }
         
         Write-Information -MessageData "$(Get-TimeStamp)Cloning repository '${gitRepositoryName}'."
         # mas seguro, pero require gestion del token --branch $gitRepositoryBranch --single-branch "https://${gitDomain}/${gitOrganization}/${gitRepositoryName}.git" 2> Variable:errStream
-        git clone `
-            --branch $gitRepositoryBranch `
-            --single-branch `
-            "https://x-access-token:${gitToken}@${gitDomain}/${gitOrganization}/${gitRepositoryName}.git" `
-            2> Variable:errStream
+        $params = @(
+            "--branch",
+            $gitRepositoryBranch,
+            "--single-branch",
+            "https://x-access-token:${gitToken}@${gitDomain}/${gitOrganization}/${gitRepositoryName}.git"
+        )
+        git clone $params 2> Variable:errStream
         if ($LASTEXITCODE -ne 0) {
             Write-Error -Message ($errStream -join [Environment]::NewLine)
         }

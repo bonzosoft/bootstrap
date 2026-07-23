@@ -98,7 +98,7 @@ process {
             "--telemetry=false"
             "--plain"
         )
-        $gitToken = infisical secrets get "PWSH_CONTENTS_READONLY_ALL" $params 2> Variable:errStream
+        $gitToken = infisical secrets get "GITHUB_CONTENTS_READONLY_ALL" $params 2> Variable:errStream
             if ($LASTEXITCODE -ne 0) {
             Write-Error -Message ($errStream -join [Environment]::NewLine)
         }

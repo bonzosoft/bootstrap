@@ -22,8 +22,8 @@ begin {
     # infisical
     [string]$infisicalDomain = "https://eu.infisical.com"
     [string]$infisicalOrganizationId = "dd2d983e-3db8-40ea-bec4-f69a13b8566a"
-    [string]$infisicalProjectId = "d31937ca-916d-4d32-a61f-d470fcd6417b"
-    [string]$infisicalPath = "/Github"
+    [string]$infisicalProjectId = "9b3eaa39-1cba-4239-b272-9cd10c997eed"
+    [string]$infisicalPath = "/"
     [pscredential]$infisicalCredential = $null
     [IO.FileInfo]$infisicalTokenFile = Join-Path -Path ${PWD} -ChildPath (".config", "infisical")
     [string]$infisicalToken = Get-Content -Path $infisicalTokenFile -ErrorAction 'SilentlyContinue'

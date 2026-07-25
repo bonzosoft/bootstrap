@@ -34,7 +34,7 @@ begin {
 }
 
 process {
-    if (Test-Path -Path $gitDirectory) {
+    if (Test-Path -Path (Join-Path -Path $gitDirectory -ChildPath @(".git"))) {
         Push-Location -Path $gitDirectory | Out-Null
         try{
             Write-Information -MessageData "$(Get-TimeStamp)Updating existing repository."

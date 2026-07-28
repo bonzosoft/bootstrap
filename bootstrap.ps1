@@ -6,6 +6,8 @@
 param()
 
 begin {
+    Clear-Host
+
     $ErrorActionPreference = 'Stop'
     $InformationPreference = 'Continue'
 
@@ -134,11 +136,12 @@ process {
     $params = @(
         "secrets"
         "get"
-        "GITHUB_CONTENTS_READONLY_COMMON"
+        #"GITHUB_CONTENTS_READONLY_COMMON"
+        "GITHUB_CONTENTS_READONLY_ALL"
         "--domain"
-        $vault.Domain.ToString()
+        $vault.Domain.AbsoluteUri
         "--projectId"
-        $vault.Project.ToString()
+        $vault.Project
         "--path"
         $vault.Path.FullName
         "--token"
@@ -167,7 +170,7 @@ process {
         "--branch"
         $repository.Branch
         "--single-branch"
-        $repository.Uri
+        $repository.Uri.AbsoluteUri
     )
     git $params 2> Variable:errStream
     if ($LASTEXITCODE -ne 0) {

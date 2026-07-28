@@ -42,7 +42,7 @@ begin {
                 "-c",
                 "http.extraHeader=$($this.GetAuthHeader())"
                 "ls-remote"
-                $this.Uri.AbosluteUri
+                $this.Uri.AbsoluteUri
             )
             $null = git $params 2> Variable:errStream
             if ($LASTEXITCODE -ne 0) {

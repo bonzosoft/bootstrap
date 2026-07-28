@@ -137,7 +137,6 @@ process {
         "secrets"
         "get"
         "GITHUB_PWSH_CONTENTS_READONLY_COMMON"
-        #"GITHUB_CONTENTS_READONLY_ALL"
         "--domain"
         $vault.Domain.AbsoluteUri
         "--projectId"
@@ -172,6 +171,7 @@ process {
         "--single-branch"
         $repository.Uri.AbsoluteUri
     )
+    Write-Host $params
     git $params 2> Variable:errStream
     if ($LASTEXITCODE -ne 0) {
         Write-Error -Message ($errStream -join [Environment]::NewLine)

@@ -11,13 +11,18 @@ begin {
     $ErrorActionPreference = 'Stop'
     $InformationPreference = 'Continue'
 
-    [string[]]$stdStream = @()
+    #[string[]]$stdStream = @()
     [string[]]$errStream = @()
     [string[]]$params = @()
 
-    # git
+    # configuring tools
+    $Env:GIT_TERMINAL_PROMPT = 0
+    $Env:INFISICAL_DISABLE_UPDATE_CHECK = "true"
+    $vaultConfigFile = [IO.FileInfo](Join-Path -Path ${PWD} -ChildPath @(".config", "infisical.json"))
+
+    #Region Git object
     [pscustomobject]$repository = [PSCustomObject]@{}
-    $repository | Add-Member -MemberType 'NoteProperty' -Name "Domain"        -Value ([uri]::new("https://github.com"))
+    $repository | Add-Member -MemberType 'NoteProperty' -Name "Domain"        -Value ([uri]"https://github.com")
     $repository | Add-Member -MemberType 'NoteProperty' -Name "Organization"  -Value ([string]"bonzosoft")
     $repository | Add-Member -MemberType 'NoteProperty' -Name "Name"          -Value ([string]"common")
     $repository | Add-Member -MemberType 'NoteProperty' -Name "Branch"        -Value ([string]"bw") #main
@@ -52,9 +57,9 @@ begin {
             }
         }
     }
+    #EndRegion
 
-    # infisical
-    $vaultConfigFile = [IO.FileInfo](Join-Path -Path ${PWD} -ChildPath @(".config", "infisical.json"))
+    #Region Vault object
     [pscustomobject]$vault = [PSCustomObject]@{}
     $vault | Add-Member -MemberType 'NoteProperty' -Name "Credential"   -Value ([pscredential]$null)
     $vault | Add-Member -MemberType 'NoteProperty' -Name "Domain"       -Value ([uri]"https://eu.infisical.com")
@@ -84,10 +89,7 @@ begin {
             }
         }
     }
-
-    # configuring software
-    $Env:GIT_TERMINAL_PROMPT = 0
-    $Env:INFISICAL_DISABLE_UPDATE_CHECK = "true"
+    #EndRegion 
 
     #Region Functions
     function Get-Timestamp {
@@ -97,14 +99,14 @@ begin {
 }
 
 process {
-    Write-Information -MessageData "$(Get-Timestamp)Checking vault token."
+    Write-Information -MessageData "$(Get-Timestamp)Checking vault connection."
     if ($vault.Status() -ne $true) {
-        Write-Information -MessageData "$(Get-Timestamp)Invalid vault token."
+        Write-Information -MessageData "$(Get-Timestamp)Invalid vault connection."
         if ($null -eq $vault.Credential) {
             $vault.Credential = Get-Credential  -Message "$(Get-Timestamp)Insert credential for vault '$($vault.Domain)'"
         }
 
-        Write-Information -MessageData "$(Get-TimeStamp)Connection to vault."
+        Write-Information -MessageData "$(Get-TimeStamp)Connecting to vault."
         $params = @(
             "login"
             "--domain"

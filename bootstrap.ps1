@@ -57,20 +57,25 @@ begin {
     $vault | Add-Member -MemberType 'NoteProperty' -Name "Path"         -Value [IO.DirectoryInfo]"/"
     $vault | Add-Member -MemberType 'NoteProperty' -Name "Token"        -Value ([securestring]((Test-Path -Path $vaultConfigFile) ? ((Get-Content -Path $vaultConfigFile | ConvertFrom-Json).Token | ConvertTo-SecureString -AsPlainText) : $null))
     $vault | Add-Member -MemberType 'ScriptMethod' -Name "Status"       -Value {
-        $params = @(
-            "login"
-            "status"    
-            "--domain"
-            $this.Domain
-            "--token"
-            $this.Token | ConvertFrom-SecureString -AsPlainText
-        )
-        $null = infisical $params 2> Variable:errStream
-        if ($LASTEXITCODE -ne 0) {
+        if ($null -eq $this.Token) {
             Write-Output -InputObject $false
         }
         else {
-            Write-Output -InputObject $true
+            $params = @(
+                "login"
+                "status"    
+                "--domain"
+                $this.Domain
+                "--token"
+                $this.Token | ConvertFrom-SecureString -AsPlainText
+            )
+            $null = infisical $params 2> Variable:errStream
+            if ($LASTEXITCODE -ne 0) {
+                Write-Output -InputObject $false
+            }
+            else {
+                Write-Output -InputObject $true
+            }
         }
     }
 

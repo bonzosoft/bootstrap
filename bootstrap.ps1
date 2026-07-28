@@ -141,6 +141,8 @@ process {
         $vault.Project
         "--path"
         $vault.Path
+        "--token"
+        $vault.Token | ConvertFrom-SecureString -AsPlainText
         "--telemetry=false"
         "--plain"
     )

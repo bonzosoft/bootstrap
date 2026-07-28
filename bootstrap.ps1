@@ -126,7 +126,7 @@ process {
             Write-Error -Message ($errStream -join [Environment]::NewLine) -ErrorAction 'Stop'
         }
 
-        Write-Infomation -MessageData "$(Get-Timestamp)Persisting vault token."
+        Write-Information -MessageData "$(Get-Timestamp)Persisting vault token."
         if (-not (Test-Path -Path $vaultConfigFile.Directory)) {
             New-Item -Path $vaultConfigFile.Directory -ItemType 'Directory' -Force | Out-Null
             if (-not (Test-Path -Path $vaultConfigFile.FullName)) {

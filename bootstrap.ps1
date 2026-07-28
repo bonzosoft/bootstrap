@@ -34,7 +34,7 @@ begin {
         }
     }
     $repository | Add-Member -MemberType 'ScriptMethod' -Name "Status"        -Value {
-        if ($null -eq $this.Toekn) {
+        if ($null -eq $this.Token) {
             return $false
         }
         else {

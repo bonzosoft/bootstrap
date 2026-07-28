@@ -24,26 +24,31 @@ begin {
     $repository | Add-Member -MemberType 'NoteProperty' -Name "Uri"           -Value ([uri]($repository.Protocol + "://" + $repository.Domain + "/" + $repository.Organization + "/" + $repository.Name + ".git"))
     $repository | Add-Member -MemberType 'NoteProperty' -Name "Path"          -Value ([IO.DirectoryInfo](Join-Path -Path ${PWD} -ChildPath @($repository.Name)))
     $repository | Add-Member -MemberType 'ScriptMethod' -Name "GetAuthHeader" -Value {
-        if ($null -ne $this.Token) {
-            Write-Output -InputObject "Authorization: Basic $([Convert]::ToBase64String([Text.Encoding]::ASCII.GetBytes("x-access-token:$($this.Token | ConvertFrom-SecureString -AsPlainText)")))"
+        if ($null -eq $this.Token) {
+            # nop
         }
         else {
-            # nop
+            return "Authorization: Basic $([Convert]::ToBase64String([Text.Encoding]::ASCII.GetBytes("x-access-token:$($this.Token | ConvertFrom-SecureString -AsPlainText)")))"
         }
     }
     $repository | Add-Member -MemberType 'ScriptMethod' -Name "Status"        -Value {
-        $params = @(
-            "-c",
-            "http.extraHeader=$($this.GetAuthHeader())"
-            "ls-remote"
-            $this.Uri
-        )
-        $null = git $params 2> Variable:errStream
-        if ($LASTEXITCODE -ne 0) {
-            Write-Output -InputObject $false
+        if ($null -eq $this.Toekn) {
+            return $false
         }
         else {
-            Write-Output -InputObject $true
+            $params = @(
+                "-c",
+                "http.extraHeader=$($this.GetAuthHeader())"
+                "ls-remote"
+                $this.Uri
+            )
+            $null = git $params 2> Variable:errStream
+            if ($LASTEXITCODE -ne 0) {
+                return $false
+            }
+            else {
+                return $true
+            }
         }
     }
 
@@ -58,7 +63,7 @@ begin {
     $vault | Add-Member -MemberType 'NoteProperty' -Name "Token"        -Value ([securestring]((Test-Path -Path $vaultConfigFile) ? ((Get-Content -Path $vaultConfigFile | ConvertFrom-Json).Token | ConvertTo-SecureString -AsPlainText) : $null))
     $vault | Add-Member -MemberType 'ScriptMethod' -Name "Status"       -Value {
         if ($null -eq $this.Token) {
-            Write-Output -InputObject $false
+            return $false
         }
         else {
             $params = @(
@@ -71,10 +76,10 @@ begin {
             )
             $null = infisical $params 2> Variable:errStream
             if ($LASTEXITCODE -ne 0) {
-                Write-Output -InputObject $false
+                return $false
             }
             else {
-                Write-Output -InputObject $true
+                return $true
             }
         }
     }

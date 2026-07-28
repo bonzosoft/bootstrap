@@ -70,9 +70,9 @@ begin {
         else {
             $params = @(
                 "login"
-                "status"    
+                "status"
                 "--domain"
-                $this.Domain
+                $this.Domain.AbosluteUri
                 "--token"
                 $this.Token | ConvertFrom-SecureString -AsPlainText
             )
@@ -102,7 +102,7 @@ process {
     if ($vault.Status() -ne $true) {
         Write-Information -MessageData "$(Get-Timestamp)Invalid vault token."
         if ($null -eq $vault.Credential) {
-            $vault.Credential = Get-Credential  -Message "$(Get-Timestamp)Insert credential for vault '$($vault.Domain)'"
+            $vault.Credential = Get-Credential  -Message "$(Get-Timestamp)Insert credential for vault '$($vault.Domain.AbosluteUri)'"
         }
 
         Write-Information -MessageData "$(Get-TimeStamp)Connection to vault."

@@ -17,12 +17,12 @@ begin {
 
     # git
     [pscustomobject]$repository = [PSCustomObject]@{}
-    $repository | Add-Member -MemberType 'NoteProperty' -Name "Domain"        -Value ([uri]"https://github.com")
+    $repository | Add-Member -MemberType 'NoteProperty' -Name "Domain"        -Value ([uri]::new("https://github.com"))
     $repository | Add-Member -MemberType 'NoteProperty' -Name "Organization"  -Value ([string]"bonzosoft")
     $repository | Add-Member -MemberType 'NoteProperty' -Name "Name"          -Value ([string]"common")
     $repository | Add-Member -MemberType 'NoteProperty' -Name "Branch"        -Value ([string]"bw") #main
     $repository | Add-Member -MemberType 'NoteProperty' -Name "Token"         -Value ([securestring]$null)
-    $repository | Add-Member -MemberType 'NoteProperty' -Name "Uri"           -Value ([uri]($repository.Domain.AbsoluteUri + "/" + $repository.Organization + "/" + $repository.Name + ".git"))
+    $repository | Add-Member -MemberType 'NoteProperty' -Name "Uri"           -Value ([uri]::($repository.Domain, $repository.Organization + "/" + $repository.Name + ".git"))
     $repository | Add-Member -MemberType 'NoteProperty' -Name "Path"          -Value ([IO.DirectoryInfo](Join-Path -Path ${PWD} -ChildPath @($repository.Name)))
     $repository | Add-Member -MemberType 'ScriptMethod' -Name "GetAuthHeader" -Value {
         if ($null -eq $this.Token) {
@@ -101,7 +101,7 @@ process {
     if ($vault.Status() -ne $true) {
         Write-Information -MessageData "$(Get-Timestamp)Invalid vault token."
         if ($null -eq $vault.Credential) {
-            $vault.Credential = Get-Credential  -Message "$(Get-Timestamp)Insert credential for vault '$($vault.Domain.AbsoluteUri)'"
+            $vault.Credential = Get-Credential  -Message "$(Get-Timestamp)Insert credential for vault '$($vault.Domain)'"
         }
 
         Write-Information -MessageData "$(Get-TimeStamp)Connection to vault."

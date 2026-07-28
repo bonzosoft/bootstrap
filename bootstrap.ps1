@@ -136,8 +136,8 @@ process {
     $params = @(
         "secrets"
         "get"
-        #"GITHUB_CONTENTS_READONLY_COMMON"
-        "GITHUB_CONTENTS_READONLY_ALL"
+        "GITHUB_PWSH_CONTENTS_READONLY_COMMON"
+        #"GITHUB_CONTENTS_READONLY_ALL"
         "--domain"
         $vault.Domain.AbsoluteUri
         "--projectId"

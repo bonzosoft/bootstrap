@@ -6,8 +6,8 @@
 param()
 
 begin {
-    $ErrorActionPreference = Stop
-    $InformationPreference = Continue
+    $ErrorActionPreference = 'Stop'
+    $InformationPreference = 'Continue'
 
     [string[]]$stdStream = @()
     [string[]]$errStream = @()
@@ -140,7 +140,7 @@ process {
     }
 
     if ($repository.Status() -ne $true) {
-        Write-Error -Message "$(Get-Timestamp)Unable to connect to git repository." -ErrorAction Stop
+        Write-Error -Message "$(Get-Timestamp)Unable to connect to git repository." -ErrorAction 'Stop'
     }
 
     if (Test-Path -Path $repository.Path) {

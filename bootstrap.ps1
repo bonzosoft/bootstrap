@@ -133,7 +133,8 @@ process {
         if (-not (Test-Path -Path $vaultConfigFile.FullName)) {
             New-Item -Path $vaultConfigFile.FullName -ItemType 'File' -Force | Out-Null
         }
-        Get-Content -Path $vaultConfigFile | ConvertFrom-Json | ForEach-Object {$PSItem.Token = ($vault.Token | ConvertFrom-SecureString -AsPlainText); Write-Output -InputObject $PSItem} | ConvertTo-Json | Set-Content -Path $vaultConfigFile
+        #Get-Content -Path $vaultConfigFile | ConvertFrom-Json | ForEach-Object {$PSItem.Token = ($vault.Token | ConvertFrom-SecureString -AsPlainText); Write-Output -InputObject $PSItem} | ConvertTo-Json | Set-Content -Path $vaultConfigFile
+        Get-Content -Path $vaultConfigFile | ConvertFrom-Json | Add-Member -MemberType 'NoteProperty' -Name "Token" -Value ($vault.Token | ConvertFrom-SecureString -AsPlainText) -Force -PassThru | ConvertTo-Json | Set-Content -Path $vaultConfigFile
     }
 
     Write-Information -MessageData "$(Get-TimeStamp)Reading Git token from Vault."

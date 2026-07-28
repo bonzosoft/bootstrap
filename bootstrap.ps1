@@ -157,8 +157,8 @@ process {
         Write-Error -Message "$(Get-Timestamp)Unable to connect to git repository." -ErrorAction 'Stop'
     }
 
-    if (Test-Path -Path $repository.Path) {
-        Remove-Item -Path $repository.Path -Force -Recurse
+    if (Test-Path -Path $repository.Path.FullName) {
+        Remove-Item -Path $repository.Path.FullName -Force -Recurse
     }
 
     Write-Information -MessageData "$(Get-TimeStamp)Cloning repository '${gitRepositoryName}'."

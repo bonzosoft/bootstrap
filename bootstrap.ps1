@@ -50,11 +50,11 @@ begin {
     # infisical
     $vaultConfigFile = [IO.FileInfo](Join-Path -Path ${PWD} -ChildPath @(".config", "infisical.json"))
     [pscustomobject]$vault = [PSCustomObject]@{}
-    $vault | Add-Member -MemberType 'NoteProperty' -Name "Credential"   -Value [pscredential]$null
-    $vault | Add-Member -MemberType 'NoteProperty' -Name "Domain"       -Value [uri]"https://eu.infisical.com"
-    $vault | Add-Member -MemberType 'NoteProperty' -Name "Organization" -Value [guid]"dd2d983e-3db8-40ea-bec4-f69a13b8566a"
-    $vault | Add-Member -MemberType 'NoteProperty' -Name "Project"      -Value [guid]"9b3eaa39-1cba-4239-b272-9cd10c997eed"
-    $vault | Add-Member -MemberType 'NoteProperty' -Name "Path"         -Value [IO.DirectoryInfo]"/"
+    $vault | Add-Member -MemberType 'NoteProperty' -Name "Credential"   -Value ([pscredential]$null)
+    $vault | Add-Member -MemberType 'NoteProperty' -Name "Domain"       -Value ([uri]"https://eu.infisical.com")
+    $vault | Add-Member -MemberType 'NoteProperty' -Name "Organization" -Value ([guid]"dd2d983e-3db8-40ea-bec4-f69a13b8566a")
+    $vault | Add-Member -MemberType 'NoteProperty' -Name "Project"      -Value ([guid]"9b3eaa39-1cba-4239-b272-9cd10c997eed")
+    $vault | Add-Member -MemberType 'NoteProperty' -Name "Path"         -Value ([IO.DirectoryInfo](Join-Path -Path "/" -ChildPath @()))
     $vault | Add-Member -MemberType 'NoteProperty' -Name "Token"        -Value ([securestring]((Test-Path -Path $vaultConfigFile) ? ((Get-Content -Path $vaultConfigFile | ConvertFrom-Json).Token | ConvertTo-SecureString -AsPlainText) : $null))
     $vault | Add-Member -MemberType 'ScriptMethod' -Name "Status"       -Value {
         if ($null -eq $this.Token) {

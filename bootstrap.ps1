@@ -72,7 +72,7 @@ begin {
                 "login"
                 "status"
                 "--domain"
-                $this.Domain.AbosluteUri
+                $this.Domain.AbsoluteUri
                 "--token"
                 $this.Token | ConvertFrom-SecureString -AsPlainText
             )

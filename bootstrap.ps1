@@ -162,7 +162,7 @@ process {
         Remove-Item -Path $repository.Path.FullName -Force -Recurse
     }
 
-    Write-Information -MessageData "$(Get-TimeStamp)Cloning repository '${gitRepositoryName}'."
+    Write-Information -MessageData "$(Get-TimeStamp)Cloning repository '$($repository.Name)'."
     $params = @(
         "-c"
         "http.extraHeader=$($repository.GetAuthHeader())"

@@ -31,7 +31,7 @@ begin {
     $repository | Add-Member -MemberType 'NoteProperty' -Name "Path"          -Value ([IO.DirectoryInfo](Join-Path -Path ${PWD} -ChildPath @($repository.Name)))
     $repository | Add-Member -MemberType 'ScriptMethod' -Name "GetAuthHeader" -Value {
         if ($null -eq $this.Token) {
-            # nop
+            return
         }
         else {
             return "Authorization: Basic $([Convert]::ToBase64String([Text.Encoding]::ASCII.GetBytes("x-access-token:$($this.Token | ConvertFrom-SecureString -AsPlainText)")))"
@@ -159,6 +159,7 @@ process {
     }
 
     if (Test-Path -Path $repository.Path.FullName) {
+        Write-Information -MessageData "$(Get-Timestamp)Removing content from '$($repository.Path)'"
         Remove-Item -Path $repository.Path.FullName -Force -Recurse
     }
 

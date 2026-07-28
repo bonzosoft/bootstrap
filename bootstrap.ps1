@@ -131,7 +131,9 @@ process {
             New-Item -Path $vaultConfigFile.Directory -ItemType 'Directory' -Force | Out-Null   
         }
         if (-not (Test-Path -Path $vaultConfigFile.FullName)) {
-            [pscustomobject]@{"Token" = ""} | Set-Content -Path $vaultConfigFile
+            [pscustomobject]@{"Token" = ""} | 
+            ConvertTo-Json | 
+            Set-Content -Path $vaultConfigFile
         }
         Get-Content -Path $vaultConfigFile |
         ConvertFrom-Json |

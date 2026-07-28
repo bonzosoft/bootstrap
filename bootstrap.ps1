@@ -66,7 +66,7 @@ begin {
     $vault | Add-Member -MemberType 'NoteProperty' -Name "Organization" -Value ([guid]"dd2d983e-3db8-40ea-bec4-f69a13b8566a")
     $vault | Add-Member -MemberType 'NoteProperty' -Name "Project"      -Value ([guid]"9b3eaa39-1cba-4239-b272-9cd10c997eed")
     $vault | Add-Member -MemberType 'NoteProperty' -Name "Path"         -Value ([IO.DirectoryInfo](Join-Path -Path "/" -ChildPath @()))
-    $vault | Add-Member -MemberType 'NoteProperty' -Name "Token"        -Value ([securestring]((Test-Path -Path $vaultConfigFile) ? ((Get-Content -Path $vaultConfigFile | ConvertFrom-Json).Token | ConvertTo-SecureString -AsPlainText) : $null))
+    $vault | Add-Member -MemberType 'NoteProperty' -Name "Token"        -Value ([securestring]((Get-Content -Path $vaultConfigFile -ErrorAction 'SilentlyContinue' | ConvertFrom-Json).Token | ConvertTo-SecureString -AsPlainText -ErrorAction 'SilentlyContinue'))
     $vault | Add-Member -MemberType 'ScriptMethod' -Name "Status"       -Value {
         if ($null -eq $this.Token) {
             return $false
@@ -128,10 +128,10 @@ process {
 
         Write-Information -MessageData "$(Get-Timestamp)Persisting vault token."
         if (-not (Test-Path -Path $vaultConfigFile.Directory)) {
-            New-Item -Path $vaultConfigFile.Directory -ItemType 'Directory' -Force | Out-Null
-            if (-not (Test-Path -Path $vaultConfigFile.FullName)) {
-                New-Item -Path $vaultConfigFile.FullName -ItemType 'File' -Force | Out-Null
-            }
+            New-Item -Path $vaultConfigFile.Directory -ItemType 'Directory' -Force | Out-Null   
+        }
+        if (-not (Test-Path -Path $vaultConfigFile.FullName)) {
+            New-Item -Path $vaultConfigFile.FullName -ItemType 'File' -Force | Out-Null
         }
         Get-Content -Path $vaultConfigFile | ConvertFrom-Json | ForEach-Object {$PSItem.Token = ($vault.Token | ConvertFrom-SecureString -AsPlainText); Write-Output -InputObject $PSItem} | ConvertTo-Json | Set-Content -Path $vaultConfigFile
     }

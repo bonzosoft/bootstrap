@@ -134,13 +134,13 @@ process {
     $params = @(
         "secrets"
         "get"
-        "GITHUB_CONTENTS_READONLY_ALL"
+        "GITHUB_CONTENTS_READONLY_COMMON"
         "--domain"
-        $vault.Doamin
+        $vault.Domain.ToString()
         "--projectId"
-        $vault.Project
+        $vault.Project.ToString()
         "--path"
-        $vault.Path
+        $vault.Path.FullName
         "--token"
         $vault.Token | ConvertFrom-SecureString -AsPlainText
         "--telemetry=false"

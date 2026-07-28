@@ -196,6 +196,6 @@ process {
 }
 
 end {
-    Write-Host "Press any key to continue...`n"
+    Write-Host "`nPress any key to continue..."
     Read-Host | Out-Null
 }

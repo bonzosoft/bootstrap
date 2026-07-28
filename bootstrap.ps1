@@ -103,10 +103,10 @@ process {
     if ($vault.Status() -ne $true) {
         Write-Information -MessageData "$(Get-Timestamp)Invalid vault connection."
         if ($null -eq $vault.Credential) {
-            $vault.Credential = Get-Credential  -Message "$(Get-Timestamp)Insert credential for vault '$($vault.Domain)'"
+            $vault.Credential = Get-Credential  -Message "Insert credential for vault '$($vault.Domain)'"
         }
 
-        Write-Information -MessageData "$(Get-TimeStamp)Connecting to vault."
+        Write-Information -MessageData "$(Get-TimeStamp)Getting token from vault."
         $params = @(
             "login"
             "--domain"
@@ -123,14 +123,17 @@ process {
         )
         $vault.Token = infisical $params 2> Variable:errStream | ConvertTo-SecureString -AsPlainText
         if ($LASTEXITCODE -ne 0) {
-            Write-Error -Message ($errStream -join [Environment]::NewLine)
+            Write-Error -Message ($errStream -join [Environment]::NewLine) -ErrorAction 'Stop'
         }
-        else {
-            if (-not (Test-Path -Path $vaultConfigFile)) {
-                New-Item -Path $vaultConfigFile.Directory -ItemType 'Directory' -Force | Out-Null
+
+        Write-Infomation -MessageData "$(Get-Timestamp)Persisting vault token."
+        if (-not (Test-Path -Path $vaultConfigFile.Directory)) {
+            New-Item -Path $vaultConfigFile.Directory -ItemType 'Directory' -Force | Out-Null
+            if (-not (Test-Path -Path $vaultConfigFile.FullName)) {
+                New-Item -Path $vaultConfigFile.FullName -ItemType 'File' -Force | Out-Null
             }
-            Get-Content -Path $vaultConfigFile | ConvertFrom-Json | ForEach-Object {$PSItem.Token = ($vault.Token | ConvertFrom-SecureString -AsPlainText); Write-Output -InputObject $PSItem} | ConvertTo-Json | Set-Content -Path $vaultConfigFile
         }
+        Get-Content -Path $vaultConfigFile | ConvertFrom-Json | ForEach-Object {$PSItem.Token = ($vault.Token | ConvertFrom-SecureString -AsPlainText); Write-Output -InputObject $PSItem} | ConvertTo-Json | Set-Content -Path $vaultConfigFile
     }
 
     Write-Information -MessageData "$(Get-TimeStamp)Reading Git token from Vault."

@@ -80,7 +80,8 @@ begin {
         else {
             $params = @(
                 "-c",
-                "http.extraHeader=$($this.GetAuthHeader())"
+                #"http.extraHeader=$($this.GetAuthHeader())"
+                "credential.helper=store --file=$repositoryConfigFile"
                 "ls-remote"
                 $this.Uri.AbsoluteUri
             )

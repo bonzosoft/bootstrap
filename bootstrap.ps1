@@ -23,10 +23,10 @@ begin {
 
     #Region Vault object
     [pscustomobject]$vault = [PSCustomObject]@{}
-    $vault | Add-Member -MemberType 'NoteProperty' -Name "Credential"   -Value [pscredential]$null
-    $vault | Add-Member -MemberType 'NoteProperty' -Name "Domain"       -Value [uri]"https://eu.infisical.com"
-    $vault | Add-Member -MemberType 'NoteProperty' -Name "Organization" -Value [guid]"dd2d983e-3db8-40ea-bec4-f69a13b8566a"
-    $vault | Add-Member -MemberType 'NoteProperty' -Name "Project"      -Value [guid]"9b3eaa39-1cba-4239-b272-9cd10c997eed"
+    $vault | Add-Member -MemberType 'NoteProperty' -Name "Credential"   -Value ([pscredential]$null)
+    $vault | Add-Member -MemberType 'NoteProperty' -Name "Domain"       -Value ([uri]"https://eu.infisical.com")
+    $vault | Add-Member -MemberType 'NoteProperty' -Name "Organization" -Value ([guid]"dd2d983e-3db8-40ea-bec4-f69a13b8566a")
+    $vault | Add-Member -MemberType 'NoteProperty' -Name "Project"      -Value ([guid]"9b3eaa39-1cba-4239-b272-9cd10c997eed")
     $vault | Add-Member -MemberType 'NoteProperty' -Name "Path"         -Value ([IO.DirectoryInfo](Join-Path -Path "/" -ChildPath @()))
     $vault | Add-Member -MemberType 'NoteProperty' -Name "Token"        -Value ([securestring]((Get-Content -Path $vaultConfigFile -ErrorAction 'SilentlyContinue' | ConvertFrom-Json).Token | ConvertTo-SecureString -AsPlainText -ErrorAction 'SilentlyContinue'))
     $vault | Add-Member -MemberType 'ScriptMethod' -Name "Status"       -Value {
@@ -56,11 +56,11 @@ begin {
 
     #Region Git object
     [pscustomobject]$repository = [pscustomobject]@{}
-    $repository | Add-Member -MemberType 'NoteProperty' -Name "Domain" -Value [uri]"https://github.com"
-    $repository | Add-Member -MemberType 'NoteProperty' -Name "Organization" -Value [string]"bonzosoft"
-    $repository | Add-Member -MemberType 'NoteProperty' -Name "Name" -Value [string]"common"
-    $repository | Add-Member -MemberType 'NoteProperty' -Name "Branch" -Value [string]"bw" #main
-    $repository | Add-Member -MemberType 'NoteProperty' -Name "Token" -Value [securestring]$null
+    $repository | Add-Member -MemberType 'NoteProperty' -Name "Domain" -Value ([uri]"https://github.com")
+    $repository | Add-Member -MemberType 'NoteProperty' -Name "Organization" -Value ([string]"bonzosoft")
+    $repository | Add-Member -MemberType 'NoteProperty' -Name "Name" -Value ([string]"common")
+    $repository | Add-Member -MemberType 'NoteProperty' -Name "Branch" -Value ([string]"bw") #main
+    $repository | Add-Member -MemberType 'NoteProperty' -Name "Token" -Value ([securestring]$null)
     $repository | Add-Member -MemberType 'NoteProperty' -Name "Uri" -Value ([uri]($repository.Domain.ToSTring() + $repository.Organization.ToString() + "/" + $repository.Name + ".git"))
     $repository | Add-Member -MemberType 'NoteProperty' -Name "Path" -Value ([IO.DirectoryInfo](Join-Path -Path ${PWD} -ChildPath @($repository.Name)))
     $repository | Add-Member -MemberType 'ScriptMethod' -Name "GetAuthHeader" -Value {

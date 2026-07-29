@@ -178,7 +178,7 @@ process {
     $params = @(
         "-c"
         #"http.extraHeader=$($repository.GetAuthHeader())"
-
+        "credential.helper=store --file=$repositoryConfigFile"
         "clone"
         "--branch"
         $repository.Branch

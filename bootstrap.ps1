@@ -19,7 +19,8 @@ begin {
     # configuring tools
     $Env:GIT_TERMINAL_PROMPT = 0
     $Env:INFISICAL_DISABLE_UPDATE_CHECK = "true"
-    $vaultConfigFile = [IO.FileInfo](Join-Path -Path ${PWD} -ChildPath @(".config", "infisical.json"))
+    $vaultConfigFile = [IO.FileInfo](Join-Path -Path ${PWD} -ChildPath @(".config", "infisical"))
+    $repositoryConfigFile = [IO.FileInfo](Join-Path -Path ${PWD} -ChildPath @(".config", "git"))
 
     #Region Vault object
     [pscustomobject]$vault = [PSCustomObject]@{}
@@ -28,7 +29,7 @@ begin {
     $vault | Add-Member -MemberType 'NoteProperty' -Name "Organization" -Value ([guid]"dd2d983e-3db8-40ea-bec4-f69a13b8566a")
     $vault | Add-Member -MemberType 'NoteProperty' -Name "Project"      -Value ([guid]"9b3eaa39-1cba-4239-b272-9cd10c997eed")
     $vault | Add-Member -MemberType 'NoteProperty' -Name "Path"         -Value ([IO.DirectoryInfo](Join-Path -Path "/" -ChildPath @()))
-    $vault | Add-Member -MemberType 'NoteProperty' -Name "Token"        -Value ([securestring]((Get-Content -Path $vaultConfigFile -ErrorAction 'SilentlyContinue' | ConvertFrom-Json).Token | ConvertTo-SecureString -AsPlainText -ErrorAction 'SilentlyContinue'))
+    $vault | Add-Member -MemberType 'NoteProperty' -Name "Token"        -Value ([securestring](Get-Content -Path $vaultConfigFile -ErrorAction 'SilentlyContinue' | ConvertTo-SecureString -AsPlainText -ErrorAction 'SilentlyContinue'))
     $vault | Add-Member -MemberType 'ScriptMethod' -Name "Status"       -Value {
         if ($null -eq $this.Token) {
             return $false
@@ -68,7 +69,8 @@ begin {
             return
         }
         else {
-            return "Authorization: Basic $([Convert]::ToBase64String([Text.Encoding]::ASCII.GetBytes("x-access-token:$($this.Token | ConvertFrom-SecureString -AsPlainText)")))"
+            return ($this.Domain.Scheme + "://" + "x-auth-token" + ":" + ($this.Token | ConvertFrom-SecureString -AsPlainText) + "@" + $this.Domain.Host)
+            #return "Authorization: Basic $([Convert]::ToBase64String([Text.Encoding]::ASCII.GetBytes("x-access-token:$($this.Token | ConvertFrom-SecureString -AsPlainText)")))"
         }
     }
     $repository | Add-Member -MemberType 'ScriptMethod' -Name "Status"        -Value {
@@ -130,18 +132,9 @@ process {
 
         Write-Information -MessageData "$(Get-Timestamp)Persisting vault token."
         if (-not (Test-Path -Path $vaultConfigFile.Directory)) {
-            New-Item -Path $vaultConfigFile.Directory -ItemType 'Directory' -Force | Out-Null   
+            New-Item -Path $vaultConfigFile.Directory -ItemType 'Directory' -Force | Out-Null
         }
-        if (-not (Test-Path -Path $vaultConfigFile.FullName)) {
-            [pscustomobject]@{"Token" = ""} | 
-            ConvertTo-Json | 
-            Set-Content -Path $vaultConfigFile
-        }
-        Get-Content -Path $vaultConfigFile |
-        ConvertFrom-Json |
-        Add-Member -MemberType 'NoteProperty' -Name "Token" -Value ($vault.Token | ConvertFrom-SecureString -AsPlainText) -Force -PassThru | 
-        ConvertTo-Json |
-        Set-Content -Path $vaultConfigFile
+        Set-Content -Path $vaultConfigFile -Value ($vault.Token | ConvertFrom-SecureString -AsPlainText) -Force
     }
 
     Write-Information -MessageData "$(Get-TimeStamp)Getting repository token from vault."
@@ -165,6 +158,12 @@ process {
         Write-Error -Message ($errStream -join [Environment]::NewLine)
     }
 
+    Write-Information -MessageData "$(Get-Timestamp)Persisting repository token."
+    if (-not (Test-Path -Path $repositoryConfigFile.Directory)) {
+        New-Item -Path $repositoryConfigFile.Directory -ItemType 'Directory' -Force | Out-Null
+    }
+    Set-Content -Path $repositoryConfigFile -Value $repository.GetAuthHeader() -Force
+
     Write-Information -MessageData "$(Get-Timestamp)Checking repository connection."
     if ($repository.Status() -ne $true) {
         Write-Error -Message "$(Get-Timestamp)Invalid repository connection." -ErrorAction 'Stop'
@@ -178,7 +177,8 @@ process {
     Write-Information -MessageData "$(Get-TimeStamp)Cloning repository '$($repository.Name)'."
     $params = @(
         "-c"
-        "http.extraHeader=$($repository.GetAuthHeader())"
+        #"http.extraHeader=$($repository.GetAuthHeader())"
+
         "clone"
         "--branch"
         $repository.Branch

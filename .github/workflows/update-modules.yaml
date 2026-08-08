@@ -20,8 +20,7 @@ jobs:
 
     steps:
       - name: 📥 Descargar repositorio actual (bootstrap)
-        # Actualizado a v5 para evitar el warning de Node.js
-        uses: actions/checkout@v5
+        uses: actions/checkout@v7
         with:
           path: bootstrap
 
@@ -39,7 +38,7 @@ jobs:
           Add-Content -Path $env:GITHUB_OUTPUT -Value "ref_target=$commitId"
 
       - name: 📥 Descargar repositorio origen (common)
-        uses: actions/checkout@v5
+        uses: actions/checkout@v7
         with:
           # Repositorio apuntando a la organización bonzosoft
           repository: bonzosoft/common
@@ -55,8 +54,9 @@ jobs:
           Compress-Archive -Path ./common/modules/* -DestinationPath ./bootstrap/modules.zip -Force
 
       - name: 📤 Guardar (Checkin) el archivo zip actualizado
-        uses: stefanzweifel/git-auto-commit-action@v5
+        uses: EndBug/add-and-commit@v9
         with:
-          repository: ./bootstrap
-          commit_message: "Auto-update: Módulos empaquetados desde la versión ${{ steps.read_version.outputs.ref_target }}"
-          file_pattern: 'modules.zip'
+          cwd: './bootstrap'
+          message: "Auto-update: Módulos empaquetados desde la versión ${{ steps.read_version.outputs.ref_target }}"
+          add: 'modules.zip'
+          

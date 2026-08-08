@@ -2,12 +2,15 @@ name: Fetch and Package Modules
 
 on:
   push:
-    # Se ejecuta automáticamente solo cuando alguien modifica el archivo 'version'
+    # Ahora vigila el archivo 'version' sin extensión .txt
     paths:
       - 'version'
     branches:
       - main
+  # Botón manual para lanzarlo a demanda
+  workflow_dispatch:
 
+# Permisos para poder hacer el commit en bootstrap
 permissions:
   contents: write
 
@@ -17,7 +20,8 @@ jobs:
 
     steps:
       - name: 📥 Descargar repositorio actual (bootstrap)
-        uses: actions/checkout@v4
+        # Actualizado a v5 para evitar el warning de Node.js
+        uses: actions/checkout@v5
         with:
           path: bootstrap
 
@@ -25,26 +29,24 @@ jobs:
         id: read_version
         shell: pwsh
         run: |
-          # Leemos el contenido del archivo version
+          # Leemos el contenido del archivo 'version'
           $commitId = Get-Content -Path "./bootstrap/version" -Raw
-          $commitId = $commitId.Trim() # Quitamos saltos de línea por si acaso
+          $commitId = $commitId.Trim()
           
           Write-Output "Se solicitó el commit/tag: $commitId"
           
-          # Guardamos el valor en una variable de salida para que el siguiente paso la use
-          Write-Output "ref_target=$commitId" >> $env:GITHUB_OUTPUT
+          # Escribimos en el archivo temporal de GitHub usando cmdlets nativos
+          Add-Content -Path $env:GITHUB_OUTPUT -Value "ref_target=$commitId"
 
       - name: 📥 Descargar repositorio origen (common)
-        uses: actions/checkout@v4
+        uses: actions/checkout@v5
         with:
+          # Repositorio apuntando a la organización bonzosoft
           repository: bonzosoft/common
           path: common
-          # Usamos la variable que leímos en el paso anterior
           ref: ${{ steps.read_version.outputs.ref_target }}
-          
-          # ⚠️ ATENCIÓN: Si el repo 'common' es PRIVADO, descomenta la siguiente línea 
-          # y usa un PAT. Si es público, puedes borrar la línea del token.
-          token: ${{ secrets.GITHUB_CONTENTS_READONLY_COMMON }}
+          # Token de solo lectura guardado en tus Repository Secrets
+          token: ${{ secrets.CONTENTS_READONLY_COMMONS }}
 
       - name: 🗜️ Comprimir directorio de módulos
         shell: pwsh

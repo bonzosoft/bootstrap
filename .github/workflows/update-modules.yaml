@@ -48,9 +48,9 @@ jobs:
           Write-Output "Comprimiendo módulos..."
           Compress-Archive -Path ./common/modules/* -DestinationPath ./bootstrap/modules.zip -Force
 
-      - name: 📤 Checkin changes on bootstrap
-        uses: EndBug/add-and-commit@v9
+      - name: 📤 Commit changes to bootstrap
+        uses: stefanzweifel/git-auto-commit-action@v7
         with:
-          cwd: './bootstrap'
-          message: "Auto-update: Módulos empaquetados desde la versión ${{ steps.read_version.outputs.ref_target }}"
-          add: 'modules.zip'
+          repository: bootstrap
+          commit_message: "Update PowerShell modules"
+          file_pattern: modules.zip

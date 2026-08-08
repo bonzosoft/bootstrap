@@ -12,7 +12,7 @@ begin {
     $ErrorActionPreference = 'Stop'
     $InformationPreference = 'Continue'
 
-    #[string[]]$stdStream = @()
+   #[string[]]$stdStream = @()
     [string[]]$errStream = @()
     [string[]]$params = @()
 
@@ -57,7 +57,7 @@ begin {
     }
     $vault | Add-Member -MemberType 'ScriptMethod' -Name "StartConnection" -Value {
         if ($null -eq $this.Token) {
-            Write-Error -Message "No valid token found." -ErrorAction 'Stop'
+            return #Write-Error -Message "No valid token found." -ErrorAction 'Stop'
         }
         Set-Item -Path "Env:INFISICAL_TOKEN" -Value ($this.Token | ConvertFrom-SecureString -AsPlainText)
     }

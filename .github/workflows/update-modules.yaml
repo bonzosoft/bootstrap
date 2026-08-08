@@ -39,7 +39,7 @@ jobs:
           path: common
           ref: ${{ steps.read_version.outputs.ref_target }}
           token: ${{ secrets.CONTENTS_READONLY_COMMONS }}
-          fetch-depth: 0 # all commit history, default = 1
+          fetch-depth: 1 # all commit history, default = 1
 
       - name: 🗜️ Add modules to archive
         shell: pwsh

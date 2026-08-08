@@ -15,6 +15,17 @@ begin {
    #[string[]]$stdStream = @()
     [string[]]$errStream = @()
     [string[]]$params = @()
+    [Hashtable]$splat = @{}
+
+
+
+
+
+
+    return
+
+
+
 
     # configuring tools
     $Env:INFISICAL_DISABLE_UPDATE_CHECK = "true"
@@ -212,6 +223,29 @@ begin {
 }
 
 process {
+    [string]$bootstrapBranch = "main"
+    [IO.FileInfo]$tempFile = New-TemporaryFile
+    $splat = @{
+        "Uri"           = "https://raw.githubusercontent.com/bonzosoft/bootstrap/$bootstrapBranch/modules.zip"
+        "OutFile"       = $tempFile
+    }
+    Invoke-WebRequest @splat
+
+    [IO.DirectoryInfo]$modulesDirectory = Join-Path -Path $PWD -ChildPath @("bootstrap", "modules")
+    $splat = @{
+    "Path"              = $tempFile
+        "Destination"   = $modulesDirectory
+        "Force"         = $true
+    }
+    Expand-Archive @splat
+
+    $splat = @{
+        "Name"          = Get-ChildItem -Path $modulesDirectory -Directory
+        "Force"         = $true
+    }
+    Import-Module @splat
+
+    return 
     Write-Information -MessageData "$(Get-Timestamp)Checking vault connection."
     if ($vault.Status() -ne $true) {
         Write-Information -MessageData "$(Get-Timestamp)Invalid vault connection."

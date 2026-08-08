@@ -2,7 +2,7 @@ name: Fetch and Package Modules
 
 on:
   push:
-    # Se ejecuta automáticamente solo cuando alguien modifica el archivo 'version.txt'
+    # Se ejecuta automáticamente solo cuando alguien modifica el archivo 'version'
     paths:
       - 'version'
     branches:
@@ -25,7 +25,7 @@ jobs:
         id: read_version
         shell: pwsh
         run: |
-          # Leemos el contenido del archivo version.txt
+          # Leemos el contenido del archivo version
           $commitId = Get-Content -Path "./bootstrap/version" -Raw
           $commitId = $commitId.Trim() # Quitamos saltos de línea por si acaso
           
@@ -44,7 +44,7 @@ jobs:
           
           # ⚠️ ATENCIÓN: Si el repo 'common' es PRIVADO, descomenta la siguiente línea 
           # y usa un PAT. Si es público, puedes borrar la línea del token.
-          # token: ${{ secrets.ORG_PAT }}
+          token: ${{ secrets.GITHUB_CONTENTS_READONLY_COMMON }}
 
       - name: 🗜️ Comprimir directorio de módulos
         shell: pwsh

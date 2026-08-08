@@ -1,0 +1,60 @@
+name: Fetch and Package Modules
+
+on:
+  push:
+    # Se ejecuta automáticamente solo cuando alguien modifica el archivo 'version.txt'
+    paths:
+      - 'version.txt'
+    branches:
+      - main
+
+permissions:
+  contents: write
+
+jobs:
+  fetch-and-package:
+    runs-on: ubuntu-latest
+
+    steps:
+      - name: 📥 Descargar repositorio actual (bootstrap)
+        uses: actions/checkout@v4
+        with:
+          path: bootstrap
+
+      - name: 📖 Leer la versión deseada
+        id: read_version
+        shell: pwsh
+        run: |
+          # Leemos el contenido del archivo version.txt
+          $commitId = Get-Content -Path "./bootstrap/version.txt" -Raw
+          $commitId = $commitId.Trim() # Quitamos saltos de línea por si acaso
+          
+          Write-Output "Se solicitó el commit/tag: $commitId"
+          
+          # Guardamos el valor en una variable de salida para que el siguiente paso la use
+          Write-Output "ref_target=$commitId" >> $env:GITHUB_OUTPUT
+
+      - name: 📥 Descargar repositorio origen (common)
+        uses: actions/checkout@v4
+        with:
+          repository: TU_ORGANIZACION/common
+          path: common
+          # Usamos la variable que leímos en el paso anterior
+          ref: ${{ steps.read_version.outputs.ref_target }}
+          
+          # ⚠️ ATENCIÓN: Si el repo 'common' es PRIVADO, descomenta la siguiente línea 
+          # y usa un PAT. Si es público, puedes borrar la línea del token.
+          # token: ${{ secrets.ORG_PAT }}
+
+      - name: 🗜️ Comprimir directorio de módulos
+        shell: pwsh
+        run: |
+          Write-Output "Comprimiendo módulos..."
+          Compress-Archive -Path ./common/modules/* -DestinationPath ./bootstrap/modules.zip -Force
+
+      - name: 📤 Guardar (Checkin) el archivo zip actualizado
+        uses: stefanzweifel/git-auto-commit-action@v5
+        with:
+          repository: ./bootstrap
+          commit_message: "Auto-update: Módulos empaquetados desde la versión ${{ steps.read_version.outputs.ref_target }}"
+          file_pattern: 'modules.zip'

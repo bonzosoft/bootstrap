@@ -4,7 +4,7 @@ on:
   push:
     # Se ejecuta automáticamente solo cuando alguien modifica el archivo 'version.txt'
     paths:
-      - 'version.txt'
+      - 'version'
     branches:
       - main
 
@@ -26,7 +26,7 @@ jobs:
         shell: pwsh
         run: |
           # Leemos el contenido del archivo version.txt
-          $commitId = Get-Content -Path "./bootstrap/version.txt" -Raw
+          $commitId = Get-Content -Path "./bootstrap/version" -Raw
           $commitId = $commitId.Trim() # Quitamos saltos de línea por si acaso
           
           Write-Output "Se solicitó el commit/tag: $commitId"
@@ -37,7 +37,7 @@ jobs:
       - name: 📥 Descargar repositorio origen (common)
         uses: actions/checkout@v4
         with:
-          repository: TU_ORGANIZACION/common
+          repository: bonzosoft/common
           path: common
           # Usamos la variable que leímos en el paso anterior
           ref: ${{ steps.read_version.outputs.ref_target }}

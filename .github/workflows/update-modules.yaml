@@ -17,22 +17,22 @@ jobs:
     runs-on: ubuntu-latest
 
     steps:
-      - name: 📥 Checktout bootstrap
+      - name: 📥 Checktout 'bootstrap'
         uses: actions/checkout@v7
         with:
           path: bootstrap
 
-      - name: 📖 Get common repository commit/tag 
+      - name: 📖 Get 'common' branch/commit/tag 
         id: read_version
         shell: pwsh
         run: |
           $commitId = (Get-Content -Path "./bootstrap/.github/workflows/version" -Raw).Trim()
           
-          Write-Output "Requested commit/tag: $commitId"
+          Write-Output "Requested branch/commit/tag: $commitId"
           
           Add-Content -Path $env:GITHUB_OUTPUT -Value "ref_target=$commitId"
 
-      - name: 📥 Checkout requested common repository commit/tag
+      - name: 📥 Checkout requested 'common' branch/commit/tag
         uses: actions/checkout@v7
         with:
           repository: bonzosoft/common
@@ -41,13 +41,13 @@ jobs:
           token: ${{ secrets.CONTENTS_READONLY_COMMONS }}
           fetch-depth: 0 # all commit history, default = 1
 
-      - name: 🗜️ Add pwsh modules to archive
+      - name: 🗜️ Add modules to archive
         shell: pwsh
         run: |
           Write-Output "Adding modules..."
           Compress-Archive -Path ./common/modules/* -DestinationPath ./bootstrap/modules.zip -Force
 
-      - name: 📤 Commit changes to bootstrap
+      - name: 📤 Commit changes to 'bootstrap'
         uses: stefanzweifel/git-auto-commit-action@v7
         with:
           repository: bootstrap

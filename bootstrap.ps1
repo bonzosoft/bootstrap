@@ -240,10 +240,10 @@ process {
         }
 
         Write-Information -MessageData "$(Get-Timestamp)Persisting vault token."
-        if (-not (Test-Path -Path $vaultConfigFile.Directory)) {
-            New-Item -Path $vaultConfigFile.Directory -ItemType 'Directory' -Force | Out-Null
+        if (-not (Test-Path -Path $vault.GetCredentialPath())) {
+            New-Item -Path $vault.GetCredentialPath().Directory -ItemType 'Directory' -Force | Out-Null
         }
-        Set-Content -Path $vaultConfigFile -Value ($vault.Token | ConvertFrom-SecureString -AsPlainText) -Force
+        Set-Content -Path $vault.GetCredentialPath() -Value ($vault.Token | ConvertFrom-SecureString -AsPlainText) -Force
     }
 
     Write-Information -MessageData "$(Get-TimeStamp)Getting repository token from vault."

@@ -2,15 +2,15 @@ name: Fetch and Package Modules
 
 on:
   push:
-    # Ahora vigila el archivo 'version' sin extensión .txt
+    # Run workflow when the 'version' file is updated
     paths:
       - 'version'
     branches:
       - main
-  # Botón manual para lanzarlo a demanda
+  # Run on demmand
   workflow_dispatch:
 
-# Permisos para poder hacer el commit en bootstrap
+# Permissions for commits in bootstrap
 permissions:
   contents: write
 
@@ -19,44 +19,38 @@ jobs:
     runs-on: ubuntu-latest
 
     steps:
-      - name: 📥 Descargar repositorio actual (bootstrap)
+      - name: 📥 Checktout current bootstrap repository
         uses: actions/checkout@v7
         with:
           path: bootstrap
 
-      - name: 📖 Leer la versión deseada
+      - name: 📖 Get version for common repository 
         id: read_version
         shell: pwsh
         run: |
-          # Leemos el contenido del archivo 'version'
-          $commitId = Get-Content -Path "./bootstrap/version" -Raw
-          $commitId = $commitId.Trim()
+          $commitId = (Get-Content -Path "./bootstrap/version" -Raw).Trim()
           
           Write-Output "Se solicitó el commit/tag: $commitId"
           
-          # Escribimos en el archivo temporal de GitHub usando cmdlets nativos
           Add-Content -Path $env:GITHUB_OUTPUT -Value "ref_target=$commitId"
 
-      - name: 📥 Descargar repositorio origen (common)
+      - name: 📥 Checkout required common repository
         uses: actions/checkout@v7
         with:
-          # Repositorio apuntando a la organización bonzosoft
           repository: bonzosoft/common
           path: common
           ref: ${{ steps.read_version.outputs.ref_target }}
-          # Token de solo lectura guardado en tus Repository Secrets
           token: ${{ secrets.CONTENTS_READONLY_COMMONS }}
 
-      - name: 🗜️ Comprimir directorio de módulos
+      - name: 🗜️ Adding modules to archive
         shell: pwsh
         run: |
           Write-Output "Comprimiendo módulos..."
           Compress-Archive -Path ./common/modules/* -DestinationPath ./bootstrap/modules.zip -Force
 
-      - name: 📤 Guardar (Checkin) el archivo zip actualizado
+      - name: 📤 Checkin changes on bootstrap
         uses: EndBug/add-and-commit@v9
         with:
           cwd: './bootstrap'
           message: "Auto-update: Módulos empaquetados desde la versión ${{ steps.read_version.outputs.ref_target }}"
           add: 'modules.zip'
-          

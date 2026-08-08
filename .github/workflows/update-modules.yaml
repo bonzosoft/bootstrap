@@ -28,7 +28,7 @@ jobs:
         id: read_version
         shell: pwsh
         run: |
-          $commitId = (Get-Content -Path "./bootstrap/version" -Raw).Trim()
+          $commitId = (Get-Content -Path "./bootstrap/.github/workflows/version" -Raw).Trim()
           
           Write-Output "Se solicitó el commit/tag: $commitId"
           

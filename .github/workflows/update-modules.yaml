@@ -1,57 +1,55 @@
-name: Fetch and Package Modules
+name: Fetch and Package Modules from bonzosoft/common
 
 on:
   push:
-    # Run workflow when the 'version' file is updated
     paths:
-      - './.github/workflows/version'
+      - './.github/workflows/version' # Run workflow when the 'version' file is updated
     branches:
       - main
-  # Run on demmand
-  workflow_dispatch:
+  workflow_dispatch: # Run on demmand
 
-# Permissions for commits in bootstrap
+
 permissions:
-  contents: write
+  contents: write # Permissions for commits in bootstrap
 
 jobs:
   fetch-and-package:
     runs-on: ubuntu-latest
 
     steps:
-      - name: 📥 Checktout current bootstrap repository
+      - name: 📥 Checktout bootstrap
         uses: actions/checkout@v7
         with:
           path: bootstrap
 
-      - name: 📖 Get version for common repository 
+      - name: 📖 Get common repository commit/tag 
         id: read_version
         shell: pwsh
         run: |
           $commitId = (Get-Content -Path "./bootstrap/.github/workflows/version" -Raw).Trim()
           
-          Write-Output "Se solicitó el commit/tag: $commitId"
+          Write-Output "Requested commit/tag: $commitId"
           
           Add-Content -Path $env:GITHUB_OUTPUT -Value "ref_target=$commitId"
 
-      - name: 📥 Checkout required common repository
+      - name: 📥 Checkout requested common repository commit/tag
         uses: actions/checkout@v7
         with:
           repository: bonzosoft/common
           path: common
           ref: ${{ steps.read_version.outputs.ref_target }}
           token: ${{ secrets.CONTENTS_READONLY_COMMONS }}
-          fetch-depth: 0
+          fetch-depth: 0 # all commit history, default = 1
 
-      - name: 🗜️ Adding modules to archive
+      - name: 🗜️ Add pwsh modules to archive
         shell: pwsh
         run: |
-          Write-Output "Comprimiendo módulos..."
+          Write-Output "Adding modules..."
           Compress-Archive -Path ./common/modules/* -DestinationPath ./bootstrap/modules.zip -Force
 
       - name: 📤 Commit changes to bootstrap
         uses: stefanzweifel/git-auto-commit-action@v7
         with:
           repository: bootstrap
-          commit_message: "Update PowerShell modules"
+          commit_message: "AutoUpdate PowerShell modules"
           file_pattern: modules.zip

@@ -84,4 +84,3 @@ jobs:
               --repo $env:GITHUB_REPOSITORY `
               --title $version `
               --generate-notes
-```

@@ -1,0 +1,87 @@
+name: Publish Common modules
+
+on:
+  workflow_dispatch:
+    inputs:
+      common_ref:
+        description: "Tag, branch or commit of common to publish"
+        required: true
+        type: string
+
+permissions:
+  contents: write
+
+jobs:
+  publish:
+    runs-on: ubuntu-slim
+
+    steps:
+
+      # ─────────────────────────────────────────────────────────────
+      # Checkout common
+      # ─────────────────────────────────────────────────────────────
+
+      - name: 📥 Checkout 'common'
+        uses: actions/checkout@v7
+        with:
+          repository: bonzosoft/common
+          ref: ${{ inputs.common_ref }}
+          path: common
+          token: ${{ secrets.CONTENTS_READONLY_COMMONS }}
+          fetch-depth: 1
+
+      # ─────────────────────────────────────────────────────────────
+      # Create modules.zip
+      # ─────────────────────────────────────────────────────────────
+
+      - name: 📦 Create modules.zip
+        shell: pwsh
+        run: |
+          $modulesPath = Join-Path $PWD 'common/modules'
+          $zipPath     = Join-Path $PWD 'modules.zip'
+
+          if (-not (Test-Path -LiteralPath $modulesPath -PathType Container)) {
+              throw "Modules directory not found: $modulesPath"
+          }
+
+          if (Test-Path -LiteralPath $zipPath) {
+              Remove-Item -LiteralPath $zipPath -Force
+          }
+
+          Compress-Archive `
+              -Path (Join-Path $modulesPath '*') `
+              -DestinationPath $zipPath `
+              -CompressionLevel Optimal
+
+          $size = (Get-Item -LiteralPath $zipPath).Length
+
+          Write-Host "Created: $zipPath"
+          Write-Host "Size: $size bytes"
+
+      # ─────────────────────────────────────────────────────────────
+      # Publish GitHub Release in bootstrap
+      # ─────────────────────────────────────────────────────────────
+
+      - name: 🚀 Create GitHub Release
+        shell: pwsh
+        env:
+          GH_TOKEN: ${{ github.token }}
+          COMMON_REF: ${{ inputs.common_ref }}
+        run: |
+          $zipPath = Join-Path $PWD 'modules.zip'
+
+          # El nombre de la release será el mismo que el ref solicitado.
+          $version = $env:COMMON_REF
+
+          if ([string]::IsNullOrWhiteSpace($version)) {
+              throw "common_ref cannot be empty."
+          }
+
+          Write-Host "Creating release '$version' in $env:GITHUB_REPOSITORY"
+
+          gh release create $version `
+              $zipPath `
+              --repo $env:GITHUB_REPOSITORY `
+              --title $version `
+              --generate-notes
+```

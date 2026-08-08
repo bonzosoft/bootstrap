@@ -4,7 +4,7 @@ on:
   push:
     # Run workflow when the 'version' file is updated
     paths:
-      - 'version'
+      - './.github/workflows/version'
     branches:
       - main
   # Run on demmand

@@ -1,6 +1,10 @@
 name: Publish Common modules
 
 on:
+    paths:
+      - './.github/workflows/version' # Run workflow when the 'version' file is updated
+    branches:
+      - main
   workflow_dispatch:
     inputs:
       common_ref:

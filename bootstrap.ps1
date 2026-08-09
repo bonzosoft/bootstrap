@@ -223,10 +223,10 @@ begin {
 }
 
 process {
-    [string]$bootstrapBranch = "main"
+
     [IO.FileInfo]$tempFile = New-TemporaryFile
     $splat = @{
-        "Uri"           = "https://raw.githubusercontent.com/bonzosoft/bootstrap/$bootstrapBranch/modules.zip"
+        "Uri"           = "https://github.com/bonzosoft/bootstrap/releases/latest/download/modules.zip"
         "OutFile"       = $tempFile
     }
     Invoke-WebRequest @splat

@@ -51,6 +51,7 @@ jobs:
           token: ${{ secrets.CONTENTS_READONLY_COMMONS }}
           fetch-depth: 1
           submodules: false
+          path: common
 
       # ── Add modules to archive ──────────────────────────────────────────────
       - name: 🗜️ Add modules to archive

@@ -59,7 +59,7 @@ jobs:
           [IO.DirectoryInfo]$source = Join-Path -Path $PWD -ChildPath @("common", "modules")
           [IO.FileInfo]$target = Join-Path -Path $PWD -ChildPath @("bootstrap.zip")
 
-          if (! Test-Path -Path $source) {
+          if (! (Test-Path -Path $source)) {
               Write-Error -Message "Modules directory not found." -ErrorAction 'Stop'
           }
 

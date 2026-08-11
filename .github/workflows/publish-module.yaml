@@ -34,7 +34,7 @@ jobs:
         run: |
           [version]$version = (Get-Content -Path "./bootstrap/.github/workflows/version" -Raw).Trim()
           if ($version) {
-              Write-information -MessageData "Package version: $" -InformationAction 'Continue'
+              Write-information -MessageData "Package version: $version" -InformationAction 'Continue'
           }
           else {
               Write-Error -Message "Unable to read package version." -ErrorAction 'Stop'

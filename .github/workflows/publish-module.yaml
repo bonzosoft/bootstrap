@@ -78,14 +78,14 @@ jobs:
           [IO.FileInfo]$target = Join-Path -Path $PWD -ChildPath @("bootstrap.zip")
           [version]$version = $Env:VERSION
           if ($version) {
-            Write-information -MessageData "Release version: $" -InformationAction 'Continue'
+              Write-Information -MessageData "Release version: $version." -InformationAction 'Continue'
           }
           else {
               Write-Error -Message "Unable to read release version." -ErrorAction 'Stop'
           }
 
           $params = @(
-              create, $version
+              "create", $version
               $target.FullName
               "--repo", $Env:GITHUB_REPOSITORY
               "--title", $version

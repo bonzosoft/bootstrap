@@ -64,9 +64,9 @@ jobs:
               Write-Error -Message "Modules directory not found." -ErrorAction 'Stop'
           }
 
-          Write-Information -InputObject "Adding modules..." -InformationAction 'Continue'
+          Write-Information -MessageData "Adding modules..." -InformationAction 'Continue'
           Compress-Archive -Path $source -DestinationPath $target -CompressionLevel 'Optimal' -Force
-          Write-Information -InputObject "Created '$target'." -InformationAction 'Continue'
+          Write-Information -MessageData "Created '$target'." -InformationAction 'Continue'
 
       # ── Publish release ─────────────────────────────────────────────────────
       - name: 🚀 Create GitHub Release

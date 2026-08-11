@@ -17,11 +17,6 @@ begin {
     [string[]]$params = @()
     [Hashtable]$splat = @{}
 
-
-
-
-
-
     return
 
 
@@ -245,7 +240,8 @@ process {
     }
     Import-Module @splat
 
-    return 
+    return
+
     Write-Information -MessageData "$(Get-Timestamp)Checking vault connection."
     if ($vault.Status() -ne $true) {
         Write-Information -MessageData "$(Get-Timestamp)Invalid vault connection."

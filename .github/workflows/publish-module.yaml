@@ -1,0 +1,94 @@
+name: Publish modules
+
+on:
+  push:
+    paths:
+      - ./.github/workflows/version
+    branches:
+      - main
+  workflow_dispatch:
+    inputs:
+      version:
+        description: Version to publish
+        required: true
+        type: string
+
+permissions:
+  contents: write
+
+jobs:
+  publish:
+    runs-on: ubuntu-slim
+    
+    steps:
+
+      # ── Checkout 'bootstrap' ────────────────────────────────────────────────
+      - name: 📥 Checktout 'bootstrap'
+        uses: actions/checkout@v7
+        with:
+          path: bootstrap
+
+      # ── Get package version ─────────────────────────────────────────────────
+      - name: 📖 Get package version
+        id: get-version
+        shell: pwsh
+        run: |
+          [version]$version = (Get-Content -Path "./bootstrap/.github/workflows/version" -Raw).Trim
+          if ($version) {
+              Write-information -MessageData "Package version: $" -InformationAction 'Continue'
+          }
+          else {
+              Write-Error -Message "Unable to read package version." -ErrorAction 'Stop'
+          }
+
+          Add-Content -Path $Env:GITHUB_OUTPUT -Value "version=$version"
+
+      # ── Checkout 'common' ───────────────────────────────────────────────────
+      - name: 📥 Checkout 'common'
+        uses: actions/checkout@v7
+        with:
+          repository: bonzosoft/common
+          ref: main
+          token: ${{ secrets.CONTENTS_READONLY_COMMONS }}
+          fetch-depth: 1
+          submodules: false
+
+      # ── Add modules to archive ──────────────────────────────────────────────
+      - name: 🗜️ Add modules to archive
+        shell: pwsh
+        run: |
+          [IO.DirectoryInfo]$source = Join-Path -Path $PWD -ChildPath @("common", "modules")
+          [IO.FileInfo]$target = Join-Path -Path $PWD -ChildPath @("bootstrap.zip")
+
+          if (! Test-Path -Path $source) {
+              Write-Error -Message "Modules directory not found." -ErrorAction 'Stop'
+          }
+
+          Write-Information -InputObject "Adding modules..." -InformationAction 'Continue'
+          Compress-Archive -Path $source -DestinationPath $target -CompressionLevel 'Optimal' -Force
+          Write-Information -InputObject "Created '$target'." -InformationAction 'Continue'
+
+      # ── Publish release ─────────────────────────────────────────────────────
+      - name: 🚀 Create GitHub Release
+        shell: pwsh
+        env:
+          GH_TOKEN: ${{ github.token}}
+          VERSION: ${{ steps.get-version.outputs.version }}
+          run: |
+            [IO.FileInfo]$target = Join-Path -Path $PWD -ChildPath @("bootstrap.zip")
+            [version]$version = $Env:VERSION
+            if ($version) {
+              Write-information -MessageData "Release version: $" -InformationAction 'Continue'
+            }
+            else {
+                Write-Error -Message "Unable to read release version." -ErrorAction 'Stop'
+            }
+
+            $params = @(
+                create, $version
+                $target.FullName
+                "--repo", $Env:GITHUB_REPOSITORY
+                "--title", $version
+                "--generate-notes"
+            )
+            gh release @params

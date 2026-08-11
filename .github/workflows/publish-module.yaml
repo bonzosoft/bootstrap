@@ -32,7 +32,7 @@ jobs:
         id: get-version
         shell: pwsh
         run: |
-          [version]$version = (Get-Content -Path "./bootstrap/.github/workflows/version" -Raw).Trim
+          [version]$version = (Get-Content -Path "./bootstrap/.github/workflows/version" -Raw).Trim()
           if ($version) {
               Write-information -MessageData "Package version: $" -InformationAction 'Continue'
           }

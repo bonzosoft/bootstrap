@@ -47,7 +47,7 @@ jobs:
         uses: actions/checkout@v7
         with:
           repository: bonzosoft/common
-          ref: main
+          ref: bw
           token: ${{ secrets.CONTENTS_READONLY_COMMONS }}
           fetch-depth: 1
           submodules: false

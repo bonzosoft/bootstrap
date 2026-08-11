@@ -21,7 +21,6 @@ jobs:
     runs-on: ubuntu-slim
     
     steps:
-
       # ── Checkout 'bootstrap' ────────────────────────────────────────────────
       - name: 📥 Checktout 'bootstrap'
         uses: actions/checkout@v7
@@ -74,21 +73,21 @@ jobs:
         env:
           GH_TOKEN: ${{ github.token}}
           VERSION: ${{ steps.get-version.outputs.version }}
-          run: |
-            [IO.FileInfo]$target = Join-Path -Path $PWD -ChildPath @("bootstrap.zip")
-            [version]$version = $Env:VERSION
-            if ($version) {
-              Write-information -MessageData "Release version: $" -InformationAction 'Continue'
-            }
-            else {
-                Write-Error -Message "Unable to read release version." -ErrorAction 'Stop'
-            }
+        run: |
+          [IO.FileInfo]$target = Join-Path -Path $PWD -ChildPath @("bootstrap.zip")
+          [version]$version = $Env:VERSION
+          if ($version) {
+            Write-information -MessageData "Release version: $" -InformationAction 'Continue'
+          }
+          else {
+              Write-Error -Message "Unable to read release version." -ErrorAction 'Stop'
+          }
 
-            $params = @(
-                create, $version
-                $target.FullName
-                "--repo", $Env:GITHUB_REPOSITORY
-                "--title", $version
-                "--generate-notes"
-            )
-            gh release @params
+          $params = @(
+              create, $version
+              $target.FullName
+              "--repo", $Env:GITHUB_REPOSITORY
+              "--title", $version
+              "--generate-notes"
+          )
+          gh release @params

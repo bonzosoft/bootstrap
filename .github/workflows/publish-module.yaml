@@ -3,9 +3,9 @@ name: Publish module
 on:
   push:
     paths:
-      - ./.github/workflows/version
-    #branches:
-    #  - main
+      - "./.github/workflows/version"
+    branches:
+      - main
   workflow_dispatch:
     inputs:
       version:

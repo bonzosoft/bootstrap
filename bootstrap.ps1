@@ -218,19 +218,15 @@ begin {
 }
 
 process {
-    $organization = "bonzosoft"
-    $repository   = "bootstrap"
 
-    $asset = Invoke-RestMethod -uri "https://api.github.com/repos/$organization/$repository/releases/latest" |
+
+    $assetUri = (Invoke-RestMethod -uri "https://api.github.com/repos/bonzosoft/bootstrap/releases/latest" |
         Select-Object -ExpandProperty "assets" |
-        Where-Object name -like "bootstra*.zip"
-    
-
-
-
+        Where-Object name -like "bootstra*.zip").browser_download_url
+  
     [IO.FileInfo]$tempFile = New-TemporaryFile
     $splat = @{
-        "Uri"           = "https://github.com/$organization/$repository/releases/latest/download/bootstrap.zip"
+        "Uri"           = $assetUri
         "OutFile"       = $tempFile
     }
     Invoke-WebRequest @splat

@@ -219,11 +219,12 @@ begin {
 
 process {
 
-
+    $assetVersion = (Invoke-RestMethod -uri "https://api.github.com/repos/bonzosoft/bootstrap/releases/latest").name
     $assetUri = (Invoke-RestMethod -uri "https://api.github.com/repos/bonzosoft/bootstrap/releases/latest" |
         Select-Object -ExpandProperty "assets" |
         Where-Object name -like "bootstra*.zip").browser_download_url
   
+    Write-Information -MessageData "Downloadin version v$assetVersion." -InformationAction 'Continue'
     [IO.FileInfo]$tempFile = New-TemporaryFile
     $splat = @{
         "Uri"           = $assetUri

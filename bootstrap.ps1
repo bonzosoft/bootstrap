@@ -236,7 +236,7 @@ process {
 
     $splat = @{
         "Name"          = (Get-ChildItem -Path $modulesDirectory -Directory).FullName
-        "Force"         = $true
+        "Force"         = $false
     }
     Import-Module @splat
 

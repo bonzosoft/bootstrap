@@ -221,7 +221,7 @@ process {
 
     [IO.FileInfo]$tempFile = New-TemporaryFile
     $splat = @{
-        "Uri"           = "https://github.com/bonzosoft/bootstrap/releases/latest/download/modules.zip"
+        "Uri"           = "https://github.com/bonzosoft/bootstrap/releases/latest/download/bootstrap.zip"
         "OutFile"       = $tempFile
     }
     Invoke-WebRequest @splat

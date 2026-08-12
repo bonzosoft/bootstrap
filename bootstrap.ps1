@@ -242,6 +242,9 @@ process {
 
     return
 
+    Get-Alias cfy, cty | Format-List Name, Definition, Source, Options
+
+
     Write-Information -MessageData "$(Get-Timestamp)Checking vault connection."
     if ($vault.Status() -ne $true) {
         Write-Information -MessageData "$(Get-Timestamp)Invalid vault connection."

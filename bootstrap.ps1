@@ -226,16 +226,16 @@ process {
     }
     Invoke-WebRequest @splat
 
-    [IO.DirectoryInfo]$modulesDirectory = Join-Path -Path $PWD -ChildPath @("bootstrap", "modules")
+    [IO.DirectoryInfo]$modulesDirectory = Join-Path -Path ([System.IO.Path]::GetTempPath()) -ChildPath @("bootstrap", "modules")
     $splat = @{
     "Path"              = $tempFile
-        "Destination"   = $modulesDirectory
+        "Destination"   = $modulesDirectory.Parent
         "Force"         = $true
     }
     Expand-Archive @splat
 
     $splat = @{
-        "Name"          = Get-ChildItem -Path $modulesDirectory -Directory
+        "Name"          = (Get-ChildItem -Path $modulesDirectory -Directory).FullName
         "Force"         = $true
     }
     Import-Module @splat

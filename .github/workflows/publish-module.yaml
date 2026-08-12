@@ -61,7 +61,7 @@ jobs:
         run: |
           [version]$version = $Env:VERSION
           [IO.DirectoryInfo]$source = Join-Path -Path $PWD -ChildPath @("common", "modules")
-          [IO.FileInfo]$target = Join-Path -Path $PWD -ChildPath @("bootstrap-$version.zip")
+          [IO.FileInfo]$target = Join-Path -Path $PWD -ChildPath @("bootstrap-v$version.zip")
 
           if (! (Test-Path -Path $source)) {
               Write-Error -Message "Modules directory not found." -ErrorAction 'Stop'
@@ -79,7 +79,7 @@ jobs:
           VERSION: ${{ steps.get-version.outputs.version }}
         run: |
           [version]$version = $Env:VERSION
-          [IO.FileInfo]$target = Join-Path -Path $PWD -ChildPath @("bootstrap-$version.zip")
+          [IO.FileInfo]$target = Join-Path -Path $PWD -ChildPath @("bootstrap-v$version.zip")
           [version]$version = $Env:VERSION
           if ($version) {
               Write-Information -MessageData "Release version: $version." -InformationAction 'Continue'

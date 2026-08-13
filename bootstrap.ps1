@@ -60,9 +60,9 @@ process {
     Connect-Vault -Vault $Vault
     $splat = @{
         Organization = "bonzosoft"
-        $Name        = "common"
-        $Branch      = "bw"
-        $Token       = Get-VaultSecret -Vault $Vault -Name "GITHUB_CONTENTS_READONLY_COMMON" -Path "/" | ConvertTo-SecureString -AsPlainText
+        Name         = "common"
+        Branch       = "bw"
+        Token        = (Get-VaultSecret -Vault $Vault -Name "GITHUB_CONTENTS_READONLY_COMMON" -Path "/" | ConvertTo-SecureString -AsPlainText)
     }
     $repo = New-GitRepository @splat
     Connect-GitRepository -Repository $repo

@@ -74,8 +74,8 @@ process {
     Get-GitRepository -Repository $repo
 
     foreach ($item in @("install", "cmd")) {
-        $source = Join-Path -Path $repo.Path -ChildPath @("${item}.sh")
-        $target = Join-Path -Path ${PWD} -ChildPath @($item)
+        [IO.FileInfo]$source = Join-Path -Path $repo.Path -ChildPath @("${item}.sh")
+        [IO.FileInfo]$target = Join-Path -Path ${PWD} -ChildPath @($item)
 
         Write-Information -MessageData "$(Get-TimeStamp)Creating link for '${item}'."
         $null = ln -snf $source.FullName $target.FullName 2> variable:errorMessage

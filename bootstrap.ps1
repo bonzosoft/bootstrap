@@ -69,7 +69,7 @@ process {
     Get-GitRepository -Repository $repo
 
     foreach ($item in @("install", "cmd")) {
-        $source = Join-Path -Path $repo.Directory -ChildPath @("${item}.sh")
+        $source = Join-Path -Path $repo.Path.Directory -ChildPath @("${item}.sh")
         $target = Join-Path -Path ${PWD} -ChildPath @($item)
 
         Write-Information -MessageData "$(Get-TimeStamp)Creating link for '${item}'."

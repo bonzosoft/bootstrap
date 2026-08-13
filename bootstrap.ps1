@@ -31,7 +31,6 @@ process {
     [Uri]$assetUri = $null
     [IO.FileInfo]$tempFile = New-TemporaryFile
     [IO.DirectoryInfo]$modulesDirectory = Join-Path -Path ([System.IO.Path]::GetTempPath()) -ChildPath @("bootstrap", "modules")
-    [string]$token = ""
 
     Write-Information -MessageData "$(Get-Timestamp)Script version: $scriptVersion."
     

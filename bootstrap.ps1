@@ -78,12 +78,12 @@ process {
         $target = Join-Path -Path ${PWD} -ChildPath @($item)
 
         Write-Information -MessageData "$(Get-TimeStamp)Creating link for '${item}'."
-        $null = ln -snf $source $target  2> variable:errorMessage
+        $null = ln -snf $source.FullName $target.FullName 2> variable:errorMessage
         if ($LASTEXITCODE -ne 0) {
             Write-Error -Message $errorMessage
         }
         Write-Information -MessageData "$(Get-TimeStamp)Setting '${item}' as executable."
-        $null = chmod +x $target 2> variable:errorMessage
+        $null = chmod +x $target.FullName 2> variable:errorMessage
         if ($LASTEXITCODE -ne 0) {
             Write-Error -Message $errorMessage
         }

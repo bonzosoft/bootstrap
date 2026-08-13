@@ -55,8 +55,11 @@ process {
         Project      = "9b3eaa39-1cba-4239-b272-9cd10c997eed"
         Environment  = "dev"
     }
+    Write-Information -MessageData "$(Get-Timestamp)Creating Vault object..."
     $vault = New-Vault @splat
+    Write-Information -MessageData "$(Get-Timestamp)Connecting vault..."
     Connect-Vault -Vault $Vault
+    Write-Information -MessageData "$(Get-Timestamp)Creating Repository object..."
     $splat = @{
         Organization = "bonzosoft"
         Name         = "common"
@@ -64,7 +67,10 @@ process {
         Token        = (Get-VaultSecret -Vault $Vault -Name "GITHUB_CONTENTS_READONLY_COMMON" -Path "/" | ConvertTo-SecureString -AsPlainText)
     }
     $repo = New-GitRepository @splat
+    Write-Information -MessageData "$(Get-Timestamp)Connecting repository..."
     Connect-GitRepository -Repository $repo
+
+    Write-Information -MessageData "$(Get-Timestamp)Getting repository..."
     Get-GitRepository -Repository $repo
 
     foreach ($item in @("install", "cmd")) {

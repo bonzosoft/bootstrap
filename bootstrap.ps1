@@ -42,7 +42,7 @@ process {
     ).browser_download_url
   
     Write-Information -MessageData "$(Get-Timestamp)Downloading version v$assetVersion."
-    Invoke-WebRequest -Uri -$assetUri -OutFile $tempFile
+    Invoke-WebRequest -Uri $assetUri -OutFile $tempFile
 
     Write-Information -MessageData "$(Get-Timestamp)Extracting..."
     Expand-Archive -Path $tempFile -DestinationPath $modulesDirectory.Parent -Force

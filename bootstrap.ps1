@@ -19,8 +19,6 @@ begin {
     [object]$output = $null
     [Version]$scriptVersion = "0.0.1"
 
-    
-
     #Region Local functions
     function Get-Timestamp {
         Write-Output -InputObject ("[" + $(Get-Date -Format "yyyy-MM-dd HH:mm:ss:fffK") + "]" + "`t")

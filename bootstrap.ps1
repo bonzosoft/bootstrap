@@ -58,7 +58,7 @@ process {
     }
     $vault = New-Vault @splat
     Connect-Vault -Vault $Vault
-    $token = Get-VaultSecret -Vault $Vault -Name "GITHUB_PWSH_CONTENTS_READONLY_COMMON" -Path "/"
+    $token = Get-VaultSecret -Vault $Vault -Name "GITHUB_CONTENTS_READONLY_COMMON" -Path "/"
     Write-Host "token: $token"
     return
 
@@ -91,7 +91,7 @@ process {
         }
 
         Write-Information -MessageData "$(Get-Timestamp)Persisting vault token."
-        if (-not (Test-Path -Path $vault.GetCredentialPath())) {
+        if (!(Test-Path -Path $vault.GetCredentialPath())) {
             New-Item -Path $vault.GetCredentialPath().Directory -ItemType 'Directory' -Force | Out-Null
         }
         Set-Content -Path $vault.GetCredentialPath() -Value ($vault.Token | ConvertFrom-SecureString -AsPlainText) -Force
@@ -119,7 +119,7 @@ process {
     }
 
     Write-Information -MessageData "$(Get-Timestamp)Checking repository connection."
-    if (-not $repository.Status()) {
+    if (!$repository.Status()) {
         Write-Error -Message "$(Get-Timestamp)Unable to reach remote source." -ErrorAction 'Stop'
     }
 

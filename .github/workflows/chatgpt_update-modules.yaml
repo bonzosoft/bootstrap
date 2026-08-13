@@ -45,7 +45,7 @@ jobs:
           $modulesPath = Join-Path $PWD 'common/modules'
           $zipPath     = Join-Path $PWD 'modules.zip'
 
-          if (-not (Test-Path -LiteralPath $modulesPath -PathType Container)) {
+          if (!(Test-Path -LiteralPath $modulesPath -PathType Container)) {
               throw "Modules directory not found: $modulesPath"
           }
 

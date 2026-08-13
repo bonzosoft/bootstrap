@@ -19,13 +19,13 @@ begin {
     [object]$output = $null
     [Version]$scriptVersion = "0.0.1"
 
-    Write-Information -MessageData "$(Get-Timestamp)Script version: $scriptVersion."
+    
 
     #Region Local functions
     function Get-Timestamp {
         Write-Output -InputObject ("[" + $(Get-Date -Format "yyyy-MM-dd HH:mm:ss:fffK") + "]" + "`t")
     }
-    #EndRegion 
+    #EndRegion
 }
 
 process {
@@ -34,8 +34,9 @@ process {
     [IO.FileInfo]$tempFile = New-TemporaryFile
     [IO.DirectoryInfo]$modulesDirectory = Join-Path -Path ([System.IO.Path]::GetTempPath()) -ChildPath @("bootstrap", "modules")
     [string]$token = ""
-    
 
+    Write-Information -MessageData "$(Get-Timestamp)Script version: $scriptVersion."
+    
     $output = Invoke-RestMethod -Uri "https://api.github.com/repos/bonzosoft/bootstrap/releases/latest"
     $assetVersion = $output.name
     $assetUri = (

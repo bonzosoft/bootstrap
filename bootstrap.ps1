@@ -17,7 +17,7 @@ begin {
     [string[]]$params = @()
     [Hashtable]$splat = @{}
     [object]$output = $null
-    [Version]$scriptVersion = "0.0.2"
+    [Version]$scriptVersion = "0.0.3"
 
     #Region Local functions
     function Get-Timestamp {
@@ -92,7 +92,7 @@ process {
         Write-Information -MessageData "$(Get-TimeStamp)Setting '${item}' as executable."
         $params = @(
             "+x"
-            $target.FullName
+            $source.FullName
         )
         $null = chmod @params 2> variable:errorMessage
         if ($LASTEXITCODE -ne 0) {

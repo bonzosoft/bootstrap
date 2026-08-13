@@ -60,7 +60,7 @@ process {
     Connect-Vault -Vault $Vault
     $splat = @{
         Organization = "bonzosoft"
-        $Name        = ·"common"
+        $Name        = "common"
         $Branch      = "bw"
         $Token       = Get-VaultSecret -Vault $Vault -Name "GITHUB_CONTENTS_READONLY_COMMON" -Path "/" | ConvertTo-SecureString -AsPlainText
     }

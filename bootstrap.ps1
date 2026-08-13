@@ -17,7 +17,7 @@ begin {
     [string[]]$params = @()
     [Hashtable]$splat = @{}
     [object]$output = $null
-    [Version]$scriptVersion = "0.0.3"
+    [Version]$scriptVersion = "0.0.4"
 
     #Region Local functions
     function Get-Timestamp {

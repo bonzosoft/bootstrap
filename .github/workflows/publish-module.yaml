@@ -33,13 +33,11 @@ jobs:
         shell: pwsh
         run: |
           [version]$version = (Get-Content -Path "./bootstrap/.github/workflows/version" -Raw).Trim()
-          if ($version) {
-              Write-information -MessageData "Package version: $version" -InformationAction 'Continue'
-          }
-          else {
+          if (!$version) {
               Write-Error -Message "Unable to read package version." -ErrorAction 'Stop'
           }
 
+          Write-information -MessageData "Package version: $version" -InformationAction 'Continue'
           Add-Content -Path $Env:GITHUB_OUTPUT -Value "version=$version"
 
       # ── Checkout 'common' ───────────────────────────────────────────────────
@@ -60,16 +58,17 @@ jobs:
           VERSION: ${{ steps.get-version.outputs.version }}
         run: |
           [version]$version = $Env:VERSION
-          [IO.DirectoryInfo]$source = Join-Path -Path $PWD -ChildPath @("common", "modules")
+          if (!$version) {
+              Write-Error -Message "Unable to read release version." -ErrorAction 'Stop'
+          }
           [IO.FileInfo]$target = Join-Path -Path $PWD -ChildPath @("bootstrap-v$version.zip")
-
-          if (! (Test-Path -Path $source)) {
+          [IO.DirectoryInfo]$source = Join-Path -Path $PWD -ChildPath @("common", "modules")
+          if (!(Test-Path -Path $source)) {
               Write-Error -Message "Modules directory not found." -ErrorAction 'Stop'
           }
 
-          Write-Information -MessageData "Adding modules..." -InformationAction 'Continue'
           Compress-Archive -Path $source -DestinationPath $target -CompressionLevel 'Optimal' -Force
-          Write-Information -MessageData "Created '$target'." -InformationAction 'Continue'
+          Write-Information -MessageData "Created archive '$target'." -InformationAction 'Continue'
 
       # ── Publish release ─────────────────────────────────────────────────────
       - name: 🚀 Create GitHub Release
@@ -79,14 +78,10 @@ jobs:
           VERSION: ${{ steps.get-version.outputs.version }}
         run: |
           [version]$version = $Env:VERSION
-          [IO.FileInfo]$target = Join-Path -Path $PWD -ChildPath @("bootstrap-v$version.zip")
-          [version]$version = $Env:VERSION
-          if ($version) {
-              Write-Information -MessageData "Release version: $version." -InformationAction 'Continue'
-          }
-          else {
+          if (!$version) {
               Write-Error -Message "Unable to read release version." -ErrorAction 'Stop'
           }
+          [IO.FileInfo]$target = Join-Path -Path $PWD -ChildPath @("bootstrap-v$version.zip")
 
           $params = @(
               "create", $version
@@ -96,3 +91,4 @@ jobs:
               "--generate-notes"
           )
           gh release @params
+          Write-Information -MessageData "Released version '$version'." -InformationAction 'Continue'

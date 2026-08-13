@@ -30,7 +30,6 @@ process {
     [Uri]$assetUri = $null
     [IO.FileInfo]$tempFile = New-TemporaryFile
     [IO.DirectoryInfo]$modulesDirectory = Join-Path -Path ([System.IO.Path]::GetTempPath()) -ChildPath @("bootstrap", "modules")
-    [Bonzosoft.Infisical]$vault = $null
     [string]$token = ""
 
     $output = Invoke-RestMethod -Uri "https://api.github.com/repos/bonzosoft/bootstrap/releases/latest"

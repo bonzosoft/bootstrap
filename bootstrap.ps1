@@ -16,201 +16,9 @@ begin {
     [string[]]$errStream = @()
     [string[]]$params = @()
     [Hashtable]$splat = @{}
+    [object]$output = $null
 
-    return
-
-
-
-
-    # configuring tools
-    $Env:INFISICAL_DISABLE_UPDATE_CHECK = "true"
-
-    #Region Vault object
-    [pscustomobject]$vault = [PSCustomObject]@{}
-    $vault | Add-Member -MemberType 'NoteProperty' -Name "Credential" -Value ([pscredential]$null)
-    $vault | Add-Member -MemberType 'NoteProperty' -Name "Domain" -Value ([uri]"https://eu.infisical.com")
-    $vault | Add-Member -MemberType 'NoteProperty' -Name "Organization" -Value ([guid]"dd2d983e-3db8-40ea-bec4-f69a13b8566a")
-    $vault | Add-Member -MemberType 'NoteProperty' -Name "Project" -Value ([guid]"9b3eaa39-1cba-4239-b272-9cd10c997eed")
-    $vault | Add-Member -MemberType 'NoteProperty' -Name "Path" -Value ([IO.DirectoryInfo](Join-Path -Path "/" -ChildPath @()))
-    $vault | Add-Member -MemberType 'NoteProperty' -Name "Environment" -Value "dev"
-    $vault | Add-Member -MemberType 'NoteProperty' -Name "Token" -Value ([securestring]$null)
-    $vault | Add-Member -MemberType 'ScriptMethod' -Name "Login" -Value {
-        $params = @(
-            "login"
-            "--domain"
-            $this.Domain.AbsoluteUri
-            "--email"
-            $this.Credential.UserName
-            "--password"
-            $this.Credential.Password | ConvertFrom-SecureString -AsPlainText
-            "--organization-id"
-            $this.Organization.Guid
-            "--telemetry=false"
-            "--plain"
-            "--silent"
-        )
-        $this.Token = infisical $params 2> Variable:errStream | ConvertTo-SecureString -AsPlainText
-        if ($LASTEXITCODE -ne 0) {
-            Write-Error -Message ($errStream -join [Environment]::NewLine)
-        }
-    }
-    $vault | Add-Member -MemberType 'ScriptMethod' -Name "Logout" -Value {
-        $this.Token = [securestring]::new()
-
-        if (Test-Path -Path $this.GetCredentialPath()) {
-            Remove-Item -Path $this.GetCredentialPath() -Force
-        }
-    }
-    $vault | Add-Member -MemberType 'ScriptMethod' -Name "StartConnection" -Value {
-        if ($null -eq $this.Token) {
-            return #Write-Error -Message "No valid token found." -ErrorAction 'Stop'
-        }
-        Set-Item -Path "Env:INFISICAL_TOKEN" -Value ($this.Token | ConvertFrom-SecureString -AsPlainText)
-    }
-    $vault | Add-Member -MemberType 'ScriptMethod' -Name "StopConnection" -Value {
-        Remove-Item -Path "Env:INFISICAL_TOKEN" -Force -ErrorAction 'SilentlyContinue'
-    }
-    $vault | Add-Member -MemberType 'ScriptMethod' -Name "Status" -Value {
-        $params = @(
-            "login"
-            "status"
-            "--domain"
-            $this.Domain.AbsoluteUri
-            "--telemetry=false"
-        )
-        $this.StartConnection()
-        try {
-            $null = infisical $params 2> Variable:errStream
-            if ($LASTEXITCODE -ne 0) {
-                Write-Debug -Message ($errStream -join [Environment]::NewLine)
-                return $false
-            }
-            return $true
-        }
-        finally {
-            $this.StopConnection()
-        }
-    }
-    $vault | Add-Member -MemberType 'ScriptMethod' -Name "GetCredentialPath" -Value {
-        return [IO.FileInfo]::new((Join-Path -Path $PWD.Path -ChildPath @(".config", "infisical")))
-    }
-    $vault | Add-Member -MemberType 'ScriptMethod' -Name "SaveCredential" -Value {
-        if ($null -eq $this.Token) {
-            Write-Debug -Message "No token available."
-            return
-        }
-
-        if (-not (Test-Path -Path $this.GetCredentialPath().Directory)) {
-            New-Item -Path $this.GetCredentialPath() -ItemType 'Directory' -Force | Out-Null
-        }
-        $this.Token | ConvertFrom-SecureString -AsPlainText | Set-Content -Path $this.GetCredentialPath() -Force
-    }
-    $vault | Add-Member -MemberType 'ScriptMethod' -Name "RestoreCredential" -Value {
-        $credentialFile = $this.GetCredentialPath()
-        if (-not (Test-Path -Path $credentialFile)) {
-            return
-        }
-        $this.Token = Get-Content -Path $credentialFile | ConvertTo-SecureString -AsPlainText
-    }
-    $vault.Token = $vault.RestoreCredential()
-    #EndRegion 
-
-    #Region Git object
-    [pscustomobject]$repository = [pscustomobject]@{}
-    $repository | Add-Member -MemberType 'NoteProperty' -Name "Domain" -Value ([uri]"https://github.com")
-    $repository | Add-Member -MemberType 'NoteProperty' -Name "Organization" -Value ([string]"bonzosoft")
-    $repository | Add-Member -MemberType 'NoteProperty' -Name "Name" -Value ([string]"common")
-    $repository | Add-Member -MemberType 'NoteProperty' -Name "Branch" -Value ([string]"bw") #main
-    $repository | Add-Member -MemberType 'NoteProperty' -Name "Token" -Value ([securestring]$null)
-    $repository | Add-Member -MemberType 'NoteProperty' -Name "Path" -Value ([IO.DirectoryInfo]::new((Join-Path -Path $PWD -ChildPath @($repository.Name))))
-    $repository | Add-Member -MemberType 'NoteProperty' -Name "Uri" -Value ([uri]::new($repository.Domain, $repository.Organization + "/" + $repository.Name + ".git"))
-    $repository | Add-Member -MemberType 'ScriptMethod' -Name "OpenConnection" -Value {
-        if ($null -eq $this.Token) {
-            return
-        }
-        $params = @(
-            "-c" 
-            "credential.interactive=false"
-            "-c" 
-            "credential.helper=cache"
-            "credential"
-            "approve"
-        )
-        @(
-            "protocol=" + $this.Domain.Scheme
-            "host=" + $this.Domain.Host
-            "username=x-access-token"
-            "password=" + ($this.Token | ConvertFrom-SecureString -AsPlainText -ErrorAction 'SilentlyContinue')
-        ) | git $params 2> Variable:errStream
-        if ($LASTEXITCODE -ne 0) {
-            Write-Error -Message ($errStream -join [Environment]::NewLine)
-        }
-        return
-    }
-    $repository | Add-Member -MemberType 'ScriptMethod' -Name "CloseConnection" -Value {
-        $params = @(
-            "-c" 
-            "credential.interactive=false"
-            "-c" 
-            "credential.helper=cache"
-            "credential"
-            "reject"  
-        )
-        @(
-            "protocol=" + $this.Domain.Scheme
-            "host=" + $this.Domain.Host
-            "username=x-access-token"
-        ) | git $params 2> Variable:errStream
-        if ($LASTEXITCODE -ne 0) {
-            Write-Error -Message ($errStream -join [Environment]::NewLine)
-        }
-        return
-    }
-    $repository | Add-Member -MemberType 'ScriptMethod' -Name "Status" -Value {
-        $params = @(
-            "-c" 
-            "credential.interactive=false"
-            "-c" 
-            "credential.helper=cache"
-            "ls-remote"
-            $this.Uri.AbsoluteUri
-        )
-        $this.OpenConnection()
-        try {
-            $null = git $params 2> Variable:errStream
-            if ($LASTEXITCODE -ne 0) {
-                Write-Debug -Message ($errStream -join [Environment]::NewLine)
-                return $false
-            }
-            return $true
-        }
-        finally {
-            $this.CloseConnection()
-        }
-    }
-    $repository | Add-Member -MemberType 'ScriptMethod' -Name "IsRepository" -Value {
-        $params = @(
-            "-C"
-            $this.Path.FullName
-            "rev-parse"
-            "--is-inside-work-tree"
-        )
-        $null = git $params 2> Variable:errStream
-        if ($LASTEXITCODE -ne 0) {
-            Write-Debug -Message ($errStream -join [Environment]::NewLine)
-            return $false
-        }
-        return $true
-    }
-    $repository | Add-Member -MemberType 'ScriptMethod' -Name "Refresh" -Value {
-        param ([IO.DirectoryInfo]$Directory = $this.Path.Parent)
-
-        $this.Path = ([IO.DirectoryInfo]::new((Join-Path -Path $Directory -ChildPath @($this.Name))))
-        $this.Uri = ([uri]::new($this.Domain, $this.Organization + "/" + $this.Name + ".git"))
-    }
-    #EndRegion
-
-    #Region Functions
+    #Region Local functions
     function Get-Timestamp {
         Write-Output -InputObject ("[" + $(Get-Date -Format "yyyy-MM-dd HH:mm:ss:fffK") + "]" + "`t")
     }
@@ -218,37 +26,41 @@ begin {
 }
 
 process {
-
-    $assetVersion = (Invoke-RestMethod -uri "https://api.github.com/repos/bonzosoft/bootstrap/releases/latest").name
-    $assetUri = (Invoke-RestMethod -uri "https://api.github.com/repos/bonzosoft/bootstrap/releases/latest" |
-        Select-Object -ExpandProperty "assets" |
-        Where-Object name -like "bootstra*.zip").browser_download_url
-  
-    Write-Information -MessageData "Downloadin version v$assetVersion." -InformationAction 'Continue'
+    [Version]$assetVersion = $null
+    [Uri]$assetUri = $null
     [IO.FileInfo]$tempFile = New-TemporaryFile
-    $splat = @{
-        "Uri"           = $assetUri
-        "OutFile"       = $tempFile
-    }
-    Invoke-WebRequest @splat
-
     [IO.DirectoryInfo]$modulesDirectory = Join-Path -Path ([System.IO.Path]::GetTempPath()) -ChildPath @("bootstrap", "modules")
-    $splat = @{
-    "Path"              = $tempFile
-        "Destination"   = $modulesDirectory.Parent
-        "Force"         = $true
-    }
-    Expand-Archive @splat
+    [PSCustomObject]$vault = $null
+    [string]$token = ""
+
+    $output = Invoke-RestMethod -Uri "https://api.github.com/repos/bonzosoft/bootstrap/releases/latest"
+    $assetVersion = $output.name
+    $assetUri = (
+        $output |
+        Select-Object -ExpandProperty "assets" |
+        Where-Object -Property "name" -Like "bootstrap-v*.zip"
+    ).browser_download_url
+  
+    Write-Information -MessageData "$(Get-Timestamp)Downloading version v$assetVersion."
+    Invoke-WebRequest -Uri -$assetUri -OutFile $tempFile
+
+    Write-Information -MessageData "$(Get-Timestamp)Extracting..."
+    Expand-Archive -Path $tempFile -DestinationPath $modulesDirectory.Parent -Force
+
+    Write-Information -MessageData "$(Get-Timestamp)Importing downloaded resources..."
+    Import-Module -Name (Get-ChildItem -Path $modulesDirectory -Directory).FullName
 
     $splat = @{
-        "Name"          = (Get-ChildItem -Path $modulesDirectory -Directory).FullName
-        "Force"         = $false
+        Credential   = (Get-Credential)
+        Organization = "dd2d983e-3db8-40ea-bec4-f69a13b8566a"
+        Project      = "9b3eaa39-1cba-4239-b272-9cd10c997eed"
+        Environment  = "dev"
     }
-    Import-Module @splat
-
+    $vault = New-Vault @splat
+    Connect-Vault -Vault $Vault
+    $token = Get-VaultSecret -Vault $Vault -Name "GITHUB_PWSH_CONTENTS_READONLY_COMMON" -Path "/"
+    Write-Host "token: $token"
     return
-
-    Get-Alias cfy, cty | Format-List Name, Definition, Source, Options
 
 
     Write-Information -MessageData "$(Get-Timestamp)Checking vault connection."

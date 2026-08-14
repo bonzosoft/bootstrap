@@ -12,7 +12,7 @@ begin {
     $ErrorActionPreference = 'Stop'
     $InformationPreference = 'Continue'
 
-    [Version]$scriptVersion = "0.0.7"
+    [Version]$scriptVersion = "0.0.8"
    #[string[]]$stdStream = @()
    #[string[]]$errStream = @()
     [string[]]$params = @()
@@ -54,7 +54,6 @@ process {
     Write-Information -MessageData "$(Get-Timestamp)Importing assets."
     Import-Module -Name (Get-ChildItem -Path $modulesDirectory -Directory).FullName
 
-    
     Write-Information -MessageData "$(Get-Timestamp)Starting vault connection."
     $token = $null
 
@@ -65,16 +64,19 @@ process {
     
     if ($null -eq $token) {
         Write-Information -MessageData "$(Get-Timestamp)Trying to fetch token from vault."
+        
+        Write-Information -MessageData "$(Get-Timestamp)Creating Vault object..."
         $splat = @{
             Credential   = (Get-Credential)
             Organization = "dd2d983e-3db8-40ea-bec4-f69a13b8566a"
             Project      = "9b3eaa39-1cba-4239-b272-9cd10c997eed"
             Environment  = "dev"
         }
-        Write-Information -MessageData "$(Get-Timestamp)Creating Vault object..."
         $vault = New-Vault @splat
+
         Write-Information -MessageData "$(Get-Timestamp)Connecting vault..."
         Connect-Vault -Vault $Vault -ErrorAction 'Stop'
+
         Write-Information -MessageData "$(Get-Timestamp)Fetching token from vault..."
         $token = Get-VaultSecret -Vault $Vault -Name "GITHUB_CONTENTS_READONLY_COMMON" -Path "/" | ConvertTo-SecureString -AsPlainText -ErrorAction 'Stop'
     }
@@ -86,8 +88,8 @@ process {
         Branch       = "bw"
         Token        = $token
     }
-
     $repo = New-GitRepository @splat
+
     Write-Information -MessageData "$(Get-Timestamp)Connecting repository..."
     Connect-GitRepository -Repository $repo -ErrorAction 'Stop'
 
@@ -102,7 +104,7 @@ process {
         "Git" = @{
             "Token" = ($repo.Token | ConvertFrom-SecureString -AsPlainText)
         }
-    } | Set-Content -Path $infoFile
+    } | ConvertTo-Json -Depth 9 | Set-Content -Path $infoFile
 
     foreach ($item in @("cmd")) {
         [IO.FileInfo]$source = Join-Path -Path $repo.Path -ChildPath @("${item}.sh")

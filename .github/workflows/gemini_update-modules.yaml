@@ -14,7 +14,7 @@ permissions:
 
 jobs:
   fetch-and-package:
-    runs-on: ubuntu-latest
+    runs-on: ubuntu-slim
 
     steps:
       - name: 📥 Checktout 'bootstrap'

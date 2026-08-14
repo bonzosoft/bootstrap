@@ -12,7 +12,7 @@ begin {
     $ErrorActionPreference = 'Stop'
     $InformationPreference = 'Continue'
 
-    [Version]$scriptVersion = "0.0.6"
+    [Version]$scriptVersion = "0.0.7"
    #[string[]]$stdStream = @()
    #[string[]]$errStream = @()
     [string[]]$params = @()
@@ -63,7 +63,7 @@ process {
         $token = (Get-Content -Path $infoFile -Raw | ConvertFrom-Json -AsHashtable).Git.Token | ConvertTo-SecureString -AsPlainText -ErrorAction 'SilentlyContinue'
     }
     
-    if ([string]::IsNullOrWhiteSpace($token)) {
+    if ($null -eq $token) {
         Write-Information -MessageData "$(Get-Timestamp)Trying to fetch token from vault."
         $splat = @{
             Credential   = (Get-Credential)
@@ -86,7 +86,6 @@ process {
         Branch       = "bw"
         Token        = $token
     }
-    Remove-Item -Path "Variable:token" -Force
 
     $repo = New-GitRepository @splat
     Write-Information -MessageData "$(Get-Timestamp)Connecting repository..."

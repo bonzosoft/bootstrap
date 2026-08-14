@@ -12,12 +12,13 @@ begin {
     $ErrorActionPreference = 'Stop'
     $InformationPreference = 'Continue'
 
+    [Version]$scriptVersion = "0.0.6"
    #[string[]]$stdStream = @()
-    [string[]]$errStream = @()
+   #[string[]]$errStream = @()
     [string[]]$params = @()
     [Hashtable]$splat = @{}
     [object]$output = $null
-    [Version]$scriptVersion = "0.0.5"
+    
 
     #Region Local functions
     function Get-Timestamp {
@@ -30,10 +31,12 @@ process {
     [Version]$assetVersion = $null
     [Uri]$assetUri = $null
     [IO.FileInfo]$tempFile = New-TemporaryFile
+    [IO.FileInfo]$infoFile = Join-Path -Path $PWD -ChildPath @(".config", "deployment.json")
     [IO.DirectoryInfo]$modulesDirectory = Join-Path -Path ([System.IO.Path]::GetTempPath()) -ChildPath @("bootstrap", "modules")
 
-    Write-Information -MessageData "$(Get-Timestamp)Script version: $scriptVersion."
-    
+    Write-Information -MessageData "$(Get-Timestamp)Starting script. Version: v$scriptVersion."
+
+    Write-Information -MessageData "$(Get-Timestamp)Getting assets metadata."
     $output = Invoke-RestMethod -Uri "https://api.github.com/repos/bonzosoft/bootstrap/releases/latest"
     $assetVersion = $output.name
     $assetUri = (
@@ -42,32 +45,48 @@ process {
         Where-Object -Property "name" -Like "bootstrap-v*.zip"
     ).browser_download_url
   
-    Write-Information -MessageData "$(Get-Timestamp)Downloading version v$assetVersion."
+    Write-Information -MessageData "$(Get-Timestamp)Downloading assets. Version: v$assetVersion."
     Invoke-WebRequest -Uri $assetUri -OutFile $tempFile
 
-    Write-Information -MessageData "$(Get-Timestamp)Extracting..."
+    Write-Information -MessageData "$(Get-Timestamp)Extracting assets."
     Expand-Archive -Path $tempFile -DestinationPath $modulesDirectory.Parent -Force
 
-    Write-Information -MessageData "$(Get-Timestamp)Importing downloaded resources..."
+    Write-Information -MessageData "$(Get-Timestamp)Importing assets."
     Import-Module -Name (Get-ChildItem -Path $modulesDirectory -Directory).FullName
 
-    $splat = @{
-        Credential   = (Get-Credential)
-        Organization = "dd2d983e-3db8-40ea-bec4-f69a13b8566a"
-        Project      = "9b3eaa39-1cba-4239-b272-9cd10c997eed"
-        Environment  = "dev"
+    
+    Write-Information -MessageData "$(Get-Timestamp)Starting vault connection."
+    $token = $null
+
+    if (Test-Path -Path $infoFile) {
+        Write-Information -MessageData "$(Get-Timestamp)Trying to fecth token from local storage."
+        $token = (Get-Content -Path $infoFile -Raw | ConvertFrom-Json -AsHashtable).Git.Token | ConvertTo-SecureString -AsPlainText -ErrorAction 'SilentlyContinue'
     }
-    Write-Information -MessageData "$(Get-Timestamp)Creating Vault object..."
-    $vault = New-Vault @splat
-    Write-Information -MessageData "$(Get-Timestamp)Connecting vault..."
-    Connect-Vault -Vault $Vault -ErrorAction 'Stop'
+    
+    if ([string]::IsNullOrWhiteSpace($token)) {
+        Write-Information -MessageData "$(Get-Timestamp)Trying to fetch token from vault."
+        $splat = @{
+            Credential   = (Get-Credential)
+            Organization = "dd2d983e-3db8-40ea-bec4-f69a13b8566a"
+            Project      = "9b3eaa39-1cba-4239-b272-9cd10c997eed"
+            Environment  = "dev"
+        }
+        Write-Information -MessageData "$(Get-Timestamp)Creating Vault object..."
+        $vault = New-Vault @splat
+        Write-Information -MessageData "$(Get-Timestamp)Connecting vault..."
+        Connect-Vault -Vault $Vault -ErrorAction 'Stop'
+        Write-Information -MessageData "$(Get-Timestamp)Fetching token from vault..."
+        $token = Get-VaultSecret -Vault $Vault -Name "GITHUB_CONTENTS_READONLY_COMMON" -Path "/" | ConvertTo-SecureString -AsPlainText -ErrorAction 'Stop'
+    }
+
     Write-Information -MessageData "$(Get-Timestamp)Creating Repository object..."
     $splat = @{
         Organization = "bonzosoft"
         Name         = "common"
         Branch       = "bw"
-        Token        = (Get-VaultSecret -Vault $Vault -Name "GITHUB_CONTENTS_READONLY_COMMON" -Path "/" | ConvertTo-SecureString -AsPlainText)
+        Token        = $token
     }
+    Remove-Item -Path "Variable:token" -Force
     $repo = New-GitRepository @splat
     Write-Information -MessageData "$(Get-Timestamp)Connecting repository..."
     Connect-GitRepository -Repository $repo -ErrorAction 'Stop'

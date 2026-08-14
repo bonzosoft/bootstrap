@@ -17,7 +17,7 @@ begin {
     [string[]]$params = @()
     [Hashtable]$splat = @{}
     [object]$output = $null
-    [Version]$scriptVersion = "0.0.4"
+    [Version]$scriptVersion = "0.0.5"
 
     #Region Local functions
     function Get-Timestamp {
@@ -60,7 +60,7 @@ process {
     Write-Information -MessageData "$(Get-Timestamp)Creating Vault object..."
     $vault = New-Vault @splat
     Write-Information -MessageData "$(Get-Timestamp)Connecting vault..."
-    Connect-Vault -Vault $Vault
+    Connect-Vault -Vault $Vault -ErrorAction 'Stop'
     Write-Information -MessageData "$(Get-Timestamp)Creating Repository object..."
     $splat = @{
         Organization = "bonzosoft"
@@ -70,7 +70,7 @@ process {
     }
     $repo = New-GitRepository @splat
     Write-Information -MessageData "$(Get-Timestamp)Connecting repository..."
-    Connect-GitRepository -Repository $repo
+    Connect-GitRepository -Repository $repo -ErrorAction 'Stop'
 
     Write-Information -MessageData "$(Get-Timestamp)Getting repository..."
     Get-GitRepository -Repository $repo

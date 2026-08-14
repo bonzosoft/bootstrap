@@ -75,7 +75,6 @@ process {
     Write-Information -MessageData "$(Get-Timestamp)Getting repository..."
     Get-GitRepository -Repository $repo
 
-    #foreach ($item in @("install", "cmd")) {
     foreach ($item in @("cmd")) {
         [IO.FileInfo]$source = Join-Path -Path $repo.Path -ChildPath @("${item}.sh")
         [IO.FileInfo]$target = Join-Path -Path ${PWD} -ChildPath @($item)

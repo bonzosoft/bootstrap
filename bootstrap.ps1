@@ -87,12 +87,23 @@ process {
         Token        = $token
     }
     Remove-Item -Path "Variable:token" -Force
+
     $repo = New-GitRepository @splat
     Write-Information -MessageData "$(Get-Timestamp)Connecting repository..."
     Connect-GitRepository -Repository $repo -ErrorAction 'Stop'
 
     Write-Information -MessageData "$(Get-Timestamp)Getting repository..."
     Get-GitRepository -Repository $repo
+
+    Write-Information -MessageData "$(Get-Timestamp)Storing token..."
+    if (!(Test-Path -Path $infoFile.Directory)) {
+        New-Item -Path $infoFile.Directory -ItemType 'Directory' -Force | Out-Null
+    }
+    @{
+        "Git" = @{
+            "Token" = ($repo.Token | ConvertFrom-SecureString -AsPlainText)
+        }
+    } | Set-Content -Path $infoFile
 
     foreach ($item in @("cmd")) {
         [IO.FileInfo]$source = Join-Path -Path $repo.Path -ChildPath @("${item}.sh")

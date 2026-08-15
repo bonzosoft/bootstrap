@@ -12,22 +12,13 @@ begin {
     $ErrorActionPreference = 'Stop'
     $InformationPreference = 'Continue'
     
-    
-    #Region Local functions
-    function Get-Timestamp {
-        Write-Output -InputObject ("[" + $(Get-Date -Format "yyyy-MM-dd HH:mm:ss:fffK") + "]" + "`t")
-    }
-    #EndRegion
 
 
-
-
-    [Version]$scriptVersion = "0.3.5"
     Clear-Host
-    Write-Information -MessageData "$(Get-Timestamp)Starting script. Version: v$scriptVersion."
+    [Version]$scriptVersion = "0.4.1"
+    
 
-    [IO.FileInfo]$configFile = Join-Path -Path $PWD -ChildPath @(".config", "config.json")
-    [IO.DirectoryInfo]$modulesDirectory = Join-Path -Path ([System.IO.Path]::GetTempPath()) -ChildPath @("bootstrap", "modules")
+
 
     [Hashtable]$splat = @{}
     [string[]]$stdStream = @()
@@ -36,38 +27,52 @@ begin {
     
     [Uri]$assetUri = $null
     [Version]$assetVersion = $null
-    [IO.FileInfo]$assetTempFile = New-TemporaryFile
+    [IO.FileInfo]$assetTempFile = $null
 
     [Hashtable]$repositorySplat = @{
         Domain       = "https://github.com"
         Organization = "bonzosoft"
         Name         = "common"
         Branch       = "bw"
-        Token        = ((Get-Content -Path $configFile -ErrorAction 'SilentlyContinue' | ConvertFrom-Json -Depth 9).Vault.Token | ConvertTo-SecureString -AsPlainText -ErrorAction 'SilentlyContinue')
+        #Token        = ((Get-Content -Path $configFile -ErrorAction 'SilentlyContinue' | ConvertFrom-Json -Depth 9).Vault.Token | ConvertTo-SecureString -AsPlainText -ErrorAction 'SilentlyContinue')
     }
     [Hashtable]$vaultSplat = @{
         Domain       = "https://eu.infisical.com"
         Organization = "dd2d983e-3db8-40ea-bec4-f69a13b8566a"
         Project      = "9b3eaa39-1cba-4239-b272-9cd10c997eed"
         Environment  = "dev"
-        Token        = ((Get-Content -Path $configFile -ErrorAction 'SilentlyContinue' | ConvertFrom-Json -Depth 9).Git.Token | ConvertTo-SecureString -AsPlainText -ErrorAction 'SilentlyContinue')
+        #Token        = ((Get-Content -Path $configFile -ErrorAction 'SilentlyContinue' | ConvertFrom-Json -Depth 9).Git.Token | ConvertTo-SecureString -AsPlainText -ErrorAction 'SilentlyContinue')
     }
 
+    [IO.FileInfo]$configFile = Join-Path -Path $PWD -ChildPath @(".config", "config.json")
+    [IO.DirectoryInfo]$modulesDirectory = Join-Path -Path ([System.IO.Path]::GetTempPath()) -ChildPath @("bootstrap", "modules")
 
+    #Region Local functions
+    function Get-Timestamp {
+        Write-Output -InputObject ("[" + $(Get-Date -Format "yyyy-MM-dd HH:mm:ss:fffK") + "]" + "`t")
+    }
+    #EndRegion
 }
 
 process {
+    Write-Information -MessageData "$(Get-Timestamp)Starting script. Version: v$scriptVersion."
+
+
     Write-Information -MessageData "$(Get-Timestamp)Getting assets metadata."
-    $assetVersion, $assetUri = Invoke-RestMethod -Uri "https://api.github.com/repos/bonzosoft/bootstrap/releases/latest" |
-        ForEach-Object -Process {
-            Write-Output -InputObject $PSItem.name
-            Write-Output -InputObject ($PSItem | 
-                Select-Object -ExpandProperty "assets" |
-                Where-Object -Property "name" -Like "bootstrap-v*.zip").browser_download_url
-        }
+    $assetVersion, $assetUri = 
+        Invoke-RestMethod -Uri "https://api.github.com/repos/bonzosoft/bootstrap/releases/latest" |
+            ForEach-Object -Process {
+                Write-Output -InputObject $PSItem.name
+                Write-Output -InputObject (
+                    $PSItem | 
+                    Select-Object -ExpandProperty "assets" |
+                    Where-Object -Property "name" -Like "bootstrap-v*.zip"
+                ).browser_download_url
+            }
 
 
     Write-Information -MessageData "$(Get-Timestamp)Downloading assets. Version: v$assetVersion."
+    $assetTempFile = New-TemporaryFile
     Invoke-WebRequest -Uri $assetUri -OutFile $assetTempFile
 
 
@@ -87,9 +92,23 @@ process {
     Remove-Variable -Name "assetTempFile"
 
 
-    Write-Information -MessageData "$(Get-Timestamp)Creating Repository object..."
-    $repository = New-GitRepository @repositorySplat
+    Write-Information -MessageData "$(Get-Timestamp)Getting local data."
+    $configFileData = Get-Content -Path $configFile -ErrorAction 'SilentlyContinue' | ConvertFrom-Json -Depth 9
 
+    if ($configFileData.Keys -contains "Git") {
+        if ($configFileData.Git.Keys -contains "Token") {
+            $repositorySplat.Token = $configFileData.Git.Token | ConvertTo-SecureString -AsPlainText
+        }
+    }
+    if ($configFileData.Keys -contains "Vault") {
+        if ($configFileData.Git.Keys -contains "Token") {
+            $vaultSplat.Token = $configFileData.Git.Token | ConvertTo-SecureString -AsPlainText
+        }
+    }
+
+
+    Write-Information -MessageData "$(Get-Timestamp)Creating Repository object."
+    $repository = New-GitRepository @repositorySplat
 
     if (!Test-GitRepository -Repository $repository) {
         if (!Test-Vault -Vault $vault) {

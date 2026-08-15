@@ -12,7 +12,7 @@ begin {
     $ErrorActionPreference = 'Stop'
     $InformationPreference = 'Continue'
 
-    [Version]$scriptVersion = "0.1.4"
+    [Version]$scriptVersion = "0.1.5"
 
     [Hashtable]$repositorySplat = @{
         Organization = "bonzosoft"
@@ -24,7 +24,6 @@ begin {
         Project      = "9b3eaa39-1cba-4239-b272-9cd10c997eed"
         Environment  = "dev"
     }
-
 
     [string[]]$stdStream = @()
     [string[]]$errStream = @()
@@ -76,7 +75,7 @@ process {
 
 
     Write-Information -MessageData "$(Get-Timestamp)Importing assets."
-    Import-Module -Name (Get-ChildItem -Path $modulesDirectory -Directory -Depth 1).FullName
+    Import-Module -Name (Get-ChildItem -Path $modulesDirectory -Directory).FullName
 
     Write-Information -MessageData "$(Get-Timestamp)Starting vault connection."
 

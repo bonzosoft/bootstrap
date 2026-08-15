@@ -12,7 +12,7 @@ begin {
     $ErrorActionPreference = 'Stop'
     $InformationPreference = 'Continue'
 
-    [Version]$scriptVersion = "0.1.7"
+    [Version]$scriptVersion = "0.1.8"
 
     [Hashtable]$repositorySplat = @{
         Organization = "bonzosoft"
@@ -137,7 +137,7 @@ process {
             ItemType = 'SymbolicLink'
             Force    = $true
         }
-        New-Item @splat # sames as native command: ln -snf $source.FulName $target.FullName
+        New-Item @splat | Out-Null # sames as native command: ln -snf $source.FulName $target.FullName
         
 
         Write-Information -MessageData "$(Get-TimeStamp)Setting '${item}' as executable."
@@ -147,12 +147,13 @@ process {
         )
         $stdStream = chmod @params 2> variable:errStream
         if ($LASTEXITCODE -ne 0) {
-            Write-Error -Message $errStream
+            Write-Error -Message ($errStream -join [Environment]::NewLine)
         }
     }
 }
 
 end {
-    Write-Information -MessageData "$([Environment]::NewLine)Press any key to continue..."
+    Write-Information -MessageData ""
+    Write-Information -MessageData "Press any key to continue..."
     Read-Host | Out-Null
 }

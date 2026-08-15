@@ -15,7 +15,7 @@ begin {
 
 
     Clear-Host
-    [Version]$scriptVersion = "0.4.1"
+    [Version]$scriptVersion = "0.4.2"
     
 
 
@@ -95,12 +95,12 @@ process {
     Write-Information -MessageData "$(Get-Timestamp)Getting local data."
     $configFileData = Get-Content -Path $configFile -ErrorAction 'SilentlyContinue' | ConvertFrom-Json -Depth 9
 
-    if ($configFileData.Keys -contains "Git") {
+    if (($null -ne $configFileData) -and ($configFileData.Keys -contains "Git")) {
         if ($configFileData.Git.Keys -contains "Token") {
             $repositorySplat.Token = $configFileData.Git.Token | ConvertTo-SecureString -AsPlainText
         }
     }
-    if ($configFileData.Keys -contains "Vault") {
+    if (($null -ne $configFilData) -and ($configFileData.Keys -contains "Vault")) {
         if ($configFileData.Git.Keys -contains "Token") {
             $vaultSplat.Token = $configFileData.Git.Token | ConvertTo-SecureString -AsPlainText
         }

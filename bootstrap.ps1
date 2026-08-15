@@ -12,7 +12,7 @@ begin {
     $ErrorActionPreference = 'Stop'
     $InformationPreference = 'Continue'
 
-    [Version]$scriptVersion = "0.2.1"
+    [Version]$scriptVersion = "0.3.1"
 
     [IO.FileInfo]$configFile = Join-Path -Path $PWD -ChildPath @(".config", "config.json")
     [IO.DirectoryInfo]$modulesDirectory = Join-Path -Path ([System.IO.Path]::GetTempPath()) -ChildPath @("bootstrap", "modules")
@@ -22,14 +22,14 @@ begin {
         Organization = "bonzosoft"
         Name         = "common"
         Branch       = "bw"
-        Token        = ((Get-Content -Path $configFile).Vault.Token | ConvertTo-SecureString -AsPlainText -ErrorAction 'SilentlyContinue')
+        Token        = ((Get-Content -Path $configFile -ErrorAction 'SilentlyContinue').Vault.Token | ConvertTo-SecureString -AsPlainText -ErrorAction 'SilentlyContinue')
     }
     [Hashtable]$vaultSplat = @{
         Domain       = "https://eu.infisical.com"
         Organization = "dd2d983e-3db8-40ea-bec4-f69a13b8566a"
         Project      = "9b3eaa39-1cba-4239-b272-9cd10c997eed"
         Environment  = "dev"
-        Token        = ((Get-Content -Path $configFile).Git.Token | ConvertTo-SecureString -AsPlainText -ErrorAction 'SilentlyContinue')
+        Token        = ((Get-Content -Path $configFile -ErrorAction 'SilentlyContinue').Git.Token | ConvertTo-SecureString -AsPlainText -ErrorAction 'SilentlyContinue')
     }
 
     [Hashtable]$splat = @{}

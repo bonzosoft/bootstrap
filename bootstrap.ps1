@@ -16,7 +16,7 @@ begin {
     $ErrorActionPreference = 'Stop'
     $InformationPreference = 'Continue'
 
-    [Version]$scriptVersion = "0.3.3"
+    [Version]$scriptVersion = "0.3.4"
     Write-Information -MessageData "$(Get-Timestamp)Starting script. Version: v$scriptVersion."
 
     [IO.FileInfo]$configFile = Join-Path -Path $PWD -ChildPath @(".config", "config.json")

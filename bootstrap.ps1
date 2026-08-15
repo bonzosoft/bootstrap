@@ -15,7 +15,7 @@ begin {
 
 
     Clear-Host
-    [Version]$scriptVersion = "0.4.3"
+    [Version]$scriptVersion = "0.4.4"
     
 
 
@@ -110,7 +110,7 @@ process {
     Write-Information -MessageData "$(Get-Timestamp)Creating Repository object."
     $repository = New-GitRepository @repositorySplat
 
-    if (!Test-GitRepository -Repository $repository) {
+    if (!(Test-GitRepository -Repository $repository)) {
         if (!Test-Vault -Vault $vault) {
             $vaultSplat.Remove("Token")
 

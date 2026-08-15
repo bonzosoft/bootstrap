@@ -12,7 +12,7 @@ begin {
     $ErrorActionPreference = 'Stop'
     $InformationPreference = 'Continue'
 
-    [Version]$scriptVersion = "0.1.2"
+    [Version]$scriptVersion = "0.1.3"
 
     [Hashtable]$repositorySplat = @{
         Organization = "bonzosoft"
@@ -34,7 +34,7 @@ begin {
     [Uri]$assetUri = $null
     [IO.FileInfo]$tempFile = New-TemporaryFile
     [IO.FileInfo]$infoFile = Join-Path -Path $PWD -ChildPath @(".config", "deployment.json")
-    [IO.DirectoryInfo]$modulesDirectory = Join-Path -Path ([System.IO.Path]::GetTempPath()) -ChildPath @("bootstrap")
+    [IO.DirectoryInfo]$modulesDirectory = Join-Path -Path ([System.IO.Path]::GetTempPath()) -ChildPath @("bootstrap", "modules")
 
     #Region Local functions
     function Get-Timestamp {
@@ -63,10 +63,10 @@ process {
 
 
     Write-Information -MessageData "$(Get-Timestamp)Extracting assets."
-    if (Test-Path -Path $modulesDirectory) {
-        Remove-Item -Path $modulesDirectory -Force
+    if (Test-Path -Path $modulesDirectory.Parent) {
+        Remove-Item -Path $modulesDirectory.Parent -Force
     }
-    Expand-Archive -Path $tempFile -DestinationPath $modulesDirectory -Force
+    Expand-Archive -Path $tempFile -DestinationPath $modulesDirectory.Parent -Force
 
 
     Write-Information -MessageData "$(Get-TImestamp)Removing temporary data"

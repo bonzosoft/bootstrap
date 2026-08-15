@@ -29,7 +29,7 @@ begin {
     [string[]]$errStream = @()
     [string[]]$params = @()
     [Hashtable]$splat = @{}
-    [object]$assetInfo = $null
+    [Object]$assetInfo = $null
     [Version]$assetVersion = $null
     [Uri]$assetUri = $null
     [IO.FileInfo]$tempFile = New-TemporaryFile

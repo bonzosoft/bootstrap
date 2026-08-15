@@ -12,7 +12,8 @@ begin {
     $ErrorActionPreference = 'Stop'
     $InformationPreference = 'Continue'
 
-    [Version]$scriptVersion = "0.3.2"
+    [Version]$scriptVersion = "0.3.3"
+    Write-Information -MessageData "$(Get-Timestamp)Starting script. Version: v$scriptVersion."
 
     [IO.FileInfo]$configFile = Join-Path -Path $PWD -ChildPath @(".config", "config.json")
     [IO.DirectoryInfo]$modulesDirectory = Join-Path -Path ([System.IO.Path]::GetTempPath()) -ChildPath @("bootstrap", "modules")
@@ -49,9 +50,6 @@ begin {
 }
 
 process {
-    Write-Information -MessageData "$(Get-Timestamp)Starting script. Version: v$scriptVersion."
-
-
     Write-Information -MessageData "$(Get-Timestamp)Getting assets metadata."
     $assetVersion, $assetUri = Invoke-RestMethod -Uri "https://api.github.com/repos/bonzosoft/bootstrap/releases/latest" |
         ForEach-Object -Process {

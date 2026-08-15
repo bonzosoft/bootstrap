@@ -12,7 +12,7 @@ begin {
     $ErrorActionPreference = 'Stop'
     $InformationPreference = 'Continue'
 
-    [Version]$scriptVersion = "0.1.0"
+    [Version]$scriptVersion = "0.1.1"
 
     [Hashtable]$repositorySplat = @{
         Organization = "bonzosoft"
@@ -55,7 +55,7 @@ process {
         Select-Object -ExpandProperty "assets" |
         Where-Object -Property "name" -Like "bootstrap-v*.zip"
     ).browser_download_url
-    Remove-Item -Path "Variable:assetInfo"
+    Remove-Variable -Name "assetInfo"
   
 
     Write-Information -MessageData "$(Get-Timestamp)Downloading assets. Version: v$assetVersion."
@@ -71,7 +71,7 @@ process {
 
     Write-Information -MessageData "$(Get-TImestamp)Removing temporary data"
     Remove-Item -Path $tempFile
-    Remove-Item -Path "Variable:tempFile"
+    Remove-Variable -Name "tempFile"
 
 
     Write-Information -MessageData "$(Get-Timestamp)Importing assets."

@@ -12,7 +12,7 @@ begin {
     $ErrorActionPreference = 'Stop'
     $InformationPreference = 'Continue'
 
-    [Version]$scriptVersion = "0.0.8"
+    [Version]$scriptVersion = "0.1.0"
 
     [Hashtable]$repositorySplat = @{
         Organization = "bonzosoft"

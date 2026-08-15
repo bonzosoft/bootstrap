@@ -8,6 +8,10 @@ param()
 begin {
     Clear-Host
 
+    function Get-Timestamp {
+        Write-Output -InputObject ("[" + $(Get-Date -Format "yyyy-MM-dd HH:mm:ss:fffK") + "]" + "`t")
+    }
+
     Set-StrictMode -Version Latest
     $ErrorActionPreference = 'Stop'
     $InformationPreference = 'Continue'
@@ -43,9 +47,7 @@ begin {
     [IO.FileInfo]$assetTempFile = New-TemporaryFile
 
     #Region Local functions
-    function Get-Timestamp {
-        Write-Output -InputObject ("[" + $(Get-Date -Format "yyyy-MM-dd HH:mm:ss:fffK") + "]" + "`t")
-    }
+
     #EndRegion
 }
 

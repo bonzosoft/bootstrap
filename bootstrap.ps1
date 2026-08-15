@@ -12,7 +12,7 @@ begin {
     $ErrorActionPreference = 'Stop'
     $InformationPreference = 'Continue'
 
-    [Version]$scriptVersion = "0.1.8"
+    [Version]$scriptVersion = "0.1.9"
 
     [Hashtable]$repositorySplat = @{
         Organization = "bonzosoft"
@@ -127,13 +127,13 @@ process {
 
 
     foreach ($item in @("pwsh")) {
-        [IO.FileInfo]$source = Join-Path -Path $repository.Path -ChildPath @("${item}.sh")
+        [IO.FileInfo]$source = Join-Path -Path $PWD -ChildPath @("common", "${item}.sh") #Join-Path -Path $repository.Path -ChildPath @("${item}.sh")
         [IO.FileInfo]$target = Join-Path -Path ${PWD} -ChildPath @($item)
 
         Write-Information -MessageData "$(Get-TimeStamp)Creating link for '${item}'."
         $splat = @{
-            Path     = $source
-            Value    = $target
+            Path     = $target
+            Value    = $source
             ItemType = 'SymbolicLink'
             Force    = $true
         }

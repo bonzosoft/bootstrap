@@ -12,29 +12,34 @@ begin {
     $ErrorActionPreference = 'Stop'
     $InformationPreference = 'Continue'
 
-    [Version]$scriptVersion = "0.1.9"
+    [Version]$scriptVersion = "0.2.1"
+
+    [IO.FileInfo]$configFile = Join-Path -Path $PWD -ChildPath @(".config", "config.json")
+    [IO.DirectoryInfo]$modulesDirectory = Join-Path -Path ([System.IO.Path]::GetTempPath()) -ChildPath @("bootstrap", "modules")
 
     [Hashtable]$repositorySplat = @{
+        Domain       = "https://github.com"
         Organization = "bonzosoft"
         Name         = "common"
         Branch       = "bw"
+        Token        = ((Get-Content -Path $configFile).Vault.Token | ConvertTo-SecureString -AsPlainText -ErrorAction 'SilentlyContinue')
     }
     [Hashtable]$vaultSplat = @{
+        Domain       = "https://eu.infisical.com"
         Organization = "dd2d983e-3db8-40ea-bec4-f69a13b8566a"
         Project      = "9b3eaa39-1cba-4239-b272-9cd10c997eed"
         Environment  = "dev"
+        Token        = ((Get-Content -Path $configFile).Git.Token | ConvertTo-SecureString -AsPlainText -ErrorAction 'SilentlyContinue')
     }
 
+    [Hashtable]$splat = @{}
     [string[]]$stdStream = @()
     [string[]]$errStream = @()
     [string[]]$params = @()
-    [Hashtable]$splat = @{}
-    [Object]$assetInfo = $null
-    [Version]$assetVersion = $null
+    
     [Uri]$assetUri = $null
-    [IO.FileInfo]$tempFile = New-TemporaryFile
-    [IO.FileInfo]$infoFile = Join-Path -Path $PWD -ChildPath @(".config", "deployment.json")
-    [IO.DirectoryInfo]$modulesDirectory = Join-Path -Path ([System.IO.Path]::GetTempPath()) -ChildPath @("bootstrap", "modules")
+    [Version]$assetVersion = $null
+    [IO.FileInfo]$assetTempFile = New-TemporaryFile
 
     #Region Local functions
     function Get-Timestamp {
@@ -48,64 +53,67 @@ process {
 
 
     Write-Information -MessageData "$(Get-Timestamp)Getting assets metadata."
-    $assetInfo = Invoke-RestMethod -Uri "https://api.github.com/repos/bonzosoft/bootstrap/releases/latest"
-    $assetVersion = $assetInfo.name
-    $assetUri = (
-        $assetInfo |
-        Select-Object -ExpandProperty "assets" |
-        Where-Object -Property "name" -Like "bootstrap-v*.zip"
-    ).browser_download_url
-    Remove-Variable -Name "assetInfo"
-  
+    $assetVersion, $assetUri = Invoke-RestMethod -Uri "https://api.github.com/repos/bonzosoft/bootstrap/releases/latest" |
+        ForEach-Object -Process {
+            Write-Output -InputObject $PSItem.name
+            Write-Output -InputObject ($PSItem | 
+                Select-Object -ExpandProperty "assets" |
+                Where-Object -Property "name" -Like "bootstrap-v*.zip").browser_download_url
+        }
+
 
     Write-Information -MessageData "$(Get-Timestamp)Downloading assets. Version: v$assetVersion."
-    Invoke-WebRequest -Uri $assetUri -OutFile $tempFile
+    Invoke-WebRequest -Uri $assetUri -OutFile $assetTempFile
 
 
     Write-Information -MessageData "$(Get-Timestamp)Extracting assets."
     if (Test-Path -Path $modulesDirectory.Parent) {
         Remove-Item -Path $modulesDirectory.Parent -Force
     }
-    Expand-Archive -Path $tempFile -DestinationPath $modulesDirectory.Parent -Force
-
-
-    Write-Information -MessageData "$(Get-TImestamp)Removing temporary data"
-    Remove-Item -Path $tempFile
-    Remove-Variable -Name "tempFile"
+    Expand-Archive -Path $assetTempFile -DestinationPath $modulesDirectory.Parent -Force
 
 
     Write-Information -MessageData "$(Get-Timestamp)Importing assets."
     Import-Module -Name (Get-ChildItem -Path $modulesDirectory -Directory).FullName
 
-    Write-Information -MessageData "$(Get-Timestamp)Starting vault connection."
+
+    Write-Information -MessageData "$(Get-TImestamp)Removing temporary data."
+    Remove-Item -Path $assetTempFile
+    Remove-Variable -Name "assetTempFile"
+
 
     Write-Information -MessageData "$(Get-Timestamp)Creating Repository object..."
     $repository = New-GitRepository @repositorySplat
-    if (Test-Path -Path $infoFile) {
-        Write-Information -MessageData "$(Get-Timestamp)Trying to fecth token from local storage."
-        $repository.Token = (Get-Content -Path $infoFile -Raw | ConvertFrom-Json -AsHashtable).Git.Token | ConvertTo-SecureString -AsPlainText -ErrorAction 'SilentlyContinue'
-    }
-
-    if (!(Test-GitRepository -Repository $repository)) {
-        Write-Information -MessageData "$(Get-Timestamp)Trying to fetch token from vault."
 
 
-        $vaultSplat += @{
-            Credential   = (Get-Credential)
+    if (!Test-GitRepository -Repository $repository) {
+        if (!Test-Vault -Vault $vault) {
+            $vaultSplat.Remove("Token")
+
+            Write-Information -MessageData "$(Get-Timestamp)Trying to fetch token from vault."
+            do {
+                $vaultSplat.Credential = (Get-Credential)
+    
+                Write-Information -MessageData "$(Get-Timestamp)Creating Vault object."
+                $vault = New-Vault @vaultSplat
+    
+                Write-Information -MessageData "$(Get-Timestamp)Connecting vault."
+                try {
+                    Connect-Vault -Vault $Vault -ErrorAction 'Stop'
+                }
+                catch {
+                    continue
+                }
+                break
+            }
+            while ($true)
         }
 
-
-        Write-Information -MessageData "$(Get-Timestamp)Creating Vault object."
-        $vault = New-Vault @vaultSplat
-
-
-        Write-Information -MessageData "$(Get-Timestamp)Connecting vault."
-        Connect-Vault -Vault $Vault -ErrorAction 'Stop'
-
-
+        
         Write-Information -MessageData "$(Get-Timestamp)Fetching token from vault."
         $repository.Token = Get-VaultSecret -Vault $Vault -Name "GITHUB_CONTENTS_READONLY_COMMON" -Path "/" | ConvertTo-SecureString -AsPlainText -ErrorAction 'Stop'
     }
+
 
     Write-Information -MessageData "$(Get-Timestamp)Connecting repository."
     Connect-GitRepository -Repository $repository -ErrorAction 'Stop'
@@ -116,14 +124,14 @@ process {
 
 
     Write-Information -MessageData "$(Get-Timestamp)Storing token."
-    if (!(Test-Path -Path $infoFile.Directory)) {
-        New-Item -Path $infoFile.Directory -ItemType 'Directory' -Force | Out-Null
+    if (!(Test-Path -Path $configFile.Directory)) {
+        New-Item -Path $configFile.Directory -ItemType 'Directory' -Force | Out-Null
     }
     @{
         "Git" = @{
             "Token" = ($repository.Token | ConvertFrom-SecureString -AsPlainText)
         }
-    } | ConvertTo-Json -Depth 9 | Set-Content -Path $infoFile
+    } | ConvertTo-Json -Depth 9 | Set-Content -Path $configFile
 
 
     foreach ($item in @("pwsh")) {

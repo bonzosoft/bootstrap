@@ -132,10 +132,10 @@ process {
 
         Write-Information -MessageData "$(Get-TimeStamp)Creating link for '${item}'."
         $splat = @(
-            Path = $source
-            Value = $target
+            Path     = $source
+            Value    = $target
             ItemType = 'SymbolicLink'
-            Force = $true
+            Force    = $true
         )
         New-Item @splat # sames as native command: ln -snf $source.FulName $target.FullName
         

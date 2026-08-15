@@ -15,7 +15,7 @@ begin {
 
 
     Clear-Host
-    [Version]$scriptVersion = "0.4.2"
+    [Version]$scriptVersion = "0.4.3"
     
 
 
@@ -100,7 +100,7 @@ process {
             $repositorySplat.Token = $configFileData.Git.Token | ConvertTo-SecureString -AsPlainText
         }
     }
-    if (($null -ne $configFilData) -and ($configFileData.Keys -contains "Vault")) {
+    if (($null -ne $configFileData) -and ($configFileData.Keys -contains "Vault")) {
         if ($configFileData.Git.Keys -contains "Token") {
             $vaultSplat.Token = $configFileData.Git.Token | ConvertTo-SecureString -AsPlainText
         }

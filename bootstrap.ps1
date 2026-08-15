@@ -12,7 +12,7 @@ begin {
     $ErrorActionPreference = 'Stop'
     $InformationPreference = 'Continue'
 
-    [Version]$scriptVersion = "0.1.6"
+    [Version]$scriptVersion = "0.1.7"
 
     [Hashtable]$repositorySplat = @{
         Organization = "bonzosoft"
@@ -126,17 +126,17 @@ process {
     } | ConvertTo-Json -Depth 9 | Set-Content -Path $infoFile
 
 
-    foreach ($item in @("cmd")) {
+    foreach ($item in @("pwsh")) {
         [IO.FileInfo]$source = Join-Path -Path $repository.Path -ChildPath @("${item}.sh")
         [IO.FileInfo]$target = Join-Path -Path ${PWD} -ChildPath @($item)
 
         Write-Information -MessageData "$(Get-TimeStamp)Creating link for '${item}'."
-        $splat = @(
+        $splat = @{
             Path     = $source
             Value    = $target
             ItemType = 'SymbolicLink'
             Force    = $true
-        )
+        }
         New-Item @splat # sames as native command: ln -snf $source.FulName $target.FullName
         
 

@@ -6,21 +6,37 @@
 param()
 
 begin {
-    Clear-Host
-
-    function Get-Timestamp {
-        Write-Output -InputObject ("[" + $(Get-Date -Format "yyyy-MM-dd HH:mm:ss:fffK") + "]" + "`t")
-    }
+    
 
     Set-StrictMode -Version Latest
     $ErrorActionPreference = 'Stop'
     $InformationPreference = 'Continue'
+    
+    
+    #Region Local functions
+    function Get-Timestamp {
+        Write-Output -InputObject ("[" + $(Get-Date -Format "yyyy-MM-dd HH:mm:ss:fffK") + "]" + "`t")
+    }
+    #EndRegion
 
-    [Version]$scriptVersion = "0.3.4"
+
+
+
+    [Version]$scriptVersion = "0.3.5"
+    Clear-Host
     Write-Information -MessageData "$(Get-Timestamp)Starting script. Version: v$scriptVersion."
 
     [IO.FileInfo]$configFile = Join-Path -Path $PWD -ChildPath @(".config", "config.json")
     [IO.DirectoryInfo]$modulesDirectory = Join-Path -Path ([System.IO.Path]::GetTempPath()) -ChildPath @("bootstrap", "modules")
+
+    [Hashtable]$splat = @{}
+    [string[]]$stdStream = @()
+    [string[]]$errStream = @()
+    [string[]]$params = @()
+    
+    [Uri]$assetUri = $null
+    [Version]$assetVersion = $null
+    [IO.FileInfo]$assetTempFile = New-TemporaryFile
 
     [Hashtable]$repositorySplat = @{
         Domain       = "https://github.com"
@@ -37,18 +53,7 @@ begin {
         Token        = ((Get-Content -Path $configFile -ErrorAction 'SilentlyContinue' | ConvertFrom-Json -Depth 9).Git.Token | ConvertTo-SecureString -AsPlainText -ErrorAction 'SilentlyContinue')
     }
 
-    [Hashtable]$splat = @{}
-    [string[]]$stdStream = @()
-    [string[]]$errStream = @()
-    [string[]]$params = @()
-    
-    [Uri]$assetUri = $null
-    [Version]$assetVersion = $null
-    [IO.FileInfo]$assetTempFile = New-TemporaryFile
 
-    #Region Local functions
-
-    #EndRegion
 }
 
 process {

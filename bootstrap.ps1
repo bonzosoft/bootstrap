@@ -12,7 +12,7 @@ begin {
     $ErrorActionPreference = 'Stop'
     $InformationPreference = 'Continue'
 
-    [Version]$scriptVersion = "0.1.3"
+    [Version]$scriptVersion = "0.1.4"
 
     [Hashtable]$repositorySplat = @{
         Organization = "bonzosoft"
@@ -26,9 +26,10 @@ begin {
     }
 
 
-   #[string[]]$stdStream = @()
-   #[string[]]$errStream = @()
+    [string[]]$stdStream = @()
+    [string[]]$errStream = @()
     [string[]]$params = @()
+    [Hashtable]$splat = @{}
     [object]$assetInfo = $null
     [Version]$assetVersion = $null
     [Uri]$assetUri = $null
@@ -145,9 +146,9 @@ process {
             "+x"
             $source.FullName
         )
-        $null = chmod @params 2> variable:errorMessage
+        $stdStream = chmod @params 2> variable:errStream
         if ($LASTEXITCODE -ne 0) {
-            Write-Error -Message $errorMessage
+            Write-Error -Message $errStream
         }
     }
 }

@@ -15,7 +15,7 @@ begin {
 
 
     Clear-Host
-    [Version]$scriptVersion = "0.4.8"
+    [Version]$scriptVersion = "0.4.9"
     
 
 
@@ -34,14 +34,12 @@ begin {
         Organization = "bonzosoft"
         Name         = "common"
         Branch       = "bw"
-        #Token        = ((Get-Content -Path $configFile -ErrorAction 'SilentlyContinue' | ConvertFrom-Json -Depth 9).Vault.Token | ConvertTo-SecureString -AsPlainText -ErrorAction 'SilentlyContinue')
     }
     [Hashtable]$vaultSplat = @{
         Domain       = "https://eu.infisical.com"
         Organization = "dd2d983e-3db8-40ea-bec4-f69a13b8566a"
         Project      = "9b3eaa39-1cba-4239-b272-9cd10c997eed"
         Environment  = "dev"
-        #Token        = ((Get-Content -Path $configFile -ErrorAction 'SilentlyContinue' | ConvertFrom-Json -Depth 9).Git.Token | ConvertTo-SecureString -AsPlainText -ErrorAction 'SilentlyContinue')
     }
 
     [IO.FileInfo]$configFile = Join-Path -Path $PWD -ChildPath @(".config", "config.json")
@@ -93,7 +91,7 @@ process {
 
 
     Write-Information -MessageData "$(Get-Timestamp)Getting local data."
-    $configFileData = Get-Content -Path $configFile -ErrorAction 'SilentlyContinue' | ConvertFrom-Json -Depth 9
+    $configFileData = Get-Content -Path $configFile -ErrorAction 'SilentlyContinue' | ConvertFrom-Json -Depth 9 -AsHashTable
 
     if (($null -ne $configFileData) -and ($configFileData.Keys -contains "Git")) {
         if ($configFileData.Git.Keys -contains "Token") {
@@ -123,7 +121,6 @@ process {
 
                 try {
                     Write-Information -MessageData "$(Get-Timestamp)Connecting vault."
-                    $vault
                     Connect-Vault -Vault $vault -ErrorAction 'Stop'
                 }
                 catch {

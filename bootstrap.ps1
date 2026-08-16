@@ -15,7 +15,7 @@ begin {
 
 
     Clear-Host
-    [Version]$scriptVersion = "0.4.6"
+    [Version]$scriptVersion = "0.4.7"
     
 
 
@@ -123,7 +123,8 @@ process {
 
                 try {
                     Write-Information -MessageData "$(Get-Timestamp)Connecting vault."
-                    Connect-Vault -Vault $Vault -ErrorAction 'Stop'
+                    $vault
+                    Connect-Vault -Vault $vault -ErrorAction 'Stop'
                 }
                 catch {
                     continue
@@ -135,7 +136,7 @@ process {
 
         
         Write-Information -MessageData "$(Get-Timestamp)Fetching token from vault."
-        $repository.Token = Get-VaultSecret -Vault $Vault -Name "GITHUB_CONTENTS_READONLY_COMMON" -Path "/" | ConvertTo-SecureString -AsPlainText -ErrorAction 'Stop'
+        $repository.Token = Get-VaultSecret -Vault $vault -Name "GITHUB_CONTENTS_READONLY_COMMON" -Path "/" | ConvertTo-SecureString -AsPlainText -ErrorAction 'Stop'
     }
 
 

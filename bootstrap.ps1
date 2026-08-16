@@ -13,12 +13,7 @@ begin {
     $InformationPreference = 'Continue'
     
 
-
     Clear-Host
-    [Version]$scriptVersion = "0.4.9"
-    
-
-
 
     [Hashtable]$splat = @{}
     [string[]]$stdStream = @()
@@ -53,9 +48,6 @@ begin {
 }
 
 process {
-    Write-Information -MessageData "$(Get-Timestamp)Starting script. Version: v$scriptVersion."
-
-
     Write-Information -MessageData "$(Get-Timestamp)Getting assets metadata."
     $assetVersion, $assetUri = 
         Invoke-RestMethod -Uri "https://api.github.com/repos/bonzosoft/bootstrap/releases/latest" |
@@ -104,12 +96,11 @@ process {
         }
     }
 
-    $repositorySplat
-    $vaultSplat
 
     Write-Information -MessageData "$(Get-Timestamp)Creating Repository object."
     $repository = New-GitRepository @repositorySplat
 
+    Connect-GitRepository -Repository $repository -ErrorAction 'SilentlyContinue'
     if (!(Test-GitRepository -Repository $repository)) {
 
         Write-Information -MessageData "$(Get-Timestamp)Creating Vault object."
@@ -136,11 +127,13 @@ process {
         
         Write-Information -MessageData "$(Get-Timestamp)Fetching token from vault."
         $repository.Token = Get-VaultSecret -Vault $vault -Name "GITHUB_CONTENTS_READONLY_COMMON" -Path "/" | ConvertTo-SecureString -AsPlainText -ErrorAction 'Stop'
+    
+        Write-Information -MessageData "$(Get-Timestamp)Connecting repository."
+        Connect-GitRepository -Repository $repository -ErrorAction 'Stop'
     }
 
 
-    Write-Information -MessageData "$(Get-Timestamp)Connecting repository."
-    Connect-GitRepository -Repository $repository -ErrorAction 'Stop'
+
 
 
     Write-Information -MessageData "$(Get-Timestamp)Getting repository."

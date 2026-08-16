@@ -15,7 +15,7 @@ begin {
 
 
     Clear-Host
-    [Version]$scriptVersion = "0.4.4"
+    [Version]$scriptVersion = "0.4.5"
     
 
 
@@ -111,18 +111,18 @@ process {
     $repository = New-GitRepository @repositorySplat
 
     if (!(Test-GitRepository -Repository $repository)) {
-        if (!Test-Vault -Vault $vault) {
-            $vaultSplat.Remove("Token")
 
+        Write-Information -MessageData "$(Get-Timestamp)Creating Vault object."
+        $vault = New-Vault @vaultSplat
+
+
+        if (!Test-Vault -Vault $vault) {
             Write-Information -MessageData "$(Get-Timestamp)Trying to fetch token from vault."
             do {
                 $vaultSplat.Credential = (Get-Credential)
-    
-                Write-Information -MessageData "$(Get-Timestamp)Creating Vault object."
-                $vault = New-Vault @vaultSplat
-    
-                Write-Information -MessageData "$(Get-Timestamp)Connecting vault."
+
                 try {
+                    Write-Information -MessageData "$(Get-Timestamp)Connecting vault."
                     Connect-Vault -Vault $Vault -ErrorAction 'Stop'
                 }
                 catch {

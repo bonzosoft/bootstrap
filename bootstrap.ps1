@@ -15,7 +15,7 @@ begin {
 
 
     Clear-Host
-    [Version]$scriptVersion = "0.4.7"
+    [Version]$scriptVersion = "0.4.8"
     
 
 
@@ -119,7 +119,7 @@ process {
         if (!(Test-Vault -Vault $vault)) {
             Write-Information -MessageData "$(Get-Timestamp)Trying to fetch token from vault."
             do {
-                $vaultSplat.Credential = (Get-Credential)
+                $vault.Credential = (Get-Credential)
 
                 try {
                     Write-Information -MessageData "$(Get-Timestamp)Connecting vault."

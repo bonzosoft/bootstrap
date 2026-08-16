@@ -116,7 +116,7 @@ process {
         $vault = New-Vault @vaultSplat
 
 
-        if (!Test-Vault -Vault $vault) {
+        if (!(Test-Vault -Vault $vault)) {
             Write-Information -MessageData "$(Get-Timestamp)Trying to fetch token from vault."
             do {
                 $vaultSplat.Credential = (Get-Credential)

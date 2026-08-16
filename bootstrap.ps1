@@ -99,11 +99,13 @@ process {
         }
     }
     if (($null -ne $configFileData) -and ($configFileData.Keys -contains "Vault")) {
-        if ($configFileData.Git.Keys -contains "Token") {
-            $vaultSplat.Token = $configFileData.Git.Token | ConvertTo-SecureString -AsPlainText
+        if ($configFileData.Vault.Keys -contains "Token") {
+            $vaultSplat.Token = $configFileData.Vault.Token | ConvertTo-SecureString -AsPlainText
         }
     }
 
+    $repositorySplat
+    $vaultSplat
 
     Write-Information -MessageData "$(Get-Timestamp)Creating Repository object."
     $repository = New-GitRepository @repositorySplat

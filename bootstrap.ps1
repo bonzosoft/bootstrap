@@ -100,6 +100,8 @@ process {
     Write-Information -MessageData "$(Get-Timestamp)Creating Repository object."
     $repository = New-GitRepository @repositorySplat
 
+    $repository
+
     #Connect-GitRepository -Repository $repository -ErrorAction 'SilentlyContinue'
     if (!(Test-GitRepository -Repository $repository)) {
 

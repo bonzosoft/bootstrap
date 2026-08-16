@@ -103,7 +103,7 @@ process {
     $repository
 
     #Connect-GitRepository -Repository $repository -ErrorAction 'SilentlyContinue'
-    if (!(Test-GitRepository -Repository $repository)) {
+    if (!(Test-GitRepository -Repository $repository )) {
 
         Write-Information -MessageData "$(Get-Timestamp)Creating Vault object."
         $vault = New-Vault @vaultSplat

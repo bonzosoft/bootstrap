@@ -15,7 +15,7 @@ begin {
 
 
     Clear-Host
-    [Version]$scriptVersion = "0.4.5"
+    [Version]$scriptVersion = "0.4.6"
     
 
 

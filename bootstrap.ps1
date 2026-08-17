@@ -74,8 +74,8 @@ if (!(Test-Path -Path (Join-Path -Path $PWD -ChildPath @($repositorySplat.Name))
     Import-Module -Name (Get-ChildItem -Path $modulesDirectory -Directory).FullName
 }
 else {
-    Write-Information -MessageData "Path '$(Join-Path -Path $PWD -ChildPath @($repositorySplat.Name))' already exist. Importing modules from local source."
-    Import-Module -Name (Get-ChildItem -Path (Join-Path -Path $PWD -ChildPath @($repositorySplat.Name)))
+    Write-Information -MessageData "Path '$(Join-Path -Path $PWD -ChildPath @($repositorySplat.Name, "modules"))' already exist. Importing modules from local source."
+    Import-Module -Name (Get-ChildItem -Path (Join-Path -Path $PWD -ChildPath @($repositorySplat.Name, "modules")))
 }
 
 

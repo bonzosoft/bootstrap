@@ -13,6 +13,7 @@ $InformationPreference = 'Continue'
 
 Clear-Host
 
+
 [Hashtable]$splat = @{}
 [string[]]$stdStream = @()
 [string[]]$errStream = @()
@@ -103,7 +104,6 @@ if (($null -ne $configFileData) -and ($configFileData.Keys -contains "Vault")) {
 Write-Information -MessageData "$(Get-Timestamp)Creating Repository object."
 $repository = New-GitRepository @repositorySplat
 
-$repository
 
 #Connect-GitRepository -Repository $repository -ErrorAction 'SilentlyContinue'
 if (!(Test-GitRepository -Repository $repository )) {
@@ -138,11 +138,8 @@ if (!(Test-GitRepository -Repository $repository )) {
 }
 
 
-
-
-
 Write-Information -MessageData "$(Get-Timestamp)Getting repository."
-Get-GitRepository -Repository $repository
+Import-GitRepository -Repository $repository
 
 
 Write-Information -MessageData "$(Get-Timestamp)Storing token."
@@ -181,9 +178,13 @@ foreach ($item in @("pwsh")) {
     }
 }
 
+#. (Join-Path -Path $PWD -ChildPath @($repositorySplat.Name, "install.ps1"))
+################################################################################## continuar en install.ps1 a partir de aqui
 
 
 Write-Information -MessageData ""
 Write-Information -MessageData "Press any key to continue..."
 Read-Host | Out-Null
+
+
 

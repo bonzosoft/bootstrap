@@ -46,44 +46,38 @@ function Get-Timestamp {
 #EndRegion
 
 
-if (!(Test-Path -Path (Join-Path -Path $PWD -ChildPath @($repositorySplat.Name)))) {
-    Write-Information -MessageData "$(Get-Timestamp)Getting assets metadata."
-    $assetVersion, $assetUri = 
-        Invoke-RestMethod -Uri "https://api.github.com/repos/bonzosoft/bootstrap/releases/latest" |
-            ForEach-Object -Process {
-                Write-Output -InputObject $PSItem.name
-                Write-Output -InputObject (
-                    $PSItem | 
-                    Select-Object -ExpandProperty "assets" |
-                    Where-Object -Property "name" -Like "bootstrap-v*.zip"
-                ).browser_download_url
-            }
-    
-    
-    Write-Information -MessageData "$(Get-Timestamp)Downloading assets. Version: v$assetVersion."
-    $assetTempFile = New-TemporaryFile
-    Invoke-WebRequest -Uri $assetUri -OutFile $assetTempFile
-    
-    
-    Write-Information -MessageData "$(Get-Timestamp)Extracting assets."
-    if (Test-Path -Path $modulesDirectory.Parent) {
-        Remove-Item -Path $modulesDirectory.Parent -Force
-    }
-    Expand-Archive -Path $assetTempFile -DestinationPath $modulesDirectory.Parent -Force
+Write-Information -MessageData "$(Get-Timestamp)Getting assets metadata."
+$assetVersion, $assetUri = 
+    Invoke-RestMethod -Uri "https://api.github.com/repos/bonzosoft/bootstrap/releases/latest" |
+        ForEach-Object -Process {
+            Write-Output -InputObject $PSItem.name
+            Write-Output -InputObject (
+                $PSItem | 
+                Select-Object -ExpandProperty "assets" |
+                Where-Object -Property "name" -Like "bootstrap-v*.zip"
+            ).browser_download_url
+        }
 
 
-    Write-Information -MessageData "$(Get-Timestamp)Importing assets."
-    Import-Module -Name (Get-ChildItem -Path $modulesDirectory -Directory).FullName
+Write-Information -MessageData "$(Get-Timestamp)Downloading assets. Version: v$assetVersion."
+$assetTempFile = New-TemporaryFile
+Invoke-WebRequest -Uri $assetUri -OutFile $assetTempFile
 
 
-    Write-Information -MessageData "$(Get-TImestamp)Removing temporary data."
-    Remove-Item -Path $assetTempFile
-    Remove-Variable -Name "assetTempFile"
+Write-Information -MessageData "$(Get-Timestamp)Extracting assets."
+if (Test-Path -Path $modulesDirectory.Parent) {
+    Remove-Item -Path $modulesDirectory.Parent -Force
 }
-else {
-    Write-Information -MessageData "Path '$(Join-Path -Path $PWD -ChildPath @($repositorySplat.Name, "modules"))' already exist. Importing modules from local source."
-    Import-Module -Name (Get-ChildItem -Path (Join-Path -Path $PWD -ChildPath @($repositorySplat.Name, "modules")))
-}
+Expand-Archive -Path $assetTempFile -DestinationPath $modulesDirectory.Parent -Force
+
+
+Write-Information -MessageData "$(Get-Timestamp)Importing assets."
+Import-Module -Name (Get-ChildItem -Path $modulesDirectory -Directory).FullName
+
+
+Write-Information -MessageData "$(Get-TImestamp)Removing temporary data."
+Remove-Item -Path $assetTempFile
+Remove-Variable -Name "assetTempFile"
 
 
 Write-Information -MessageData "$(Get-Timestamp)Getting local data."

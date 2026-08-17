@@ -70,21 +70,19 @@ if (!(Test-Path -Path (Join-Path -Path $PWD -ChildPath @($repositorySplat.Name))
     }
     Expand-Archive -Path $assetTempFile -DestinationPath $modulesDirectory.Parent -Force
 
+
     Write-Information -MessageData "$(Get-Timestamp)Importing assets."
     Import-Module -Name (Get-ChildItem -Path $modulesDirectory -Directory).FullName
+
+
+    Write-Information -MessageData "$(Get-TImestamp)Removing temporary data."
+    Remove-Item -Path $assetTempFile
+    Remove-Variable -Name "assetTempFile"
 }
 else {
     Write-Information -MessageData "Path '$(Join-Path -Path $PWD -ChildPath @($repositorySplat.Name, "modules"))' already exist. Importing modules from local source."
     Import-Module -Name (Get-ChildItem -Path (Join-Path -Path $PWD -ChildPath @($repositorySplat.Name, "modules")))
 }
-
-
-
-
-
-Write-Information -MessageData "$(Get-TImestamp)Removing temporary data."
-Remove-Item -Path $assetTempFile
-Remove-Variable -Name "assetTempFile"
 
 
 Write-Information -MessageData "$(Get-Timestamp)Getting local data."

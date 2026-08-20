@@ -111,14 +111,14 @@ if (Test-Path -Path $configFile) {
 
 $vaultSplat.Credential = $null
 if (-not [string]::IsNullOrWhiteSpace($configData.Vault.Client.Secret)) {
-    do {
+    :doWhile do {
         switch (Read-Host -Prompt "Local credentials for Vault already exist. Replace them? [Y]es / [N]o") {
             "y" {
-                break
+                break doWhile
             }
             "n" {
                 $vaultSplat.Credential = [PSCredential]::new($configData.Vault.Client.Id, ($configData.Vault.Client.Secret | ConvertTo-SecureString -AsPlainText))
-                break
+                break doWhile
             }
         }
     }

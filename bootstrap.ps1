@@ -23,7 +23,7 @@ $InformationPreference = 'Continue'
 [IO.DirectoryInfo]$modulesDirectory = 
     Join-Path `
         -Path ([System.IO.Path]::GetTempPath()) `
-        -ChildPath @([System.IO.Path]::GetRandomFileName())
+        -ChildPath @([System.IO.Path]::GetRandomFileName(), "modules")
 
 [Hashtable]$vaultSplat = @{
     Domain       = "https://eu.infisical.com"

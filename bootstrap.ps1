@@ -17,7 +17,7 @@ $InformationPreference = 'Continue'
 
 [IO.FileInfo]$configFile = 
     Join-Path `
-        -Path $thisScript.Directory `
+        -Path $PWD `
         -ChildPath @(".config", "config.json")
 
 [IO.DirectoryInfo]$modulesDirectory = 

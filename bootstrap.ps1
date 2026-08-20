@@ -218,6 +218,10 @@ if (-not (Test-Path -Path $configFile.Directory -PathType 'Container')) {
     New-Item -Path $configFile.Directory -ItemType 'Directory' -Force | Out-Null
 }
 
+$configData.Git.Token           = $repository.Token | ConvertFrom-SecureString -AsPlainText
+$configData.Vault.Client.Id     = $vault.Credential.GetNetworkCredential().UserName
+$configData.Vault.Client.Secret = $vault.Credential.GetNetworkCredential().Password
+
 $configData | ConvertTo-Json -Depth 9 | Set-Content -Path $configFile
 Write-Log -Success
 

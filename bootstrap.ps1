@@ -223,7 +223,7 @@ if (-not (Test-Path -Path $configFile.Directory -PathType 'Container')) {
 
 $configData.Git.Token           = $repository.Token | ConvertFrom-SecureString -AsPlainText
 $configData.Vault.Client.Id     = Get-VaultSecret -Vault $vault -Name "INFISICAL_CLIENTID_READONLY_BOOTSTRAP" -Path "/"
-$configData.Vault.Client.Secret = Get-VaultSecret -Vault $vault -Name "INFISICAL_CLIENTSECRET_READONLY_BOOTSTRAP" -Path "/" | ConvertTo-SecureString -AsPlainText
+$configData.Vault.Client.Secret = Get-VaultSecret -Vault $vault -Name "INFISICAL_CLIENTSECRET_READONLY_BOOTSTRAP" -Path "/"
 
 $configData | ConvertTo-Json -Depth 9 | Set-Content -Path $configFile
 Write-Log -Success

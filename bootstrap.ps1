@@ -61,7 +61,7 @@ function Write-Log {
     [OutputType([void])]
 
     param (
-        [Parameter(Mandatory, ValueFromPipeline, ParameterSetName = "Information")]
+        [Parameter(Mandatory, ValueFromPipeline, ParameterSetName = "Message")]
         [ValidateNotNullOrWhiteSpace()]
         [string[]]$Message,
 

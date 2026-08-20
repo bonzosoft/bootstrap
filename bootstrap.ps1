@@ -70,21 +70,22 @@ function Write-Log {
     )
 
     process {
-        [string]$timestamp = "[" + $(Get-Date -Format "yyyy-MM-dd HH:mm:ss:fffK") + "]" + "`t"
+        [string]$timestamp = "[" + $(Get-Date -Format "yyyy-MM-dd HH:mm:ss:fffK") + "]" + (" "*2)
         switch ($PSCmdlet.ParameterSetName) {
             "Message" {
                 foreach ($item in $Message) {
-                    Write-Information -MessageData ($timestamp + $item)
+                    Write-Information -MessageData ($timestamp + $item) -InformationAction 'Continue'
+
+                    continue
                 }
             }
             "Success" {
-                Write-Information -MessageData ($timestamp + ">> OK")
+                Write-Information -MessageData ($timestamp + (" "*3) + ">> OK") -InformationAction 'Continue'
             }
             default {
                 throw "Unknown parameter set name '$PSItem'."
             }
         }
-        continue
     }
 }
 #EndRegion ─────────────────────────────────────────────────────────────────────

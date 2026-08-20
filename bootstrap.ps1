@@ -71,7 +71,7 @@ function Write-Log {
 
     process {
         [string]$timestamp = "[" + $(Get-Date -Format "yyyy-MM-dd HH:mm:ss:fffK") + "]" + "`t"
-        switch ($Cmdlet.ParameterSetName) {
+        switch ($PSCmdlet.ParameterSetName) {
             "Message" {
                 foreach ($item in $Message) {
                     Write-Information -MessageData ($timestamp + $item)

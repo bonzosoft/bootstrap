@@ -20,11 +20,6 @@ $InformationPreference = 'Continue'
         -Path      $PWD `
         -ChildPath @(".config", "config.json")
 
-[IO.DirectoryInfo]$modulesDirectory = 
-    Join-Path `
-        -Path      ([IO.Path]::GetTempPath()) `
-        -ChildPath @([IO.Path]::GetRandomFileName(), "modules")
-
 [Hashtable]$vaultSplat = @{
     Domain       = "https://eu.infisical.com"
     Organization = "dd2d983e-3db8-40ea-bec4-f69a13b8566a"
@@ -78,7 +73,7 @@ function Write-Log {
                 }
             }
             "Success" {
-                Write-Information -MessageData ($timestamp + (" "*2) + ">> OK") -InformationAction 'Continue'
+                Write-Information -MessageData ($timestamp + (" "*2) + ">>> OK") -InformationAction 'Continue'
             }
             default {
                 throw "Unknown parameter set name '$PSItem'."
@@ -96,11 +91,13 @@ Clear-Host
 [Uri]$assetUri, [Version]$assetVersion = 
     Invoke-RestMethod -Uri "https://api.github.com/repos/$($bootstrapRepositorySplat.Organization)/$($bootstrapRepositorySplat.Name)/releases/latest" |
         ForEach-Object -Process {
+            # uri
             Write-Output -InputObject (
                 $PSItem | 
                 Select-Object -ExpandProperty "assets" |
                 Where-Object -Property "name" -Like "bootstrap-v*.zip" |
                 Select-Object -ExpandProperty browser_download_url -First 1)
+            # version
             Write-Output -InputObject (
                 $PSItem |
                 Select-Object -ExpandProperty name -First 1)
@@ -108,25 +105,27 @@ Clear-Host
 Write-Log -Success
 
 
-"Downloading asset version: v$assetVersion from repository." | Write-Log
 [IO.FileInfo]$assetTempFile = New-TemporaryFile
+"Fetching assets v$assetVersion to '$assetTempFile'." | Write-Log
 Invoke-WebRequest -Uri $assetUri -OutFile $assetTempFile
 Write-Log -Success
 
 
-"Extracting assets to '$modulesDirectory'." | Write-Log
-Expand-Archive -Path $assetTempFile -DestinationPath $modulesDirectory.Parent -Force
+[IO.DirectoryInfo]$modulesTempDirectory = Join-Path -Path ([IO.Path]::GetTempPath()) -ChildPath @([IO.Path]::GetRandomFileName(), "modules")
+"Extracting assets v$assetVersion to '$modulesTempDirectory'." | Write-Log
+Expand-Archive -Path $assetTempFile -DestinationPath $modulesTempDirectory.Parent -Force
 Write-Log -Success
 
 
 "Importing assets." | Write-Log
-Import-Module -Name (Get-ChildItem -Path $modulesDirectory -Directory).FullName
+Import-Module -Name (Get-ChildItem -Path $modulesTempDirectory -Directory).FullName
 Write-Log -Success
 
 
 $vaultSplat.Credential = (Get-Credential)
 
 
+[PSCustomObject]$vault = $null
 "Creating vault object." | Write-Log
 $vault = New-Vault @vaultSplat
 Write-Log -Success
@@ -142,6 +141,7 @@ $commonRepositorySplat.Token = Get-VaultSecret -Vault $vault -Name "GITHUB_CONTE
 Write-Log -Success
 
 
+[PSCustomObject]$repository = $null
 "Creating repository object." | Write-Log
 $repository = New-GitRepository @commonRepositorySplat
 Write-Log -Success
@@ -152,9 +152,54 @@ Connect-GitRepository -Repository $repository -ErrorAction 'Stop'
 Write-Log -Success
 
 
-"Getting repository '$($repository.Name)'." | Write-Log
+"Fetching repository '$($repository.Name)'." | Write-Log
 Import-GitRepository -Repository $repository
 Write-Log -Success
+
+
+[IO.FileInfo]$source = $null
+[IO.FileInfo]$target = $null
+foreach ($item in @("pwsh")) {
+    "Creating link for '${item}'." | Write-Log
+
+    $source = Join-Path -Path $PWD -ChildPath @($($repository.Name), "${item}.sh")
+    $target = Join-Path -Path $PWD -ChildPath @($item)
+
+    $splat = @{
+        Path     = $target
+        Value    = $source
+        ItemType = 'SymbolicLink'
+        Force    = $true
+    }
+    New-Item @splat | Out-Null
+    <#
+    ## equivalent to native command: ln -snf $source.FulName $target.FullName
+    $params = @(
+        "--symbolic"
+        "--no-deference"
+        "--force"
+        $source.FullName
+        $target.FullName
+    )
+    $stdStream = ln @params 2> Variable:errStream
+    if ($LASTEXITCODE -ne 0) {
+        Write-Error -Message ($errStream -join [Environment]::NewLine)
+    }
+    #>
+    Write-Log -Success
+
+
+    "Setting '${item}' as executable." | Write-Log
+    $params = @(
+        "+x"
+        $source.FullName
+    )
+    $stdStream = chmod @params 2> variable:errStream
+    if ($LASTEXITCODE -ne 0) {
+        Write-Error -Message ($errStream -join [Environment]::NewLine)
+    }
+    Write-Log -Success
+}
 
 
 "Saving token to '$configFile'." | Write-Log
@@ -172,40 +217,6 @@ if (-not (Test-Path -Path $configFile.Directory -PathType 'Container')) {
     }
 } | ConvertTo-Json -Depth 9 | Set-Content -Path $configFile
 Write-Log -Success
-
-
-foreach ($item in @("pwsh")) {
-    [IO.FileInfo]$source =
-        Join-Path `
-            -Path $PWD `
-            -ChildPath @("common", "${item}.sh") #Join-Path -Path $repository.Path -ChildPath @("${item}.sh")
-    [IO.FileInfo]$target = 
-        Join-Path `
-            -Path $PWD `
-            -ChildPath @($item)
-
-    "Creating link for '${item}'." | Write-Log
-    $splat = @{
-        Path     = $target
-        Value    = $source
-        ItemType = 'SymbolicLink'
-        Force    = $true
-    }
-    New-Item @splat | Out-Null # sames as native command: ln -snf $source.FulName $target.FullName
-    Write-Log -Success
-
-
-    "Setting '${item}' as executable." | Write-Log
-    $params = @(
-        "+x"
-        $source.FullName
-    )
-    $stdStream = chmod @params 2> variable:errStream
-    if ($LASTEXITCODE -ne 0) {
-        Write-Error -Message ($errStream -join [Environment]::NewLine)
-    }
-    Write-Log -Success
-}
 
 #. (Join-Path -Path $PWD -ChildPath @($commonRepositorySplat.Name, "install.ps1"))
 ################################################################################## continuar en install.ps1 a partir de aqui

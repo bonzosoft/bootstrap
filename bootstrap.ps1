@@ -71,7 +71,7 @@ function Write-Log {
 
     process {
         [string]$timestamp = "[" + $(Get-Date -Format "yyyy-MM-dd HH:mm:ss:fffK") + "]" + "`t"
-        switch (ParameterSetName) {
+        switch ($Cmdlet.ParameterSetName) {
             "Message" {
                 foreach ($item in $Message) {
                     Write-Information -MessageData ($timestamp + $item)
@@ -93,7 +93,7 @@ function Write-Log {
 Clear-Host
 
 
-"Gettng asset metadata" | Write-Log
+"Getting asset metadata" | Write-Log
 [Uri]$assetUri, [Version]$assetVersion = 
     Invoke-RestMethod -Uri "https://api.github.com/repos/$($bootstrapRepositorySplat.Organization)/$($bootstrapRepositorySplat.Name)/releases/latest" |
         ForEach-Object -Process {

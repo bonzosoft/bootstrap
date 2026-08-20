@@ -20,6 +20,18 @@ $InformationPreference = 'Continue'
         -Path      $PWD `
         -ChildPath @(".config", "config.json")
 
+[Hashtable]$configData = @{
+    Git = @{
+        Token = ""
+    }
+    Vault = @{
+        Client = @{
+            Id     = ""
+            Secret = ""
+        }
+    }
+}
+
 [Hashtable]$vaultSplat = @{
     Domain       = "https://eu.infisical.com"
     Organization = "dd2d983e-3db8-40ea-bec4-f69a13b8566a"
@@ -48,47 +60,14 @@ $InformationPreference = 'Continue'
 #EndRegion ─────────────────────────────────────────────────────────────────────
 
 
-#Region ── Local functions ─────────────────────────────────────────────────────
-function Write-Log {
-    [CmdletBinding()]
-    [OutputType([void])]
-
-    param (
-        [Parameter(Mandatory, ValueFromPipeline, ParameterSetName = "Message")]
-        [ValidateNotNullOrWhiteSpace()]
-        [string[]]$Message,
-
-        [Parameter(Mandatory, ParameterSetName = "Success")]
-        [switch]$Success
-    )
-
-    process {
-        [string]$timestamp = "[" + $(Get-Date -Format "yyyy-MM-dd HH:mm:ss:fffK") + "]" + "`t"
-        switch ($PSCmdlet.ParameterSetName) {
-            "Message" {
-                foreach ($item in $Message) {
-                    Write-Information -MessageData ($timestamp + $item) -InformationAction 'Continue'
-
-                    continue
-                }
-            }
-            "Success" {
-                Write-Information -MessageData ($timestamp + (" "*2) + ">>> OK") -InformationAction 'Continue'
-            }
-            default {
-                throw "Unknown parameter set name '$PSItem'."
-            }
-        }
-    }
-}
-#EndRegion ─────────────────────────────────────────────────────────────────────
-
-
 Clear-Host
 
 
-"Getting asset metadata from repository $($bootstrapRepositorySplat.Name)" | Write-Log
-[Uri]$assetUri, [Version]$assetVersion = 
+[Uri]$assetUri = $null
+[Version]$assetVersion = $null
+
+Write-Information -MessageData "Fetching release information from $($bootstrapRepositorySplat.Name)"
+$assetUri, $assetVersion =
     Invoke-RestMethod -Uri "https://api.github.com/repos/$($bootstrapRepositorySplat.Organization)/$($bootstrapRepositorySplat.Name)/releases/latest" |
         ForEach-Object -Process {
             # uri
@@ -102,27 +81,49 @@ Clear-Host
                 $PSItem |
                 Select-Object -ExpandProperty name -First 1)
         }
-Write-Log -Success
 
 
 [IO.FileInfo]$assetTempFile = New-TemporaryFile
-"Fetching assets v$assetVersion to '$assetTempFile'." | Write-Log
+
+Write-Information -MessageData "Fetching asset v$assetVersion."
 Invoke-WebRequest -Uri $assetUri -OutFile $assetTempFile
-Write-Log -Success
 
 
 [IO.DirectoryInfo]$modulesTempDirectory = Join-Path -Path ([IO.Path]::GetTempPath()) -ChildPath @([IO.Path]::GetRandomFileName(), "modules")
-"Extracting assets v$assetVersion to '$modulesTempDirectory'." | Write-Log
+
+Write-Information -MessageData "Extracting asset to '$modulesTempDirectory'."
 Expand-Archive -Path $assetTempFile -DestinationPath $modulesTempDirectory.Parent -Force
-Write-Log -Success
 
 
-"Importing assets." | Write-Log
+Write-Information -MessageData "Importing asset."
 Import-Module -Name (Get-ChildItem -Path $modulesTempDirectory -Directory).FullName
-Write-Log -Success
 
 
-$vaultSplat.Credential = (Get-Credential)
+if (Test-Path -Path $configFile) {
+    Get-Content -Path $configFile | 
+        ConvertFrom-Json -Depth 9 -AsHashtable | 
+        ForEach-Object -Process {
+            $PSItem.GetEnumerator() | ForEach-Object {
+                $configData[$PSItem.Key] = $PSItem.Value
+            }
+        }
+
+    if ([string]::IsNullOrWhiteSpace($configData.Vault.Client.Secret)) {
+        do {
+            switch (Read-Host -Prompt "Local credentials for Vault already exist. Replace them? [Y]es / [N]o") {
+                "y" {
+                    $vaultSplat.Credential = (Get-Credential)
+                    break
+                }
+                "n" {
+                    $vaultSplat.Credential = [PSCredential]::new($configData.Vault.Client.Id, ($configData.Vault.Client.Secret | ConvertTo-SecureString -AsPlainText))
+                    break
+                }
+            }
+        }
+        while ($true)
+    }
+}
 
 
 [PSCustomObject]$vault = $null
@@ -136,7 +137,7 @@ Connect-Vault -Vault $vault -ErrorAction 'Stop'
 Write-Log -Success
 
 
-"Fetching token from vault." | Write-Log
+"Fetching repository token from vault." | Write-Log
 $commonRepositorySplat.Token = Get-VaultSecret -Vault $vault -Name "GITHUB_CONTENTS_READONLY_COMMON" -Path "/" | ConvertTo-SecureString -AsPlainText -ErrorAction 'Stop'
 Write-Log -Success
 
@@ -203,20 +204,19 @@ foreach ($item in @("pwsh")) {
 
 
 "Saving token to '$configFile'." | Write-Log
-if (-not (Test-Path -Path $configFile.Directory -PathType 'Container')) {
-    Remove-Item -Path $configFile.Directory -Force
+if (Test-Path -Path $configFile.Directory -PathType 'Any') {
+    if (-not (Test-Path -Path $configFile.Directory -PathType 'Container')) {
+        Remove-Item -Path $configFile.Directory -Force
+    }
 }
 
 if (-not (Test-Path -Path $configFile.Directory -PathType 'Container')) {
     New-Item -Path $configFile.Directory -ItemType 'Directory' -Force | Out-Null
 }
 
-@{
-    "Git" = @{
-        "Token" = ($repository.Token | ConvertFrom-SecureString -AsPlainText)
-    }
-} | ConvertTo-Json -Depth 9 | Set-Content -Path $configFile
+$configData | ConvertTo-Json -Depth 9 | Set-Content -Path $configFile
 Write-Log -Success
+
 
 #. (Join-Path -Path $PWD -ChildPath @($commonRepositorySplat.Name, "install.ps1"))
 ################################################################################## continuar en install.ps1 a partir de aqui
@@ -225,6 +225,3 @@ Write-Log -Success
 "" | Write-Log
 "Press any key to continue..." | Write-Log
 Read-Host | Out-Null
-
-
-

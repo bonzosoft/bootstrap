@@ -78,7 +78,7 @@ function Write-Log {
                 }
             }
             "Success" {
-                Write-Information -MessageData ($timestamp + (" "*3) + ">> OK") -InformationAction 'Continue'
+                Write-Information -MessageData ($timestamp + ">> OK") -InformationAction 'Continue'
             }
             default {
                 throw "Unknown parameter set name '$PSItem'."
@@ -147,17 +147,18 @@ Write-Log -Success
 
 #Connect-GitRepository -Repository $repository -ErrorAction 'SilentlyContinue'
 if (-not (Test-GitRepository -Repository $repository)) {
-    Write-Information -MessageData "$(Get-Timestamp)Creating Vault object."
+    "Creating Vault object." | Write-Log
     $vault = New-Vault @vaultSplat
+    Write-Log -Success
 
 
     if (-not (Test-Vault -Vault $vault)) {
-        Write-Information -MessageData "$(Get-Timestamp)Trying to fetch token from vault."
+        "Trying to fetch token from vault." | Write-Log
         do {
             $vault.Credential = (Get-Credential)
 
             try {
-                Write-Information -MessageData "$(Get-Timestamp)Connecting vault."
+                "Connecting vault." | Write-Log
                 Connect-Vault -Vault $vault -ErrorAction 'Stop'
             }
             catch {
@@ -166,14 +167,17 @@ if (-not (Test-GitRepository -Repository $repository)) {
             break
         }
         while ($true)
+        Write-Log -Success
     }
 
     
-    Write-Information -MessageData "$(Get-Timestamp)Fetching token from vault."
+    "Fetching token from vault." | Write-Log
     $repository.Token = Get-VaultSecret -Vault $vault -Name "GITHUB_CONTENTS_READONLY_COMMON" -Path "/" | ConvertTo-SecureString -AsPlainText -ErrorAction 'Stop'
+    Write-Log -Success
 
-    Write-Information -MessageData "$(Get-Timestamp)Connecting repository."
+    "Connecting repository." | Write-Log
     Connect-GitRepository -Repository $repository -ErrorAction 'Stop'
+    Write-Log -Success
 }
 
 

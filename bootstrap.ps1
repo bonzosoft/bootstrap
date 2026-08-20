@@ -56,7 +56,37 @@ $InformationPreference = 'Continue'
 
 
 #Region ── Local functions ─────────────────────────────────────────────────────
+function Write-Log {
+    [CmdletBinding()]
+    [OutputType([void])]
 
+    param (
+        [Parameter(Mandatory, ValueFromPipeline, ParameterSetName = "Information")]
+        [ValidateNotNullOrWhiteSpace()]
+        [string[]]$Message,
+
+        [Parameter(Mandatory, ParameterSetName = "Success")]
+        [switch]$Success
+    )
+
+    process {
+        [string]$timestamp = "[" + $(Get-Date -Format "yyyy-MM-dd HH:mm:ss:fffK") + "]" + "`t"
+        switch (ParameterSetName) {
+            "Message" {
+                foreach ($item in $Message) {
+                    Write-Information -MessageData ($timestamp + $item)
+                }
+            }
+            "Success" {
+                Write-Information -MessageData ($timestamp + ">> OK")
+            }
+            default {
+                throw "Unknown parameter set name '$PSItem'."
+            }
+        }
+        continue
+    }
+}
 #EndRegion ─────────────────────────────────────────────────────────────────────
 
 

@@ -109,7 +109,7 @@ if (Test-Path -Path $configFile) {
         }
 }
 
-if ([string]::IsNullOrWhiteSpace($configData.Vault.Client.Secret)) {
+if (-not [string]::IsNullOrWhiteSpace($configData.Vault.Client.Secret)) {
     do {
         switch (Read-Host -Prompt "Local credentials for Vault already exist. Replace them? [Y]es / [N]o") {
             "y" {

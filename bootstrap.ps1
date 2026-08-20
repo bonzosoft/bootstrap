@@ -131,6 +131,7 @@ if ($null -eq $vaultSplat.Credential) {
 
 
 [PSCustomObject]$vault = $null
+
 "Creating vault object." | Write-Log
 $vault = New-Vault @vaultSplat
 Write-Log -Success
@@ -147,6 +148,7 @@ Write-Log -Success
 
 
 [PSCustomObject]$repository = $null
+
 "Creating repository object." | Write-Log
 $repository = New-GitRepository @commonRepositorySplat
 Write-Log -Success
@@ -164,6 +166,7 @@ Write-Log -Success
 
 [IO.FileInfo]$source = $null
 [IO.FileInfo]$target = $null
+
 foreach ($item in @("pwsh")) {
     "Creating link for '${item}'." | Write-Log
 
@@ -219,8 +222,8 @@ if (-not (Test-Path -Path $configFile.Directory -PathType 'Container')) {
 }
 
 $configData.Git.Token           = $repository.Token | ConvertFrom-SecureString -AsPlainText
-$configData.Vault.Client.Id     = $vault.Credential.GetNetworkCredential().UserName
-$configData.Vault.Client.Secret = $vault.Credential.GetNetworkCredential().Password
+$configData.Vault.Client.Id     = Get-VaultSecret -Vault $vault -Name "INFISICAL_CLIENTID_READONLY_BOOTSTRAP" -Path "/"
+$configData.Vault.Client.Secret = Get-VaultSecret -Vault $vault -Name "INFISICAL_CLIENTSECRET_READONLY_BOOTSTRAP" -Path "/" | ConvertTo-SecureString -AsPlainText
 
 $configData | ConvertTo-Json -Depth 9 | Set-Content -Path $configFile
 Write-Log -Success

@@ -109,6 +109,7 @@ if (Test-Path -Path $configFile) {
         }
 }
 
+$vaultSplat.Credential = $null
 if (-not [string]::IsNullOrWhiteSpace($configData.Vault.Client.Secret)) {
     do {
         switch (Read-Host -Prompt "Local credentials for Vault already exist. Replace them? [Y]es / [N]o") {

@@ -17,13 +17,13 @@ $InformationPreference = 'Continue'
 
 [IO.FileInfo]$configFile = 
     Join-Path `
-        -Path $PWD `
+        -Path      $PWD `
         -ChildPath @(".config", "config.json")
 
 [IO.DirectoryInfo]$modulesDirectory = 
     Join-Path `
-        -Path ([System.IO.Path]::GetTempPath()) `
-        -ChildPath @([System.IO.Path]::GetRandomFileName(), "modules")
+        -Path      ([IO.Path]::GetTempPath()) `
+        -ChildPath @([IO.Path]::GetRandomFileName(), "modules")
 
 [Hashtable]$vaultSplat = @{
     Domain       = "https://eu.infisical.com"
@@ -68,7 +68,7 @@ function Write-Log {
     )
 
     process {
-        [string]$timestamp = "[" + $(Get-Date -Format "yyyy-MM-dd HH:mm:ss:fffK") + "]" + (" "*2)
+        [string]$timestamp = "[" + $(Get-Date -Format "yyyy-MM-dd HH:mm:ss:fffK") + "]" + "`t"
         switch ($PSCmdlet.ParameterSetName) {
             "Message" {
                 foreach ($item in $Message) {
@@ -78,7 +78,7 @@ function Write-Log {
                 }
             }
             "Success" {
-                Write-Information -MessageData ($timestamp + ">> OK") -InformationAction 'Continue'
+                Write-Information -MessageData ($timestamp + (" "*2) + ">> OK") -InformationAction 'Continue'
             }
             default {
                 throw "Unknown parameter set name '$PSItem'."

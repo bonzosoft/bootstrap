@@ -138,7 +138,12 @@ Write-Log -Success
 
 
 "Fetching token from vault." | Write-Log
-$repository.Token = Get-VaultSecret -Vault $vault -Name "GITHUB_CONTENTS_READONLY_COMMON" -Path "/" | ConvertTo-SecureString -AsPlainText -ErrorAction 'Stop'
+$commonRepostorySplat.Token = Get-VaultSecret -Vault $vault -Name "GITHUB_CONTENTS_READONLY_COMMON" -Path "/" | ConvertTo-SecureString -AsPlainText -ErrorAction 'Stop'
+Write-Log -Success
+
+
+"Creating repository object." | Write-Log
+$repository = New-GitRepository @commonRepositorySplat
 Write-Log -Success
 
 
@@ -146,10 +151,6 @@ Write-Log -Success
 Connect-GitRepository -Repository $repository -ErrorAction 'Stop'
 Write-Log -Success
 
-
-"Creating repository object." | Write-Log
-$repository = New-GitRepository @commonRepositorySplat
-Write-Log -Success
 
 "Getting repository '$($repository.Name)'." | Write-Log
 Import-GitRepository -Repository $repository

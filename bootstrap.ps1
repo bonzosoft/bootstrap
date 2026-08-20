@@ -124,28 +124,13 @@ Import-Module -Name (Get-ChildItem -Path $modulesDirectory -Directory).FullName
 Write-Log -Success
 
 
-"Getting local data from '$configFile'." | Write-Log
-[Hashtable]$configData = Get-Content -Path $configFile -ErrorAction 'SilentlyContinue' | ConvertFrom-Json -Depth 9 -AsHashTable
-if (($null -ne $configData) -and ($configData.Keys -contains "Git")) {
-    if ($configData.Git.Keys -contains "Token") {
-        $commonRepositorySplat.Token = $configData.Git.Token | ConvertTo-SecureString -AsPlainText
-    }
-}
-if (($null -ne $configData) -and ($configData.Keys -contains "Vault")) {
-    if ($configData.Vault.Keys -contains "ClientId" -and $configData.Vault.Keys -contains "ClientSecret") {
-
-        $vaultSplat.Credential = [PSCredential]::new($configData.Vault.ClientId, ($configData.Vault.ClientSecret | ConvertTo-SecureString -AsPlainText))
-    }
-}
-Write-Log -Success
+$vaultSplat.Credential = (Get-Credential)
 
 
-#Connect-GitRepository -Repository $repository -ErrorAction 'SilentlyContinue'
 "Creating Vault object." | Write-Log
 $vault = New-Vault @vaultSplat
 Write-Log -Success
 
-$vault.Credential = (Get-Credential)
 
 "Connecting vault." | Write-Log
 Connect-Vault -Vault $vault -ErrorAction 'Stop'
@@ -155,6 +140,7 @@ Write-Log -Success
 "Fetching token from vault." | Write-Log
 $repository.Token = Get-VaultSecret -Vault $vault -Name "GITHUB_CONTENTS_READONLY_COMMON" -Path "/" | ConvertTo-SecureString -AsPlainText -ErrorAction 'Stop'
 Write-Log -Success
+
 
 "Connecting repository." | Write-Log
 Connect-GitRepository -Repository $repository -ErrorAction 'Stop'

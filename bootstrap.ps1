@@ -105,8 +105,7 @@ Clear-Host
                 Select-Object -ExpandProperty browser_download_url -First 1)
             Write-Output -InputObject (
                 $PSItem |
-                Select-Object -ExcludeProperty name -First 1 |
-                Out-String)
+                Select-Object -ExpandProperty name -First 1)
         }
 Write-Log -Success
 

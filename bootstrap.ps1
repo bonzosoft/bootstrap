@@ -50,8 +50,6 @@ $InformationPreference = 'Continue'
 [string[]]$stdStream = @()
 [string[]]$errStream = @()
 [string[]]$params = @()
-
-
 #EndRegion ─────────────────────────────────────────────────────────────────────
 
 
@@ -117,9 +115,6 @@ Write-Log -Success
 
 
 "Extracting assets." | Write-Log
-if (Test-Path -Path $modulesDirectory.Parent -PathType 'Any') {
-    Remove-Item -Path $modulesDirectory.Parent -Force
-}
 Expand-Archive -Path $assetTempFile -DestinationPath $modulesDirectory.Parent -Force
 Write-Log -Success
 
@@ -127,12 +122,6 @@ Write-Log -Success
 "Importing assets." | Write-Log
 Import-Module -Name (Get-ChildItem -Path $modulesDirectory -Directory).FullName
 Write-Log -Success
-
-
-#"Removing temporary data." | Write-Log
-#Remove-Item -Path $assetTempFile
-#Remove-Variable -Name "assetTempFile"
-#Write-Log -Success
 
 
 "Getting local data." | Write-Log

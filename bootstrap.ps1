@@ -1,4 +1,4 @@
-#!/usr/bin/env pwsh
+#-not /usr/bin/env pwsh
 
 [CmdletBinding()]
 [OutputType([void])]
@@ -9,15 +9,27 @@ param()
 Set-StrictMode -Version Latest
 $ErrorActionPreference = 'Stop'
 $InformationPreference = 'Continue'
+#$PSNativeCommandUseErrorActionPreference = 'Continue'
 
 
-Clear-Host
+#Region ── Constants ───────────────────────────────────────────────────────────
+[IO.FileInfo]$thisScript = $PSCommandPath
 
-[Hahstable]$bootstrapRepositorySplat = @{
-    Domain       = "https://github.com"
-    Organization = "bonzosoft"
-    Name         = "bootstrap"
-    Branch       = "main"
+[IO.FileInfo]$configFile = 
+    Join-Path `
+        -Path $thisScript.Directory `
+        -ChildPath @(".config", "config.json")
+
+[IO.DirectoryInfo]$modulesDirectory = 
+    Join-Path `
+        -Path ([System.IO.Path]::GetTempPath()) `
+        -ChildPath @([System.IO.Path]::GetRandomFileName())
+
+[Hashtable]$vaultSplat = @{
+    Domain       = "https://eu.infisical.com"
+    Organization = "dd2d983e-3db8-40ea-bec4-f69a13b8566a"
+    Project      = "9b3eaa39-1cba-4239-b272-9cd10c997eed"
+    Environment  = "dev"
 }
 
 [Hashtable]$commonRepositorySplat = @{
@@ -27,27 +39,12 @@ Clear-Host
     Branch       = "bw"
 }
 
-[Hashtable]$vaultSplat = @{
-    Domain       = "https://eu.infisical.com"
-    Organization = "dd2d983e-3db8-40ea-bec4-f69a13b8566a"
-    Project      = "9b3eaa39-1cba-4239-b272-9cd10c997eed"
-    Environment  = "dev"
+[Hashtable]$bootstrapRepositorySplat = @{
+    Domain       = "https://github.com"
+    Organization = "bonzosoft"
+    Name         = "bootstrap"
+    Branch       = "main"
 }
-
-[IO.DirectoryInfo]$modulesDirectory = 
-    Join-Path `
-        -Path ([System.IO.Path]::GetTempPath()) `
-        -ChildPath @($bootstrapRepositorySplat.Name, "modules")
-
-[IO.FileInfo]$configFile = 
-    Join-Path `
-        -Path $PWD `
-        -ChildPath @(".config", "config.json")
-
-[Hashtable]$configFileData = $null
-
-
-
 
 [Hashtable]$splat = @{}
 [string[]]$stdStream = @()
@@ -55,78 +52,86 @@ Clear-Host
 [string[]]$params = @()
 
 
-[Uri]$assetUri = $null
-[Version]$assetVersion = $null
-[IO.FileInfo]$assetTempFile = $null
-
-#Region Local functions
-function Get-Timestamp {
-    Write-Output -InputObject ("[" + $(Get-Date -Format "yyyy-MM-dd HH:mm:ss:fffK") + "]" + "`t")
-}
-#EndRegion
+#EndRegion ─────────────────────────────────────────────────────────────────────
 
 
-Write-Information -MessageData "$(Get-Timestamp)Getting asset metadata."
-$assetUri, $assetVersion = 
+#Region ── Local functions ─────────────────────────────────────────────────────
+
+#EndRegion ─────────────────────────────────────────────────────────────────────
+
+
+Clear-Host
+
+
+"Gettng asset metadata" | Write-Log
+[Uri]$assetUri, [Version]$assetVersion = 
     Invoke-RestMethod -Uri "https://api.github.com/repos/$($bootstrapRepositorySplat.Organization)/$($bootstrapRepositorySplat.Name)/releases/latest" |
         ForEach-Object -Process {
             Write-Output -InputObject (
                 $PSItem | 
                 Select-Object -ExpandProperty "assets" |
-                Where-Object -Property "name" -Like "bootstrap-v*.zip").browser_download_url
-            Write-Output -InputObject $PSItem.name
+                Where-Object -Property "name" -Like "bootstrap-v*.zip" |
+                Select-Object -ExpandProperty browser_download_url -First 1)
+            Write-Output -InputObject (
+                $PSItem |
+                Select-Object -ExcludeProperty name -First 1)
         }
+Write-Log -Success
 
 
-Write-Information -MessageData "$(Get-Timestamp)Downloading assets. Version: v$assetVersion."
-$assetTempFile = New-TemporaryFile
+"Downloading assets. Version: v$assetVersion." | Write-Log
+[IO.FileInfo]$assetTempFile = New-TemporaryFile
 Invoke-WebRequest -Uri $assetUri -OutFile $assetTempFile
+Write-Log -Success
 
 
-Write-Information -MessageData "$(Get-Timestamp)Extracting assets."
-if (Test-Path -Path $modulesDirectory.Parent) {
+"Extracting assets." | Write-Log
+if (Test-Path -Path $modulesDirectory.Parent -PathType 'Any') {
     Remove-Item -Path $modulesDirectory.Parent -Force
 }
 Expand-Archive -Path $assetTempFile -DestinationPath $modulesDirectory.Parent -Force
+Write-Log -Success
 
 
-Write-Information -MessageData "$(Get-Timestamp)Importing assets."
+"Importing assets." | Write-Log
 Import-Module -Name (Get-ChildItem -Path $modulesDirectory -Directory).FullName
+Write-Log -Success
 
 
-#Write-Information -MessageData "$(Get-TImestamp)Removing temporary data."
+#"Removing temporary data." | Write-Log
 #Remove-Item -Path $assetTempFile
 #Remove-Variable -Name "assetTempFile"
+#Write-Log -Success
 
 
-Write-Information -MessageData "$(Get-Timestamp)Getting local data."
-$configFileData = Get-Content -Path $configFile -ErrorAction 'SilentlyContinue' | ConvertFrom-Json -Depth 9 -AsHashTable
-
-if (($null -ne $configFileData) -and ($configFileData.Keys -contains "Git")) {
-    if ($configFileData.Git.Keys -contains "Token") {
-        $commonRepositorySplat.Token = $configFileData.Git.Token | ConvertTo-SecureString -AsPlainText
+"Getting local data." | Write-Log
+[Hashtable]$configData = Get-Content -Path $configFile -ErrorAction 'SilentlyContinue' | ConvertFrom-Json -Depth 9 -AsHashTable
+if (($null -ne $configData) -and ($configData.Keys -contains "Git")) {
+    if ($configData.Git.Keys -contains "Token") {
+        $commonRepositorySplat.Token = $configData.Git.Token | ConvertTo-SecureString -AsPlainText
     }
 }
-if (($null -ne $configFileData) -and ($configFileData.Keys -contains "Vault")) {
-    if ($configFileData.Vault.Keys -contains "ClientId" -and $configFiledata.Vault.Keys -contains "ClientSecret") {
+if (($null -ne $configData) -and ($configData.Keys -contains "Vault")) {
+    if ($configData.Vault.Keys -contains "ClientId" -and $configData.Vault.Keys -contains "ClientSecret") {
 
-        $vaultSplat.Credential = [PSCredential]::new($configFileData.Vault.ClientId, ($configFileData.Vault.ClientSecret | ConvertTo-SecureString -AsPlainText))
+        $vaultSplat.Credential = [PSCredential]::new($configData.Vault.ClientId, ($configData.Vault.ClientSecret | ConvertTo-SecureString -AsPlainText))
     }
 }
+Write-Log -Success
 
 
-Write-Information -MessageData "$(Get-Timestamp)Creating Repository object."
+"Creating repository object." | Write-Log
 $repository = New-GitRepository @commonRepositorySplat
+Write-Log -Success
 
 
 #Connect-GitRepository -Repository $repository -ErrorAction 'SilentlyContinue'
-if (!(Test-GitRepository -Repository $repository)) {
-
+if (-not (Test-GitRepository -Repository $repository)) {
     Write-Information -MessageData "$(Get-Timestamp)Creating Vault object."
     $vault = New-Vault @vaultSplat
 
 
-    if (!(Test-Vault -Vault $vault)) {
+    if (-not (Test-Vault -Vault $vault)) {
         Write-Information -MessageData "$(Get-Timestamp)Trying to fetch token from vault."
         do {
             $vault.Credential = (Get-Credential)
@@ -152,12 +157,16 @@ if (!(Test-GitRepository -Repository $repository)) {
 }
 
 
-Write-Information -MessageData "$(Get-Timestamp)Getting repository."
+"Getting repository '$($repository.Name)'." | Write-Log
 Import-GitRepository -Repository $repository
+Write-Log -Success
 
 
-Write-Information -MessageData "$(Get-Timestamp)Storing token."
-if (!(Test-Path -Path $configFile.Directory)) {
+"Storing token." | Write-Log
+if (Test-Path -Path -Path $configFile.Directory -PathType 'Any') {
+    Remove-Item -Path $configFile.Directory -Force
+}
+if (-not (Test-Path -Path $configFile.Directory -PathType 'Container')) {
     New-Item -Path $configFile.Directory -ItemType 'Directory' -Force | Out-Null
 }
 @{
@@ -165,6 +174,7 @@ if (!(Test-Path -Path $configFile.Directory)) {
         "Token" = ($repository.Token | ConvertFrom-SecureString -AsPlainText)
     }
 } | ConvertTo-Json -Depth 9 | Set-Content -Path $configFile
+Write-Log -Success
 
 
 foreach ($item in @("pwsh")) {
@@ -177,7 +187,7 @@ foreach ($item in @("pwsh")) {
             -Path ${PWD} `
             -ChildPath @($item)
 
-    Write-Information -MessageData "$(Get-TimeStamp)Creating link for '${item}'."
+    "Creating link for '${item}'." | Write-Log
     $splat = @{
         Path     = $target
         Value    = $source
@@ -185,9 +195,10 @@ foreach ($item in @("pwsh")) {
         Force    = $true
     }
     New-Item @splat | Out-Null # sames as native command: ln -snf $source.FulName $target.FullName
-    
+    Write-Log -Success
 
-    Write-Information -MessageData "$(Get-TimeStamp)Setting '${item}' as executable."
+
+    "Setting '${item}' as executable." | Write-Log
     $params = @(
         "+x"
         $source.FullName
@@ -196,6 +207,7 @@ foreach ($item in @("pwsh")) {
     if ($LASTEXITCODE -ne 0) {
         Write-Error -Message ($errStream -join [Environment]::NewLine)
     }
+    Write-Log -Success
 }
 
 #. (Join-Path -Path $PWD -ChildPath @($commonRepositorySplat.Name, "install.ps1"))

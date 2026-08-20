@@ -107,22 +107,25 @@ if (Test-Path -Path $configFile) {
                 $configData[$PSItem.Key] = $PSItem.Value
             }
         }
+}
 
-    if ([string]::IsNullOrWhiteSpace($configData.Vault.Client.Secret)) {
-        do {
-            switch (Read-Host -Prompt "Local credentials for Vault already exist. Replace them? [Y]es / [N]o") {
-                "y" {
-                    $vaultSplat.Credential = (Get-Credential)
-                    break
-                }
-                "n" {
-                    $vaultSplat.Credential = [PSCredential]::new($configData.Vault.Client.Id, ($configData.Vault.Client.Secret | ConvertTo-SecureString -AsPlainText))
-                    break
-                }
+if ([string]::IsNullOrWhiteSpace($configData.Vault.Client.Secret)) {
+    do {
+        switch (Read-Host -Prompt "Local credentials for Vault already exist. Replace them? [Y]es / [N]o") {
+            "y" {
+                break
+            }
+            "n" {
+                $vaultSplat.Credential = [PSCredential]::new($configData.Vault.Client.Id, ($configData.Vault.Client.Secret | ConvertTo-SecureString -AsPlainText))
+                break
             }
         }
-        while ($true)
     }
+    while ($true)
+}
+
+if ($null -eq $vaultSplat.Credential) {
+    $vaultSplat.Credential = (Get-Credential)
 }
 
 

@@ -226,5 +226,5 @@ Write-Log -Success
 ################################################################################## continuar en install.ps1 a partir de aqui
 
 
-"`nPress any key to continue..." | Write-Log
+"Press any key to continue..." | Write-Log
 Read-Host | Out-Null

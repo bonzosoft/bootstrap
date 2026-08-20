@@ -92,7 +92,7 @@ function Write-Log {
 Clear-Host
 
 
-"Getting asset metadata" | Write-Log
+"Getting asset metadata from repository $($bootstrapRepositorySplat.Name)" | Write-Log
 [Uri]$assetUri, [Version]$assetVersion = 
     Invoke-RestMethod -Uri "https://api.github.com/repos/$($bootstrapRepositorySplat.Organization)/$($bootstrapRepositorySplat.Name)/releases/latest" |
         ForEach-Object -Process {
@@ -108,13 +108,13 @@ Clear-Host
 Write-Log -Success
 
 
-"Downloading assets. Version: v$assetVersion." | Write-Log
+"Downloading asset version: v$assetVersion from repository." | Write-Log
 [IO.FileInfo]$assetTempFile = New-TemporaryFile
 Invoke-WebRequest -Uri $assetUri -OutFile $assetTempFile
 Write-Log -Success
 
 
-"Extracting assets." | Write-Log
+"Extracting assets to '$modulesDirectory'." | Write-Log
 Expand-Archive -Path $assetTempFile -DestinationPath $modulesDirectory.Parent -Force
 Write-Log -Success
 
@@ -124,7 +124,7 @@ Import-Module -Name (Get-ChildItem -Path $modulesDirectory -Directory).FullName
 Write-Log -Success
 
 
-"Getting local data." | Write-Log
+"Getting local data from '$configFile'." | Write-Log
 [Hashtable]$configData = Get-Content -Path $configFile -ErrorAction 'SilentlyContinue' | ConvertFrom-Json -Depth 9 -AsHashTable
 if (($null -ne $configData) -and ($configData.Keys -contains "Git")) {
     if ($configData.Git.Keys -contains "Token") {
@@ -140,46 +140,30 @@ if (($null -ne $configData) -and ($configData.Keys -contains "Vault")) {
 Write-Log -Success
 
 
-"Creating repository object." | Write-Log
-$repository = New-GitRepository @commonRepositorySplat
+#Connect-GitRepository -Repository $repository -ErrorAction 'SilentlyContinue'
+"Creating Vault object." | Write-Log
+$vault = New-Vault @vaultSplat
+Write-Log -Success
+
+$vault.Credential = (Get-Credential)
+
+"Connecting vault." | Write-Log
+Connect-Vault -Vault $vault -ErrorAction 'Stop'
 Write-Log -Success
 
 
-#Connect-GitRepository -Repository $repository -ErrorAction 'SilentlyContinue'
-if (-not (Test-GitRepository -Repository $repository)) {
-    "Creating Vault object." | Write-Log
-    $vault = New-Vault @vaultSplat
-    Write-Log -Success
+"Fetching token from vault." | Write-Log
+$repository.Token = Get-VaultSecret -Vault $vault -Name "GITHUB_CONTENTS_READONLY_COMMON" -Path "/" | ConvertTo-SecureString -AsPlainText -ErrorAction 'Stop'
+Write-Log -Success
+
+"Connecting repository." | Write-Log
+Connect-GitRepository -Repository $repository -ErrorAction 'Stop'
+Write-Log -Success
 
 
-    if (-not (Test-Vault -Vault $vault)) {
-        "Trying to fetch token from vault." | Write-Log
-        do {
-            $vault.Credential = (Get-Credential)
-
-            try {
-                "Connecting vault." | Write-Log
-                Connect-Vault -Vault $vault -ErrorAction 'Stop'
-            }
-            catch {
-                continue
-            }
-            break
-        }
-        while ($true)
-        Write-Log -Success
-    }
-
-    
-    "Fetching token from vault." | Write-Log
-    $repository.Token = Get-VaultSecret -Vault $vault -Name "GITHUB_CONTENTS_READONLY_COMMON" -Path "/" | ConvertTo-SecureString -AsPlainText -ErrorAction 'Stop'
-    Write-Log -Success
-
-    "Connecting repository." | Write-Log
-    Connect-GitRepository -Repository $repository -ErrorAction 'Stop'
-    Write-Log -Success
-}
-
+"Creating repository object." | Write-Log
+$repository = New-GitRepository @commonRepositorySplat
+Write-Log -Success
 
 "Getting repository '$($repository.Name)'." | Write-Log
 Import-GitRepository -Repository $repository
@@ -208,7 +192,7 @@ foreach ($item in @("pwsh")) {
             -ChildPath @("common", "${item}.sh") #Join-Path -Path $repository.Path -ChildPath @("${item}.sh")
     [IO.FileInfo]$target = 
         Join-Path `
-            -Path ${PWD} `
+            -Path $PWD `
             -ChildPath @($item)
 
     "Creating link for '${item}'." | Write-Log
@@ -238,8 +222,8 @@ foreach ($item in @("pwsh")) {
 ################################################################################## continuar en install.ps1 a partir de aqui
 
 
-Write-Information -MessageData ""
-Write-Information -MessageData "Press any key to continue..."
+"" | Write-Log
+"Press any key to continue..." | Write-Log
 Read-Host | Out-Null
 
 

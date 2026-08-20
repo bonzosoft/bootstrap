@@ -127,12 +127,12 @@ Write-Log -Success
 $vaultSplat.Credential = (Get-Credential)
 
 
-"Creating Vault object." | Write-Log
+"Creating vault object." | Write-Log
 $vault = New-Vault @vaultSplat
 Write-Log -Success
 
 
-"Connecting vault." | Write-Log
+"Connecting to vault." | Write-Log
 Connect-Vault -Vault $vault -ErrorAction 'Stop'
 Write-Log -Success
 
@@ -147,7 +147,7 @@ $repository = New-GitRepository @commonRepositorySplat
 Write-Log -Success
 
 
-"Connecting repository." | Write-Log
+"Connecting to repository '$($repository.Name)'." | Write-Log
 Connect-GitRepository -Repository $repository -ErrorAction 'Stop'
 Write-Log -Success
 
@@ -157,13 +157,15 @@ Import-GitRepository -Repository $repository
 Write-Log -Success
 
 
-"Storing token." | Write-Log
-if (Test-Path -Path -Path $configFile.Directory -PathType 'Any') {
+"Saving token to '$configFile'." | Write-Log
+if (-not (Test-Path -Path $configFile.Directory -PathType 'Container')) {
     Remove-Item -Path $configFile.Directory -Force
 }
+
 if (-not (Test-Path -Path $configFile.Directory -PathType 'Container')) {
     New-Item -Path $configFile.Directory -ItemType 'Directory' -Force | Out-Null
 }
+
 @{
     "Git" = @{
         "Token" = ($repository.Token | ConvertFrom-SecureString -AsPlainText)

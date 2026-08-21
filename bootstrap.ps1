@@ -125,7 +125,7 @@ Write-Information -MessageData "Fetching asset v$assetVersion."
 Invoke-WebRequest -Uri $assetUri -OutFile $assetTempFile
 
 
-[IO.DirectoryInfo]$modulesTempDirectory = Join-Path -Path ([IO.Path]::GetTempPath()) -ChildPath @([IO.Path]::GetTempFileName(), "modules")
+[IO.DirectoryInfo]$modulesTempDirectory = Join-Path -Path ([IO.Path]::GetTempPath()) -ChildPath @([IO.Path]::GetRandomFileName(), "modules")
 
 Write-Information -MessageData "Extracting asset to '$modulesTempDirectory'."
 Expand-Archive -Path $assetTempFile -DestinationPath $modulesTempDirectory.Parent -Force

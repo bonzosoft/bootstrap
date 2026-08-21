@@ -132,7 +132,7 @@ Expand-Archive -Path $assetTempFile -DestinationPath $modulesTempDirectory.Paren
 
 
 Write-Information -MessageData "Loading asset."
-Import-Module -Name (Get-ChildItem -Path $modulesTempDirectory -Directory).FullName -ErrorAction 'Continue'
+Import-Module -Name (Get-ChildItem -Path $modulesTempDirectory -Directory).FullName
 
 
 $configData

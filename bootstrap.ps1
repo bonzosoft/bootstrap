@@ -20,40 +20,76 @@ $InformationPreference = 'Continue'
         -Path      $PWD `
         -ChildPath @(".config", "config.json")
 
-[Hashtable]$configData = @{
-    Git = @{
+[Hashtable]$configData = [ordered]@{
+    Git = [ordered]@{
         Token = ""
     }
-    Vault = @{
-        Client = @{
+    Vault = [ordered]@{
+        Client = [ordered]@{
             Id     = ""
             Secret = ""
         }
     }
 }
 
-[Hashtable]$vaultSplat = @{
+<#
+$schema = [ordered]@{
+    type = "object"
+    required = @("Git", "Vault")
+    properties = @{
+        Git = @{
+            type = "object"
+            required = @("Token")
+            properties = @{
+                Token = @{
+                    type = "string"
+                }
+            }
+        }
+        Vault = @{
+            type = "object"
+            required = @("Client")
+            properties = @{
+                Client = @{
+                    type = "object"
+                    required = @("Id", "Secret")
+                    properties = @{
+                        Id = @{
+                            type = "string"
+                        }
+                        Secret = @{
+                            type = "string"
+                        }
+                    }
+                }
+            }
+        }
+    }
+}
+#>
+
+[Hashtable]$vaultSplat = [ordered]@{
     Domain       = "https://eu.infisical.com"
     Organization = "dd2d983e-3db8-40ea-bec4-f69a13b8566a"
     Project      = "9b3eaa39-1cba-4239-b272-9cd10c997eed"
     Environment  = "dev"
 }
 
-[Hashtable]$commonRepositorySplat = @{
+[Hashtable]$commonRepositorySplat = [ordered]@{
     Domain       = "https://github.com"
     Organization = "bonzosoft"
     Name         = "common"
     Branch       = "bw"
 }
 
-[Hashtable]$bootstrapRepositorySplat = @{
+[Hashtable]$bootstrapRepositorySplat = [ordered]@{
     Domain       = "https://github.com"
     Organization = "bonzosoft"
     Name         = "bootstrap"
     Branch       = "main"
 }
 
-[Hashtable]$splat = @{}
+[orderedDictionary]$splat = [ordered]@{}
 [string[]]$stdStream = @()
 [string[]]$errStream = @()
 [string[]]$params = @()
@@ -89,7 +125,7 @@ Write-Information -MessageData "Fetching asset v$assetVersion."
 Invoke-WebRequest -Uri $assetUri -OutFile $assetTempFile
 
 
-[IO.DirectoryInfo]$modulesTempDirectory = Join-Path -Path ([IO.Path]::GetTempPath()) -ChildPath @([IO.Path]::GetRandomFileName(), "modules")
+[IO.DirectoryInfo]$modulesTempDirectory = Join-Path -Path ([IO.Path]::GetTempPath()) -ChildPath @([IO.Path]::GetTempFileName(), "modules")
 
 Write-Information -MessageData "Extracting asset to '$modulesTempDirectory'."
 Expand-Archive -Path $assetTempFile -DestinationPath $modulesTempDirectory.Parent -Force
@@ -99,18 +135,10 @@ Write-Information -MessageData "Importing asset."
 Import-Module -Name (Get-ChildItem -Path $modulesTempDirectory -Directory).FullName
 
 
-if (Test-Path -Path $configFile) {
-    Get-Content -Path $configFile | 
-        ConvertFrom-Json -Depth 9 -AsHashtable | 
-        ForEach-Object -Process {
-            $PSItem.GetEnumerator() | ForEach-Object {
-                $configData[$PSItem.Key] = $PSItem.Value
-            }
-        }
-}
+
 
 $vaultSplat.Credential = $null
-if (-not [string]::IsNullOrWhiteSpace($configData.Vault.Client.Secret)) {
+if ((-not [string]::IsNullOrWhiteSpace($configData["Vault"]["Client"]["Id"])) -or (-not [string]::IsNullOrWhiteSpace($configData["Vault"]["Client"]["Secret"]))) {
     :doWhile do {
         switch (Read-Host -Prompt "Local credentials for Vault already exist. Replace them? [Y]es / [N]o") {
             "y" {
@@ -119,6 +147,9 @@ if (-not [string]::IsNullOrWhiteSpace($configData.Vault.Client.Secret)) {
             "n" {
                 $vaultSplat.Credential = [PSCredential]::new($configData.Vault.Client.Id, ($configData.Vault.Client.Secret | ConvertTo-SecureString -AsPlainText))
                 break doWhile
+            }
+            default {
+                Write-Host -Message "Unknown option '$PSItem'."
             }
         }
     }
@@ -173,7 +204,7 @@ foreach ($item in @("pwsh")) {
     $source = Join-Path -Path $PWD -ChildPath @($($repository.Name), "${item}.sh")
     $target = Join-Path -Path $PWD -ChildPath @($item)
 
-    $splat = @{
+    $splat = [ordered]@{
         Path     = $target
         Value    = $source
         ItemType = 'SymbolicLink'

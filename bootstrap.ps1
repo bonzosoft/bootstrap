@@ -154,7 +154,7 @@ Import-Module -Name (Get-ChildItem -Path $modulesTempDirectory -Directory).FullN
 
 Write-Host -Message "Template:"
 $configData
-$configData.GetType()
+
 Write-Host -Message "Merged:"
 Merge-Hashtable -Left $configData -Right (Get-Content -Path $configFile | ConvertFrom-Json -Depth 9 -AsHashTable) -MergeHashtables -MergeArrays
 

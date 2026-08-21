@@ -1,13 +1,37 @@
 #! /usr/bin/env pwsh
 
+
+<#
+    .SYNOPSIS
+        Bootstrap script.
+
+    .DESCRIPTION
+
+
+    .PARAMETER Force
+        When present, overrides the local credentials.
+
+    .INPUTS
+        Switch
+
+    .OUTPUTS
+        Void
+
+    .NOTES
+        Author: BonzoSoft
+
+    .EXAMPLE
+
+    .EXAMPLE
+#>
+
+
 using namespace System.Management.Automation
 using namespace System.IO
 
 
 [CmdletBinding()]
 [OutputType([void])]
-
-
 param()
 
 
@@ -38,7 +62,7 @@ $InformationPreference = 'Continue'
 }
 
 <#
-[OrderedHashtable]$schema = [ordered]@{
+[OrderedHashtable]$configDataSchema = [ordered]@{
     type = "object"
     required = @("Git", "Vault")
     properties = @{
@@ -106,7 +130,6 @@ Clear-Host
 
 [Uri]$assetUri = $null
 [Version]$assetVersion = $null
-
 Write-Information -MessageData "Fetching asset release information from '$($bootstrapRepositorySplat.Name)'."
 $assetUri, $assetVersion =
     Invoke-RestMethod -Uri "https://api.github.com/repos/$($bootstrapRepositorySplat.Organization)/$($bootstrapRepositorySplat.Name)/releases/latest" |
@@ -125,13 +148,11 @@ $assetUri, $assetVersion =
 
 
 [FileInfo]$assetTempFile = New-TemporaryFile
-
 Write-Information -MessageData "Fetching asset release v$assetVersion."
 Invoke-WebRequest -Uri $assetUri -OutFile $assetTempFile
 
 
 [DirectoryInfo]$modulesTempDirectory = Join-Path -Path ([IO.Path]::GetTempPath()) -ChildPath @([IO.Path]::GetRandomFileName(), "modules")
-
 Write-Information -MessageData "Extracting asset to '$modulesTempDirectory'."
 Expand-Archive -Path $assetTempFile -DestinationPath $modulesTempDirectory.Parent -Force
 
@@ -140,14 +161,14 @@ Write-Information -MessageData "Loading asset."
 Import-Module -Name (Get-ChildItem -Path $modulesTempDirectory -Directory).FullName
 
 
-Write-Host -Message "Template:"
-$configData
+"Starting bootstrap script." | Write-Log
 
-Write-Host -Message "Merged:"
+
+"Reading local configuration." | Write-Log
 Merge-Hashtable -Left $configData -Right (Get-Content -Path $configFile | ConvertFrom-Json -Depth 9 -AsHashTable) -MergeHashtables -MergeArrays
 
 $vaultSplat.Credential = $null
-if ((-not [string]::IsNullOrWhiteSpace($configData["Vault"]["Client"]["Id"])) -or (-not [string]::IsNullOrWhiteSpace($configData["Vault"]["Client"]["Secret"]))) {
+if ((-not [string]::IsNullOrWhiteSpace($configData.Vault.Client.Id)) -or (-not [string]::IsNullOrWhiteSpace($configData.Vault.Client.Secret))) {
     :doWhile do {
         switch (Read-Host -Prompt "Local credentials for Vault already exist. Replace them? [Y]es / [N]o") {
             "y" {

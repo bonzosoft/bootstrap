@@ -89,7 +89,7 @@ $schema = [ordered]@{
     Branch       = "main"
 }
 
-[orderedDictionary]$splat = [ordered]@{}
+[Hashtable]$splat = [ordered]@{}
 [string[]]$stdStream = @()
 [string[]]$errStream = @()
 [string[]]$params = @()

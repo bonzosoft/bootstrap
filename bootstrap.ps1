@@ -25,24 +25,12 @@ $InformationPreference = 'Continue'
         -Path      $PWD `
         -ChildPath @(".config", "config.json")
 
-[OrderedHashtable]$configData = [ordered]@{
-    Git = [ordered]@{
-        Token = ""
-    }
-    Vault = [ordered]@{
-        Client = [ordered]@{
-            Id     = ""
-            Secret = ""
-        }
-    }
-}
-
 [OrderedHashtable]$configData = @{
-    Git = [ordered]@{
+    Git = [OrderedHashtable]@{
         Token = ""
     }
-    Vault = [ordered]@{
-        Client = [ordered]@{
+    Vault = [OrderedHashtable]@{
+        Client = [OrderedHashtable]@{
             Id     = ""
             Secret = ""
         }

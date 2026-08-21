@@ -200,7 +200,8 @@ Write-Log -Success
 
 
 "Connecting to vault." | Write-Log
-Connect-Vault -Vault $vault -ErrorAction 'Stop'
+Connect-Vault -Vault $vault
+Test-Vault -Vault $vault
 Write-Log -Success
 
 

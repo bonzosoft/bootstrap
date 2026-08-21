@@ -1,7 +1,12 @@
-#-not /usr/bin/env pwsh
+#! /usr/bin/env pwsh
+
+using namespace System.Management.Automation
+using namespace System.IO
+
 
 [CmdletBinding()]
 [OutputType([void])]
+
 
 param()
 
@@ -13,14 +18,26 @@ $InformationPreference = 'Continue'
 
 
 #Region ── Constants ───────────────────────────────────────────────────────────
-[IO.FileInfo]$thisScript = $PSCommandPath
+[FileInfo]$thisScript = $PSCommandPath
 
-[IO.FileInfo]$configFile = 
+[FileInfo]$configFile = 
     Join-Path `
         -Path      $PWD `
         -ChildPath @(".config", "config.json")
 
-[Hashtable]$configData = [ordered]@{
+[OrderedHashtable]$configData = [ordered]@{
+    Git = [ordered]@{
+        Token = ""
+    }
+    Vault = [ordered]@{
+        Client = [ordered]@{
+            Id     = ""
+            Secret = ""
+        }
+    }
+}
+
+[OrderedHashtable]$configData = @{
     Git = [ordered]@{
         Token = ""
     }
@@ -33,7 +50,7 @@ $InformationPreference = 'Continue'
 }
 
 <#
-$schema = [ordered]@{
+[OrderedHashtable]$schema = [ordered]@{
     type = "object"
     required = @("Git", "Vault")
     properties = @{
@@ -68,28 +85,28 @@ $schema = [ordered]@{
 }
 #>
 
-[Hashtable]$vaultSplat = [ordered]@{
+[OrderedHashtable]$vaultSplat = [ordered]@{
     Domain       = "https://eu.infisical.com"
     Organization = "dd2d983e-3db8-40ea-bec4-f69a13b8566a"
     Project      = "9b3eaa39-1cba-4239-b272-9cd10c997eed"
     Environment  = "dev"
 }
 
-[Hashtable]$commonRepositorySplat = [ordered]@{
+[OrderedHashtable]$commonRepositorySplat = [ordered]@{
     Domain       = "https://github.com"
     Organization = "bonzosoft"
     Name         = "common"
     Branch       = "bw"
 }
 
-[Hashtable]$bootstrapRepositorySplat = [ordered]@{
+[OrderedHashtable]$bootstrapRepositorySplat = [ordered]@{
     Domain       = "https://github.com"
     Organization = "bonzosoft"
     Name         = "bootstrap"
     Branch       = "main"
 }
 
-[Hashtable]$splat = [ordered]@{}
+[OrderedHashtable]$splat = [ordered]@{}
 [string[]]$stdStream = @()
 [string[]]$errStream = @()
 [string[]]$params = @()
@@ -119,13 +136,13 @@ $assetUri, $assetVersion =
         }
 
 
-[IO.FileInfo]$assetTempFile = New-TemporaryFile
+[FileInfo]$assetTempFile = New-TemporaryFile
 
 Write-Information -MessageData "Fetching asset release v$assetVersion."
 Invoke-WebRequest -Uri $assetUri -OutFile $assetTempFile
 
 
-[IO.DirectoryInfo]$modulesTempDirectory = Join-Path -Path ([IO.Path]::GetTempPath()) -ChildPath @([IO.Path]::GetRandomFileName(), "modules")
+[DirectoryInfo]$modulesTempDirectory = Join-Path -Path ([IO.Path]::GetTempPath()) -ChildPath @([IO.Path]::GetRandomFileName(), "modules")
 
 Write-Information -MessageData "Extracting asset to '$modulesTempDirectory'."
 Expand-Archive -Path $assetTempFile -DestinationPath $modulesTempDirectory.Parent -Force
@@ -198,8 +215,8 @@ Import-GitRepository -Repository $repository
 Write-Log -Success
 
 
-[IO.FileInfo]$source = $null
-[IO.FileInfo]$target = $null
+[FileInfo]$source = $null
+[FileInfo]$target = $null
 
 foreach ($item in @("pwsh")) {
     "Creating link for '${item}'." | Write-Log

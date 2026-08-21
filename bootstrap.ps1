@@ -135,9 +135,10 @@ Write-Information -MessageData "Loading asset."
 Import-Module -Name (Get-ChildItem -Path $modulesTempDirectory -Directory).FullName
 
 
+Write-Host -Message "Template:"
 $configData
+Write-Host -Message "Merged:"
 Merge-Hashtable -Left $configData -Right (Get-Content -Path $configFile | ConvertFrom-Json -Depth 9 -AsHashTable) -MergeHashtables -MergeArrays
-$configData
 
 $vaultSplat.Credential = $null
 if ((-not [string]::IsNullOrWhiteSpace($configData["Vault"]["Client"]["Id"])) -or (-not [string]::IsNullOrWhiteSpace($configData["Vault"]["Client"]["Secret"]))) {

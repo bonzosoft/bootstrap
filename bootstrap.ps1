@@ -165,7 +165,8 @@ Import-Module -Name (Get-ChildItem -Path $modulesTempDirectory -Directory).FullN
 
 
 "Reading local configuration." | Write-Log
-Merge-Hashtable -Left $configData -Right (Get-Content -Path $configFile | ConvertFrom-Json -Depth 9 -AsHashTable) -MergeHashtables -MergeArrays
+$configData = Merge-Hashtable -Left $configData -Right (Get-Content -Path $configFile | ConvertFrom-Json -Depth 9 -AsHashTable) -MergeHashtables -MergeArrays
+
 
 $vaultSplat.Credential = $null
 if ((-not [string]::IsNullOrWhiteSpace($configData.Vault.Client.Id)) -or (-not [string]::IsNullOrWhiteSpace($configData.Vault.Client.Secret))) {

@@ -102,7 +102,7 @@ Clear-Host
 [Uri]$assetUri = $null
 [Version]$assetVersion = $null
 
-Write-Information -MessageData "Fetching release information from $($bootstrapRepositorySplat.Name)"
+Write-Information -MessageData "Fetching asset release information from '$($bootstrapRepositorySplat.Name)'."
 $assetUri, $assetVersion =
     Invoke-RestMethod -Uri "https://api.github.com/repos/$($bootstrapRepositorySplat.Organization)/$($bootstrapRepositorySplat.Name)/releases/latest" |
         ForEach-Object -Process {
@@ -121,7 +121,7 @@ $assetUri, $assetVersion =
 
 [IO.FileInfo]$assetTempFile = New-TemporaryFile
 
-Write-Information -MessageData "Fetching asset v$assetVersion."
+Write-Information -MessageData "Fetching asset release v$assetVersion."
 Invoke-WebRequest -Uri $assetUri -OutFile $assetTempFile
 
 
@@ -131,11 +131,13 @@ Write-Information -MessageData "Extracting asset to '$modulesTempDirectory'."
 Expand-Archive -Path $assetTempFile -DestinationPath $modulesTempDirectory.Parent -Force
 
 
-Write-Information -MessageData "Importing asset."
+Write-Information -MessageData "Loading asset."
 Import-Module -Name (Get-ChildItem -Path $modulesTempDirectory -Directory).FullName
 
 
-
+$configData
+Merge-Hashtable -Left $configData -Right (Get-Content -Path $configFile | ConvertFrom-Json -Depth 9 -AsHashTable) -MergeHashtables -MergeArrays
+$configData
 
 $vaultSplat.Credential = $null
 if ((-not [string]::IsNullOrWhiteSpace($configData["Vault"]["Client"]["Id"])) -or (-not [string]::IsNullOrWhiteSpace($configData["Vault"]["Client"]["Secret"]))) {

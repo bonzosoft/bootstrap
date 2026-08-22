@@ -201,7 +201,7 @@ Write-Log -Success
 
 "Connecting to vault." | Write-Log
 Connect-Vault -Vault $vault -Verbose
-Test-Vault -Vault $vault
+Test-Vault -Vault $vault -Verbose
 Write-Log -Success
 
 

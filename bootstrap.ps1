@@ -201,6 +201,7 @@ Write-Log -Success
 
 "Connecting to vault." | Write-Log
 Connect-Vault -Vault $vault -Verbose
+$vault.Token | ConvertFrom-SecureString -AsPlainText
 Test-Vault -Vault $vault -Verbose
 Write-Log -Success
 

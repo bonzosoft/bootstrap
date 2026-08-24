@@ -295,7 +295,7 @@ try {
     ################################################################################## continuar en install.ps1 a partir de aqui
 }
 catch {
-    Write-Error -Message $PSItem.Exception.Message
+    Write-Error -ErrorRecord $PSItem
 
     continue
 }

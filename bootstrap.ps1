@@ -209,9 +209,9 @@ try {
     "Test previo" | Write-Log
     Get-VaultSecret -Vault $vault -Name "GITHUB_CONTENTS_READONLY_COMMON" -Path "/"
     Write-Log -Success
-    
+
     "Fetching repository token from vault." | Write-Log
-    $commonRepositorySplat.Token = Get-VaultSecret -Vault $vault -Name "GITHUB_CONTENTS_READONLY_COMMON" -Path "/" -Verbose | ConvertTo-SecureString -AsPlainText -ErrorAction 'Stop'
+    $commonRepositorySplat.Token = Get-VaultSecret -Vault $vault -Name "GITHUB_CONTENTS_READONLY_COMMON" -Path "/" | ConvertTo-SecureString -AsPlainText -ErrorAction 'Stop'
     Write-Log -Success
     
     Write-host "success..."

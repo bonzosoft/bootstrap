@@ -200,7 +200,8 @@ try {
     
     "Connecting to vault." | Write-Log
     Connect-Vault -Vault $vault -Verbose
-    $vault.Token | ConvertFrom-SecureString -AsPlainText
+    Write-Log -Success
+    "Test token." | Write-Log
     Test-Vault -Vault $vault -Verbose
     Write-Log -Success
     

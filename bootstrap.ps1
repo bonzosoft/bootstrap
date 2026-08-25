@@ -213,13 +213,13 @@ try {
     $repository
     
     "Connecting to repository '$($repository.Name)'." | Write-Log
-    Connect-GitRepository -Repository $repository -ErrorAction 'Stop' -Verbose
+    Connect-GitRepository -Repository $repository -ErrorAction 'Stop'
     Write-Log -Success
     
-    Test-GitRepository -Repository $repository -Verbose
+    Test-GitRepository -Repository $repository
 
     "Fetching repository '$($repository.Name)'." | Write-Log
-    Import-GitRepository -Repository $repository -Verbose
+    Import-GitRepository -Repository $repository
     Write-Log -Success
     
     

@@ -210,6 +210,7 @@ try {
     $repository = New-GitRepository @commonRepositorySplat
     Write-Log -Success
     
+    $repository
     
     "Connecting to repository '$($repository.Name)'." | Write-Log
     Connect-GitRepository -Repository $repository -ErrorAction 'Stop'

@@ -17,11 +17,7 @@
         Void
 
     .NOTES
-        Author: BonzoSoft
-
-    .EXAMPLE
-
-    .EXAMPLE
+        Author: Bonzosoft (C) 2026
 #>
 
 using namespace System.Management.Automation
@@ -29,15 +25,12 @@ using namespace System.IO
 
 [CmdletBinding()]
 [OutputType([void])]
-
 param()
 
 try {
     Set-StrictMode -Version Latest
     $ErrorActionPreference = 'Stop'
     $InformationPreference = 'Continue'
-    #$PSNativeCommandUseErrorActionPreference = 'Continue'
-    
     
     #Region ── Constants ───────────────────────────────────────────────────────────
     [FileInfo]$thisScript = $PSCommandPath
@@ -117,9 +110,6 @@ try {
     }
     
     [hashtable]$splat = $null
-    [string[]]$stdStream = @()
-    [string[]]$errStream = @()
-    [string[]]$params = @()
     #EndRegion ─────────────────────────────────────────────────────────────────────
     
     
@@ -210,14 +200,10 @@ try {
     $repository = New-GitRepository @commonRepositorySplat
     Write-Log -Success
     
-    $repository
-    
     "Connecting to repository '$($repository.Name)'." | Write-Log
     Connect-GitRepository -Repository $repository -ErrorAction 'Stop'
     Write-Log -Success
     
-    Test-GitRepository -Repository $repository
-
     "Fetching repository '$($repository.Name)'." | Write-Log
     Import-GitRepository -Repository $repository
     Write-Log -Success
@@ -225,15 +211,13 @@ try {
     
     [FileInfo]$source = $null
     [FileInfo]$target = $null
-    
     foreach ($item in @("pwsh")) {
-        "Creating link for '${item}'." | Write-Log
-    
         $source = Join-Path -Path $PWD -ChildPath @($($repository.Name), "${item}.sh")
         $target = Join-Path -Path $PWD -ChildPath @($item)
     
         if (Test-Path -Path $source) {
-            $splat = [ordered]@{
+            "Creating link for '${item}'." | Write-Log
+            $splat = @{
                 Path     = $target
                 Value    = $source
                 ItemType = 'SymbolicLink'
@@ -258,14 +242,13 @@ try {
         
         
             "Setting '${item}' as executable." | Write-Log
-            $params = @(
-                "+x"
-                $source.FullName
-            )
-            $stdStream = chmod @params 2> variable:errStream
-            if ($LASTEXITCODE -ne 0) {
-                Write-Error -Message ($errStream -join [Environment]::NewLine)
+            $splat = {
+                Command = "chmod"
+                ArgumentList = @(
+                    "+x", $source.FullName
+                )
             }
+            Invoke-NativeCommand @splat -ErrorAction 'Stop'
             Write-Log -Success
         }
     }
@@ -295,7 +278,6 @@ try {
 }
 catch {
     Write-Error -ErrorRecord $PSItem
-
     continue
 }
 finally {

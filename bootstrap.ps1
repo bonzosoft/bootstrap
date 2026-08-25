@@ -242,7 +242,7 @@ try {
         
         
             "Setting '${item}' as executable." | Write-Log
-            $splat = {
+            $splat = @{
                 Command = "chmod"
                 ArgumentList = @(
                     "+x", $source.FullName

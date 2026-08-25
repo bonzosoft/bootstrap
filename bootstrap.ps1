@@ -232,40 +232,42 @@ try {
         $source = Join-Path -Path $PWD -ChildPath @($($repository.Name), "${item}.sh")
         $target = Join-Path -Path $PWD -ChildPath @($item)
     
-        $splat = [ordered]@{
-            Path     = $target
-            Value    = $source
-            ItemType = 'SymbolicLink'
-            Force    = $true
+        if (Test-Path -Path $source) {
+            $splat = [ordered]@{
+                Path     = $target
+                Value    = $source
+                ItemType = 'SymbolicLink'
+                Force    = $true
+            }
+            New-Item @splat | Out-Null
+            <#
+            ## equivalent to native command: ln -snf $source.FulName $target.FullName
+            $params = @(
+                "--symbolic"
+                "--no-deference"
+                "--force"
+                $source.FullName
+                $target.FullName
+            )
+            $stdStream = ln @params 2> Variable:errStream
+            if ($LASTEXITCODE -ne 0) {
+                Write-Error -Message ($errStream -join [Environment]::NewLine)
+            }
+            #>
+            Write-Log -Success
+        
+        
+            "Setting '${item}' as executable." | Write-Log
+            $params = @(
+                "+x"
+                $source.FullName
+            )
+            $stdStream = chmod @params 2> variable:errStream
+            if ($LASTEXITCODE -ne 0) {
+                Write-Error -Message ($errStream -join [Environment]::NewLine)
+            }
+            Write-Log -Success
         }
-        New-Item @splat | Out-Null
-        <#
-        ## equivalent to native command: ln -snf $source.FulName $target.FullName
-        $params = @(
-            "--symbolic"
-            "--no-deference"
-            "--force"
-            $source.FullName
-            $target.FullName
-        )
-        $stdStream = ln @params 2> Variable:errStream
-        if ($LASTEXITCODE -ne 0) {
-            Write-Error -Message ($errStream -join [Environment]::NewLine)
-        }
-        #>
-        Write-Log -Success
-    
-    
-        "Setting '${item}' as executable." | Write-Log
-        $params = @(
-            "+x"
-            $source.FullName
-        )
-        $stdStream = chmod @params 2> variable:errStream
-        if ($LASTEXITCODE -ne 0) {
-            Write-Error -Message ($errStream -join [Environment]::NewLine)
-        }
-        Write-Log -Success
     }
     
     

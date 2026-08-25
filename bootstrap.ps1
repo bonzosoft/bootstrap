@@ -190,7 +190,6 @@ try {
         $vaultSplat.Credential = (Get-Credential)
     }
     
-    
     [PSCustomObject]$vault = $null
     
     "Creating vault object." | Write-Log

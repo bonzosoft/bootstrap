@@ -95,28 +95,28 @@ try {
     }
     #>
     
-    [OrderedHashtable]$vaultSplat = [ordered]@{
+    [OrderedHashtable]$vaultSplat = [OrderedHashtable]@{
         Domain       = "https://eu.infisical.com"
         Organization = "dd2d983e-3db8-40ea-bec4-f69a13b8566a"
         Project      = "9b3eaa39-1cba-4239-b272-9cd10c997eed"
         Environment  = "dev"
     }
     
-    [OrderedHashtable]$commonRepositorySplat = [ordered]@{
+    [OrderedHashtable]$commonRepositorySplat = [OrderedHashtable]@{
         Domain       = "https://github.com"
         Organization = "bonzosoft"
         Name         = "common"
         Branch       = "bw"
     }
     
-    [OrderedHashtable]$bootstrapRepositorySplat = [ordered]@{
+    [OrderedHashtable]$bootstrapRepositorySplat = [OrderedHashtable]@{
         Domain       = "https://github.com"
         Organization = "bonzosoft"
         Name         = "bootstrap"
         Branch       = "main"
     }
     
-    [OrderedHashtable]$splat = [ordered]@{}
+    [hashtable]$splat = $null
     [string[]]$stdStream = @()
     [string[]]$errStream = @()
     [string[]]$params = @()

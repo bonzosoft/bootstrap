@@ -20,8 +20,8 @@
         Author: Bonzosoft (C) 2026
 #>
 
-using namespace System.Management.Automation
-using namespace System.IO
+#using namespace System.Management.Automation
+#using namespace System.IO
 
 [CmdletBinding()]
 [OutputType([void])]
@@ -33,19 +33,19 @@ try {
     $InformationPreference = 'Continue'
     
     #Region ── Constants ───────────────────────────────────────────────────────────
-    [FileInfo]$thisScript = $PSCommandPath
+    [IO.FIleInfo]$thisScript = $PSCommandPath
     
-    [FileInfo]$configFile = 
+    [IO.FIleInfo]$configFile = 
         Join-Path `
             -Path      $PWD `
             -ChildPath @(".config", "config.json")
     
-    [OrderedHashtable]$configData = @{
-        Git = [OrderedHashtable]@{
+    [hashtable]$configData = @{
+        Git = [hashtable]@{
             Token = ""
         }
-        Vault = [OrderedHashtable]@{
-            Client = [OrderedHashtable]@{
+        Vault = [hashtable]@{
+            Client = [hashtable]@{
                 Id     = ""
                 Secret = ""
             }
@@ -53,7 +53,7 @@ try {
     }
     
     <#
-    [OrderedHashtable]$configDataSchema = [ordered]@{
+    [hashtable]$configDataSchema = [ordered]@{
         type = "object"
         required = @("Git", "Vault")
         properties = @{
@@ -88,21 +88,21 @@ try {
     }
     #>
     
-    [OrderedHashtable]$vaultSplat = [OrderedHashtable]@{
+    [hashtable]$vaultSplat = [hashtable]@{
         Domain       = "https://eu.infisical.com"
         Organization = "dd2d983e-3db8-40ea-bec4-f69a13b8566a"
         Project      = "9b3eaa39-1cba-4239-b272-9cd10c997eed"
         Environment  = "dev"
     }
     
-    [OrderedHashtable]$commonRepositorySplat = [OrderedHashtable]@{
+    [hashtable]$commonRepositorySplat = [hashtable]@{
         Domain       = "https://github.com"
         Organization = "bonzosoft"
         Name         = "common"
         Branch       = "bw"
     }
     
-    [OrderedHashtable]$bootstrapRepositorySplat = [OrderedHashtable]@{
+    [hashtable]$bootstrapRepositorySplat = [hashtable]@{
         Domain       = "https://github.com"
         Organization = "bonzosoft"
         Name         = "bootstrap"
@@ -135,7 +135,7 @@ try {
             }
     
     
-    [FileInfo]$assetTempFile = New-TemporaryFile
+    [IO.FIleInfo]$assetTempFile = New-TemporaryFile
     Write-Information -MessageData "Fetching asset release v$assetVersion."
     Invoke-WebRequest -Uri $assetUri -OutFile $assetTempFile
     
@@ -211,8 +211,8 @@ try {
     Write-Log -Success
     
     
-    [FileInfo]$source = $null
-    [FileInfo]$target = $null
+    [IO.FIleInfo]$source = $null
+    [IO.FIleInfo]$target = $null
     foreach ($item in @("pwsh")) {
         $source = Join-Path -Path $PWD -ChildPath @($($repository.Name), "${item}.sh")
         $target = Join-Path -Path $PWD -ChildPath @($item)

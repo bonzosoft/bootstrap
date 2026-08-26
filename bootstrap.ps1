@@ -144,6 +144,8 @@ try {
     [DirectoryInfo]$modulesTempDirectory = Join-Path -Path ([IO.Path]::GetTempPath()) -ChildPath @("bootstrap", "modules")
     Write-Information -MessageData "Extracting asset to '$modulesTempDirectory'."
     Expand-Archive -Path $assetTempFile -DestinationPath $modulesTempDirectory.Parent -Force
+    
+    Write-Information -MessageData "Removing leftovers."
     Remove-Item -Path $assetTempFile -Force
     
     Write-Information -MessageData "Loading asset."

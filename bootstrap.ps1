@@ -137,14 +137,16 @@ try {
     
     [IO.FIleInfo]$assetTempFile = New-TemporaryFile
     Write-Information -MessageData "Fetching asset release v$assetVersion."
+    Write-Information -MessageData "prueba."
     Invoke-WebRequest -Uri $assetUri -OutFile $assetTempFile
+    Write-Information -MessageData "pasa."
     
     
     #[DirectoryInfo]$modulesTempDirectory = Join-Path -Path ([IO.Path]::GetTempPath()) -ChildPath @([IO.Path]::GetRandomFileName(), "modules")
     [DirectoryInfo]$modulesTempDirectory = Join-Path -Path ([IO.Path]::GetTempPath()) -ChildPath @("bootstrap", "modules")
     Write-Information -MessageData "Extracting asset to '$modulesTempDirectory'."
     Expand-Archive -Path $assetTempFile -DestinationPath $modulesTempDirectory.Parent -Force
-    
+
     Write-Information -MessageData "Removing leftovers."
     Remove-Item -Path $assetTempFile -Force
     

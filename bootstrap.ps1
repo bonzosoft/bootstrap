@@ -145,16 +145,18 @@ try {
     Write-Information -MessageData "Extracting asset to '$modulesTempDirectory'."
     Expand-Archive -Path $assetTempFile -DestinationPath $modulesTempDirectory.Parent -Force
 
+
     Write-Information -MessageData "Removing leftovers."
     Remove-Item -Path $assetTempFile -Force
     
+
     Write-Information -MessageData "Loading asset."
     Import-Module -Name (Get-ChildItem -Path $modulesTempDirectory -Directory).FullName
     
-    
+
     "Starting bootstrap script." | Write-Log
     
-    
+
     "Reading local configuration." | Write-Log
     $configData = Merge-Hashtable -Left $configData -Right (Get-Content -Path $configFile | ConvertFrom-Json -Depth 9 -AsHashTable) -MergeHashtables -MergeArrays
     
@@ -181,33 +183,35 @@ try {
     if ($null -eq $vaultSplat.Credential) {
         $vaultSplat.Credential = (Get-Credential)
     }
-    
-    [PSCustomObject]$vault = $null
+
     
     "Creating vault object." | Write-Log
+    [PSCustomObject]$vault = $null
     $vault = New-Vault @vaultSplat
     Write-Log -Success
     
+
     "Connecting to vault." | Write-Log
     Connect-Vault -Vault $vault
     Write-Log -Success
 
-    $vault
 
     "Fetching repository token from vault." | Write-Log
     $commonRepositorySplat.Token = Get-VaultSecret -Vault $vault -Name "GITHUB_CONTENTS_READONLY_COMMON" -Path "/" | ConvertTo-SecureString -AsPlainText -ErrorAction 'Stop'
     Write-Log -Success
 
-    [PSCustomObject]$repository = $null
     
     "Creating repository object." | Write-Log
+    [PSCustomObject]$repository = $null
     $repository = New-GitRepository @commonRepositorySplat
     Write-Log -Success
     
+
     "Connecting to repository '$($repository.Name)'." | Write-Log
     Connect-GitRepository -Repository $repository -ErrorAction 'Stop'
     Write-Log -Success
     
+
     "Fetching repository '$($repository.Name)'." | Write-Log
     Import-GitRepository -Repository $repository
     Write-Log -Success
@@ -229,7 +233,7 @@ try {
             }
             New-Item @splat | Out-Null
             <#
-            ## equivalent to native command: ln -snf $source.FulName $target.FullName
+            ## equivalent to: ln -snf $source.FulName $target.FullName
             $params = @(
                 "--symbolic"
                 "--no-deference"

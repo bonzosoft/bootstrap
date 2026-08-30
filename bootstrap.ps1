@@ -20,10 +20,7 @@ try {
     #Region ── Constants ───────────────────────────────────────────────────────────
     [IO.FIleInfo]$thisScript = $PSCommandPath
     
-    [IO.FIleInfo]$configFile = 
-        Join-Path `
-            -Path      $PWD `
-            -ChildPath @(".config", "config.json")
+    [IO.FIleInfo]$configFile = Join-Path -Path      $PWD -ChildPath @(".config", "config.json")
     
     [hashtable]$configData = @{
         Git = [hashtable]@{
@@ -143,6 +140,9 @@ try {
     
 
     "Reading local configuration." | Write-Log
+    if (-not (Test-Path -Path $configFile)) {
+        New-Item -Path $configFile -ItemType 'File'
+    }
     $configData = Merge-Hashtable -Left $configData -Right (Get-Content -Path $configFile | ConvertFrom-Json -Depth 9 -AsHashTable) -MergeHashtables -MergeArrays
     
     
@@ -270,6 +270,5 @@ catch {
     Write-Log -Failure -Message $PSItem.Exception.Message
 }
 finally {
-    
-    Read-Host | Out-Null
+    #Read-Host | Out-Null
 }

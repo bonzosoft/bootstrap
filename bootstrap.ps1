@@ -142,9 +142,9 @@ try {
     "Reading local configuration." | Write-Log
     if (-not (Test-Path -Path $configFile)) {
         if (-not (Test-Path -Path $configFile.Directory)) {
-            New-Item -Path $configFile.Directory -ItemType 'Directory' -Force
+            New-Item -Path $configFile.Directory -ItemType 'Directory' -Force | Out-Null
         }
-        New-Item -Path $configFile -ItemType 'File'
+        New-Item -Path $configFile -ItemType 'File' | Set-Content -Path $configFile -Value $configData
     }
     $configData = Merge-Hashtable -Left $configData -Right (Get-Content -Path $configFile | ConvertFrom-Json -Depth 9 -AsHashTable) -MergeHashtables -MergeArrays
     

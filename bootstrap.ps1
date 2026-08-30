@@ -201,6 +201,7 @@ try {
     Write-Log -Success
 
     
+    
     "Creating repository object." | Write-Log
     [pscustomobject]$repository = $null
     $repository = New-GitRepository @commonRepositorySplat

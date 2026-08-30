@@ -274,6 +274,7 @@ try {
     
     $configData | ConvertTo-Json -Depth 9 | Set-Content -Path $configFile
     Write-Log -Success
+    throw "some error"
 
     "Script finished successfully. Press any key to continue..." | Write-Log -Success
     

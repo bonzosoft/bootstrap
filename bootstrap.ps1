@@ -162,7 +162,7 @@ try {
     
     
     $vaultSplat.Credential = $null
-    if ((-not [string]::IsNullOrWhiteSpace($configData.Vault.Client.Id)) -or (-not [string]::IsNullOrWhiteSpace($configData.Vault.Client.Secret))) {
+    if ((-not ([string]::IsNullOrWhiteSpace($configData.Vault.Client.Id)) -or [string]::IsNullOrWhiteSpace($configData.Vault.Client.Secret))) {
         :doWhile do {
             switch (Read-Host -Prompt "Local credentials for Vault already exist. Replace them? [Y]es / [N]o") {
                 "y" {
@@ -186,8 +186,7 @@ try {
 
     
     "Creating vault object." | Write-Log
-    [pscustomobject]$vault = $null
-    $vault = New-Vault @vaultSplat
+    [pscustomobject]$vault = New-Vault @vaultSplat
     Write-Log -Success
     
 
@@ -197,13 +196,13 @@ try {
 
 
     "Fetching repository token from vault." | Write-Log
-    $commonRepositorySplat.Token = Get-VaultSecret -Vault $vault -Name "GITHUB_CONTENTS_READONLY_COMMON" -Path "/" | ConvertTo-SecureString -AsPlainText -ErrorAction 'Stop'
+    $commonRepositorySplat.Token = Get-VaultSecret -Vault $vault -Name "GITHUB_CONTENTS_READONLY_COMMON" -Path "/" |
+        ConvertTo-SecureString -AsPlainText -ErrorAction 'Stop'
     Write-Log -Success
 
     
     "Creating repository object." | Write-Log
-    [pscustomobject]$repository = $null
-    $repository = New-GitRepository @commonRepositorySplat
+    [pscustomobject]$repository = New-GitRepository @commonRepositorySplat
     Write-Log -Success
     
 
@@ -217,11 +216,9 @@ try {
     Write-Log -Success
     
     
-    [IO.FIleInfo]$source = $null
-    [IO.FIleInfo]$target = $null
     foreach ($item in @("pwsh")) {
-        $source = Join-Path -Path $PWD -ChildPath @($($repository.Name), "${item}.sh")
-        $target = Join-Path -Path $PWD -ChildPath @($item)
+        [IO.FIleInfo]$source = Join-Path -Path $PWD -ChildPath @($($repository.Name), "${item}.sh")
+        [IO.FIleInfo]$target = Join-Path -Path $PWD -ChildPath @($item)
     
         if (Test-Path -Path $source) {
             "Creating link for '${item}'." | Write-Log
@@ -231,7 +228,6 @@ try {
                 ItemType = 'SymbolicLink'
                 Force    = $true
             }
-            New-Item @splat | Out-Null
             <#
             ## equivalent to: ln -snf $source.FulName $target.FullName
             $params = @(
@@ -246,6 +242,7 @@ try {
                 Write-Error -Message ($errStream -join [Environment]::NewLine)
             }
             #>
+            New-Item @splat | Out-Null
             Write-Log -Success
         
         
@@ -256,12 +253,11 @@ try {
                     "+x", $source.FullName
                 )
             }
-            Invoke-NativeCommand @splat -ErrorAction 'Stop'
+            $null = Invoke-NativeCommand @splat -ErrorAction 'Stop'
             Write-Log -Success
         }
     }
-    
-    
+
     "Saving token to '$configFile'." | Write-Log
     if (Test-Path -Path $configFile.Directory -PathType 'Any') {
         if (-not (Test-Path -Path $configFile.Directory -PathType 'Container')) {

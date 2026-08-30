@@ -116,8 +116,8 @@ try {
     Clear-Host
     
     
-    [Uri]$assetUri = $null
-    [Version]$assetVersion = $null
+    [uri]$assetUri = $null
+    [version]$assetVersion = $null
     Write-Information -MessageData "Fetching asset release information from '$($bootstrapRepositorySplat.Name)'."
     $assetUri, $assetVersion =
         Invoke-RestMethod -Uri "https://api.github.com/repos/$($bootstrapRepositorySplat.Organization)/$($bootstrapRepositorySplat.Name)/releases/latest" |
@@ -186,7 +186,7 @@ try {
 
     
     "Creating vault object." | Write-Log
-    [PSCustomObject]$vault = $null
+    [pscustomobject]$vault = $null
     $vault = New-Vault @vaultSplat
     Write-Log -Success
     
@@ -202,7 +202,7 @@ try {
 
     
     "Creating repository object." | Write-Log
-    [PSCustomObject]$repository = $null
+    [pscustomobject]$repository = $null
     $repository = New-GitRepository @commonRepositorySplat
     Write-Log -Success
     

@@ -201,7 +201,7 @@ try {
     Write-Log -Success
     $commonRepositorySplat 
     $commonRepositorySplat.Token = $commonRepositorySplat.Token | ConvertTo-SecureString -AsPlainText
-
+    $commonRepositorySplat.Token | ConvertFrom-SecureString -AsPlainText
     exit
     
     "Creating repository object." | Write-Log

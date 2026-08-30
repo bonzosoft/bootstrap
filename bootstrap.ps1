@@ -264,7 +264,6 @@ try {
             Remove-Item -Path $configFile.Directory -Force
         }
     }
-    
     if (-not (Test-Path -Path $configFile.Directory -PathType 'Container')) {
         New-Item -Path $configFile.Directory -ItemType 'Directory' -Force | Out-Null
     }
@@ -275,16 +274,16 @@ try {
     
     $configData | ConvertTo-Json -Depth 9 | Set-Content -Path $configFile
     Write-Log -Success
-    
+
+    "Script finished successfully. Press any key to continue..." | Write-Log -Success
     
     #. (Join-Path -Path $PWD -ChildPath @($commonRepositorySplat.Name, "install.ps1"))
     ################################################################################## continuar en install.ps1 a partir de aqui
 }
 catch {
-    Write-Error -ErrorRecord $PSItem
-    continue
+    Write-Log -Failure -Message $PSItem.Exception.Message
 }
 finally {
-    "Press any key to continue..." | Write-Log
+    
     Read-Host | Out-Null
 }

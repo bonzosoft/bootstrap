@@ -199,7 +199,7 @@ try {
     "Fetching repository token from vault." | Write-Log
     #$commonRepositorySplat.Token = Get-VaultSecret -Vault $vault -Name "GITHUB_CONTENTS_READONLY_COMMON" -Path "/" | Select-Object -First 1 #| ConvertTo-SecureString -AsPlainText -ErrorAction 'Stop'
     $var = Get-VaultSecret -Vault $vault -Name "GITHUB_CONTENTS_READONLY_COMMON" -Path "/"
-    $var.GetTYpe()
+    #$var.GetTYpe()
 
     $commonRepositorySplat.Token = Get-VaultSecret -Vault $vault -Name "GITHUB_CONTENTS_READONLY_COMMON" -Path "/" #| 
         #Select-Object -First 1 | 

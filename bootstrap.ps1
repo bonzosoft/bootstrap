@@ -4,24 +4,9 @@
     .SYNOPSIS
         Bootstrap script.
 
-    .DESCRIPTION
-
-
-    .PARAMETER Force
-        When present, overrides the local credentials.
-
-    .INPUTS
-        Switch
-
-    .OUTPUTS
-        Void
-
     .NOTES
-        Author: Bonzosoft (C) 2026
+        Author: bonzosoft © 2026
 #>
-
-#using namespace System.Management.Automation
-#using namespace System.IO
 
 [CmdletBinding()]
 [OutputType([void])]

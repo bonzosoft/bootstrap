@@ -197,11 +197,9 @@ try {
 
 
     "Fetching repository token from vault." | Write-Log
-    $commonRepositorySplat.Token = Get-VaultSecret -Vault $vault -Name "GITHUB_CONTENTS_READONLY_COMMON" -Path "/" #| ConvertTo-SecureString -AsPlainText -ErrorAction 'Stop'
+    $commonRepositorySplat.Token = Get-VaultSecret -Vault $vault -Name "GITHUB_CONTENTS_READONLY_COMMON" -Path "/" | ConvertTo-SecureString -AsPlainText -ErrorAction 'Stop'
     Write-Log -Success
-    $commonRepositorySplat 
 
-    exit
     
     "Creating repository object." | Write-Log
     [pscustomobject]$repository = $null

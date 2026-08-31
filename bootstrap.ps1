@@ -153,8 +153,8 @@ try {
     
     [string]::IsNullOrWhiteSpace($configData.Vault.Client.Id)
     [string]::IsNullOrWhiteSpace($configData.Vault.Client.Secret)
-    ([string]::IsNullOrWhiteSpace($configData.Vault.Client.Id)) -or [string]::IsNullOrWhiteSpace($configData.Vault.Client.Secret)
-    (-not ([string]::IsNullOrWhiteSpace($configData.Vault.Client.Id)) -or [string]::IsNullOrWhiteSpace($configData.Vault.Client.Secret))
+    ([string]::IsNullOrWhiteSpace($configData.Vault.Client.Id)) -or ([string]::IsNullOrWhiteSpace($configData.Vault.Client.Secret))
+    (-not ([string]::IsNullOrWhiteSpace($configData.Vault.Client.Id)) -or ([string]::IsNullOrWhiteSpace($configData.Vault.Client.Secret)))
     $vaultSplat.Credential = $null
     if ((-not ([string]::IsNullOrWhiteSpace($configData.Vault.Client.Id)) -or [string]::IsNullOrWhiteSpace($configData.Vault.Client.Secret))) {
         :doWhile do {

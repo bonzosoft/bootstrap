@@ -10,7 +10,10 @@
 
 [CmdletBinding()]
 [OutputType([void])]
-param()
+param(
+    [Parameter()]
+    [switch]$Force
+)
 
 try {
     Set-StrictMode -Version Latest
@@ -145,6 +148,7 @@ try {
 
     "Checking local credentials." | Write-Log
     $vaultSplat.Credential = $null
+    <#
     if (-not ([string]::IsNullOrWhiteSpace($configData.Vault.Client.Id) -or [string]::IsNullOrWhiteSpace($configData.Vault.Client.Secret))) {
         :doWhile do {
             switch (Read-Host -Prompt "Local credentials for Vault already exist. Replace them? [Y]es / [N]o") {
@@ -165,6 +169,13 @@ try {
     
     if ($null -eq $vaultSplat.Credential) {
         $vaultSplat.Credential = (Get-Credential)
+    }
+    #>
+    if (([string]::IsNullOrWhiteSpace($configData.Vault.Client.Id) -or [string]::IsNullOrWhiteSpace($configData.Vault.Client.Secret)) -or $Force.ISPresent) {
+        $vaultSplat.Credential = (Get-Credential)
+    }
+    else {
+        $vaultSplat.Credential = [PSCredential]::new($configData.Vault.Client.Id, ($configData.Vault.Client.Secret | ConvertTo-SecureString -AsPlainText))
     }
 
     

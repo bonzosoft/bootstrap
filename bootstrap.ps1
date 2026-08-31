@@ -264,9 +264,9 @@ try {
     
     $configData | ConvertTo-Json -Depth 9 | Set-Content -Path $configFile
     Write-Log -Success
-    
 
-    "Script finished successfully. Press any key to continue..." | Write-Log -Success
+
+    "Script finished successfully." | Write-Log -Success
     
     #. (Join-Path -Path $PWD -ChildPath @($commonRepositorySplat.Name, "install.ps1"))
     ################################################################################## continuar en install.ps1 a partir de aqui

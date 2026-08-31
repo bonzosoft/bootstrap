@@ -20,7 +20,7 @@ try {
     #Region ── Constants ───────────────────────────────────────────────────────────
     [IO.FIleInfo]$thisScript = $PSCommandPath
     
-    [IO.FIleInfo]$configFile = Join-Path -Path      $PWD -ChildPath @(".config", "config.json")
+    [IO.FIleInfo]$configFile = Join-Path -Path $PWD -ChildPath @(".config", "config.json")
     
     [hashtable]$configData = @{
         Git = [hashtable]@{
@@ -150,7 +150,9 @@ try {
     #    Set-Content -Path $configFile -Value ($configData | ConvertTo-Json -Depth 9)
     #}
     #$configData = Merge-Hashtable -Left $configData -Right (Get-Content -Path $configFile | ConvertFrom-Json -Depth 9 -AsHashTable) -MergeHashtables -MergeArrays
-    $configData = New-ConfigFile -Path $configFile -Template $configData | Get-Content
+    $configFile = New-ConfigFile -Path $configFile -Template $configData
+    $configData = Get-Content -Path $confgiFile
+
     $configData | Format-List *
     exit
 

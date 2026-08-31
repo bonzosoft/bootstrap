@@ -151,7 +151,7 @@ try {
     #}
     #$configData = Merge-Hashtable -Left $configData -Right (Get-Content -Path $configFile | ConvertFrom-Json -Depth 9 -AsHashTable) -MergeHashtables -MergeArrays
     $configFile = New-ConfigFile -Path $configFile -Template $configData
-    $configData = Get-Content -Path $configFile
+    $configData = Get-Content -Path $configFile | ConvertFrom-Json -Depth 9 -AsHashtable
 
     $configData | Format-List *
     exit

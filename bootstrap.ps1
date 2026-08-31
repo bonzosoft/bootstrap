@@ -255,7 +255,7 @@ try {
     $configData.Vault.Client.Id     = Get-VaultSecret -Vault $vault -Name "INFISICAL_CLIENTID_READONLY_BOOTSTRAP" -Path "/"
     $configData.Vault.Client.Secret = Get-VaultSecret -Vault $vault -Name "INFISICAL_CLIENTSECRET_READONLY_BOOTSTRAP" -Path "/"
     
-    $configData | Write-ConfigFile -Value $configData
+    $configFile | Write-ConfigFile -Value $configData
     Write-Log -Success
 
 

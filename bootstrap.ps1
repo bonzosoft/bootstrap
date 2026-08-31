@@ -276,6 +276,7 @@ try {
 }
 catch {
     Write-Log -Failure -Message $PSItem.Exception.Message
+    Write-Log -Failure -Message $PSItem.ScriptStackTrace
 }
 finally {
     #Read-Host | Out-Null

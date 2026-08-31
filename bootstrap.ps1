@@ -152,7 +152,6 @@ try {
     #$configData = Merge-Hashtable -Left $configData -Right (Get-Content -Path $configFile | ConvertFrom-Json -Depth 9 -AsHashTable) -MergeHashtables -MergeArrays
     $configData = New-ConfigFile -Path $configFile -Template $configData | Get-Content
     $configData | Format-List *
-
     exit
 
     $vaultSplat.Credential = $null

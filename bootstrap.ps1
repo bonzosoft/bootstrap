@@ -23,11 +23,11 @@ try {
     [IO.FIleInfo]$configFile = Join-Path -Path $PWD -ChildPath @(".config", "config.json")
     
     [hashtable]$configData = @{
-        Git = [hashtable]@{
+        Git = @{
             Token = ""
         }
-        Vault = [hashtable]@{
-            Client = [hashtable]@{
+        Vault = @{
+            Client = @{
                 Id     = ""
                 Secret = ""
             }
@@ -70,21 +70,21 @@ try {
     }
     #>
     
-    [hashtable]$vaultSplat = [hashtable]@{
+    [hashtable]$vaultSplat = @{
         Domain       = "https://eu.infisical.com"
         Organization = "dd2d983e-3db8-40ea-bec4-f69a13b8566a"
         Project      = "9b3eaa39-1cba-4239-b272-9cd10c997eed"
         Environment  = "dev"
     }
     
-    [hashtable]$commonRepositorySplat = [hashtable]@{
+    [hashtable]$commonRepositorySplat = @{
         Domain       = "https://github.com"
         Organization = "bonzosoft"
         Name         = "common"
         Branch       = "bw"
     }
     
-    [hashtable]$bootstrapRepositorySplat = [hashtable]@{
+    [hashtable]$bootstrapRepositorySplat = @{
         Domain       = "https://github.com"
         Organization = "bonzosoft"
         Name         = "bootstrap"
@@ -259,7 +259,7 @@ try {
     Write-Log -Success
 
 
-    "Script finished successfully." | Write-Log -Success
+    "Script finished successfully." | Write-Log
     
     #. (Join-Path -Path $PWD -ChildPath @($commonRepositorySplat.Name, "install.ps1"))
     ################################################################################## continuar en install.ps1 a partir de aqui

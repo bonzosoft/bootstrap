@@ -144,7 +144,7 @@ try {
         New-Item -Path $configFile.Directory -ItemType 'Directory' -Force | Out-Null
     }
     if (-not (Test-Path -Path $configFile)) {   
-        New-Item -Path $configFile -ItemType 'File' | 
+        New-Item -Path $configFile -ItemType 'File'
     }
     if ((Get-Item -Path $configFile).Length -eq 0) {
         Set-Content -Path $configFile -Value ($configData | ConvertTo-Json -Depth 9)

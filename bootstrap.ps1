@@ -141,22 +141,9 @@ try {
 
     "Reading local configuration." | Write-Log
     $configData = New-ConfigFile -Path $configFile -Template $configData | Read-ConfigFile
-    #if (-not (Test-Path -Path $configFile.Directory)) {
-    #    New-Item -Path $configFile.Directory -ItemType 'Directory' -Force | Out-Null
-    #}
-    #if (-not (Test-Path -Path $configFile)) {   
-    #    New-Item -Path $configFile -ItemType 'File'
-    #}
-    #if ((Get-Item -Path $configFile).Length -eq 0) {
-    #    Set-Content -Path $configFile -Value ($configData | ConvertTo-Json -Depth 9)
-    #}
-    #$configData = Merge-Hashtable -Left $configData -Right (Get-Content -Path $configFile | ConvertFrom-Json -Depth 9 -AsHashTable) -MergeHashtables -MergeArrays
-    #$configFile = New-ConfigFile -Path $configFile -Template $configData
-    #$configData = Get-Content -Path $configFile | ConvertFrom-Json -Depth 9 -AsHashtable
+    Write-Log -Success
 
-    $configData | Format-List *
-    exit
-
+    "Checking local credentials." | Write-Log
     $vaultSplat.Credential = $null
     if (-not ([string]::IsNullOrWhiteSpace($configData.Vault.Client.Id) -or [string]::IsNullOrWhiteSpace($configData.Vault.Client.Secret))) {
         :doWhile do {
@@ -268,7 +255,7 @@ try {
     $configData.Vault.Client.Id     = Get-VaultSecret -Vault $vault -Name "INFISICAL_CLIENTID_READONLY_BOOTSTRAP" -Path "/"
     $configData.Vault.Client.Secret = Get-VaultSecret -Vault $vault -Name "INFISICAL_CLIENTSECRET_READONLY_BOOTSTRAP" -Path "/"
     
-    $configData | ConvertTo-Json -Depth 9 | Set-Content -Path $configFile
+    $configData | Write-ConfigFile
     Write-Log -Success
 
 

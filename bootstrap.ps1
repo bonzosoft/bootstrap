@@ -141,7 +141,6 @@ try {
 
     "Reading local configuration." | Write-Log
     $configData = New-ConfigFile -Path $configFile -Template $configData | Read-ConfigFile
-    $configData
     Write-Log -Success
 
     "Checking local credentials." | Write-Log

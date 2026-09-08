@@ -112,6 +112,7 @@ $splat = @{
         "repo"
         "clone"
         "$($commonRepositorySplat.Organization)/$($commonRepositorySplat.Name)"
+        "--"
         "--branch", $commonRepositorySplat.Branch
         "--single-branch"
         "--depth", 1

@@ -4,6 +4,12 @@ param()
 
 [IO.FIleInfo]$configFile = Join-Path -Path $PWD -ChildPath @(".config", "config.json")
 
+[hashtable]$commonRepositorySplat           = @{}
+[uri]$commonRepositorySplat.Domain          = "https://github.com"
+[string]$commonRepositorySplat.Organization = "bonzosoft"
+[string]$commonRepositorySplat.Name         = "common"
+[string]$commonRepositorySplat.Branch       = "bw"
+
 # apt update
 $splat = @{
     FilePath     = "apt"
@@ -78,10 +84,20 @@ do {
         [bool]$successLogin = -not($LASTEXITCODE)
     }
     else {
-        $configData.Git.Token = Read-Host -Prompt "Insert Github.com PAT" -MaskInput
-        [bool]$successLogin = $true
-
-        $configData | ConvertTo-Json -Depth 9 | Set-Content -Path $configFile
+        $splat = @{
+            FilePath = "gh"
+            ArgumentList = @(
+                "auth"
+                "login"
+                "--git-protocol", $commonRepositorySplat.Domain.Scheme
+                "--hostname", $commonRepositorySplat.Domain.Host
+            )
+            Environment  = @{}
+            Wait         = $false
+            NoNewWindow  = $true
+            ErrorAction  = 'Stop'
+        }
+        Start-Process @splat
     }
 }
 while (-not $successLogin)
@@ -95,7 +111,10 @@ $splat = @{
     ArgumentList = @(
         "repo"
         "clone"
-        "bonzosoft/common"
+        "$($commonRepositorySplat.Organization)/$($commonRepositorySplat.Name)"
+        "--branch", $commonRepositorySplat.Branch
+        "--single-branch"
+        "--depth", 1
     )
     Environment = @{
         GH_TOKEN = $configData.Git.Token

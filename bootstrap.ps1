@@ -68,6 +68,7 @@ process {
         [string]$configData.Git.Token = ""
     }
     
+    [bool]$successLogin = $false
     do {
         if ($configData.Git.Token) {
             $splat = @{
@@ -80,7 +81,7 @@ process {
             }
             Start-Process @splat
     
-            [bool]$successLogin = -not $LASTEXITCODE
+            $successLogin = -not $LASTEXITCODE
         }
         else {
             $splat = @{

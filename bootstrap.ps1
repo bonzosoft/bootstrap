@@ -11,20 +11,21 @@ begin {
     $InformationPreference = 'Continue'
 
     # Script start =============================================================
-    [IO.FileInfo]$thisScript = $PSCommandPath
+    [IO.FileInfo]$thisScript = Get-Item -Path $PSCommandPath
+    Write-Information -MessageData "Loading script '$thisScript'."
     
     [IO.FIleInfo]$configFile = Join-Path -Path $PWD -ChildPath @(".config", "config.json")
 
-    [hashtable]$commonRepositorySplat             = @{}
-    [uri]$commonRepositorySplat.Domain            = "https://github.com"
-    [string]$commonRepositorySplat.Organization   = "bonzosoft"
-    [string]$commonRepositorySplat.Name           = "common"
-    [string]$commonRepositorySplat.Branch         = "bw"
-    [IO.DirectoryInfo]$commonRepositorySplat.Path = Join-Path -Path $PWD -ChildPath @($commonRepositorySplat.Name)
+    [hashtable]$repositoryData             = @{}
+    [uri]$repositoryData.Domain            = "https://github.com"
+    [string]$repositoryData.Organization   = "bonzosoft"
+    [string]$repositoryData.Name           = "common"
+    [string]$repositoryData.Branch         = "bw"
+    [IO.DirectoryInfo]$repositoryData.Path = Join-Path -Path $PWD -ChildPath @($repositoryData.Name)
 }
 
 process {
-    # apt update
+    Write-Information -MessageData "Runing: apt update."
     $splat = @{
         FilePath     = "apt"
         ArgumentList = @("update")
@@ -35,7 +36,7 @@ process {
     }
     Start-Process @splat
     
-    # apt install gh --yes
+    Write-Information -MessageData "Runing: apt install gh."
     $splat = @{
         FilePath = "apt"
         ArgumentList = @("install", "gh", "--yes")
@@ -46,7 +47,7 @@ process {
     }
     Start-Process @splat
     
-    # gh config set prompt disabled
+    Write-Information -MessageData "Runing: apt config set prompt disabled."
     $splat = @{
         FilePath     = "gh"
         ArgumentList = @("config", "set", "prompt", "disabled")
@@ -57,6 +58,7 @@ process {
     }
     Start-Process @splat
     
+    Write-Information -MessageData "Checking local configuration."
     [hashtable]$configData = Get-Content -Path $configFile -ErrorAction 'SilentlyContinue' | ConvertFrom-Json -Depth 9 -AsHashtable -ErrorAction 'SilentlyContinue'
     if ($null -eq $configData) {
         [hashtable]$configData = @{}
@@ -70,24 +72,15 @@ process {
     
     [bool]$successLogin = $false
     do {
-        if ($configData.Git.Token) {
-            $splat = @{
-                FilePath = "gh"
-                ArgumentList = @("auth", "status")
-                Environment  = @{GH_TOKEN = $configData.Git.Token}
-                NoNewWindow  = $true
-                Wait         = $true
-                ErrorAction  = 'Stop'
-            }
-        }
-        else {
+        if (-not ($configData.Git.Token)) {
+            Write-Information -MessageData "Runing: gh auth login."
             $splat = @{
                 FilePath = "gh"
                 ArgumentList = @(
                     "auth"
                     "login"
-                    "--git-protocol", $commonRepositorySplat.Domain.Scheme
-                    "--hostname", $commonRepositorySplat.Domain.Host
+                    "--git-protocol", $repositoryData.Domain.Scheme
+                    "--hostname", $repositoryData.Domain.Host
                 )
                 Environment  = @{}
                 NoNewWindow  = $true
@@ -95,34 +88,37 @@ process {
                 ErrorAction  = 'Stop'
             }
             Start-Process @splat
-            
-            $splat = @{
-                FilePath = "gh"
-                ArgumentList = @("auth", "status")
-                Environment  = @{}
-                NoNewWindow  = $true
-                Wait         = $true
-                ErrorAction  = 'Stop'
-            }
+        }
+
+        Write-Information -MessageData "Runing: gh auth status."
+        $splat = @{
+            FilePath = "gh"
+            ArgumentList = @("auth", "status")
+            Environment  = @{GH_TOKEN = $configData.Git.Token}
+            NoNewWindow  = $true
+            Wait         = $true
+            ErrorAction  = 'Stop'
         }
         Start-Process @splat
         $successLogin = -not $LASTEXITCODE
     }
     while (-not $successLogin)
     
-    if (Test-Path -Path $commonRepositorySplat.Path) {
-        Remove-Item -Path $commonRepositorySplat.Path -Recurse -Force
+    if (Test-Path -Path $repositoryData.Path) {
+        Write-Information -MessageData "Removing local repository."
+        Remove-Item -Path $repositoryData.Path -Recurse -Force
     }
     
+    Write-Information -MessageData "Runing: gh repo clone."
     $splat = @{
         FilePath     = "gh"
         ArgumentList = @(
             "repo"
             "clone"
-           ($commonRepositorySplat.Organization) + "/" + $($commonRepositorySplat.Name)
-            $commonRepositorySplat.Path
+           ($repositoryData.Organization) + "/" + $($repositoryData.Name)
+            $repositoryData.Path
             "--"
-            "--branch", $commonRepositorySplat.Branch
+            "--branch", $repositoryData.Branch
             "--single-branch"
             "--depth", 1
         )
@@ -131,12 +127,33 @@ process {
         Wait         = $true
         ErrorAction  = 'Stop'
     }
-    Start-Process @splat  
+    Start-Process @splat
+
+    foreach ($item in @("pwsh")) {
+        [IO.FIleInfo]$source = Join-Path -Path $PWD -ChildPath @($($repositoryData.Name), "${item}.sh")
+        [IO.FIleInfo]$target = Join-Path -Path $PWD -ChildPath @($item)
+    
+        if (Test-Path -Path $source) {
+            Write-Information -MessageData "Creating link for '${item}'."
+            New-Item -Path $target -Value $source -ItemType 'SymbolicLink' -Force | Out-Null
+        
+            Write-Information -MessageData "Setting '${item}' as executable."
+            $splat = @{
+                FilePath = "chmod"
+                ArgumentList = @("+x", $source.FullName)
+                Environment = @{GH_TOKEN = $configData.Git.Token}
+                NoNewWindow  = $true
+                Wait         = $true
+                ErrorAction  = 'Stop'
+            }
+            Start-Process @splat
+        }
+    }
 }
 
 end {
     # Script end ===============================================================
-    Write-Information -MessageData "Completed script '$Script:thisScript'."
+    Write-Information -MessageData "Completed script '$thisScript'."
 }
 
 clean {

@@ -100,6 +100,7 @@ process {
             ErrorAction  = 'Stop'
         }
         Start-Process @splat
+        Write-Information -MessageData "LastExitCode= $LASTEXITCODE."
         $successLogin = -not $LASTEXITCODE
     }
     while (-not $successLogin)

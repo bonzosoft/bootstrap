@@ -136,7 +136,7 @@ process {
 
 end {
     # Script end ===============================================================
-    Write-Information -MessageData "Completed script '$($Script:thisScript.Pop())'."
+    Write-Information -MessageData "Completed script '$Script:thisScript'."
 }
 
 clean {

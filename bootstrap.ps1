@@ -91,7 +91,7 @@ process {
                 )
                 Environment  = @{}
                 NoNewWindow  = $true
-                Wait         = $false
+                Wait         = $true
                 ErrorAction  = 'Stop'
             }
             Start-Process @splat

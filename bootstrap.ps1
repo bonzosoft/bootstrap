@@ -74,14 +74,11 @@ process {
             $splat = @{
                 FilePath = "gh"
                 ArgumentList = @("auth", "status")
-                Environment = @{GH_TOKEN = $configData.Git.Token}
+                Environment  = @{GH_TOKEN = $configData.Git.Token}
                 NoNewWindow  = $true
                 Wait         = $true
                 ErrorAction  = 'Stop'
             }
-            Start-Process @splat
-    
-            $successLogin = -not $LASTEXITCODE
         }
         else {
             $splat = @{
@@ -98,7 +95,18 @@ process {
                 ErrorAction  = 'Stop'
             }
             Start-Process @splat
+            
+            $splat = @{
+                FilePath = "gh"
+                ArgumentList = @("auth", "status")
+                Environment  = @{}
+                NoNewWindow  = $true
+                Wait         = $true
+                ErrorAction  = 'Stop'
+            }
         }
+        Start-Process @splat
+        $successLogin = -not $LASTEXITCODE
     }
     while (-not $successLogin)
     

@@ -1,127 +1,135 @@
+#!/usr/bin/env pwsh
+
 [CmdletBinding()]
 [OutputType([void])]
 param()
 
-[IO.FIleInfo]$configFile = Join-Path -Path $PWD -ChildPath @(".config", "config.json")
+begin {
+    # Command line setup =======================================================
+    Set-StrictMode -Version 'Latest'
+    $ErrorActionPreference = 'Stop'
+    $InformationPreference = 'Continue'
 
-[hashtable]$commonRepositorySplat           = @{}
-[uri]$commonRepositorySplat.Domain          = "https://github.com"
-[string]$commonRepositorySplat.Organization = "bonzosoft"
-[string]$commonRepositorySplat.Name         = "common"
-[string]$commonRepositorySplat.Branch       = "bw"
+    # Script start =============================================================
+    [IO.FileInfo]$thisScript = $PSCommandPath
+    
+    [IO.FIleInfo]$configFile = Join-Path -Path $PWD -ChildPath @(".config", "config.json")
 
-# apt update
-$splat = @{
-    FilePath     = "apt"
-    ArgumentList = @(
-        "update"
-    )
-    Environment  = @{}
-    Wait         = $true
-    NoNewWindow  = $true
-    ErrorAction  = 'Stop'
-}
-Start-Process @splat
-
-# apt install gh --yes
-$splat = @{
-    FilePath = "apt"
-    ArgumentList = @(
-        "install"
-        "gh"
-        "--yes"
-    )
-    Environment  = @{}
-    Wait         = $true
-    NoNewWindow  = $true
-    ErrorAction  = 'Stop'
-}
-Start-Process @splat
-
-# gh config set prompt disabled
-$splat = @{
-    FilePath     = "gh"
-    ArgumentList = @(
-        "config"
-        "set"
-        "prompt", "disabled"
-    )
-    Environment  = @{}
-    Wait         = $true
-    NoNewWindow  = $true
-    ErrorAction  = 'Stop'
-}
-Start-Process @splat
-
-[hashtable]$configData = Get-Content -Path $configFile -ErrorAction 'SilentlyContinue' | ConvertFrom-Json -Depth 9 -AsHashtable -ErrorAction 'SilentlyContinue'
-if ($null -eq $configData) {
-    [hashtable]$configData = @{}
-}
-if (-not($configData.Keys -contains "Git")) {
-    [hashtable]$configData.Git = @{}
-}
-if (-not($configData.Git.Keys -contains "Token")) {
-    [string]$configData.Git.Token = ""
+    [hashtable]$commonRepositorySplat             = @{}
+    [uri]$commonRepositorySplat.Domain            = "https://github.com"
+    [string]$commonRepositorySplat.Organization   = "bonzosoft"
+    [string]$commonRepositorySplat.Name           = "common"
+    [string]$commonRepositorySplat.Branch         = "bw"
+    [IO.DirectoryInfo]$commonRepositorySplat.Path = Join-Path -Path $PWD -ChildPath @($commonRepositorySplat.Name)
 }
 
-do {
-    if ($configData.Git.Token) {
-        $splat = @{
-            FilePath = "gh"
-            ArgumentList = @(
-                "auth"
-                "status"
-            )
-            Environment = @{
-                GH_TOKEN = $configData.Git.Token
+process {
+    # apt update
+    $splat = @{
+        FilePath     = "apt"
+        ArgumentList = @("update")
+        Environment  = @{}
+        NoNewWindow  = $true
+        Wait         = $true
+        ErrorAction  = 'Stop'
+    }
+    Start-Process @splat
+    
+    # apt install gh --yes
+    $splat = @{
+        FilePath = "apt"
+        ArgumentList = @("install", "gh", "--yes")
+        Environment  = @{}
+        NoNewWindow  = $true
+        Wait         = $true
+        ErrorAction  = 'Stop'
+    }
+    Start-Process @splat
+    
+    # gh config set prompt disabled
+    $splat = @{
+        FilePath     = "gh"
+        ArgumentList = @("config", "set", "prompt", "disabled")
+        Environment  = @{}
+        NoNewWindow  = $true
+        Wait         = $true
+        ErrorAction  = 'Stop'
+    }
+    Start-Process @splat
+    
+    [hashtable]$configData = Get-Content -Path $configFile -ErrorAction 'SilentlyContinue' | ConvertFrom-Json -Depth 9 -AsHashtable -ErrorAction 'SilentlyContinue'
+    if ($null -eq $configData) {
+        [hashtable]$configData = @{}
+    }
+    if (-not($configData.Keys -contains "Git")) {
+        [hashtable]$configData.Git = @{}
+    }
+    if (-not($configData.Git.Keys -contains "Token")) {
+        [string]$configData.Git.Token = ""
+    }
+    
+    do {
+        if ($configData.Git.Token) {
+            $splat = @{
+                FilePath = "gh"
+                ArgumentList = @("auth", "status")
+                Environment = @{GH_TOKEN = $configData.Git.Token}
+                NoNewWindow  = $true
+                Wait         = $true
+                ErrorAction  = 'Stop'
             }
-            Wait         = $true
-            NoNewWindow  = $true
-            ErrorAction  = 'Stop'
+            Start-Process @splat
+    
+            [bool]$successLogin = -not $LASTEXITCODE
         }
-        Start-Process @splat
-
-        [bool]$successLogin = -not($LASTEXITCODE)
-    }
-    else {
-        $splat = @{
-            FilePath = "gh"
-            ArgumentList = @(
-                "auth"
-                "login"
-                "--git-protocol", $commonRepositorySplat.Domain.Scheme
-                "--hostname", $commonRepositorySplat.Domain.Host
-            )
-            Environment  = @{}
-            Wait         = $false
-            NoNewWindow  = $true
-            ErrorAction  = 'Stop'
+        else {
+            $splat = @{
+                FilePath = "gh"
+                ArgumentList = @(
+                    "auth"
+                    "login"
+                    "--git-protocol", $commonRepositorySplat.Domain.Scheme
+                    "--hostname", $commonRepositorySplat.Domain.Host
+                )
+                Environment  = @{}
+                NoNewWindow  = $true
+                Wait         = $false
+                ErrorAction  = 'Stop'
+            }
+            Start-Process @splat
         }
-        Start-Process @splat
     }
-}
-while (-not $successLogin)
-
-if (Test-Path -Path "common") {
-    Remove-Item -Path "common" -Recurse -Force
-}
-
-$splat = @{
-    FilePath     = "gh"
-    ArgumentList = @(
-        "repo"
-        "clone"
-        "$($commonRepositorySplat.Organization)/$($commonRepositorySplat.Name)"
-        "--"
-        "--branch", $commonRepositorySplat.Branch
-        "--single-branch"
-        "--depth", 1
-    )
-    Environment = @{
-        GH_TOKEN = $configData.Git.Token
+    while (-not $successLogin)
+    
+    if (Test-Path -Path $commonRepositorySplat.Path) {
+        Remove-Item -Path $commonRepositorySplat.Path -Recurse -Force
     }
-    Wait         = $true
-    NoNewWindow  = $true
-    ErrorAction  = 'Stop'
+    
+    $splat = @{
+        FilePath     = "gh"
+        ArgumentList = @(
+            "repo"
+            "clone"
+           ($commonRepositorySplat.Organization) + "/" + $($commonRepositorySplat.Name)
+            $commonRepositorySplat.Path
+            "--"
+            "--branch", $commonRepositorySplat.Branch
+            "--single-branch"
+            "--depth", 1
+        )
+        Environment = @{GH_TOKEN = $configData.Git.Token}
+        NoNewWindow  = $true
+        Wait         = $true
+        ErrorAction  = 'Stop'
+    }
+    Start-Process @splat  
 }
-Start-Process @splat
+
+end {
+    # Script end ===============================================================
+    Write-Information -MessageData "Completed script '$($Script:thisScript.Pop())'."
+}
+
+clean {
+    # nop
+}

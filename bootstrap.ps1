@@ -22,7 +22,6 @@ begin {
     [string]$repositoryData.Name           = "common"
     [string]$repositoryData.Branch         = "bw"
     [IO.DirectoryInfo]$repositoryData.Path = Join-Path -Path $PWD -ChildPath @($repositoryData.Name)
-    exit 0
 }
 
 process {

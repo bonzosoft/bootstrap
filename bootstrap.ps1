@@ -21,8 +21,9 @@ begin {
     [string]$repositoryData.Organization   = "bonzosoft"
     [string]$repositoryData.Name           = "common"
     [string]$repositoryData.Branch         = "bw"
-    [IO.DirectoryInfo]$repositoryData.Path = Join-Path -Path $PWD -ChildPath @($repositoryData.Name)
     return
+    [IO.DirectoryInfo]$repositoryData.Path = Join-Path -Path $PWD -ChildPath @($repositoryData.Name)
+    
 }
 
 process {
